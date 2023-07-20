@@ -3,7 +3,6 @@ repos:
   rev: v4.3.0
   hooks:
   - id: check-added-large-files
-    args: ["--maxkb=1000"] # Exception for Catch2 header since hook does not allow ignore
   - id: check-case-conflict
   - id: check-yaml
   - id: detect-private-key
