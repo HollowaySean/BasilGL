@@ -1,1 +1,3 @@
-- Set up basic CUDA test
+- Basic OpenGL window setup
+- OpenGL render flow
+- Simple draw to screen

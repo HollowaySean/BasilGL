@@ -1,11 +1,12 @@
 ## Project settings
 cmake_minimum_required(VERSION 3.0.0)
+set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
 project(BlackHoleViz VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 enable_testing()
 
 ## Main executable
-add_executable(BlackHoleViz "${CMAKE_SOURCE_DIR}/src/main.cpp")
+add_executable(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/src/main.cpp")
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
@@ -16,7 +17,15 @@ set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
-target_link_libraries(BlackHoleViz ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
+
+## CUDA setup
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
+set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+# Test output
+add_executable(cudaTest "${CMAKE_SOURCE_DIR}/src/test.cu")
+set_target_properties(cudaTest PROPERTIES CUDA_ARCHITECTURES "75")
+set_target_properties(cudaTest PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 # Testing setup
 set(PROJECT_TEST_NAME "${PROJECT_NAME}_test")
@@ -39,3 +48,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
         EXCLUDE "tst/*" "include/*"
     )
 endif()
+
+## Bugfixes
+# Only enable CUDA after including CodeCoverage to prevent error 
+enable_language(CUDA)
