@@ -3,6 +3,7 @@ repos:
   rev: v4.3.0
   hooks:
   - id: check-added-large-files
+    args: ["--maxkb=1000"] # Exception for Catch2 header since hook does not allow ignore
   - id: check-case-conflict
   - id: check-yaml
   - id: detect-private-key
@@ -10,4 +11,9 @@ repos:
   rev: v1.3.5
   hooks:
   - id: cppcheck
+    args: [ "src/*", "lib/*", "tst/*", "--suppress=*:include/*", 
+      "--suppress=unmatchedSuppression", 
+      "--suppress=missingIncludeSystem", 
+      "--suppress=unusedFunction"]
   - id: cpplint
+    args: ["--exclude=include"]
