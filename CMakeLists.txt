@@ -6,18 +6,25 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 enable_testing()
 
 ## Main executable
-add_executable(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/src/main.cpp")
+add_executable(${PROJECT_NAME} 
+    "${CMAKE_SOURCE_DIR}/src/main.cpp"
+    "${CMAKE_SOURCE_DIR}/src/frame/framecontroller.cpp")
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
-include_directories("${CMAKE_SOURCE_DIR}/include" "${CMAKE_SOURCE_DIR}/lib")
+target_include_directories(${PROJECT_NAME} PRIVATE 
+    "${CMAKE_SOURCE_DIR}/include" 
+    "${CMAKE_SOURCE_DIR}/lib"
+    "${CMAKE_SOURCE_DIR}/src/frame")
 
 ## OpenGL setup
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${OPENGL_INCLUDE_DIRS} 
+    ${GLEW_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
 
 ## CUDA setup
@@ -33,6 +40,9 @@ set(PROJECT_TEST_NAME "${PROJECT_NAME}_test")
 add_executable(${PROJECT_TEST_NAME} "${CMAKE_SOURCE_DIR}/tst/test.cpp")
 find_package(Catch2 REQUIRED)
 target_link_libraries(BlackHoleViz_test Catch2::Catch2)
+target_include_directories(${PROJECT_TEST_NAME} PRIVATE
+    "${CMAKE_SOURCE_DIR}/include"
+    "${CMAKE_SOURCE_DIR}/lib")
 
 include(CTest)
 include(Catch)
