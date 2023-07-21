@@ -1,3 +1,10 @@
+## Macros
+macro(DEBUG_MESSAGE MESSAGE)
+    if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
+        message(${MESSAGE})
+    endif()
+endmacro()
+
 ## Project settings
 cmake_minimum_required(VERSION 3.0.0)
 set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
@@ -6,18 +13,34 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 enable_testing()
 
 ## Main executable
-add_executable(${PROJECT_NAME} 
-    "${CMAKE_SOURCE_DIR}/src/main.cpp"
-    "${CMAKE_SOURCE_DIR}/src/frame/framecontroller.cpp"
-    "${CMAKE_SOURCE_DIR}/src/window/windowview.cpp")
+file(GLOB SRC_CHILDREN
+    "${CMAKE_SOURCE_DIR}/src/*")
+set(SRC_DIR_LIST "")
+set(SRC_FILE_LIST "")
+foreach(CHILD ${SRC_CHILDREN})
+    if(IS_DIRECTORY "${CHILD}")
+        debug_message("Found src subdirectory: ${CHILD}")
+        list(APPEND SRC_DIR_LIST ${CHILD})
+        file(GLOB SRC_CHILDREN_FILES
+            "${CHILD}/*.cpp")
+        foreach(GRANDCHILD ${SRC_CHILDREN_FILES})
+            debug_message("Found source file: ${GRANDCHILD}")
+            list(APPEND SRC_FILE_LIST "${GRANDCHILD}")
+        endforeach()
+    else()
+        debug_message("Found source file: ${CHILD}")
+        list(APPEND SRC_FILE_LIST ${CHILD})
+    endif()
+endforeach()
+
+add_executable(${PROJECT_NAME} ${SRC_FILE_LIST})
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
-target_include_directories(${PROJECT_NAME} PRIVATE 
-    "${CMAKE_SOURCE_DIR}/include" 
+target_include_directories(${PROJECT_NAME} PRIVATE
+    "${CMAKE_SOURCE_DIR}/include"
     "${CMAKE_SOURCE_DIR}/lib"
-    "${CMAKE_SOURCE_DIR}/src/frame"
-    "${CMAKE_SOURCE_DIR}/src/window")
+    ${SRC_DIR_LIST})
 
 ## OpenGL setup
 set(OpenGL_GL_PREFERENCE GLVND)
@@ -37,45 +60,61 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 #set_target_properties(cudaTest PROPERTIES CUDA_ARCHITECTURES "75")
 #set_target_properties(cudaTest PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
-# Testing setup
-set(PROJECT_TEST_NAME "${PROJECT_NAME}_test")
-add_executable(${PROJECT_TEST_NAME} 
-    "${CMAKE_SOURCE_DIR}/src/frame/framecontroller.cpp"
-    "${CMAKE_SOURCE_DIR}/src/window/windowview.cpp"
-    "${CMAKE_SOURCE_DIR}/tst/main.test.cpp")
+## Testing setup
 find_package(Catch2 REQUIRED)
-target_link_libraries(BlackHoleViz_test Catch2::Catch2)
-target_include_directories(${PROJECT_TEST_NAME} PRIVATE
-    "${CMAKE_SOURCE_DIR}/include"
-    "${CMAKE_SOURCE_DIR}/lib"
-    "${CMAKE_SOURCE_DIR}/tst")
-
 include(CTest)
 include(Catch)
-catch_discover_tests(BlackHoleViz_test)
+
+# Build test executables
+set(TEST_TARGETS_LIST "")
+file(GLOB TEST_FILES "${CMAKE_SOURCE_DIR}/tst/*.test.cpp")
+foreach(CURRENT_PATH ${TEST_FILES})
+    get_filename_component(CURRENT_FILENAME ${CURRENT_PATH} NAME_WLE)
+    get_filename_component(CURRENT_FILENAME ${CURRENT_FILENAME} NAME_WLE)
+    debug_message("Found test file: ${CURRENT_PATH}")
+
+    set(CURRENT_TEST_TARGET_NAME "${PROJECT_NAME}_test_${CURRENT_FILENAME}")
+    list(APPEND TEST_TARGETS_LIST ${CURRENT_TEST_TARGET_NAME})
+    file(GLOB FILES_FROM_SRC "${CMAKE_SOURCE_DIR}/src/${CURRENT_FILENAME}/*")
+    add_executable(${CURRENT_TEST_TARGET_NAME}
+        ${CURRENT_PATH}
+        ${FILES_FROM_SRC})
+    target_link_libraries(${CURRENT_TEST_TARGET_NAME} Catch2::Catch2)
+    target_include_directories(${CURRENT_TEST_TARGET_NAME} PRIVATE
+        "${CMAKE_SOURCE_DIR}/include"
+        "${CMAKE_SOURCE_DIR}/lib"
+        "${CMAKE_SOURCE_DIR}/tst")
+    catch_discover_tests(${CURRENT_TEST_TARGET_NAME})
+
+endforeach()
 
 
-# Only run code coverage in Debug build
+## Code coverage
+# Only run in Debug build
 if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
 
-    ## Code coverage
     if(CMAKE_COMPILER_IS_GNUCXX)
         include(CodeCoverage)
         append_coverage_compiler_flags()
-        set(PROJECT_COVERAGE_NAME "${PROJECT_NAME}_coverage")
-        setup_target_for_coverage_gcovr_html(
-            NAME ${PROJECT_COVERAGE_NAME}
-            EXECUTABLE ${PROJECT_TEST_NAME}
-            EXCLUDE "tst/*" "include/*"
-        )
+
+        foreach(TEST_TARGET ${TEST_TARGETS_LIST})
+            message("Running coverage for test: ${TEST_TARGET}")
+            set(PROJECT_COVERAGE_NAME "${TEST_TARGET}_coverage")
+            setup_target_for_coverage_gcovr_html(
+                NAME ${PROJECT_COVERAGE_NAME}
+                EXECUTABLE ${TEST_TARGET}
+                EXCLUDE "tst/*" "include/*"
+            )
+        endforeach()
     endif(CMAKE_COMPILER_IS_GNUCXX)
 
 endif()
 
+
+## Doxygen setup
 # Only build documentation in Release build
 if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
 
-    ## Doxygen setup
     find_package(Doxygen)
     if (DOXYGEN_FOUND)
         set(DOXYGEN_IN "${CMAKE_SOURCE_DIR}/docs/Doxyfile_in")

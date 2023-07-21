@@ -3,15 +3,6 @@
 
 #include "../src/frame/framecontroller.hpp"
 
-// Test of test functionality
-TEST_CASE("Testing unit test functionality") {
-    REQUIRE(1 + 1 == 2);
-}
-
-///////////////////////////
-// FrameController tests //
-///////////////////////////
-
 // Test fixtures
 class TestRunnable: public Runnable {
  public:
@@ -47,6 +38,7 @@ class TestTimerSource: public TimerSource {
     }
 };
 
+// Test methods
 void checkInitialization(FrameController *frameController) {
     REQUIRE(frameController);
     REQUIRE(frameController->getFrameCap() == 0);
@@ -75,6 +67,7 @@ void checkMainLoop(
     REQUIRE(testRunnable->hasRun);
 }
 
+// Test cases
 TEST_CASE("Initializes FrameController and runs main loop",
           "[FrameController]") {
     TestRunnable testRunnable = TestRunnable();
