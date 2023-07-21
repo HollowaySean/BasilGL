@@ -8,14 +8,16 @@ enable_testing()
 ## Main executable
 add_executable(${PROJECT_NAME} 
     "${CMAKE_SOURCE_DIR}/src/main.cpp"
-    "${CMAKE_SOURCE_DIR}/src/frame/framecontroller.cpp")
+    "${CMAKE_SOURCE_DIR}/src/frame/framecontroller.cpp"
+    "${CMAKE_SOURCE_DIR}/src/window/windowview.cpp")
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 target_include_directories(${PROJECT_NAME} PRIVATE 
     "${CMAKE_SOURCE_DIR}/include" 
     "${CMAKE_SOURCE_DIR}/lib"
-    "${CMAKE_SOURCE_DIR}/src/frame")
+    "${CMAKE_SOURCE_DIR}/src/frame"
+    "${CMAKE_SOURCE_DIR}/src/window")
 
 ## OpenGL setup
 set(OpenGL_GL_PREFERENCE GLVND)

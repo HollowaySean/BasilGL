@@ -2,20 +2,10 @@
 
 #include <thread>
 
-FrameController::FrameController() {
-    setLoopFunction(NULL);
+FrameController::FrameController(Runnable *runnable = nullptr) {
+    setRunnable(runnable);
     setFrameCap(0);
     currentState = FrameControllerState::STOPPED;
-}
-
-FrameController::FrameController(std::function<void()> loopFunction) {
-    setLoopFunction(loopFunction);
-    setFrameCap(0);
-    currentState = FrameControllerState::STOPPED;
-}
-
-void FrameController::setLoopFunction(std::function<void()> newLoopFunction) {
-    loopFunction = newLoopFunction;
 }
 
 void FrameController::setFrameCap(int framesPerSecond) {
@@ -41,7 +31,7 @@ void FrameController::stop() {
 void FrameController::runLoop() {
     while (shouldRunLoop()) {
         loopStart = std::chrono::steady_clock::now();
-        loopFunction();
+        runnable->mainLoop();
         loopEnd = std::chrono::steady_clock::now();
         loopTime = loopEnd - loopStart;
 
@@ -63,7 +53,8 @@ void FrameController::waitForFrameEnd() {
 }
 
 bool FrameController::shouldStartLoop() {
-    return currentState == FrameControllerState::STOPPED;
+    return currentState == FrameControllerState::STOPPED
+        && runnable != nullptr;
 }
 
 bool FrameController::shouldRunLoop() {

@@ -1,13 +1,10 @@
-#include <stdio.h>
-
 #include "frame/framecontroller.hpp"
-
-void mainLoop() {
-    printf("Hello world!\n");
-}
+#include "window/windowview.hpp"
 
 int main(int argc, char** argv) {
-    FrameController frameController = FrameController(mainLoop);
+    WindowView windowView = WindowView();
+
+    FrameController frameController = FrameController(&windowView);
     frameController.setFrameCap(1);
     frameController.start();
 

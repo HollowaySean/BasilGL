@@ -4,11 +4,15 @@
 #include <chrono>
 #include <functional>
 
+class Runnable {
+ public:
+    virtual void mainLoop() = 0;
+};
+
 class FrameController {
  public:
     // Constructors
-    FrameController();
-    explicit FrameController(std::function<void()> loopFunction);
+    explicit FrameController(Runnable *runnable);
 
     // Internal Types
     enum FrameControllerState {
@@ -18,7 +22,7 @@ class FrameController {
     };
 
     // Setters
-    void setLoopFunction(std::function<void()> newLoopFunction);
+    void setRunnable(Runnable *newRunnable) { runnable = newRunnable; }
     void setFrameCap(int framesPerSecond);
 
     // Getters
@@ -38,7 +42,7 @@ class FrameController {
     int frameCap;
 
     // State management
-    std::function<void()> loopFunction;
+    Runnable *runnable = nullptr;
     FrameControllerState currentState;
     bool shouldRunLoop();
     bool shouldStartLoop();
@@ -47,6 +51,5 @@ class FrameController {
     void runLoop();
     void waitForFrameEnd();
 };
-
 
 #endif  // SRC_FRAME_FRAMECONTROLLER_HPP_
