@@ -15,21 +15,22 @@ include_directories("${CMAKE_SOURCE_DIR}/include" "${CMAKE_SOURCE_DIR}/lib")
 ## OpenGL setup
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
-include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
+find_package(GLEW REQUIRED)
+find_package(glfw3 3.3 REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
 
 ## CUDA setup
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
 set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 # Test output
-add_executable(cudaTest "${CMAKE_SOURCE_DIR}/src/test.cu")
-set_target_properties(cudaTest PROPERTIES CUDA_ARCHITECTURES "75")
-set_target_properties(cudaTest PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+#add_executable(cudaTest "${CMAKE_SOURCE_DIR}/src/test.cu")
+#set_target_properties(cudaTest PROPERTIES CUDA_ARCHITECTURES "75")
+#set_target_properties(cudaTest PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 # Testing setup
 set(PROJECT_TEST_NAME "${PROJECT_NAME}_test")
-add_executable(${PROJECT_TEST_NAME} "${CMAKE_SOURCE_DIR}/tst/dummyTest.cpp")
+add_executable(${PROJECT_TEST_NAME} "${CMAKE_SOURCE_DIR}/tst/test.cpp")
 find_package(Catch2 REQUIRED)
 target_link_libraries(BlackHoleViz_test Catch2::Catch2)
 
