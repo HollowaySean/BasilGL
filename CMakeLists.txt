@@ -50,16 +50,47 @@ include(CTest)
 include(Catch)
 catch_discover_tests(BlackHoleViz_test)
 
-## Code coverage
-if(CMAKE_COMPILER_IS_GNUCXX)
-    include(CodeCoverage)
-    append_coverage_compiler_flags()
-    set(PROJECT_COVERAGE_NAME "${PROJECT_NAME}_coverage")
-    setup_target_for_coverage_gcovr_html(
-        NAME ${PROJECT_COVERAGE_NAME}
-        EXECUTABLE ${PROJECT_TEST_NAME}
-        EXCLUDE "tst/*" "include/*"
-    )
+
+# Only run code coverage in Debug build
+if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
+
+    ## Code coverage
+    if(CMAKE_COMPILER_IS_GNUCXX)
+        include(CodeCoverage)
+        append_coverage_compiler_flags()
+        set(PROJECT_COVERAGE_NAME "${PROJECT_NAME}_coverage")
+        setup_target_for_coverage_gcovr_html(
+            NAME ${PROJECT_COVERAGE_NAME}
+            EXECUTABLE ${PROJECT_TEST_NAME}
+            EXCLUDE "tst/*" "include/*"
+        )
+    endif(CMAKE_COMPILER_IS_GNUCXX)
+
+endif()
+
+# Only build documentation in Release build
+if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
+
+    ## Doxygen setup
+    find_package(Doxygen)
+    if (DOXYGEN_FOUND)
+        set(DOXYGEN_IN "${CMAKE_SOURCE_DIR}/docs/Doxyfile_in")
+        set(DOXYGEN_OUT "${CMAKE_BINARY_DIR}/docs/Doxyfile")
+
+        configure_file(${DOXYGEN_IN} ${DOXYGEN_OUT} @ONLY)
+        message("Doxygen build started")
+
+        set(PROJECT_DOC_NAME "${PROJECT_NAME}_docs")
+        add_custom_target(${PROJECT_DOC_NAME} ALL
+            COMMAND ${DOXYGEN_EXECUTABLE} ${DOXYGEN_OUT}
+            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+            COMMENT "Generating API documentation with Doxygen"
+            VERBATIM)
+
+    else (DOXYGEN_FOUND)
+        message("Doxygen needs to be installed to generate the doxygen documentation")
+    endif (DOXYGEN_FOUND)
+
 endif()
 
 ## Bugfixes

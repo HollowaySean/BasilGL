@@ -4,33 +4,57 @@
 #include <chrono>
 #include <functional>
 
+/**
+ * @brief Interface consumable by FrameController
+ * Contains 'mainLoop' function which is run within frame
+ * 
+ */
 class Runnable {
  public:
     virtual void mainLoop() = 0;
 };
 
+/**
+ * @brief Utility to run main loop of Runnable class, monitor the
+ * running time, and limit to a given frame rate.
+ */
 class FrameController {
  public:
-    // Constructors
+    /** @brief Creates new FrameController with optional argument of Runnable,
+     *  which otherwise defaults to null. */
     explicit FrameController(Runnable *runnable);
 
-    // Internal Types
+    /** @brief Indicates current status of FrameController. */
     enum FrameControllerState {
         STOPPING,
         STOPPED,
         RUNNING,
     };
 
+
     // Setters
+    /** @param newRunnable Pointer to instance of Runnable to use. */
     void setRunnable(Runnable *newRunnable) { runnable = newRunnable; }
+
+    /** @param framesPerSecond Maximum frame rate.
+     *  Uncapped frame rate when set to 0. */
     void setFrameCap(int framesPerSecond);
 
+
     // Getters
+    /** @returns FrameController::FrameControllerState enum
+     *  indicating current status. */
     FrameControllerState getCurrentState() { return currentState; }
+
+    /** @returns Maximum frame rate cap. Uncapped frame rate if set to 0. */
     int getFrameCap() { return frameCap; }
 
+
     // Controls
+    /** @brief Begin running main loop of Runnable. */
     void start();
+
+    /** @brief Request stop of main loop. */
     void stop();
 
  private:
