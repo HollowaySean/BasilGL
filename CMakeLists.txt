@@ -39,12 +39,16 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 # Testing setup
 set(PROJECT_TEST_NAME "${PROJECT_NAME}_test")
-add_executable(${PROJECT_TEST_NAME} "${CMAKE_SOURCE_DIR}/tst/test.cpp")
+add_executable(${PROJECT_TEST_NAME} 
+    "${CMAKE_SOURCE_DIR}/src/frame/framecontroller.cpp"
+    "${CMAKE_SOURCE_DIR}/src/window/windowview.cpp"
+    "${CMAKE_SOURCE_DIR}/tst/main.test.cpp")
 find_package(Catch2 REQUIRED)
 target_link_libraries(BlackHoleViz_test Catch2::Catch2)
 target_include_directories(${PROJECT_TEST_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
-    "${CMAKE_SOURCE_DIR}/lib")
+    "${CMAKE_SOURCE_DIR}/lib"
+    "${CMAKE_SOURCE_DIR}/tst")
 
 include(CTest)
 include(Catch)

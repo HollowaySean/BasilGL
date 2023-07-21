@@ -2,16 +2,62 @@
 
 #include <thread>
 
-FrameController::FrameController(Runnable *runnable = nullptr) {
+void DefaultTimerSource::setMinimumWaitTime(int waitTimeInMS) {
+    minimumWaitTime = std::chrono::milliseconds(waitTimeInMS);
+}
+
+int DefaultTimerSource::startTimer() {
+    timerStart = std::chrono::steady_clock::now();
+
+    std::chrono::milliseconds timerStartMS =
+        std::chrono::duration_cast<std::chrono::milliseconds>
+            (timerStart.time_since_epoch());
+    return timerStartMS.count();
+}
+
+int DefaultTimerSource::stopTimer() {
+    timerStop = std::chrono::steady_clock::now();
+    elapsedTime = timerStop - timerStart;
+
+    std::chrono::milliseconds timerStopMS =
+        std::chrono::duration_cast<std::chrono::milliseconds>
+            (timerStart.time_since_epoch());
+    return timerStopMS.count();
+}
+
+int DefaultTimerSource::waitForTime() {
+    std::chrono::steady_clock::duration timeToWait
+        = minimumWaitTime - elapsedTime;
+
+    std::this_thread::sleep_for(timeToWait);
+
+    std::chrono::milliseconds waitTimeMS =
+        std::chrono::duration_cast<std::chrono::milliseconds>
+            (timeToWait);
+    return waitTimeMS.count();
+}
+
+
+FrameController::FrameController(
+    Runnable *runnable,
+    TimerSource *timerSource): timerSource() {
     setRunnable(runnable);
+
+    if (!timerSource) {
+        timerSource = new DefaultTimerSource();
+    }
+    setTimerSource(timerSource);
     setFrameCap(0);
+
     currentState = FrameControllerState::STOPPED;
 }
 
 void FrameController::setFrameCap(int framesPerSecond) {
     frameCap = framesPerSecond;
+
     if (frameCap > 0) {
-        frameTime = std::chrono::milliseconds(1000) / frameCap;
+        int frameTime = (1000.0 / frameCap);
+        timerSource->setMinimumWaitTime(frameTime);
     }
 }
 
@@ -30,26 +76,14 @@ void FrameController::stop() {
 
 void FrameController::runLoop() {
     while (shouldRunLoop()) {
-        loopStart = std::chrono::steady_clock::now();
+        timerSource->startTimer();
         runnable->mainLoop();
-        loopEnd = std::chrono::steady_clock::now();
-        loopTime = loopEnd - loopStart;
+        timerSource->stopTimer();
 
-        waitForFrameEnd();
+        timerSource->waitForTime();
     }
 
     currentState = FrameControllerState::STOPPED;
-}
-
-void FrameController::waitForFrameEnd() {
-    if (frameCap <= 0) {
-        return;
-    }
-
-    std::chrono::steady_clock::duration waitTime = frameTime - loopTime;
-    if (waitTime > std::chrono::milliseconds(0)) {
-        std::this_thread::sleep_for(waitTime);
-    }
 }
 
 bool FrameController::shouldStartLoop() {

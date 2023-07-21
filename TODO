@@ -1,8 +1,5 @@
-Immediate:
-- Unit tests for Frame Controller
-
-Future:
-- Input interface for object that contains loop function
+- Split tests into multiple files
+- Consider throwing exceptions from Frame Controller
 - Design MVC flow
 - Basic OpenGL window setup
 - OpenGL render flow

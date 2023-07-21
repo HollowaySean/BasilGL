@@ -1,17 +1,61 @@
 #ifndef SRC_FRAME_FRAMECONTROLLER_HPP_
 #define SRC_FRAME_FRAMECONTROLLER_HPP_
 
-#include <chrono>
 #include <functional>
+#include <thread>
 
 /**
  * @brief Interface consumable by FrameController
- * Contains 'mainLoop' function which is run within frame
- * 
+ * Contains 'mainLoop' function which is run within frame.
  */
 class Runnable {
  public:
+    /** @brief Function to run repeatedly within successive frames. */
     virtual void mainLoop() = 0;
+};
+
+/**
+ * @brief Interface consumable by FrameController
+ * Provides time stamps and wait functionality.
+ * Useful for test stubbing and non-realtime controls.
+ */
+class TimerSource {
+ public:
+    /** @param waitTimeInMS Number of milliseconds that must 
+     *  elapse before wait finishes. */
+    virtual void setMinimumWaitTime(int waitTimeInMS) = 0;
+    /** @brief  Begin timer and return timestamp 
+     *  @return Timestamp as an integer */
+    virtual int startTimer() = 0;
+    /** @brief  Stop timer and return timestamp 
+     *  @return Timestamp as an integer */
+    virtual int stopTimer() = 0;
+    /** @brief  Wait for time equal to minimumWaitTime - elapsedTime
+     *  @return Time waited as an integer */
+    virtual int waitForTime() = 0;
+};
+
+/**
+ * @brief Default implementation of TimerSource.
+ * Uses chrono and thread libraries to measure time and sleep the thread. 
+ */
+class DefaultTimerSource: public TimerSource {
+ public:
+    DefaultTimerSource() = default;
+    void setMinimumWaitTime(int waitTimeInMS) override;
+    int startTimer() override;
+    int stopTimer() override;
+    int waitForTime() override;
+
+ private:
+    std::chrono::steady_clock::duration minimumWaitTime
+        = std::chrono::steady_clock::duration::zero();
+    std::chrono::steady_clock::duration elapsedTime
+        = std::chrono::steady_clock::duration::zero();
+    std::chrono::steady_clock::time_point timerStart
+        = std::chrono::steady_clock::time_point::min();
+    std::chrono::steady_clock::time_point timerStop
+        = std::chrono::steady_clock::time_point::min();
 };
 
 /**
@@ -22,7 +66,9 @@ class FrameController {
  public:
     /** @brief Creates new FrameController with optional argument of Runnable,
      *  which otherwise defaults to null. */
-    explicit FrameController(Runnable *runnable);
+    explicit FrameController(
+        Runnable *runnable = nullptr,
+        TimerSource *timerSource = nullptr);
 
     /** @brief Indicates current status of FrameController. */
     enum FrameControllerState {
@@ -39,6 +85,11 @@ class FrameController {
     /** @param framesPerSecond Maximum frame rate.
      *  Uncapped frame rate when set to 0. */
     void setFrameCap(int framesPerSecond);
+
+    /** @param newTimerSource Pointer to instance of TimerSource to use. */
+    void setTimerSource(TimerSource *newTimerSource) {
+        timerSource = newTimerSource;
+    }
 
 
     // Getters
@@ -59,10 +110,7 @@ class FrameController {
 
  private:
     // Timing variables
-    std::chrono::steady_clock::time_point loopStart;
-    std::chrono::steady_clock::time_point loopEnd;
-    std::chrono::steady_clock::duration loopTime;
-    std::chrono::steady_clock::duration frameTime;
+    TimerSource *timerSource;
     int frameCap;
 
     // State management
@@ -73,7 +121,6 @@ class FrameController {
 
     // Controls
     void runLoop();
-    void waitForFrameEnd();
 };
 
 #endif  // SRC_FRAME_FRAMECONTROLLER_HPP_

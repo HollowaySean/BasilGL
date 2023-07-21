@@ -11,7 +11,7 @@ repos:
   rev: v1.3.5
   hooks:
   - id: cppcheck
-    args: [ "src/*", "lib/*", "tst/*", "--suppress=*:include/*", 
+    args: [ "src/*", "lib/*", "--suppress=*:include/*",
       "--suppress=unmatchedSuppression", 
       "--suppress=missingIncludeSystem", 
       "--suppress=unusedFunction"]
