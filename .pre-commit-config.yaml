@@ -16,4 +16,5 @@ repos:
       "--suppress=missingIncludeSystem", 
       "--suppress=unusedFunction"]
   - id: cpplint
-    args: ["--exclude=include"]
+    args: ["--exclude=include",
+    "--filter=-build/c++11"]
