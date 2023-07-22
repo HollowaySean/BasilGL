@@ -17,14 +17,29 @@ FrameController::FrameController(
     currentState = FrameControllerState::STOPPED;
 }
 
-void FrameController::addRunnable(Runnable *newRunnable) {
+void FrameController::addRunnable(Runnable *newRunnable, Order orderToInsert) {
     newRunnable->setController(this);
-    runnables.insert(newRunnable);
+
+    switch (orderToInsert) {
+        case Order::FIRST:
+            runnables.push_front(newRunnable);
+            break;
+        case Order::LAST:
+        default:
+            runnables.push_back(newRunnable);
+            break;
+    }
+
+    // Clear metrics to avoid runtime list confusion
+    frameMetrics.clear();
 }
 
 void FrameController::removeRunnable(Runnable *runnableToRemove) {
     runnableToRemove->setController(nullptr);
-    runnables.erase(runnableToRemove);
+    runnables.remove(runnableToRemove);
+
+    // Clear metrics to avoid runtime list confusion
+    frameMetrics.clear();
 }
 
 void FrameController::setFrameCap(int framesPerSecond) {
@@ -49,8 +64,12 @@ void FrameController::stop() {
     currentState = FrameControllerState::STOPPING;
 }
 
+void FrameController::kill() {
+    currentState = FrameControllerState::KILLED;
+}
+
 void FrameController::runLoop() {
-    std::set<Runnable*>::iterator iter;
+    std::list<Runnable*>::iterator iter;
     for (iter = runnables.begin(); iter != runnables.end(); ++iter) {
         (*iter)->onStart();
     }
@@ -58,14 +77,26 @@ void FrameController::runLoop() {
     while (shouldRunLoop()) {
         float startTime = timerSource->startTimer();
 
+        FrameMetrics::ReportList timeReports;
+
         for (iter = runnables.begin(); iter != runnables.end(); ++iter) {
             (*iter)->mainLoop();
+
+            float doneTime = timerSource->readTimer();
+            FrameMetrics::TimeReport doneTimeReport(
+                doneTime, (*iter)->getName());
+            timeReports.push_back(doneTimeReport);
+
+            if (shouldKillLoop()) {
+                break;
+            }
         }
 
         float stopTime = timerSource->stopTimer();
         float waitTime = timerSource->waitForTime();
 
-        frameMetrics.updateTimeStamps(startTime, stopTime, waitTime);
+        frameMetrics.updateTimeStamps(
+            startTime, stopTime, waitTime, timeReports);
     }
 
     currentState = FrameControllerState::STOPPED;
@@ -82,4 +113,8 @@ bool FrameController::shouldStartLoop() {
 
 bool FrameController::shouldRunLoop() {
     return currentState == FrameControllerState::RUNNING;
+}
+
+bool FrameController::shouldKillLoop() {
+    return currentState == FrameControllerState::KILLED;
 }

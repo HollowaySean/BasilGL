@@ -2,8 +2,9 @@
 #define SRC_FRAME_FRAMECONTROLLER_HPP_
 
 #include <list>
-#include <set>
+#include <string>
 #include <thread>
+#include <utility>
 
 // Hoisting
 class FrameController;
@@ -14,6 +15,8 @@ class FrameController;
  */
 class Runnable {
  public:
+    /** @return Plaintext name for metrics reporting. */
+    virtual std::string getName() { return "Unnamed"; }
     /** @brief Function to run before first frame. */
     virtual void onStart() {}
     /** @brief Function to run repeatedly within successive frames. */
@@ -42,6 +45,8 @@ class TimerSource {
     /** @brief  Begin timer and return timestamp
      *  @return Timestamp as an integer */
     virtual float startTimer() = 0;
+    /** @brief  Return timestamp without stopping */
+    virtual float readTimer() = 0;
     /** @brief  Stop timer and return timestamp
      *  @return Timestamp as an integer */
     virtual float stopTimer() = 0;
@@ -59,6 +64,7 @@ class DefaultTimerSource: public TimerSource {
     DefaultTimerSource() = default;
     void setMinimumWaitTime(float waitTimeInMS) override;
     float startTimer() override;
+    float readTimer() override;
     float stopTimer() override;
     float waitForTime() override;
 
@@ -77,12 +83,21 @@ class DefaultTimerSource: public TimerSource {
 class FrameMetrics {
  public:
     explicit FrameMetrics(int setWindowSize = 1);
+
+    /** @brief Type abbreviation for value-name pair. */
+    using TimeReport = std::pair<float, std::string>;
+    /** @brief Type for returning list of time stamps with names. */
+    using ReportList = std::list<TimeReport>;
+
     /** @brief Adds new time stamps to calculate metrics.
      *  @param start Start-of-loop timestamp.
      *  @param stop  End-of-loop timestamp.
      *  @param wait  Time spent waiting for loop.
+     *  @param doneTimeReports List of names and done times for runnables.
      */
-    void updateTimeStamps(float start, float stop, float wait);
+    void updateTimeStamps(
+        float start, float stop, float wait,
+        ReportList doneTimeReports = ReportList());
     /** @param windowSize Number of frames to average over for metrics. */
     void setSmoothingWindow(int newWindowSize);
     /** @return Average frame time in milliseconds. */
@@ -95,6 +110,10 @@ class FrameMetrics {
     /** @return Average frame rate with wait time discarded.
      *      Equal to getFrameRate if frame rate is uncapped. */
     float getUncappedFrameRate();
+    /** @return List of runtimes in milliseconds
+     *      and names of runnables. */
+    ReportList getRunTimesMS();
+
     /** @brief Container struct for metrics outputs. */
     struct MetricsReport {
      public:
@@ -102,17 +121,24 @@ class FrameMetrics {
         float workTimeMS;
         float frameRate;
         float uncappedFrameRate;
+        ReportList runTimesMS;
         int windowSize;
     };
     /** @return Struct containing all metrics. */
     MetricsReport getMetricsReport();
 
+    /** @brief Clears all metrics. */
+    void clear();
+
  private:
-    struct TimeStamp {
+    struct FrameTimeStamps {
      public:
         float start;
         float stop;
         float wait;
+
+        ReportList doneTimes;
+        ReportList runTimes;
 
         float work() {
             return stop - start;
@@ -122,10 +148,11 @@ class FrameMetrics {
             return wait + work();
         }
     };
-    std::list<FrameMetrics::TimeStamp> timestamps;
+    std::list<FrameMetrics::FrameTimeStamps> timestamps;
     int windowSize = 1;
     float sumFrameTime = 0;
     float sumWorkTime = 0;
+    ReportList sumRunTimes;
 };
 
 /**
@@ -142,15 +169,18 @@ class FrameController {
 
     /** @brief Indicates current status of FrameController. */
     enum FrameControllerState {
-        STOPPING,
-        STOPPED,
-        RUNNING,
+        STOPPING, STOPPED, RUNNING, KILLED
     };
 
+    /** @brief Enum for positional options to add new runnable. */
+    enum Order {
+        FIRST, LAST
+    };
 
     // Setters
-    /** @param newRunnable Pointer to Runnable to add to list. */
-    void addRunnable(Runnable *newRunnable);
+    /** @param newRunnable   Pointer to Runnable to add to list. */
+    /** @param orderToInsert Order enum indicating position to add. */
+    void addRunnable(Runnable *newRunnable, Order orderToInsert = Order::LAST);
 
     /** @param runnableToRemove Pointer to Runnable to try-remove from list. */
     void removeRunnable(Runnable *runnableToRemove);
@@ -177,9 +207,10 @@ class FrameController {
     // Controls
     /** @brief Begin running main loop of Runnable. */
     void start();
-
     /** @brief Request stop of main loop. */
     void stop();
+    /** @brief Demand stop of main loop. Interrupts runnables. */
+    void kill();
 
     // Metrics
     /** @brief Frame time/rate metrics recording utility. */
@@ -191,12 +222,13 @@ class FrameController {
     int frameCap;
 
     // Collection of runnable classes
-    std::set<Runnable*> runnables;
+    std::list<Runnable*> runnables;
 
     // State management
     FrameControllerState currentState;
     bool shouldRunLoop();
     bool shouldStartLoop();
+    bool shouldKillLoop();
 
     // Controls
     void runLoop();

@@ -3,6 +3,10 @@
 
 #include "../src/frame/framecontroller.hpp"
 
+/**
+ * @brief Tests all classes in src/frame/ directory.
+ */
+
 // Test fixtures
 class TestRunnable: public Runnable {
  public:
@@ -48,6 +52,9 @@ class TestTimerSource: public TimerSource {
     }
     float startTimer() override {
         didStart = true;
+        return 0.0;
+    }
+    float readTimer() override {
         return 0.0;
     }
     float stopTimer() override {
@@ -126,13 +133,22 @@ TEST_CASE("Initializes FrameController with multiple runnables",
             frameController->stop();
         }
     };
+    class HaltingTestRunnable: public Runnable {
+     public:
+        bool hasRun = false;
+        void mainLoop() override {
+            hasRun = true;
+            frameController->kill();
+        }
+    };
 
     TestRunnable first = TestRunnable();
     TestRunnable second = TestRunnable();
+    HaltingTestRunnable halting = HaltingTestRunnable();
 
     FrameController frameController = FrameController();
-    frameController.addRunnable(&first);
-    frameController.addRunnable(&second);
+    frameController.addRunnable(&second, FrameController::LAST);
+    frameController.addRunnable(&first, FrameController::FIRST);
     frameController.start();
 
     REQUIRE(first.hasRun);
@@ -145,6 +161,15 @@ TEST_CASE("Initializes FrameController with multiple runnables",
 
     REQUIRE_FALSE(first.hasRun);
     REQUIRE(second.hasRun);
+
+    second.hasRun = false;
+    frameController.addRunnable(&halting, FrameController::FIRST);
+    frameController.addRunnable(&first, FrameController::FIRST);
+    frameController.start();
+
+    REQUIRE(first.hasRun);
+    REQUIRE_FALSE(second.hasRun);
+    REQUIRE(halting.hasRun);
 }
 
 TEST_CASE("Runnable interface default implementation") {
@@ -183,20 +208,79 @@ TEST_CASE("DefaultTimerSource runs with chrono library",
 
 TEST_CASE("FrameMetrics tracks and averages time intervals",
           "[FrameMetrics]") {
+    // Returns dummy values when empty
     FrameMetrics metrics = FrameMetrics();
-    metrics.setSmoothingWindow(2);
-    metrics.updateTimeStamps(0.0, 10.0, 10.0);
-
     FrameMetrics::MetricsReport report = metrics.getMetricsReport();
+
+    REQUIRE(report.frameRate == -1.0);
+    REQUIRE(report.uncappedFrameRate == -1.0);
+    REQUIRE(report.frameTimeMS == -1.0);
+    REQUIRE(report.workTimeMS == -1.0);
+    REQUIRE(report.runTimesMS.size() == 0);
+
+    // Correct basic behavior
+    FrameMetrics::ReportList reportList;
+    reportList.push_back(FrameMetrics::TimeReport(2.0, "First runner"));
+    reportList.push_back(FrameMetrics::TimeReport(0.0, "Second runner"));
+
+    metrics.setSmoothingWindow(2);
+    metrics.updateTimeStamps(0.0, 10.0, 10.0, reportList);
+    report = metrics.getMetricsReport();
+
     REQUIRE(report.frameRate == 50.0);
     REQUIRE(report.uncappedFrameRate == 100.0);
     REQUIRE(report.frameTimeMS == 20.0);
     REQUIRE(report.workTimeMS == 10.0);
 
-    metrics.updateTimeStamps(0.0, 0.0, 0.0);
+    REQUIRE(report.runTimesMS.front().second == "First runner");
+    REQUIRE(report.runTimesMS.front().first == 2.0);
+    REQUIRE(report.runTimesMS.back().second == "Second runner");
+    REQUIRE(report.runTimesMS.back().first == 0.0);
+
+    reportList.clear();
+    reportList.push_back(FrameMetrics::TimeReport(4.0, "First runner"));
+    reportList.push_back(FrameMetrics::TimeReport(2.0, "Second runner"));
+
+    metrics.updateTimeStamps(0.0, 0.0, 0.0, reportList);
     report = metrics.getMetricsReport();
     REQUIRE(report.frameRate == 100.0);
     REQUIRE(report.uncappedFrameRate == 200.0);
     REQUIRE(report.frameTimeMS == 10.0);
     REQUIRE(report.workTimeMS == 5.0);
+
+    REQUIRE(report.runTimesMS.front().second == "First runner");
+    REQUIRE(report.runTimesMS.front().first == 3.0);
+    REQUIRE(report.runTimesMS.back().second == "Second runner");
+    REQUIRE(report.runTimesMS.back().first == 1.0);
+
+    // Should clear data when smoothing window is reduced
+    metrics.setSmoothingWindow(5);
+    metrics.setSmoothingWindow(2);
+    metrics.updateTimeStamps(0.0, 10.0, 10.0, reportList);
+
+    report = metrics.getMetricsReport();
+    REQUIRE(report.frameRate == 50.0);
+    REQUIRE(report.uncappedFrameRate == 100.0);
+    REQUIRE(report.frameTimeMS == 20.0);
+    REQUIRE(report.workTimeMS == 10.0);
+
+    REQUIRE(report.runTimesMS.front().second == "First runner");
+    REQUIRE(report.runTimesMS.front().first == 4.0);
+    REQUIRE(report.runTimesMS.back().second == "Second runner");
+    REQUIRE(report.runTimesMS.back().first == 2.0);
+
+    // Should operate correctly when at window maximum
+    metrics.updateTimeStamps(0.0, 0.0, 0.0, reportList);
+    metrics.updateTimeStamps(0.0, 5.0, 5.0, reportList);
+
+    report = metrics.getMetricsReport();
+    REQUIRE(report.frameRate == 200.0);
+    REQUIRE(report.uncappedFrameRate == 400.0);
+    REQUIRE(report.frameTimeMS == 5.0);
+    REQUIRE(report.workTimeMS == 2.5);
+
+    REQUIRE(report.runTimesMS.front().second == "First runner");
+    REQUIRE(report.runTimesMS.front().first == 4.0);
+    REQUIRE(report.runTimesMS.back().second == "Second runner");
+    REQUIRE(report.runTimesMS.back().first == 2.0);
 }
