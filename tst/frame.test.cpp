@@ -116,17 +116,35 @@ TEST_CASE("Initializes FrameController without runnable",
         == FrameController::FrameControllerState::STOPPED);
 }
 
-TEST_CASE("DefaultTimerSource runs with chrono library",
-          "[DefaultTimerSource]") {
-    DefaultTimerSource timer = DefaultTimerSource();
-    timer.setMinimumWaitTime(100);
-    int startTimeStamp = timer.startTimer();
-    int stopTimeStamp = timer.stopTimer();
-    int waitTime = timer.waitForTime();
+TEST_CASE("Initializes FrameController with multiple runnables",
+          "[FrameController]") {
+    class TestRunnable: public Runnable {
+     public:
+        bool hasRun = false;
+        void mainLoop() override {
+            hasRun = true;
+            frameController->stop();
+        }
+    };
 
-    REQUIRE(startTimeStamp > 0);
-    REQUIRE(stopTimeStamp > 0);
-    REQUIRE(waitTime > 0);
+    TestRunnable first = TestRunnable();
+    TestRunnable second = TestRunnable();
+
+    FrameController frameController = FrameController();
+    frameController.addRunnable(&first);
+    frameController.addRunnable(&second);
+    frameController.start();
+
+    REQUIRE(first.hasRun);
+    REQUIRE(second.hasRun);
+
+    first.hasRun = false;
+    second.hasRun = false;
+    frameController.removeRunnable(&first);
+    frameController.start();
+
+    REQUIRE_FALSE(first.hasRun);
+    REQUIRE(second.hasRun);
 }
 
 TEST_CASE("Runnable interface default implementation") {
@@ -148,4 +166,17 @@ TEST_CASE("Runnable interface default implementation") {
     REQUIRE(frameController.getCurrentState()
         == FrameController::FrameControllerState::STOPPED);
     REQUIRE(defaultRunnable.succeeded);
+}
+
+TEST_CASE("DefaultTimerSource runs with chrono library",
+          "[DefaultTimerSource]") {
+    DefaultTimerSource timer = DefaultTimerSource();
+    timer.setMinimumWaitTime(100);
+    int startTimeStamp = timer.startTimer();
+    int stopTimeStamp = timer.stopTimer();
+    int waitTime = timer.waitForTime();
+
+    REQUIRE(startTimeStamp > 0);
+    REQUIRE(stopTimeStamp > 0);
+    REQUIRE(waitTime > 0);
 }

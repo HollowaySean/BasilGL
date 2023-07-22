@@ -5,7 +5,7 @@ FrameController::FrameController(
     TimerSource *timerSource): timerSource() {
 
     if (runnable) {
-        setRunnable(runnable);
+        addRunnable(runnable);
     }
 
     if (!timerSource) {
@@ -15,6 +15,16 @@ FrameController::FrameController(
     setFrameCap(0);
 
     currentState = FrameControllerState::STOPPED;
+}
+
+void FrameController::addRunnable(Runnable *newRunnable) {
+    newRunnable->setController(this);
+    runnables.insert(newRunnable);
+}
+
+void FrameController::removeRunnable(Runnable *runnableToRemove) {
+    runnableToRemove->setController(nullptr);
+    runnables.erase(runnableToRemove);
 }
 
 void FrameController::setFrameCap(int framesPerSecond) {
@@ -40,23 +50,31 @@ void FrameController::stop() {
 }
 
 void FrameController::runLoop() {
-    runnable->onStart();
+    std::set<Runnable*>::iterator iter;
+    for (iter = runnables.begin(); iter != runnables.end(); ++iter) {
+        (*iter)->onStart();
+    }
 
     while (shouldRunLoop()) {
         timerSource->startTimer();
-        runnable->mainLoop();
+        for (iter = runnables.begin(); iter != runnables.end(); ++iter) {
+            (*iter)->mainLoop();
+        }
         timerSource->stopTimer();
 
         timerSource->waitForTime();
     }
 
     currentState = FrameControllerState::STOPPED;
-    runnable->onStop();
+
+    for (iter = runnables.begin(); iter != runnables.end(); ++iter) {
+        (*iter)->onStop();
+    }
 }
 
 bool FrameController::shouldStartLoop() {
     return currentState == FrameControllerState::STOPPED
-        && runnable != nullptr;
+        && !runnables.empty();
 }
 
 bool FrameController::shouldRunLoop() {

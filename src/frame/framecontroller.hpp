@@ -2,6 +2,7 @@
 #define SRC_FRAME_FRAMECONTROLLER_HPP_
 
 #include <functional>
+#include <set>
 #include <thread>
 
 // Hoisting
@@ -93,11 +94,10 @@ class FrameController {
 
 
     // Setters
-    /** @param newRunnable Pointer to instance of Runnable to use. */
-    void setRunnable(Runnable *newRunnable) {
-        runnable = newRunnable;
-        runnable->setController(this);
-    }
+    /** @param newRunnable Pointer to Runnable to add to list. */
+    void addRunnable(Runnable *newRunnable);
+    /** @param runnableToRemove Pointer to Runnable to try-remove from list. */
+    void removeRunnable(Runnable *runnableToRemove);
 
     /** @param framesPerSecond Maximum frame rate.
      *  Uncapped frame rate when set to 0. */
@@ -130,8 +130,10 @@ class FrameController {
     TimerSource *timerSource;
     int frameCap;
 
+    // Collection of runnable classes
+    std::set<Runnable*> runnables;
+
     // State management
-    Runnable *runnable = nullptr;
     FrameControllerState currentState;
     bool shouldRunLoop();
     bool shouldStartLoop();
