@@ -19,7 +19,7 @@ set(SRC_DIR_LIST "")
 set(SRC_FILE_LIST "")
 foreach(CHILD ${SRC_CHILDREN})
     if(IS_DIRECTORY "${CHILD}")
-        debug_message("Found src subdirectory: ${CHILD}")
+        debug_message("Found source subdirectory: ${CHILD}")
         list(APPEND SRC_DIR_LIST ${CHILD})
         file(GLOB SRC_CHILDREN_FILES
             "${CHILD}/*.cpp")
@@ -48,7 +48,7 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${OPENGL_INCLUDE_DIRS} 
+    ${OPENGL_INCLUDE_DIRS}
     ${GLEW_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
 
@@ -137,5 +137,5 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
 endif()
 
 ## Bugfixes
-# Only enable CUDA after including CodeCoverage to prevent error 
+# Only enable CUDA after including CodeCoverage to prevent error
 enable_language(CUDA)
