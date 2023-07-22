@@ -2,9 +2,24 @@
 #include "windowview.hpp"
 
 WindowView::WindowView() {
-    printf("Starting window\n");
+    frameController = nullptr;
+    printf("Initializing window\n");
+}
+
+void WindowView::onStart() {
+    printf("Starting loop\n");
 }
 
 void WindowView::mainLoop() {
-    printf("Updating window\n");
+    printf("Updating window - Iteration %d\n", counter);
+    counter++;
+    if (counter > 10) {
+        if (frameController != nullptr) {
+            frameController->stop();
+        }
+    }
+}
+
+void WindowView::onStop() {
+    printf("Stopping loop\n");
 }

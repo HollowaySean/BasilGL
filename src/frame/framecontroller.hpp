@@ -4,14 +4,28 @@
 #include <functional>
 #include <thread>
 
+// Hoisting
+class FrameController;
+
 /**
  * @brief Interface consumable by FrameController
  * Contains 'mainLoop' function which is run within frame.
  */
 class Runnable {
  public:
+    /** @brief Function to run before first frame. */
+    virtual void onStart() {}
     /** @brief Function to run repeatedly within successive frames. */
     virtual void mainLoop() = 0;
+    /** @brief Function to run after last frame. */
+    virtual void onStop() {}
+    /** @brief Associate Controller for feedback. */
+    void setController(FrameController *controller) {
+        frameController = controller;
+    }
+
+ protected:
+    FrameController *frameController;
 };
 
 /**
@@ -21,13 +35,13 @@ class Runnable {
  */
 class TimerSource {
  public:
-    /** @param waitTimeInMS Number of milliseconds that must 
+    /** @param waitTimeInMS Number of milliseconds that must
      *  elapse before wait finishes. */
     virtual void setMinimumWaitTime(int waitTimeInMS) = 0;
-    /** @brief  Begin timer and return timestamp 
+    /** @brief  Begin timer and return timestamp
      *  @return Timestamp as an integer */
     virtual int startTimer() = 0;
-    /** @brief  Stop timer and return timestamp 
+    /** @brief  Stop timer and return timestamp
      *  @return Timestamp as an integer */
     virtual int stopTimer() = 0;
     /** @brief  Wait for time equal to minimumWaitTime - elapsedTime
@@ -37,7 +51,7 @@ class TimerSource {
 
 /**
  * @brief Default implementation of TimerSource.
- * Uses chrono and thread libraries to measure time and sleep the thread. 
+ * Uses chrono and thread libraries to measure time and sleep the thread.
  */
 class DefaultTimerSource: public TimerSource {
  public:
@@ -80,7 +94,10 @@ class FrameController {
 
     // Setters
     /** @param newRunnable Pointer to instance of Runnable to use. */
-    void setRunnable(Runnable *newRunnable) { runnable = newRunnable; }
+    void setRunnable(Runnable *newRunnable) {
+        runnable = newRunnable;
+        runnable->setController(this);
+    }
 
     /** @param framesPerSecond Maximum frame rate.
      *  Uncapped frame rate when set to 0. */
