@@ -1,6 +1,2 @@
-- Split tests into multiple files
-- Consider throwing exceptions from Frame Controller
-- Design MVC flow
+- Unit tests for metrics monitor
 - Basic OpenGL window setup
-- OpenGL render flow
-- Simple draw to screen

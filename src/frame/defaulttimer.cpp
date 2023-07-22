@@ -1,36 +1,33 @@
 #include "framecontroller.hpp"
 
-void DefaultTimerSource::setMinimumWaitTime(int waitTimeInMS) {
-    minimumWaitTime = std::chrono::milliseconds(waitTimeInMS);
+void DefaultTimerSource::setMinimumWaitTime(float waitTimeInMS) {
+    // TODO(sholloway): Fix static cast
+    minimumWaitTime = std::chrono::milliseconds(static_cast<int>(waitTimeInMS));
 }
 
-int DefaultTimerSource::startTimer() {
+float DefaultTimerSource::startTimer() {
     timerStart = std::chrono::steady_clock::now();
 
-    std::chrono::milliseconds timerStartMS =
-        std::chrono::duration_cast<std::chrono::milliseconds>
-            (timerStart.time_since_epoch());
-    return timerStartMS.count();
+    std::chrono::duration<float> timerStartSeconds
+        = timerStart.time_since_epoch();
+    return 1000.0 * timerStartSeconds.count();
 }
 
-int DefaultTimerSource::stopTimer() {
+float DefaultTimerSource::stopTimer() {
     timerStop = std::chrono::steady_clock::now();
     elapsedTime = timerStop - timerStart;
 
-    std::chrono::milliseconds timerStopMS =
-        std::chrono::duration_cast<std::chrono::milliseconds>
-            (timerStart.time_since_epoch());
-    return timerStopMS.count();
+
+    std::chrono::duration<float> timerStopSeconds
+        = timerStop.time_since_epoch();
+    return 1000.0 * timerStopSeconds.count();
 }
 
-int DefaultTimerSource::waitForTime() {
-    std::chrono::steady_clock::duration timeToWait
+float DefaultTimerSource::waitForTime() {
+    std::chrono::duration<float> timeToWait
         = minimumWaitTime - elapsedTime;
 
     std::this_thread::sleep_for(timeToWait);
 
-    std::chrono::milliseconds waitTimeMS =
-        std::chrono::duration_cast<std::chrono::milliseconds>
-            (timeToWait);
-    return waitTimeMS.count();
+    return 1000.0 * timeToWait.count();
 }

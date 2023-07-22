@@ -38,25 +38,25 @@ class TestRunnable: public Runnable {
 
 class TestTimerSource: public TimerSource {
  public:
-    int waitTime;
+    float waitTime;
     bool didStart = false;
     bool didStop = false;
     bool didWait = false;
     FrameController *controller;
-    void setMinimumWaitTime(int waitTimeInMs) override {
+    void setMinimumWaitTime(float waitTimeInMs) override {
         waitTime = waitTimeInMs;
     }
-    int startTimer() override {
+    float startTimer() override {
         didStart = true;
-        return 0;
+        return 0.0;
     }
-    int stopTimer() override {
+    float stopTimer() override {
         didStop = true;
-        return 0;
+        return 0.0;
     }
-    int waitForTime() override {
+    float waitForTime() override {
         didWait = true;
-        return 0;
+        return 0.0;
     }
 };
 
@@ -172,9 +172,9 @@ TEST_CASE("DefaultTimerSource runs with chrono library",
           "[DefaultTimerSource]") {
     DefaultTimerSource timer = DefaultTimerSource();
     timer.setMinimumWaitTime(100);
-    int startTimeStamp = timer.startTimer();
-    int stopTimeStamp = timer.stopTimer();
-    int waitTime = timer.waitForTime();
+    float startTimeStamp = timer.startTimer();
+    float stopTimeStamp = timer.stopTimer();
+    float waitTime = timer.waitForTime();
 
     REQUIRE(startTimeStamp > 0);
     REQUIRE(stopTimeStamp > 0);

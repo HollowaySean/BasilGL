@@ -2,7 +2,7 @@
 
 FrameController::FrameController(
     Runnable *runnable,
-    TimerSource *timerSource): timerSource() {
+    TimerSource *timerSource): timerSource(), frameMetrics() {
 
     if (runnable) {
         addRunnable(runnable);
@@ -31,7 +31,7 @@ void FrameController::setFrameCap(int framesPerSecond) {
     frameCap = framesPerSecond;
 
     if (frameCap > 0) {
-        int frameTime = (1000.0 / frameCap);
+        float frameTime = (1000.0 / frameCap);
         timerSource->setMinimumWaitTime(frameTime);
     }
 }
@@ -56,13 +56,16 @@ void FrameController::runLoop() {
     }
 
     while (shouldRunLoop()) {
-        timerSource->startTimer();
+        float startTime = timerSource->startTimer();
+
         for (iter = runnables.begin(); iter != runnables.end(); ++iter) {
             (*iter)->mainLoop();
         }
-        timerSource->stopTimer();
 
-        timerSource->waitForTime();
+        float stopTime = timerSource->stopTimer();
+        float waitTime = timerSource->waitForTime();
+
+        frameMetrics.updateTimeStamps(startTime, stopTime, waitTime);
     }
 
     currentState = FrameControllerState::STOPPED;
