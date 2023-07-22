@@ -3,7 +3,10 @@
 FrameController::FrameController(
     Runnable *runnable,
     TimerSource *timerSource): timerSource() {
-    setRunnable(runnable);
+
+    if (runnable) {
+        setRunnable(runnable);
+    }
 
     if (!timerSource) {
         timerSource = new DefaultTimerSource();

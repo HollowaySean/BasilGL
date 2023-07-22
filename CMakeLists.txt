@@ -103,7 +103,7 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
             setup_target_for_coverage_gcovr_html(
                 NAME ${PROJECT_COVERAGE_NAME}
                 EXECUTABLE ${TEST_TARGET}
-                EXCLUDE "tst/*" "include/*"
+                EXCLUDE "tst/*" "include/*" "src/main.cpp"
             )
         endforeach()
     endif(CMAKE_COMPILER_IS_GNUCXX)

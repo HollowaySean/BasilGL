@@ -6,10 +6,33 @@
 // Test fixtures
 class TestRunnable: public Runnable {
  public:
-    bool hasRun = false;
+    bool succeededStart = false;
+    bool succeededMain = false;
+    bool succeededStop = false;
+
+    void onStart() override {
+        succeededStart = frameController->getCurrentState()
+            == FrameController::FrameControllerState::RUNNING;
+    }
+
     void mainLoop() override {
-        hasRun = true;
+        succeededMain = frameController->getCurrentState()
+            == FrameController::FrameControllerState::RUNNING;
+        frameController->stop();
+        succeededMain = succeededMain && frameController->getCurrentState()
+            == FrameController::FrameControllerState::STOPPING;
         return;
+    }
+
+    void onStop() override {
+        succeededStop = frameController->getCurrentState()
+            == FrameController::FrameControllerState::STOPPED;
+    }
+
+    void resetFlags() {
+        succeededStart = false;
+        succeededMain  = false;
+        succeededStop  = false;
     }
 };
 
@@ -33,7 +56,6 @@ class TestTimerSource: public TimerSource {
     }
     int waitForTime() override {
         didWait = true;
-        controller->stop();
         return 0;
     }
 };
@@ -60,11 +82,14 @@ void checkMainLoop(
         FrameController *frameController,
         TestRunnable *testRunnable
 ) {
-    testRunnable->hasRun = false;
+    testRunnable->resetFlags();
     frameController->start();
     REQUIRE(frameController->getCurrentState()
         == FrameController::FrameControllerState::STOPPED);
-    REQUIRE(testRunnable->hasRun);
+
+    REQUIRE(testRunnable->succeededStart);
+    REQUIRE(testRunnable->succeededMain);
+    REQUIRE(testRunnable->succeededStop);
 }
 
 // Test cases
@@ -83,6 +108,14 @@ TEST_CASE("Initializes FrameController and runs main loop",
     checkMainLoop(&frameController, &testRunnable);
 }
 
+TEST_CASE("Initializes FrameController without runnable",
+          "[FrameController]") {
+    FrameController frameController = FrameController();
+    frameController.start();
+    REQUIRE(frameController.getCurrentState()
+        == FrameController::FrameControllerState::STOPPED);
+}
+
 TEST_CASE("DefaultTimerSource runs with chrono library",
           "[DefaultTimerSource]") {
     DefaultTimerSource timer = DefaultTimerSource();
@@ -94,4 +127,25 @@ TEST_CASE("DefaultTimerSource runs with chrono library",
     REQUIRE(startTimeStamp > 0);
     REQUIRE(stopTimeStamp > 0);
     REQUIRE(waitTime > 0);
+}
+
+TEST_CASE("Runnable interface default implementation") {
+    class DefaultRunnable: public Runnable {
+     public:
+        bool succeeded = false;
+        void mainLoop() override {
+            succeeded = true;
+            frameController->stop();
+            return;
+        }
+    };
+    DefaultRunnable defaultRunnable = DefaultRunnable();
+
+    FrameController frameController =
+        FrameController(&defaultRunnable);
+    frameController.start();
+
+    REQUIRE(frameController.getCurrentState()
+        == FrameController::FrameControllerState::STOPPED);
+    REQUIRE(defaultRunnable.succeeded);
 }
