@@ -27,13 +27,12 @@ foreach(CHILD ${SRC_CHILDREN})
             debug_message("Found source file: ${GRANDCHILD}")
             list(APPEND SRC_FILE_LIST "${GRANDCHILD}")
         endforeach()
-    else()
-        debug_message("Found source file: ${CHILD}")
-        list(APPEND SRC_FILE_LIST ${CHILD})
     endif()
 endforeach()
 
-add_executable(${PROJECT_NAME} ${SRC_FILE_LIST})
+add_executable(${PROJECT_NAME}
+    ${SRC_FILE_LIST}
+    "${CMAKE_SOURCE_DIR}/src/main.cpp")
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
@@ -75,10 +74,9 @@ foreach(CURRENT_PATH ${TEST_FILES})
 
     set(CURRENT_TEST_TARGET_NAME "${PROJECT_NAME}_test_${CURRENT_FILENAME}")
     list(APPEND TEST_TARGETS_LIST ${CURRENT_TEST_TARGET_NAME})
-    file(GLOB FILES_FROM_SRC "${CMAKE_SOURCE_DIR}/src/${CURRENT_FILENAME}/*")
     add_executable(${CURRENT_TEST_TARGET_NAME}
         ${CURRENT_PATH}
-        ${FILES_FROM_SRC})
+        ${SRC_FILE_LIST})
     target_link_libraries(${CURRENT_TEST_TARGET_NAME} Catch2::Catch2)
     target_include_directories(${CURRENT_TEST_TARGET_NAME} PRIVATE
         "${CMAKE_SOURCE_DIR}/include"
