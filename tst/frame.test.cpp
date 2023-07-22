@@ -180,3 +180,23 @@ TEST_CASE("DefaultTimerSource runs with chrono library",
     REQUIRE(stopTimeStamp > 0);
     REQUIRE(waitTime > 0);
 }
+
+TEST_CASE("FrameMetrics tracks and averages time intervals",
+          "[FrameMetrics]") {
+    FrameMetrics metrics = FrameMetrics();
+    metrics.setSmoothingWindow(2);
+    metrics.updateTimeStamps(0.0, 10.0, 10.0);
+
+    FrameMetrics::MetricsReport report = metrics.getMetricsReport();
+    REQUIRE(report.frameRate == 50.0);
+    REQUIRE(report.uncappedFrameRate == 100.0);
+    REQUIRE(report.frameTimeMS == 20.0);
+    REQUIRE(report.workTimeMS == 10.0);
+
+    metrics.updateTimeStamps(0.0, 0.0, 0.0);
+    report = metrics.getMetricsReport();
+    REQUIRE(report.frameRate == 100.0);
+    REQUIRE(report.uncappedFrameRate == 200.0);
+    REQUIRE(report.frameTimeMS == 10.0);
+    REQUIRE(report.workTimeMS == 5.0);
+}

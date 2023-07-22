@@ -1,2 +1,2 @@
-- Unit tests for metrics monitor
+- Correct lowering smoothing window for metrics
 - Basic OpenGL window setup
