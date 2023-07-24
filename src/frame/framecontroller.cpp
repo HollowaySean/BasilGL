@@ -118,3 +118,9 @@ bool FrameController::shouldRunLoop() {
 bool FrameController::shouldKillLoop() {
     return currentState == FrameControllerState::KILLED;
 }
+
+Runnable::~Runnable() {
+    if (frameController) {
+        frameController->removeRunnable(this);
+    }
+}

@@ -27,6 +27,8 @@ class Runnable {
     void setController(FrameController *controller) {
         frameController = controller;
     }
+    /** @brief Destructor removes runnable from parent. */
+    virtual ~Runnable();
 
  protected:
     FrameController *frameController;
