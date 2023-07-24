@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
     WindowView windowView = WindowView();
 
     FrameController frameController = FrameController(&windowView);
-    frameController.setFrameCap(10);
+    frameController.setFrameCap(20);
     frameController.start();
 
     return 0;

@@ -1,18 +1,29 @@
 #ifndef SRC_WINDOW_WINDOWVIEW_HPP_
 #define SRC_WINDOW_WINDOWVIEW_HPP_
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <string>
+
 #include "../frame/framecontroller.hpp"
+
+// Hoisting
+struct WindowOptions {
+ public:
+    std::string title = "My Window";
+    int width = 640;
+    int height = 480;
+};
 
 /**
  * @brief Outer window containing all UI elements and providing simple
  * public facade.
+ * TODO: Rewrite this documentation
  */
 class WindowView: public Runnable {
  public:
-    /** @brief Create window environment and launch window
-     *  TODO: Separate launch into new method.
-    */
     WindowView();
+    ~WindowView();
 
     void onStart() override;
     void onStop() override;
@@ -21,7 +32,11 @@ class WindowView: public Runnable {
     void mainLoop() override;
 
  private:
-    int counter = 1;
+    WindowOptions windowOptions;
+    GLFWwindow* glfwWindow = nullptr;
+    GLFWwindow* createGLFWWindow();
+    void initializeGLFWContext();
+    void initializeGLEWContext();
 };
 
 #endif  // SRC_WINDOW_WINDOWVIEW_HPP_

@@ -31,7 +31,7 @@ class Runnable {
     virtual ~Runnable();
 
  protected:
-    FrameController *frameController;
+    FrameController *frameController = nullptr;
 };
 
 /**

@@ -35,11 +35,16 @@ void FrameController::addRunnable(Runnable *newRunnable, Order orderToInsert) {
 }
 
 void FrameController::removeRunnable(Runnable *runnableToRemove) {
-    runnableToRemove->setController(nullptr);
-    runnables.remove(runnableToRemove);
-
     // Clear metrics to avoid runtime list confusion
     frameMetrics.clear();
+
+    if (!runnableToRemove) {
+        return;
+    }
+
+    // TODO(sholloway): Correct segmentation fault here
+    runnableToRemove->setController(nullptr);
+    runnables.remove(runnableToRemove);
 }
 
 void FrameController::setFrameCap(int framesPerSecond) {
