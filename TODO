@@ -1,1 +1,7 @@
-- Basic OpenGL window setup
+- Improve adding/removing runnables and prevent metrics mismatch
+- Understand error/exceptions in C++
+- Investigate making window a singleton
+- Fix encapsulation issue between framecontroller and runnable
+    - Maybe use framecontroller as abstract factory?
+    - Maybe some way to register any object as a runnable?
+- Implement Window Pane class

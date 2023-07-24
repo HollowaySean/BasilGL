@@ -82,6 +82,12 @@ foreach(CURRENT_PATH ${TEST_FILES})
         "${CMAKE_SOURCE_DIR}/include"
         "${CMAKE_SOURCE_DIR}/lib"
         "${CMAKE_SOURCE_DIR}/tst")
+
+    target_include_directories(${CURRENT_TEST_TARGET_NAME} PRIVATE
+        ${OPENGL_INCLUDE_DIRS}
+        ${GLEW_INCLUDE_DIRS})
+    target_link_libraries(${CURRENT_TEST_TARGET_NAME} ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
+
     catch_discover_tests(${CURRENT_TEST_TARGET_NAME})
 
 endforeach()
