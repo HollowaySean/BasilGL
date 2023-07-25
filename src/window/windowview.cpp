@@ -26,7 +26,8 @@ void WindowView::mainLoop() {
     printf("In main loop\n");
 
     if (glfwWindowShouldClose(glfwWindow)) {
-        frameController->stop();
+        glfwDestroyWindow(glfwWindow);
+        glfwTerminate();
     }
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);

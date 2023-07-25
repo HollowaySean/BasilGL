@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-#include "../frame/framecontroller.hpp"
+#include "../frame/frame.hpp"
 
 // Hoisting
 struct WindowOptions {
