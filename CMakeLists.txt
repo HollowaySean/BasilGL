@@ -86,19 +86,20 @@ endforeach()
 # Build test executables
 set(TEST_TARGETS_LIST "")
 foreach(CURRENT_PATH ${TST_FILE_LIST})
-    get_filename_component(CURRENT_FILENAME ${CURRENT_PATH} NAME_WLE)
-    get_filename_component(CURRENT_FILENAME ${CURRENT_FILENAME} NAME_WLE)
-    debug_message("Found test file: ${CURRENT_PATH}")
+    get_filename_component(CURRENT_FILENAME ${CURRENT_PATH} NAME_WE)
+    get_filename_component(CURRENT_DIR ${CURRENT_PATH} DIRECTORY)
+    get_filename_component(CURRENT_MODULE ${CURRENT_DIR} NAME)
+    set(SRC_DIR_FOR_CURRENT_TEST "${CMAKE_SOURCE_DIR}/src/${CURRENT_MODULE}/")
+    file(GLOB SOURCES_UNDER_TEST "${SRC_DIR_FOR_CURRENT_TEST}/*.cpp")
 
     set(CURRENT_TEST_TARGET_NAME "${PROJECT_NAME}_test_${CURRENT_FILENAME}")
     list(APPEND TEST_TARGETS_LIST ${CURRENT_TEST_TARGET_NAME})
     add_executable(${CURRENT_TEST_TARGET_NAME}
         ${CURRENT_PATH}
-        ${SRC_FILE_LIST})
+        ${SOURCES_UNDER_TEST})
     target_link_libraries(${CURRENT_TEST_TARGET_NAME} Catch2::Catch2)
     target_include_directories(${CURRENT_TEST_TARGET_NAME} PRIVATE
         "${CMAKE_SOURCE_DIR}/include"
-        "${CMAKE_SOURCE_DIR}/lib"
         "${CMAKE_SOURCE_DIR}/external/catch2/"
         ${TST_DIR_LIST}
         ${SRC_DIR_LIST})
