@@ -12,7 +12,7 @@ project(BlackHoleViz VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 enable_testing()
 
-## Main executable
+## Find source files and folders
 file(GLOB SRC_CHILDREN
     "${CMAKE_SOURCE_DIR}/src/*")
 set(SRC_DIR_LIST "")
@@ -30,6 +30,7 @@ foreach(CHILD ${SRC_CHILDREN})
     endif()
 endforeach()
 
+## Main executable
 add_executable(${PROJECT_NAME}
     ${SRC_FILE_LIST}
     "${CMAKE_SOURCE_DIR}/src/main.cpp")
@@ -38,8 +39,6 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
-    "${CMAKE_SOURCE_DIR}/external"
-    "${CMAKE_SOURCE_DIR}/lib"
     ${SRC_DIR_LIST})
 
 ## OpenGL setup
@@ -65,10 +64,28 @@ find_package(Catch2 REQUIRED)
 include(CTest)
 include(Catch)
 
+
+# Find test files and folders
+file(GLOB TST_CHILDREN
+    "${CMAKE_SOURCE_DIR}/tst/*")
+set(TST_DIR_LIST "")
+set(TST_FILE_LIST "")
+foreach(CHILD ${TST_CHILDREN})
+    if(IS_DIRECTORY "${CHILD}")
+        debug_message("Found test subdirectory: ${CHILD}")
+        list(APPEND TST_DIR_LIST ${CHILD})
+        file(GLOB TST_CHILDREN_FILES
+            "${CHILD}/*.cpp")
+        foreach(GRANDCHILD ${TST_CHILDREN_FILES})
+            debug_message("Found test file: ${GRANDCHILD}")
+            list(APPEND TST_FILE_LIST "${GRANDCHILD}")
+        endforeach()
+    endif()
+endforeach()
+
 # Build test executables
 set(TEST_TARGETS_LIST "")
-file(GLOB TEST_FILES "${CMAKE_SOURCE_DIR}/tst/*.test.cpp")
-foreach(CURRENT_PATH ${TEST_FILES})
+foreach(CURRENT_PATH ${TST_FILE_LIST})
     get_filename_component(CURRENT_FILENAME ${CURRENT_PATH} NAME_WLE)
     get_filename_component(CURRENT_FILENAME ${CURRENT_FILENAME} NAME_WLE)
     debug_message("Found test file: ${CURRENT_PATH}")
@@ -82,8 +99,8 @@ foreach(CURRENT_PATH ${TEST_FILES})
     target_include_directories(${CURRENT_TEST_TARGET_NAME} PRIVATE
         "${CMAKE_SOURCE_DIR}/include"
         "${CMAKE_SOURCE_DIR}/lib"
-        "${CMAKE_SOURCE_DIR}/external"
-        "${CMAKE_SOURCE_DIR}/tst"
+        "${CMAKE_SOURCE_DIR}/external/catch2/"
+        ${TST_DIR_LIST}
         ${SRC_DIR_LIST})
 
     target_include_directories(${CURRENT_TEST_TARGET_NAME} PRIVATE
@@ -110,7 +127,7 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
             setup_target_for_coverage_gcovr_html(
                 NAME ${PROJECT_COVERAGE_NAME}
                 EXECUTABLE ${TEST_TARGET}
-                EXCLUDE "tst/*" "include/*" "src/main.cpp"
+                EXCLUDE "tst/*" "external/*" "include/*" "src/main.cpp"
             )
         endforeach()
     endif(CMAKE_COMPILER_IS_GNUCXX)

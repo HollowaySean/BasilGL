@@ -8,24 +8,24 @@
  */
 class ITimerSource {
  public:
-    /** @param waitTimeInMS Number of milliseconds that must
+    /** @param waitTimeInSeconds Time in seconds that must
      *  elapse before wait finishes. */
-    virtual void setMinimumWaitTime(float waitTimeInMS) = 0;
+    virtual void setMinimumWaitTime(double waitTimeInSeconds) = 0;
 
     /** @brief  Begin timer and return timestamp
      *  @return Timestamp as an integer */
-    virtual float startTimer() = 0;
+    virtual double startTimer() = 0;
 
     /** @brief  Return timestamp without stopping */
-    virtual float readTimer() = 0;
+    virtual double readTimer() = 0;
 
     /** @brief  Stop timer and return timestamp
      *  @return Timestamp as an integer */
-    virtual float stopTimer() = 0;
+    virtual double stopTimer() = 0;
 
     /** @brief  Wait for time equal to minimumWaitTime - elapsedTime
      *  @return Time waited as an integer */
-    virtual float waitForTime() = 0;
+    virtual double waitForTime() = 0;
 };
 
 #endif  // SRC_FRAME_ITIMERSOURCE_HPP_

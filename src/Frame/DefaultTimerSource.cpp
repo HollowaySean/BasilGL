@@ -1,40 +1,48 @@
 #include "DefaultTimerSource.hpp"
 
-void DefaultTimerSource::setMinimumWaitTime(float waitTimeInMS) {
-    minimumWaitTime = std::chrono::milliseconds(static_cast<int>(waitTimeInMS));
+void DefaultTimerSource::setMinimumWaitTime(double waitTime) {
+    minimumWaitTime = secondsToDuration(waitTime);
 }
 
-float DefaultTimerSource::startTimer() {
-    timerStart = std::chrono::steady_clock::now();
-
-    std::chrono::duration<float> timerStartSeconds
-        = timerStart.time_since_epoch();
-    return 1000.0 * timerStartSeconds.count();
+double DefaultTimerSource::startTimer() {
+    timerStart = steady_clock::now();
+    return timePointToMilliseconds(timerStart);
 }
 
-float DefaultTimerSource::readTimer() {
-    std::chrono::time_point timerNow = std::chrono::steady_clock::now();
-
-    std::chrono::duration<float> timerNowSeconds
-        = timerNow.time_since_epoch();
-    return 1000.0 * timerNowSeconds.count();
+double DefaultTimerSource::readTimer() {
+    time_point timerNow = steady_clock::now();
+    return timePointToMilliseconds(timerNow);
 }
 
-float DefaultTimerSource::stopTimer() {
-    timerStop = std::chrono::steady_clock::now();
-    elapsedTime = timerStop - timerStart;
-
-
-    std::chrono::duration<float> timerStopSeconds
-        = timerStop.time_since_epoch();
-    return 1000.0 * timerStopSeconds.count();
+double DefaultTimerSource::stopTimer() {
+    timerStop = steady_clock::now();
+    return timePointToMilliseconds(timerStop);
 }
 
-float DefaultTimerSource::waitForTime() {
-    std::chrono::duration<float> timeToWait
-        = minimumWaitTime - elapsedTime;
+double DefaultTimerSource::waitForTime() {
+    duration timeToWait = minimumWaitTime - elapsedTime();
 
     std::this_thread::sleep_for(timeToWait);
 
-    return 1000.0 * timeToWait.count();
+    double timeToWaitMS = durationToMilliseconds(timeToWait);
+
+    return timeToWaitMS > 0. ? timeToWaitMS : 0.;
+}
+
+DefaultTimerSource::duration
+DefaultTimerSource::secondsToDuration(double timeInSeconds) {
+    return std::chrono::duration<double, std::ratio<1>>(timeInSeconds);
+}
+
+double DefaultTimerSource::timePointToMilliseconds(time_point timePoint) {
+    auto timePointMS =
+        std::chrono::time_point_cast<std::chrono::milliseconds>(timePoint);
+    return timePointMS.time_since_epoch().count();
+}
+
+double DefaultTimerSource::durationToMilliseconds(
+        DefaultTimerSource::duration duration) {
+    auto durationMS =
+        std::chrono::duration_cast<std::chrono::milliseconds>(duration);
+    return durationMS.count();
 }

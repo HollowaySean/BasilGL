@@ -1,12 +1,17 @@
-- Seperate classes into individual files unless necessary
+- Split out CMakeLists.txt
+- Combine test CMake targets into library
+  - Reference: https://tinyurl.com/3sny6s6n
+  - Make sure unused sources don't compile into unrelated tests
+- Add preprocessor tag for when running tests, to make some private methods public
+- Increase precision of defaultTimerSource
 - Overhaul how runnables are called and managed
 - Overhaul metrics implementation
 - Overhaul unit tests
 - Improve adding/removing runnables and prevent metrics mismatch
 - Understand error/exceptions in C++
-- Investigate making window a singleton
 - Fix encapsulation issue between framecontroller and runnable
     - Maybe use framecontroller as abstract factory?
     - Maybe some way to register any object as a runnable?
     - Need some way to send up a pause signal
 - Implement Window Pane class
+- Keyboard shortcuts for build
