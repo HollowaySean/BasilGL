@@ -1,5 +1,5 @@
-#include "frame/framecontroller.hpp"
-#include "window/windowview.hpp"
+#include "Frame.hpp"
+#include "Window.hpp"
 
 /**
  * @brief Entry point function.
@@ -11,7 +11,8 @@
 int main(int argc, char** argv) {
     WindowView windowView = WindowView();
 
-    FrameController frameController = FrameController(&windowView);
+    FrameController frameController = FrameController();
+    frameController.addRunnable(&windowView);
     frameController.setFrameCap(20);
     frameController.start();
 

@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "framecontroller.hpp"
+#include "FrameMetrics.hpp"
 
 FrameMetrics::FrameMetrics(int setWindowSize) {
     windowSize = setWindowSize;

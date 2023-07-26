@@ -38,6 +38,7 @@ set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 target_include_directories(${PROJECT_NAME} PRIVATE
     "${CMAKE_SOURCE_DIR}/include"
+    "${CMAKE_SOURCE_DIR}/external"
     "${CMAKE_SOURCE_DIR}/lib"
     ${SRC_DIR_LIST})
 
@@ -81,7 +82,9 @@ foreach(CURRENT_PATH ${TEST_FILES})
     target_include_directories(${CURRENT_TEST_TARGET_NAME} PRIVATE
         "${CMAKE_SOURCE_DIR}/include"
         "${CMAKE_SOURCE_DIR}/lib"
-        "${CMAKE_SOURCE_DIR}/tst")
+        "${CMAKE_SOURCE_DIR}/external"
+        "${CMAKE_SOURCE_DIR}/tst"
+        ${SRC_DIR_LIST})
 
     target_include_directories(${CURRENT_TEST_TARGET_NAME} PRIVATE
         ${OPENGL_INCLUDE_DIRS}

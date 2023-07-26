@@ -1,3 +1,7 @@
+- Seperate classes into individual files unless necessary
+- Overhaul how runnables are called and managed
+- Overhaul metrics implementation
+- Overhaul unit tests
 - Improve adding/removing runnables and prevent metrics mismatch
 - Understand error/exceptions in C++
 - Investigate making window a singleton

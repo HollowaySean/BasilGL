@@ -5,7 +5,7 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-#include "../frame/frame.hpp"
+#include "../Frame/IRunnable.hpp"
 
 // Hoisting
 struct WindowOptions {
@@ -20,7 +20,7 @@ struct WindowOptions {
  * public facade.
  * TODO: Rewrite this documentation
  */
-class WindowView: public Runnable {
+class WindowView: public IRunnable {
  public:
     WindowView();
     ~WindowView();

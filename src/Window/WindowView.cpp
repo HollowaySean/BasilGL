@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "windowview.hpp"
+#include "WindowView.hpp"
 
 WindowView::WindowView(): glfwWindow() {
     initializeGLFWContext();
