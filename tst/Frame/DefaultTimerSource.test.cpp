@@ -7,9 +7,10 @@ using std::chrono::steady_clock;
 using duration = std::chrono::duration<double>;
 using time_point = steady_clock::time_point;
 
+const double WAIT_TIME_MS = 50.;
+const double TIME_MARGIN_MS = 5.;
 
 void requireWithinMargin(double expected, double measured) {
-    const double TIME_MARGIN_MS = 5.;
     REQUIRE(expected <= measured + TIME_MARGIN_MS);
     REQUIRE(measured <= expected + TIME_MARGIN_MS);
 }
@@ -68,8 +69,8 @@ TEST_CASE("DefaultTimerSource::waitForTime") {
     SECTION("Waits for remaining time") {
         DefaultTimerSource timer = DefaultTimerSource();
 
-        double minWaitTimeInSeconds = 0.1;
-        double minWaitTimeInMS = 1000. * minWaitTimeInSeconds;
+        double minWaitTimeInMS = WAIT_TIME_MS;
+        double minWaitTimeInSeconds = WAIT_TIME_MS / 1000.;
         timer.setMinimumWaitTime(minWaitTimeInSeconds);
 
         double startTime = timer.startTimer();
@@ -97,7 +98,8 @@ TEST_CASE("DefaultTimerSource::waitForTime") {
     SECTION("Does not wait if time has overrun") {
         DefaultTimerSource timer = DefaultTimerSource();
 
-        double minWaitTimeInSeconds = 0.1;
+        double minWaitTimeInMS = WAIT_TIME_MS;
+        double minWaitTimeInSeconds = WAIT_TIME_MS / 1000.;
         timer.setMinimumWaitTime(minWaitTimeInSeconds);
 
         double startTime = timer.startTimer();
@@ -122,8 +124,8 @@ TEST_CASE("DefaultTimerSource::waitForTime") {
 
         double startTime = timer.startTimer();
 
-        double actualWaitTimeInSeconds = 0.1;
-        double actualWaitTimeInMS = 1000. * actualWaitTimeInSeconds;
+        double actualWaitTimeInMS = WAIT_TIME_MS;
+        double actualWaitTimeInSeconds = WAIT_TIME_MS / 1000.;
         auto sleepTime =
             std::chrono::duration<double, std::ratio<1>>
                 (actualWaitTimeInSeconds);
