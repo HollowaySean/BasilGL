@@ -1,8 +1,7 @@
-#define CATCH_CONFIG_MAIN
 #include <catch.hpp>
 
 #include "FrameController.hpp"
 
-TEST_CASE("Placeholder") {
+TEST_CASE("Frame_FrameController_placeholder") {
     REQUIRE(1 + 1 == 2);
 }

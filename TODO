@@ -1,8 +1,3 @@
-- Split out CMakeLists.txt
-- Combine test CMake targets into library
-  - Reference: https://tinyurl.com/3sny6s6n
-  - Make sure unused sources don't compile into unrelated tests
-- Add preprocessor tag for when running tests, to make some private methods public
 - Increase precision of defaultTimerSource
 - Overhaul how runnables are called and managed
 - Overhaul metrics implementation

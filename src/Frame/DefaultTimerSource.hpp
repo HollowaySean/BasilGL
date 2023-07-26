@@ -22,9 +22,6 @@ class DefaultTimerSource: public ITimerSource {
  private:
     using duration = std::chrono::duration<double>;
     using time_point = steady_clock::time_point;
-    duration secondsToDuration(double timeInSeconds);
-    double timePointToMilliseconds(time_point timePoint);
-    double durationToMilliseconds(duration duration);
     duration minimumWaitTime
         = steady_clock::duration::zero();
     duration elapsedTime() { return timerStop - timerStart; }
@@ -32,6 +29,17 @@ class DefaultTimerSource: public ITimerSource {
         = steady_clock::time_point::min();
     time_point timerStop
         = steady_clock::time_point::min();
+
+#ifdef TEST_BUILD
+
+ public:
+#else
+
+ private:
+#endif
+    static duration secondsToDuration(double timeInSeconds);
+    static double timePointToMilliseconds(time_point timePoint);
+    static double durationToMilliseconds(duration duration);
 };
 
 #endif  // SRC_FRAME_DEFAULTTIMERSOURCE_HPP_

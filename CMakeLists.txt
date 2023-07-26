@@ -7,7 +7,6 @@ endmacro()
 
 ## Project settings
 cmake_minimum_required(VERSION 3.0.0)
-set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
 project(BlackHoleViz VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 enable_testing()
@@ -52,6 +51,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
 
 ## CUDA setup
+set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
 set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 # Test output
@@ -61,9 +61,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 ## Testing setup
 find_package(Catch2 REQUIRED)
-include(CTest)
 include(Catch)
-
+include(CTest)
 
 # Find test files and folders
 file(GLOB TST_CHILDREN
@@ -83,35 +82,30 @@ foreach(CHILD ${TST_CHILDREN})
     endif()
 endforeach()
 
-# Build test executables
-set(TEST_TARGETS_LIST "")
-foreach(CURRENT_PATH ${TST_FILE_LIST})
-    get_filename_component(CURRENT_FILENAME ${CURRENT_PATH} NAME_WE)
-    get_filename_component(CURRENT_DIR ${CURRENT_PATH} DIRECTORY)
-    get_filename_component(CURRENT_MODULE ${CURRENT_DIR} NAME)
-    set(SRC_DIR_FOR_CURRENT_TEST "${CMAKE_SOURCE_DIR}/src/${CURRENT_MODULE}/")
-    file(GLOB SOURCES_UNDER_TEST "${SRC_DIR_FOR_CURRENT_TEST}/*.cpp")
+# Build test executable
+set(TEST_TARGET_NAME "${PROJECT_NAME}_test")
+add_executable(
+    ${TEST_TARGET_NAME}
+    "${CMAKE_SOURCE_DIR}/tst/main.test.cpp"
+    ${TST_FILE_LIST}
+    ${SRC_FILE_LIST}
+)
+target_include_directories(
+    ${TEST_TARGET_NAME} PRIVATE
+    ${TST_DIR_LIST}
+    ${SRC_DIR_LIST}
+    "${CMAKE_SOURCE_DIR}/external/catch2/"
+)
+target_link_libraries(${TEST_TARGET_NAME} Catch2::Catch2)
+target_link_libraries(${TEST_TARGET_NAME} ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
 
-    set(CURRENT_TEST_TARGET_NAME "${PROJECT_NAME}_test_${CURRENT_FILENAME}")
-    list(APPEND TEST_TARGETS_LIST ${CURRENT_TEST_TARGET_NAME})
-    add_executable(${CURRENT_TEST_TARGET_NAME}
-        ${CURRENT_PATH}
-        ${SOURCES_UNDER_TEST})
-    target_link_libraries(${CURRENT_TEST_TARGET_NAME} Catch2::Catch2)
-    target_include_directories(${CURRENT_TEST_TARGET_NAME} PRIVATE
-        "${CMAKE_SOURCE_DIR}/include"
-        "${CMAKE_SOURCE_DIR}/external/catch2/"
-        ${TST_DIR_LIST}
-        ${SRC_DIR_LIST})
+catch_discover_tests(${TEST_TARGET_NAME})
 
-    target_include_directories(${CURRENT_TEST_TARGET_NAME} PRIVATE
-        ${OPENGL_INCLUDE_DIRS}
-        ${GLEW_INCLUDE_DIRS})
-    target_link_libraries(${CURRENT_TEST_TARGET_NAME} ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
-
-    catch_discover_tests(${CURRENT_TEST_TARGET_NAME})
-
-endforeach()
+# Set test-related preprocessor options
+target_compile_definitions(
+    ${TEST_TARGET_NAME} PRIVATE
+    TEST_BUILD
+)
 
 
 ## Code coverage
@@ -119,18 +113,18 @@ endforeach()
 if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
 
     if(CMAKE_COMPILER_IS_GNUCXX)
+
         include(CodeCoverage)
         append_coverage_compiler_flags()
 
-        foreach(TEST_TARGET ${TEST_TARGETS_LIST})
-            message("Running coverage for test: ${TEST_TARGET}")
-            set(PROJECT_COVERAGE_NAME "${TEST_TARGET}_coverage")
-            setup_target_for_coverage_gcovr_html(
-                NAME ${PROJECT_COVERAGE_NAME}
-                EXECUTABLE ${TEST_TARGET}
-                EXCLUDE "tst/*" "external/*" "include/*" "src/main.cpp"
-            )
-        endforeach()
+        message("Running coverage for test: ${TEST_TARGET_NAME}")
+        set(PROJECT_COVERAGE_NAME "${PROJECT_NAME}_coverage")
+        setup_target_for_coverage_gcovr_html(
+            NAME ${PROJECT_COVERAGE_NAME}
+            EXECUTABLE ${TEST_TARGET_NAME}
+            EXCLUDE "tst/*" "external/*" "include/*" "src/main.cpp"
+        )
+
     endif(CMAKE_COMPILER_IS_GNUCXX)
 
 endif()
@@ -160,6 +154,7 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
     endif (DOXYGEN_FOUND)
 
 endif()
+
 
 ## Bugfixes
 # Only enable CUDA after including CodeCoverage to prevent error

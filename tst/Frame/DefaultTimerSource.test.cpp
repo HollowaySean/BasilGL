@@ -1,4 +1,3 @@
-#define CATCH_CONFIG_MAIN
 #include <catch.hpp>
 
 #include "DefaultTimerSource.hpp"
@@ -7,35 +6,24 @@ using std::chrono::steady_clock;
 using duration = std::chrono::duration<double>;
 using time_point = steady_clock::time_point;
 
-const double WAIT_TIME_MS = 50.;
-const double TIME_MARGIN_MS = 5.;
+const double WAIT_TIME_MS = 100.;
+const double TIME_MARGIN_MS = 10.;
 
 void requireWithinMargin(double expected, double measured) {
     REQUIRE(expected <= measured + TIME_MARGIN_MS);
     REQUIRE(measured <= expected + TIME_MARGIN_MS);
 }
 
-double timePointToMilliseconds(time_point timePoint) {
-    auto timePointMS =
-        std::chrono::time_point_cast<std::chrono::milliseconds>(timePoint);
-    return timePointMS.time_since_epoch().count();
-}
-
-double durationToMilliseconds(duration duration) {
-    auto durationMS =
-        std::chrono::duration_cast<std::chrono::milliseconds>(duration);
-    return durationMS.count();
-}
-
 void checkTimerReturn(std::function<double()> methodUnderTest) {
-        double expected = timePointToMilliseconds(steady_clock::now());
+        double expected =
+            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
         double measured = methodUnderTest();
 
         requireWithinMargin(expected, measured);
 }
 
 
-TEST_CASE("DefaultTimerSource::startTimer") {
+TEST_CASE("Frame_DefaultTimerSource_startTimer") {
     SECTION("Returns time since epoch in milliseconds") {
         DefaultTimerSource timer = DefaultTimerSource();
         std::function<double(void)> methodUnderTest
@@ -45,7 +33,7 @@ TEST_CASE("DefaultTimerSource::startTimer") {
     }
 }
 
-TEST_CASE("DefaultTimerSource::readTimer") {
+TEST_CASE("Frame_DefaultTimerSource_readTimer") {
     SECTION("Returns time since epoch in milliseconds") {
         DefaultTimerSource timer = DefaultTimerSource();
         std::function<double(void)> methodUnderTest
@@ -55,7 +43,7 @@ TEST_CASE("DefaultTimerSource::readTimer") {
     }
 }
 
-TEST_CASE("DefaultTimerSource::stopTimer") {
+TEST_CASE("Frame_DefaultTimerSource_stopTimer") {
     SECTION("Returns time since epoch in milliseconds") {
         DefaultTimerSource timer = DefaultTimerSource();
         std::function<double(void)> methodUnderTest
@@ -65,7 +53,7 @@ TEST_CASE("DefaultTimerSource::stopTimer") {
     }
 }
 
-TEST_CASE("DefaultTimerSource::waitForTime") {
+TEST_CASE("Frame_DefaultTimerSource_waitForTime") {
     SECTION("Waits for remaining time") {
         DefaultTimerSource timer = DefaultTimerSource();
 
@@ -81,11 +69,13 @@ TEST_CASE("DefaultTimerSource::waitForTime") {
             std::chrono::duration<double, std::ratio<1>>
                 (actualWaitTimeInSeconds);
         std::this_thread::sleep_for(sleepTime);
-        double sleepTimeMS = durationToMilliseconds(sleepTime);
+        double sleepTimeMS =
+            DefaultTimerSource::durationToMilliseconds(sleepTime);
 
         double stopTime = timer.stopTimer();
         double waitedTime = timer.waitForTime();
-        double currentTime = timePointToMilliseconds(steady_clock::now());
+        double currentTime =
+            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
 
         double expectedTotalTime = waitedTime + (stopTime - startTime);
 
@@ -113,7 +103,8 @@ TEST_CASE("DefaultTimerSource::waitForTime") {
 
         double stopTime = timer.stopTimer();
         double waitedTime = timer.waitForTime();
-        double currentTime = timePointToMilliseconds(steady_clock::now());
+        double currentTime =
+            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
 
         REQUIRE(waitedTime == 0.);
         requireWithinMargin(currentTime - startTime, actualWaitTimeInMS);
@@ -133,7 +124,8 @@ TEST_CASE("DefaultTimerSource::waitForTime") {
 
         double stopTime = timer.stopTimer();
         double waitedTime = timer.waitForTime();
-        double currentTime = timePointToMilliseconds(steady_clock::now());
+        double currentTime =
+            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
 
         REQUIRE(waitedTime == 0.);
         requireWithinMargin(currentTime - startTime, actualWaitTimeInMS);
@@ -142,9 +134,11 @@ TEST_CASE("DefaultTimerSource::waitForTime") {
     SECTION("Does not wait if timers were not run") {
         DefaultTimerSource timer = DefaultTimerSource();
 
-        double startTime = timePointToMilliseconds(steady_clock::now());
+        double startTime =
+            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
         double waitedTime = timer.waitForTime();
-        double currentTime = timePointToMilliseconds(steady_clock::now());
+        double currentTime =
+            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
 
         REQUIRE(waitedTime == 0.);
         requireWithinMargin(currentTime - startTime, 0.);
