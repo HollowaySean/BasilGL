@@ -1,12 +1,9 @@
+- Rewrite unit tests
+
 - Increase precision of defaultTimerSource
 - Overhaul how runnables are called and managed
 - Overhaul metrics implementation
-- Overhaul unit tests
 - Improve adding/removing runnables and prevent metrics mismatch
 - Understand error/exceptions in C++
-- Fix encapsulation issue between framecontroller and runnable
-    - Maybe use framecontroller as abstract factory?
-    - Maybe some way to register any object as a runnable?
-    - Need some way to send up a pause signal
 - Implement Window Pane class
 - Keyboard shortcuts for build

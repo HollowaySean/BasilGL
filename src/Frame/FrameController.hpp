@@ -6,19 +6,19 @@
 #include <string>
 
 #include "FrameMetrics.hpp"
-#include "IRunnable.hpp"
+#include "IFrameProcess.hpp"
 #include "ITimerSource.hpp"
 
 /**
- * @brief Utility to run main loop of IRunnable class, monitor the
+ * @brief Utility to run main loop of IFrameProcess class, monitor the
  * running time, and limit to a given frame rate.
  */
 class FrameController {
  public:
-    /** @brief Creates new FrameController with optional argument of IRunnable,
+    /** @brief Creates new FrameController with optional argument of IFrameProcess,
      *  which otherwise defaults to null. */
     explicit FrameController(
-        IRunnable *runnable = nullptr,
+        IFrameProcess *runnable = nullptr,
         ITimerSource *timerSource = nullptr);
 
     /** @brief Indicates current status of FrameController. */
@@ -32,33 +32,36 @@ class FrameController {
     };
 
     // /** @brief Adds runnable to run in the middle of the frame.
-    //  *  @param newRunnable   Pointer to IRunnable to add to list.
+    //  *  @param newRunnable   Pointer to IFrameProcess to add to list.
     //  *  @param orderToInsert Optional order enum indicating position to add.
     //  *  @param relativeTo    Reference point for BEFORE or AFTER ordinal. */
-    // void addRunnable(IRunnable *newRunnable,
+    // void addRunnable(IFrameProcess *newRunnable,
     //     Order orderToInsert = Order::LAST,
-    //     IRunnable *relativeTo = nullptr);
+    //     IFrameProcess *relativeTo = nullptr);
 
     // /** @brief Adds runnable to run at the beginning of the frame.
-    //  *  @param newRunnable   Pointer to IRunnable to add to list.
+    //  *  @param newRunnable   Pointer to IFrameProcess to add to list.
     //  *  @param orderToInsert Optional order enum indicating position to add.
     //  *  @param relativeTo    Reference point for BEFORE or AFTER ordinal. */
-    // void addEarlyRunnable(IRunnable *newRunnable,
+    // void addEarlyRunnable(IFrameProcess *newRunnable,
     //     Order orderToInsert = Order::LAST,
-    //     IRunnable *relativeTo = nullptr);
+    //     IFrameProcess *relativeTo = nullptr);
 
     // /** @brief Adds runnable to run at the end of the frame.
-    //  *  @param newRunnable   Pointer to IRunnable to add to list.
+    //  *  @param newRunnable   Pointer to IFrameProcess to add to list.
     //  *  @param orderToInsert Optional order enum indicating position to add.
     //  *  @param relativeTo    Reference point for BEFORE or AFTER ordinal. */
-    // void addLateRunnable(IRunnable *newRunnable,
+    // void addLateRunnable(IFrameProcess *newRunnable,
     //     Order orderToInsert = Order::LAST,
-    //     IRunnable *relativeTo = nullptr);
+    //     IFrameProcess *relativeTo = nullptr);
 
-    void addRunnable(IRunnable *newRunnable, Order orderToInsert = Order::LAST);
+    void addRunnable(
+        IFrameProcess *newRunnable,
+        Order orderToInsert = Order::LAST);
 
-    /** @param runnableToRemove Pointer to IRunnable to try-remove from list. */
-    void removeRunnable(IRunnable *runnableToRemove);
+    /** @param runnableToRemove
+     *      Pointer to IFrameProcess to try-remove from list. */
+    void removeRunnable(IFrameProcess *runnableToRemove);
 
     /** @param framesPerSecond Maximum frame rate.
      *  Uncapped frame rate when set to 0. */
@@ -110,13 +113,13 @@ class FrameController {
     // RUNNABLE MANAGER MIGRATION
 
     // Collections
-    std::list<IRunnable*> earlyRunnables;
-    std::list<IRunnable*> mainRunnables;
-    std::list<IRunnable*> lateRunnables;
+    std::list<IFrameProcess*> earlyRunnables;
+    std::list<IFrameProcess*> mainRunnables;
+    std::list<IFrameProcess*> lateRunnables;
 
     // FrameController-friendly functions
     void safelyRunCollection(std::function<void()> method);
-    void checkRunnableState(IRunnable *runnable);
+    void checkRunnableState(IFrameProcess *runnable);
     void runStart();
     void runMain();
     void runStop();

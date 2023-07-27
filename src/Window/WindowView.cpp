@@ -21,7 +21,7 @@ void WindowView::onStart() {
         windowOptions.height);
 }
 
-void WindowView::mainLoop() {
+void WindowView::onLoop() {
     // Dummy code
     printf("In main loop\n");
 

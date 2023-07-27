@@ -23,124 +23,134 @@ void checkTimerReturn(std::function<double()> methodUnderTest) {
 }
 
 
-TEST_CASE("Frame_DefaultTimerSource_startTimer") {
-    SECTION("Returns time since epoch in milliseconds") {
-        DefaultTimerSource timer = DefaultTimerSource();
-        std::function<double(void)> methodUnderTest
-            = std::bind(&DefaultTimerSource::startTimer, timer);
-
-        checkTimerReturn(methodUnderTest);
-    }
-}
-
 TEST_CASE("Frame_DefaultTimerSource_readTimer") {
-    SECTION("Returns time since epoch in milliseconds") {
+    SECTION("Returns current time") {
         DefaultTimerSource timer = DefaultTimerSource();
+
         std::function<double(void)> methodUnderTest
-            = std::bind(&DefaultTimerSource::readTimer, timer);
+            = [&]() -> double {
+                return timer.readTimer();
+            };
 
         checkTimerReturn(methodUnderTest);
     }
 }
 
-TEST_CASE("Frame_DefaultTimerSource_stopTimer") {
-    SECTION("Returns time since epoch in milliseconds") {
+TEST_CASE("Frame_DefaultTimerSource_frameStart") {
+    SECTION("Sets frame start time in record") {
         DefaultTimerSource timer = DefaultTimerSource();
         std::function<double(void)> methodUnderTest
-            = std::bind(&DefaultTimerSource::stopTimer, timer);
+            = [&]() -> double {
+                timer.frameStart();
+                return timer.getRecord().frameStart;
+            };
+
+        checkTimerReturn(methodUnderTest);
+    }
+
+    SECTION("Updates the frame ID") {
+        DefaultTimerSource timer = DefaultTimerSource();
+        REQUIRE(timer.getRecord().frameID == 0);
+
+        timer.frameStart();
+        REQUIRE(timer.getRecord().frameID == 1);
+
+        timer.frameStart();
+        REQUIRE(timer.getRecord().frameID == 2);
+    }
+}
+
+TEST_CASE("Frame_DefaultTimerSource_frameDone") {
+    SECTION("Sets frame done time in record") {
+        DefaultTimerSource timer = DefaultTimerSource();
+
+        std::function<double(void)> methodUnderTest
+            = [&]() -> double {
+                timer.frameDone();
+                return timer.getRecord().frameDone;
+            };
 
         checkTimerReturn(methodUnderTest);
     }
 }
 
-TEST_CASE("Frame_DefaultTimerSource_waitForTime") {
+TEST_CASE("Frame_DefaultTimerSource_processStart") {
+    SECTION("Sets process start time in record") {
+        DefaultTimerSource timer = DefaultTimerSource();
+
+        std::function<double(void)> methodUnderTest
+            = [&]() -> double {
+                timer.processStart(1);
+                return timer.getRecord().processStart[1];
+            };
+
+        checkTimerReturn(methodUnderTest);
+    }
+}
+
+TEST_CASE("Frame_DefaultTimerSource_processDone") {
+    SECTION("Sets process done time in record") {
+        DefaultTimerSource timer = DefaultTimerSource();
+
+        std::function<double(void)> methodUnderTest
+            = [&]() -> double {
+                timer.processDone(1);
+                return timer.getRecord().processDone[1];
+            };
+
+        checkTimerReturn(methodUnderTest);
+    }
+}
+
+void checkWaitTime(
+        DefaultTimerSource timer,
+        double elapsedTimeInMS,
+        double expectedWaitTimeInMS) {
+    timer.frameStart();
+
+    double elapsedTimeInSeconds = elapsedTimeInMS / 1000.;
+    auto sleepTime =
+        std::chrono::duration<double, std::ratio<1>>
+            (elapsedTimeInSeconds);
+    std::this_thread::sleep_for(sleepTime);
+
+    timer.frameDone();
+    timer.waitForFrameTime();
+
+    double actualWaitTimeInMS =
+        timer.getRecord().frameEnd - timer.getRecord().frameDone;
+
+    requireWithinMargin(expectedWaitTimeInMS, actualWaitTimeInMS);
+}
+
+TEST_CASE("Frame_DefaultTimerSource_waitForFrameTime") {
     SECTION("Waits for remaining time") {
         DefaultTimerSource timer = DefaultTimerSource();
+        timer.setMinimumFrameTime(WAIT_TIME_MS / 1000.);
 
-        double minWaitTimeInMS = WAIT_TIME_MS;
-        double minWaitTimeInSeconds = WAIT_TIME_MS / 1000.;
-        timer.setMinimumWaitTime(minWaitTimeInSeconds);
-
-        double startTime = timer.startTimer();
-
-        double actualWaitTimeInSeconds = minWaitTimeInSeconds / 2.;
-        double actualWaitTimeInMS = 1000. * actualWaitTimeInSeconds;
-        auto sleepTime =
-            std::chrono::duration<double, std::ratio<1>>
-                (actualWaitTimeInSeconds);
-        std::this_thread::sleep_for(sleepTime);
-        double sleepTimeMS =
-            DefaultTimerSource::durationToMilliseconds(sleepTime);
-
-        double stopTime = timer.stopTimer();
-        double waitedTime = timer.waitForTime();
-        double currentTime =
-            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
-
-        double expectedTotalTime = waitedTime + (stopTime - startTime);
-
-        requireWithinMargin(expectedTotalTime, minWaitTimeInMS);
-        requireWithinMargin(currentTime - minWaitTimeInMS, startTime);
-        requireWithinMargin(stopTime - startTime, actualWaitTimeInMS);
-        requireWithinMargin(waitedTime, actualWaitTimeInMS);
+        checkWaitTime(
+            timer,
+            WAIT_TIME_MS / 2.,
+            WAIT_TIME_MS / 2.);
     }
 
     SECTION("Does not wait if time has overrun") {
         DefaultTimerSource timer = DefaultTimerSource();
+        timer.setMinimumFrameTime(WAIT_TIME_MS / 1000.);
 
-        double minWaitTimeInMS = WAIT_TIME_MS;
-        double minWaitTimeInSeconds = WAIT_TIME_MS / 1000.;
-        timer.setMinimumWaitTime(minWaitTimeInSeconds);
-
-        double startTime = timer.startTimer();
-
-        double actualWaitTimeInSeconds = 2. * minWaitTimeInSeconds;
-        double actualWaitTimeInMS = 1000. * actualWaitTimeInSeconds;
-        auto sleepTime =
-            std::chrono::duration<double, std::ratio<1>>
-                (actualWaitTimeInSeconds);
-        std::this_thread::sleep_for(sleepTime);
-
-        double stopTime = timer.stopTimer();
-        double waitedTime = timer.waitForTime();
-        double currentTime =
-            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
-
-        REQUIRE(waitedTime == 0.);
-        requireWithinMargin(currentTime - startTime, actualWaitTimeInMS);
+        checkWaitTime(
+            timer,
+            WAIT_TIME_MS * 2.,
+            0.);
     }
+
 
     SECTION("Does not wait if minimum wait time has not been set") {
         DefaultTimerSource timer = DefaultTimerSource();
 
-        double startTime = timer.startTimer();
-
-        double actualWaitTimeInMS = WAIT_TIME_MS;
-        double actualWaitTimeInSeconds = WAIT_TIME_MS / 1000.;
-        auto sleepTime =
-            std::chrono::duration<double, std::ratio<1>>
-                (actualWaitTimeInSeconds);
-        std::this_thread::sleep_for(sleepTime);
-
-        double stopTime = timer.stopTimer();
-        double waitedTime = timer.waitForTime();
-        double currentTime =
-            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
-
-        REQUIRE(waitedTime == 0.);
-        requireWithinMargin(currentTime - startTime, actualWaitTimeInMS);
-    }
-
-    SECTION("Does not wait if timers were not run") {
-        DefaultTimerSource timer = DefaultTimerSource();
-
-        double startTime =
-            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
-        double waitedTime = timer.waitForTime();
-        double currentTime =
-            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
-
-        REQUIRE(waitedTime == 0.);
-        requireWithinMargin(currentTime - startTime, 0.);
+        checkWaitTime(
+            timer,
+            WAIT_TIME_MS / 2.,
+            0.);
     }
 }

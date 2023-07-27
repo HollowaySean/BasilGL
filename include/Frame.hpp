@@ -4,7 +4,7 @@
 #include "DefaultTimerSource.hpp"
 #include "FrameController.hpp"
 #include "FrameMetrics.hpp"
-#include "IRunnable.hpp"
+#include "IFrameProcess.hpp"
 #include "ITimerSource.hpp"
 
 #endif  // INCLUDE_FRAME_HPP_

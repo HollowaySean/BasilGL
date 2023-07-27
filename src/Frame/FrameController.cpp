@@ -7,7 +7,7 @@
 #include "DefaultTimerSource.hpp"
 
 FrameController::FrameController(
-    IRunnable *runnable,
+    IFrameProcess *runnable,
     ITimerSource *timerSource): timerSource(), frameMetrics(), currentState() {
 
     if (runnable) {
@@ -23,7 +23,9 @@ FrameController::FrameController(
     currentState = FrameControllerState::STOPPED;
 }
 
-void FrameController::addRunnable(IRunnable *newRunnable, Order orderToInsert) {
+void FrameController::addRunnable(
+        IFrameProcess *newRunnable,
+        Order orderToInsert) {
     switch (orderToInsert) {
         case Order::FIRST:
             mainRunnables.push_front(newRunnable);
@@ -38,7 +40,7 @@ void FrameController::addRunnable(IRunnable *newRunnable, Order orderToInsert) {
     frameMetrics.clear();
 }
 
-void FrameController::removeRunnable(IRunnable *runnableToRemove) {
+void FrameController::removeRunnable(IFrameProcess *runnableToRemove) {
     // Clear metrics to avoid runtime list confusion
     frameMetrics.clear();
 
@@ -55,7 +57,7 @@ void FrameController::setFrameCap(int framesPerSecond) {
 
     if (frameCap > 0) {
         float frameTime = (1000.0 / frameCap);
-        timerSource->setMinimumWaitTime(frameTime);
+        timerSource->setMinimumFrameTime(frameTime);
     }
 }
 
@@ -77,38 +79,30 @@ void FrameController::kill() {
 }
 
 void FrameController::runLoop() {
-    // TODO(sholloway): Break out function/class for IRunnable collection
+    // TODO(sholloway): Break out function/class for IFrameProcess collection
     // TODO(sholloway): Add null checks before each run
-    std::list<IRunnable*>::iterator iter;
+    std::list<IFrameProcess*>::iterator iter;
     for (iter = mainRunnables.begin(); iter != mainRunnables.end(); ++iter) {
         (*iter)->onStart();
     }
 
     while (shouldRunLoop()) {
-        float startTime = timerSource->startTimer();
+        timerSource->frameStart();
 
-        FrameMetrics::ReportList timeReports;
-
-        for (iter = mainRunnables.begin();
-            iter != mainRunnables.end();
-            ++iter) {
-            (*iter)->mainLoop();
-
-            float doneTime = timerSource->readTimer();
-            FrameMetrics::TimeReport doneTimeReport(
-                doneTime, (*iter)->getName());
-            timeReports.push_back(doneTimeReport);
+        for (   iter = mainRunnables.begin();
+                iter != mainRunnables.end();
+                ++iter) {
+            timerSource->processStart(-1);
+            (*iter)->onLoop();
+            timerSource->processDone(-1);
 
             if (shouldKillLoop()) {
                 break;
             }
         }
 
-        float stopTime = timerSource->stopTimer();
-        float waitTime = timerSource->waitForTime();
-
-        frameMetrics.updateTimeStamps(
-            startTime, stopTime, waitTime, timeReports);
+        timerSource->frameDone();
+        timerSource->waitForFrameTime();
     }
 
     currentState = FrameControllerState::STOPPED;
@@ -134,10 +128,10 @@ bool FrameController::shouldKillLoop() {
 /**
 void FrameController::safelyRunCollection(
         std::function<void()> method) {
-    std::list<IRunnable*>::iterator iter;
+    std::list<IFrameProcess*>::iterator iter;
 
     for (iter = mainRunnables.begin(); iter != mainRunnables.end(); iter++) {
-        IRunnable *runnable = (*iter);
+        IFrameProcess *runnable = (*iter);
 
         // Null check
         if (!runnable) {
@@ -151,26 +145,26 @@ void FrameController::safelyRunCollection(
         // Pre-run state check
         checkRunnableState(runnable);
         switch (currentState) {
-            case IRunnable::State::REQUEST_KILL:
+            case IFrameProcess::State::REQUEST_KILL:
                 return;
-            case IRunnable::State::SKIP:
-                currentState = IRunnable::State::READY;
+            case IFrameProcess::State::SKIP:
+                currentState = IFrameProcess::State::READY;
                 continue;
             default:
         }
 
         // Run
-        runnable->mainLoop();
+        runnable->onLoop();
 
         // Post-run state check
         checkRunnableState(runnable);
         switch (currentState) {
-            case IRunnable::State::REQUEST_STOP:
+            case IFrameProcess::State::REQUEST_STOP:
                 // Take timestamp
-            case IRunnable::State::REQUEST_KILL:
+            case IFrameProcess::State::REQUEST_KILL:
                 return;
             default:
-                currentState = IRunnable::State::READY;
+                currentState = IFrameProcess::State::READY;
         }
 
         // Take timestamp
@@ -179,8 +173,8 @@ void FrameController::safelyRunCollection(
 }
 
 void FrameController::checkRunnableState(
-    IRunnable *runnable) {
-        IRunnable::State state = runnable->getCurrentState();
+    IFrameProcess *runnable) {
+        IFrameProcess::State state = runnable->getCurrentState();
         if (state > currentState) {
             currentState = state;
         }
