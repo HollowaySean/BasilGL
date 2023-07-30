@@ -35,15 +35,9 @@ void FrameController::addRunnable(
             mainRunnables.push_back(newRunnable);
             break;
     }
-
-    // Clear metrics to avoid runtime list confusion
-    frameMetrics.clear();
 }
 
 void FrameController::removeRunnable(IFrameProcess *runnableToRemove) {
-    // Clear metrics to avoid runtime list confusion
-    frameMetrics.clear();
-
     if (!runnableToRemove) {
         return;
     }

@@ -1,115 +1,136 @@
-#include <algorithm>
-
 #include "FrameMetrics.hpp"
 
-FrameMetrics::FrameMetrics(int setWindowSize) {
-    windowSize = setWindowSize;
-}
 
-void FrameMetrics::updateTimeStamps(
-        float start, float stop, float wait,
-        ReportList doneTimes
-    ) {
-    // Transform from timestamps into durations
-    ReportList runTimes;
-    std::transform(doneTimes.begin(), doneTimes.end(),
-        std::back_inserter(runTimes),
-        [start](TimeReport endReport){
-            return TimeReport(endReport.first - start, endReport.second);
-        });
+FrameMetricsRecord FrameMetricsRecord::operator+(FrameMetricsRecord other) {
+    FrameMetricsRecord result = FrameMetricsRecord();
+    result.frameTime = frameTime + other.frameTime;
+    result.workTime = workTime + other.workTime;
 
-    FrameTimeStamps newTimestamp = { start, stop, wait, doneTimes, runTimes };
+    for (auto process : processTime) {
+        int processID = process.first;
+        double processTime = process.second;
 
-    sumFrameTime += newTimestamp.frame();
-    sumWorkTime += newTimestamp.work();
-    if (sumRunTimes.size() == 0) {
-        sumRunTimes = runTimes;
-    } else {
-        std::transform(runTimes.begin(), runTimes.end(), sumRunTimes.begin(),
-            sumRunTimes.begin(), [](TimeReport newTime, TimeReport sumTime){
-                return TimeReport(newTime.first + sumTime.first,
-                    newTime.second);
-            });
+        processTime += other.processTime.count(processID)
+            ? other.processTime[processID]
+            : 0;
+
+        result.processTime.emplace(processID, processTime);
     }
 
-    // Update moving averages
-    int numberOfTimestamps = timestamps.size();
-    if (numberOfTimestamps == windowSize) {
-        FrameMetrics::FrameTimeStamps timestampToRemove = timestamps.back();
-        sumFrameTime -= timestampToRemove.frame();
-        sumWorkTime -= timestampToRemove.work();
-
-        ReportList reportToRemove = timestampToRemove.doneTimes;
-        std::transform(reportToRemove.begin(), reportToRemove.end(),
-            sumRunTimes.begin(), sumRunTimes.begin(),
-            [](TimeReport removeTime, TimeReport sumTime){
-                return TimeReport(sumTime.first - removeTime.first,
-                    sumTime.second);
-            });
-
-        timestamps.pop_back();
+    // Loop over other to find any processes missing from the other summand
+    for (auto process : other.processTime) {
+        if (!processTime.count(process.first)) {
+            result.processTime.emplace(process);
+        }
     }
 
-    timestamps.push_front(newTimestamp);
+    return result;
 }
 
-void FrameMetrics::setSmoothingWindow(int newWindowSize) {
-    if (newWindowSize < windowSize) {
-        clear();
-    }
-    windowSize = newWindowSize;
-}
+FrameMetricsRecord FrameMetricsRecord::operator-(FrameMetricsRecord other) {
+    FrameMetricsRecord result = FrameMetricsRecord();
+    result.frameTime = frameTime - other.frameTime;
+    result.workTime = workTime - other.workTime;
 
-float FrameMetrics::getFrameTimeMS() {
-    return timestamps.size() == 0 ? -1.0 :
-        sumFrameTime / timestamps.size();
-}
+    for (auto process : processTime) {
+        int frameID = process.first;
+        double processTime = process.second;
 
-float FrameMetrics::getFrameRate() {
-    return timestamps.size() == 0 ? -1.0 :
-        1000.0 / (static_cast<float>(getFrameTimeMS()));
-}
+        processTime -= other.processTime.count(frameID)
+            ? other.processTime[frameID]
+            : 0;
 
-float FrameMetrics::getWorkTimeMS() {
-    return timestamps.size() == 0 ? -1.0 :
-        sumWorkTime / timestamps.size();
-}
-
-float FrameMetrics::getUncappedFrameRate() {
-    return timestamps.size() == 0 ? -1.0 :
-        1000.0 / (static_cast<float>(getWorkTimeMS()));
-}
-
-FrameMetrics::ReportList FrameMetrics::getRunTimesMS() {
-    int numberOfValues = timestamps.size();
-    if (numberOfValues == 0) {
-        return ReportList();
+        result.processTime.emplace(frameID, processTime);
     }
 
-    ReportList output;
-    std::transform(sumRunTimes.begin(), sumRunTimes.end(),
-        std::back_inserter(output),
-        [numberOfValues](TimeReport sumRunTime){
-            return TimeReport(sumRunTime.first / numberOfValues,
-                sumRunTime.second);
-        });
-    return output;
+    return result;
 }
 
-FrameMetrics::MetricsReport FrameMetrics::getMetricsReport() {
-    return {
-        getFrameTimeMS(),
-        getWorkTimeMS(),
-        getFrameRate(),
-        getUncappedFrameRate(),
-        getRunTimesMS(),
-        windowSize
-    };
+FrameMetricsRecord FrameMetricsRecord::operator/(int divisor) {
+    FrameMetricsRecord result = FrameMetricsRecord();
+    result.frameTime = frameTime / divisor;
+    result.workTime = workTime / divisor;
+
+    for (auto process : processTime) {
+        int frameID = process.first;
+        result.processTime[frameID] = process.second / divisor;
+    }
+
+    return result;
 }
 
-void FrameMetrics::clear() {
-    timestamps.clear();
-    sumFrameTime = 0;
-    sumWorkTime = 0;
-    sumRunTimes.clear();
+double FrameMetricsRecord::getFrameRate() {
+    double frameTimeInSeconds = frameTime / 1000.;
+    return 1. / frameTimeInSeconds;
+}
+
+double FrameMetricsRecord::getUncappedFrameRate() {
+    double workTimeInSeconds = workTime / 1000.;
+    return 1. / workTimeInSeconds;
+}
+
+FrameMetrics::FrameMetrics(int newBufferSize) {
+    clearBuffer();
+    setBufferSize(newBufferSize);
+}
+
+void FrameMetrics::setBufferSize(int newBufferSize) {
+    if (newBufferSize < bufferSize) {
+        clearBuffer();
+    }
+    bufferSize = newBufferSize;
+}
+
+int FrameMetrics::getBufferSize() {
+    return bufferSize;
+}
+
+int FrameMetrics::getBufferCount() {
+    return buffer.size();
+}
+
+void FrameMetrics::pushTimerRecord(TimerRecord record) {
+    FrameMetricsRecord newMetricsRecord =
+        FrameMetricsRecord::fromTimestamp(record);
+
+    currentSum = currentSum + newMetricsRecord;
+    buffer.push_front(newMetricsRecord);
+
+    if (buffer.size() > bufferSize) {
+        FrameMetricsRecord recordToRemove = buffer.back();
+        currentSum = currentSum - recordToRemove;
+        buffer.pop_back();
+    }
+}
+
+FrameMetricsRecord FrameMetrics::getCurrentMetrics() {
+    return currentSum / getBufferCount();
+}
+
+void FrameMetrics::clearBuffer() {
+    currentSum = FrameMetricsRecord();
+    buffer.clear();
+}
+
+FrameMetricsRecord FrameMetricsRecord::fromTimestamp(TimerRecord record) {
+    FrameMetricsRecord newMetrics = FrameMetricsRecord(record.frameID);
+
+    newMetrics.workTime = record.frameDone - record.frameStart;
+    newMetrics.frameTime = record.frameEnd - record.frameStart;
+
+    for (auto process : record.processStart) {
+        int processID = process.first;
+        double processStart = process.second;
+
+        if (!record.processDone.count(processID)) {
+            continue;
+        }
+
+        double processDone = record.processDone[processID];
+        double processTime = processDone - processStart;
+
+        newMetrics.processTime.emplace(processID, processTime);
+    }
+
+    return newMetrics;
 }

@@ -6,8 +6,8 @@ using std::chrono::steady_clock;
 using duration = std::chrono::duration<double>;
 using time_point = steady_clock::time_point;
 
-const double WAIT_TIME_MS = 100.;
-const double TIME_MARGIN_MS = 10.;
+const double WAIT_TIME_MS = 50.;
+const double TIME_MARGIN_MS = 5.;
 
 void requireWithinMargin(double expected, double measured) {
     REQUIRE(expected <= measured + TIME_MARGIN_MS);

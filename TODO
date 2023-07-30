@@ -1,9 +1,6 @@
-- Rewrite unit tests
-
-- Increase precision of defaultTimerSource
-- Overhaul how runnables are called and managed
-- Overhaul metrics implementation
-- Improve adding/removing runnables and prevent metrics mismatch
-- Understand error/exceptions in C++
-- Implement Window Pane class
-- Keyboard shortcuts for build
+- Overhaul FrameController
+  - ProcessIDs
+  - Early & late processes
+  - Permission levels
+- Create Process factory/binder
+- Continue on Window implementation

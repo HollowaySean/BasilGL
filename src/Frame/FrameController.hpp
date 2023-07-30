@@ -74,11 +74,11 @@ class FrameController {
 
 
     // Getters
-    /** @returns FrameController::FrameControllerState enum
+    /** @return FrameController::FrameControllerState enum
      *  indicating current status. */
     FrameControllerState getCurrentState() { return currentState; }
 
-    /** @returns Maximum frame rate cap. Uncapped frame rate if set to 0. */
+    /** @return Maximum frame rate cap. Uncapped frame rate if set to 0. */
     int getFrameCap() { return frameCap; }
 
 
