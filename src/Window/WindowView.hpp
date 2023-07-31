@@ -5,7 +5,9 @@
 #include <GLFW/glfw3.h>
 #include <string>
 
-#include "../Frame/IFrameProcess.hpp"
+#include "IFrameProcess.hpp"
+
+// #include "../Frame/IFrameProcess.hpp"
 
 // Hoisting
 struct WindowOptions {
@@ -20,7 +22,7 @@ struct WindowOptions {
  * public facade.
  * TODO: Rewrite this documentation
  */
-class WindowView: public IFrameProcess {
+class WindowView : public IFrameProcess {
  public:
     WindowView();
     ~WindowView();
@@ -28,7 +30,7 @@ class WindowView: public IFrameProcess {
     void onStart() override;
     void onStop() override;
 
-    /** @brief Main loop function for Runnable parent class. */
+    /** @brief Main loop function for IFrameProcess parent class. */
     void onLoop() override;
 
  private:

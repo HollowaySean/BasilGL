@@ -1,5 +1,9 @@
 #include "DefaultTimerSource.hpp"
 
+std::unique_ptr<ITimerSource> DefaultTimerSource::clone() const {
+    return std::make_unique<DefaultTimerSource>(*this);
+}
+
 void DefaultTimerSource::frameStart() {
     currentRecord = TimerRecord(++frameID);
     currentRecord.frameStart = readTimer();
@@ -33,7 +37,7 @@ void DefaultTimerSource::processDone(int processID) {
     currentRecord.processDone.emplace(processID, stopTime);
 }
 
-double DefaultTimerSource::readTimer() {
+double DefaultTimerSource::readTimer() const {
     time_point timerNow = steady_clock::now();
     return timePointToMilliseconds(timerNow);
 }

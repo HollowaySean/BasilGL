@@ -1,176 +1,117 @@
-#include <functional>
-#include <list>
-#include <string>
-#include <utility>
-
 #include "FrameController.hpp"
 #include "DefaultTimerSource.hpp"
 
 FrameController::FrameController(
-    IFrameProcess *runnable,
-    ITimerSource *timerSource): timerSource(), frameMetrics(), currentState() {
+        ITimerSource *newTimerSource) {
+    setTimerSource(newTimerSource);
+    frameCap = 0;
+    currentState = READY;
 
-    if (runnable) {
-        addRunnable(runnable);
-    }
-
-    if (!timerSource) {
-        timerSource = new DefaultTimerSource();
-    }
-    setTimerSource(timerSource);
-    setFrameCap(0);
-
-    currentState = FrameControllerState::STOPPED;
+    manager = ProcessManager(timerSource);
 }
 
-void FrameController::addRunnable(
-        IFrameProcess *newRunnable,
-        Order orderToInsert) {
-    switch (orderToInsert) {
-        case Order::FIRST:
-            mainRunnables.push_front(newRunnable);
-            break;
-        case Order::LAST:
-        default:
-            mainRunnables.push_back(newRunnable);
-            break;
-    }
+void FrameController::addProcess(IFrameProcess *processToAdd,
+        Privilege privilegeLevel, std::string processName) {
+    ProcessInstance *instance = new ProcessInstance {
+        processToAdd,
+        privilegeLevel,
+        nextProcessID++,
+        processName
+    };
+
+    manager.addProcess(instance);
 }
 
-void FrameController::removeRunnable(IFrameProcess *runnableToRemove) {
-    if (!runnableToRemove) {
-        return;
-    }
-
-    // TODO(sholloway): Correct segmentation fault here
-    mainRunnables.remove(runnableToRemove);
+void FrameController::addProcess(IFrameProcess *processToAdd,
+        std::string const processName) {
+    addProcess(processToAdd, NONE, processName);
 }
 
 void FrameController::setFrameCap(int framesPerSecond) {
     frameCap = framesPerSecond;
 
-    if (frameCap > 0) {
-        float frameTime = (1000.0 / frameCap);
-        timerSource->setMinimumFrameTime(frameTime);
+    double frameTime = 1. / frameCap;
+    timerSource->setMinimumFrameTime(frameTime);
+}
+
+void FrameController::setTimerSource(ITimerSource *newTimerSource) {
+    if (!newTimerSource) {
+        newTimerSource = new DefaultTimerSource();
     }
+    timerSource = newTimerSource->clone();
 }
 
 void FrameController::start() {
-    if (!shouldStartLoop()) {
-        return;
-    }
-
-    currentState = FrameControllerState::RUNNING;
-    runLoop();
+    runProcesses();
 }
 
 void FrameController::stop() {
-    currentState = FrameControllerState::STOPPING;
+    currentState = STOPPING;
 }
 
 void FrameController::kill() {
-    currentState = FrameControllerState::KILLED;
+    currentState = KILLED;
 }
 
-void FrameController::runLoop() {
-    // TODO(sholloway): Break out function/class for IFrameProcess collection
-    // TODO(sholloway): Add null checks before each run
-    std::list<IFrameProcess*>::iterator iter;
-    for (iter = mainRunnables.begin(); iter != mainRunnables.end(); ++iter) {
-        (*iter)->onStart();
-    }
+void FrameController::runProcesses() {
+    // TODO(sholloway): Sub out for a more comprehensive state check
+    // currentState = STARTING;
 
-    while (shouldRunLoop()) {
+    manager.runStart();
+
+    // TODO(sholloway): Sub out for a more comprehensive state check
+    // currentState = RUNNING;
+    while (currentState == RUNNING) {
         timerSource->frameStart();
-
-        for (   iter = mainRunnables.begin();
-                iter != mainRunnables.end();
-                ++iter) {
-            timerSource->processStart(-1);
-            (*iter)->onLoop();
-            timerSource->processDone(-1);
-
-            if (shouldKillLoop()) {
-                break;
-            }
-        }
-
+        manager.runLoop();
         timerSource->frameDone();
+
         timerSource->waitForFrameTime();
     }
 
-    currentState = FrameControllerState::STOPPED;
+    // TODO(sholloway): Sub out for a more comprehensive state check
+    // currentState = STOPPING;
+    manager.runStop();
 
-    for (iter = mainRunnables.begin(); iter != mainRunnables.end(); ++iter) {
-        (*iter)->onStop();
+    // currentState = STOPPED;
+}
+
+FrameController::ProcessManager::ProcessManager(
+        std::shared_ptr<ITimerSource> newTimerSource):
+            timerSource(newTimerSource) {}
+
+void FrameController::ProcessManager::addProcess(
+        ProcessInstance *newProcess) {
+    if (newProcess) {
+        processes.push_back(newProcess);
     }
 }
 
-bool FrameController::shouldStartLoop() {
-    return currentState == FrameControllerState::STOPPED
-        && !mainRunnables.empty();
+void FrameController::ProcessManager::runStart() {
+    runMethod(
+        [](IFrameProcess *process) { process->onStart(); });
 }
 
-bool FrameController::shouldRunLoop() {
-    return currentState == FrameControllerState::RUNNING;
+void FrameController::ProcessManager::runLoop() {
+    runMethod(
+        [](IFrameProcess *process) { process->onLoop(); });
 }
 
-bool FrameController::shouldKillLoop() {
-    return currentState == FrameControllerState::KILLED;
+void FrameController::ProcessManager::runStop() {
+    runMethod(
+        [](IFrameProcess *process) { process->onStop(); });
 }
 
-/**
-void FrameController::safelyRunCollection(
-        std::function<void()> method) {
-    std::list<IFrameProcess*>::iterator iter;
+void FrameController::ProcessManager::runMethod(
+        std::function<void(IFrameProcess*)> method) {
+    std::list<ProcessInstance*>::iterator process;
+    for (   process = processes.begin();
+            process != processes.end();
+            ++process) {
+        int processID = (*process)->processID;
 
-    for (iter = mainRunnables.begin(); iter != mainRunnables.end(); iter++) {
-        IFrameProcess *runnable = (*iter);
-
-        // Null check
-        if (!runnable) {
-            removeRunnable(runnable);
-
-            // Some sort of record? Or message?
-
-            continue;
-        }
-
-        // Pre-run state check
-        checkRunnableState(runnable);
-        switch (currentState) {
-            case IFrameProcess::State::REQUEST_KILL:
-                return;
-            case IFrameProcess::State::SKIP:
-                currentState = IFrameProcess::State::READY;
-                continue;
-            default:
-        }
-
-        // Run
-        runnable->onLoop();
-
-        // Post-run state check
-        checkRunnableState(runnable);
-        switch (currentState) {
-            case IFrameProcess::State::REQUEST_STOP:
-                // Take timestamp
-            case IFrameProcess::State::REQUEST_KILL:
-                return;
-            default:
-                currentState = IFrameProcess::State::READY;
-        }
-
-        // Take timestamp
-
+        timerSource->processStart(processID);
+        method((*process)->frameProcess);
+        timerSource->processDone(processID);
     }
 }
-
-void FrameController::checkRunnableState(
-    IFrameProcess *runnable) {
-        IFrameProcess::State state = runnable->getCurrentState();
-        if (state > currentState) {
-            currentState = state;
-        }
-}
-*/

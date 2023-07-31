@@ -2,6 +2,7 @@
 #define SRC_FRAME_ITIMERSOURCE_HPP_
 
 #include <map>
+#include <memory>
 
 /**
  * @brief Record of frame and process times.
@@ -42,6 +43,9 @@ class ITimerSource {
         currentRecord = TimerRecord(0);
     }
 
+    /** @brief Copy constructor for creating child pointers */
+    virtual std::unique_ptr<ITimerSource> clone() const = 0;
+
     /** @param waitTimeInSeconds Time in seconds that must
      *  elapse before wait finishes. */
     virtual void setMinimumFrameTime(double newWaitTimeInSeconds) {
@@ -65,14 +69,17 @@ class ITimerSource {
     virtual void processDone(int processID) = 0;
 
     /** @brief  Return timestamp without recording. */
-    virtual double readTimer() = 0;
+    virtual double readTimer() const = 0;
 
     /** @return Record of timestamps for frame. */
-    virtual TimerRecord getRecord() {
+    virtual TimerRecord getRecord() const {
         return currentRecord;
     }
 
+#ifndef TEST_BUILD
+
  protected:
+#endif
     int frameID = 0;
     double waitTimeInSeconds = 0;
     TimerRecord currentRecord;

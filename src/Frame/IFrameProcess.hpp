@@ -6,19 +6,6 @@
 using std::string;
 
 /**
- * @brief Struct containing metadata for frame process.
- */
-struct ProcessMetadata {
- public:
-    /** @brief Human-readable process name. */
-    string name = "Unnamed";
-
-    /** @brief Unique process identifier.
-     *  Value of -1 is untracked. */
-    int id = -1;
-};
-
-/**
  * @brief Interface consumable by FrameController
  * Contains 'onLoop' function which is run within frame.
  */
@@ -46,9 +33,6 @@ class IFrameProcess {
 
     /** @brief Function to run after last frame. */
     virtual void onStop() {}
-
-    /** @brief Metadata for process. */
-    ProcessMetadata metadata;
 
  protected:
     State currentState = READY;

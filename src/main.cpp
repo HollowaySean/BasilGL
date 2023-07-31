@@ -10,9 +10,9 @@
  */
 int main(int argc, char** argv) {
     WindowView windowView = WindowView();
-
     FrameController frameController = FrameController();
-    frameController.addRunnable(&windowView);
+
+    frameController.addProcess(&windowView);
     frameController.setFrameCap(20);
     frameController.start();
 
