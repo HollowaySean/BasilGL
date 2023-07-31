@@ -18,11 +18,12 @@ void FrameController::addProcess(IFrameProcess *processToAdd,
     ProcessInstance *instance = new ProcessInstance {
         processToAdd,
         privilegeLevel,
-        nextProcessID++,
+        nextProcessID,
         processName
     };
 
     manager.addProcess(instance);
+    nextProcessID++;
 }
 
 void FrameController::addProcess(IFrameProcess *processToAdd,
@@ -135,8 +136,8 @@ void FrameController::ProcessManager::runMethod(
             case FPState::REQUEST_STOP:
                 if (privilege >= Privilege::LOW) {
                     currentState = STOPPING;
-                    break;
                 }
+                break;
             case FPState::REMOVE_PROCESS:
                 // TODO(sholloway): Implement
             case FPState::SKIP_PROCESS:

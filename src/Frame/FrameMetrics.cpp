@@ -120,7 +120,7 @@ FrameMetricsRecord FrameMetrics::getExcludingCurrent() {
     }
 
     FrameMetricsRecord newest =
-        buffer.back();
+        buffer.front();
     return (currentSum - newest) / (getBufferCount() - 1);
 }
 

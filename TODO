@@ -1,5 +1,7 @@
 - Overhaul FrameController
   - Early & late processes
   - Process removal
-- Unit tests for FrameController
+  - Null-checking in process manager
+- Bring readable name to MetricsReporter
+- Unit tests for MetricsReporter
 - Continue on Window implementation

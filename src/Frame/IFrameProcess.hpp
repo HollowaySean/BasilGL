@@ -34,7 +34,10 @@ class IFrameProcess {
     /** @brief Function to run after last frame. */
     virtual void onStop() {}
 
+#ifndef TEST_BUILD
+
  protected:
+#endif
     State currentState = READY;
 };
 
