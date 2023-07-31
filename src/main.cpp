@@ -9,12 +9,19 @@
  * @return Success code
  */
 int main(int argc, char** argv) {
-    WindowView windowView = WindowView();
     FrameController frameController = FrameController();
 
+    FrameMetrics *frameMetrics = &frameController.metrics;
+    frameMetrics->setBufferSize(20);
+    MetricsReporter reporter = MetricsReporter(
+        frameMetrics, 20);
+    frameController.addProcess(&reporter);
+
+    WindowView windowView = WindowView();
     frameController.addProcess(&windowView);
+
     frameController.setFrameCap(20);
-    frameController.start();
+    frameController.run();
 
     return 0;
 }

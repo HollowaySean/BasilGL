@@ -1,3 +1,4 @@
+- Increase precision of metrics
 - Overhaul FrameController
   - ProcessIDs
   - Early & late processes

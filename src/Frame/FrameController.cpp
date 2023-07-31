@@ -7,6 +7,7 @@ FrameController::FrameController(
     frameCap = 0;
     currentState = READY;
 
+    metrics = FrameMetrics();
     manager = ProcessManager(timerSource);
 }
 
@@ -41,8 +42,27 @@ void FrameController::setTimerSource(ITimerSource *newTimerSource) {
     timerSource = newTimerSource->clone();
 }
 
-void FrameController::start() {
-    runProcesses();
+void FrameController::run() {
+    currentState = STARTING;
+
+    manager.runStart();
+
+    currentState = RUNNING;
+    while (shouldRunLoop()) {
+        timerSource->frameStart();
+        manager.runLoop();
+        timerSource->frameDone();
+
+        timerSource->waitForFrameTime();
+
+        TimerRecord currentRecord = timerSource->getRecord();
+        metrics.pushTimerRecord(currentRecord);
+    }
+
+    currentState = STOPPING;
+    manager.runStop();
+
+    currentState = STOPPED;
 }
 
 void FrameController::stop() {
@@ -53,27 +73,9 @@ void FrameController::kill() {
     currentState = KILLED;
 }
 
-void FrameController::runProcesses() {
-    // TODO(sholloway): Sub out for a more comprehensive state check
-    // currentState = STARTING;
-
-    manager.runStart();
-
-    // TODO(sholloway): Sub out for a more comprehensive state check
-    // currentState = RUNNING;
-    while (currentState == RUNNING) {
-        timerSource->frameStart();
-        manager.runLoop();
-        timerSource->frameDone();
-
-        timerSource->waitForFrameTime();
-    }
-
-    // TODO(sholloway): Sub out for a more comprehensive state check
-    // currentState = STOPPING;
-    manager.runStop();
-
-    // currentState = STOPPED;
+bool FrameController::shouldRunLoop() {
+    return currentState == RUNNING &&
+        manager.hasProcesses();
 }
 
 FrameController::ProcessManager::ProcessManager(
@@ -85,6 +87,10 @@ void FrameController::ProcessManager::addProcess(
     if (newProcess) {
         processes.push_back(newProcess);
     }
+}
+
+bool FrameController::ProcessManager::hasProcesses() {
+    return processes.size() > 0;
 }
 
 void FrameController::ProcessManager::runStart() {

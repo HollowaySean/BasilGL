@@ -3,6 +3,7 @@
 
 FrameMetricsRecord FrameMetricsRecord::operator+(FrameMetricsRecord other) {
     FrameMetricsRecord result = FrameMetricsRecord();
+    result.frameID = frameID;
     result.frameTime = frameTime + other.frameTime;
     result.workTime = workTime + other.workTime;
 
@@ -29,6 +30,7 @@ FrameMetricsRecord FrameMetricsRecord::operator+(FrameMetricsRecord other) {
 
 FrameMetricsRecord FrameMetricsRecord::operator-(FrameMetricsRecord other) {
     FrameMetricsRecord result = FrameMetricsRecord();
+    result.frameID = frameID;
     result.frameTime = frameTime - other.frameTime;
     result.workTime = workTime - other.workTime;
 
@@ -48,12 +50,13 @@ FrameMetricsRecord FrameMetricsRecord::operator-(FrameMetricsRecord other) {
 
 FrameMetricsRecord FrameMetricsRecord::operator/(int divisor) {
     FrameMetricsRecord result = FrameMetricsRecord();
+    result.frameID = frameID;
     result.frameTime = frameTime / divisor;
     result.workTime = workTime / divisor;
 
     for (auto process : processTime) {
-        int frameID = process.first;
-        result.processTime[frameID] = process.second / divisor;
+        int processID = process.first;
+        result.processTime[processID] = process.second / divisor;
     }
 
     return result;
@@ -93,6 +96,7 @@ void FrameMetrics::pushTimerRecord(TimerRecord record) {
     FrameMetricsRecord newMetricsRecord =
         FrameMetricsRecord::fromTimestamp(record);
 
+    currentSum.frameID = newMetricsRecord.frameID;
     currentSum = currentSum + newMetricsRecord;
     buffer.push_front(newMetricsRecord);
 

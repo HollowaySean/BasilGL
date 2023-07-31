@@ -24,7 +24,7 @@ class FrameController {
     // Internal Types
     /** @brief Enum type representing possible states of the controller. */
     enum FCState {
-        READY, STARTING, RUNNING, PAUSED, STOPPING, STOPPED, KILLED
+        READY, STARTING, RUNNING, STOPPING, STOPPED, KILLED
     };
 
     /** @brief Enum type representing privilege levels for a given process.
@@ -48,9 +48,14 @@ class FrameController {
             std::string processName);
 
 
+    // Metrics
+    /** @brief Metrics manager object. */
+    FrameMetrics metrics;
+
+
     // Control flow
     /** @brief Begins frame processes. */
-    void start();
+    void run();
 
     /** @brief Stops loop after all processes complete. */
     void stop();
@@ -75,12 +80,14 @@ class FrameController {
     /** @returns The current state of the controller. */
     FCState getCurrentState() { return currentState; }
 
+
 #ifndef TEST_BUILD
 
  private:
 #endif
     // Main methods
     void runProcesses();
+    bool shouldRunLoop();
 
     // Internal Types
     struct ProcessInstance {
@@ -104,10 +111,9 @@ class FrameController {
         std::list<ProcessInstance*> processes;
         std::shared_ptr<ITimerSource> timerSource;
 
-
         void addProcess(ProcessInstance *newProcess);
-        // TODO(sholloway): Requires smarter container than a list
-        // void removeProcess(ProcessInstance *processToRemove);
+
+        bool hasProcesses();
 
         void runStart();
         void runLoop();

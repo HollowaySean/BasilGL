@@ -1,4 +1,8 @@
 #include <stdio.h>
+
+#include <chrono>
+#include <thread>
+
 #include "WindowView.hpp"
 
 WindowView::WindowView(): glfwWindow() {
@@ -23,7 +27,7 @@ void WindowView::onStart() {
 
 void WindowView::onLoop() {
     // Dummy code
-    printf("In main loop\n");
+    // printf("In main loop\n");
 
     if (glfwWindowShouldClose(glfwWindow)) {
         glfwDestroyWindow(glfwWindow);
@@ -44,6 +48,9 @@ void WindowView::onLoop() {
 
     glfwSwapBuffers(glfwWindow);
     glfwPollEvents();
+
+    std::this_thread::sleep_for(
+        std::chrono::duration<double, std::milli>(10));
 }
 
 void WindowView::onStop() {

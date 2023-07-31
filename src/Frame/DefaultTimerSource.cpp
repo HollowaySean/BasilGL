@@ -5,8 +5,10 @@ std::unique_ptr<ITimerSource> DefaultTimerSource::clone() const {
 }
 
 void DefaultTimerSource::frameStart() {
-    currentRecord = TimerRecord(++frameID);
+    currentRecord = TimerRecord(frameID);
     currentRecord.frameStart = readTimer();
+
+    frameID++;
 }
 
 void DefaultTimerSource::frameDone() {
