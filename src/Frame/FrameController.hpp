@@ -112,13 +112,14 @@ class FrameController {
         std::shared_ptr<ITimerSource> timerSource;
 
         void addProcess(ProcessInstance *newProcess);
-
         bool hasProcesses();
 
         void runStart();
         void runLoop();
         void runStop();
         void runMethod(std::function<void(IFrameProcess*)> method);
+
+        FCState currentState = RUNNING;
     };
     ProcessManager manager;
 

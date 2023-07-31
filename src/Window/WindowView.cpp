@@ -30,6 +30,8 @@ void WindowView::onLoop() {
     // printf("In main loop\n");
 
     if (glfwWindowShouldClose(glfwWindow)) {
+        currentState = State::REQUEST_STOP;
+
         glfwDestroyWindow(glfwWindow);
         glfwTerminate();
     }
@@ -48,9 +50,6 @@ void WindowView::onLoop() {
 
     glfwSwapBuffers(glfwWindow);
     glfwPollEvents();
-
-    std::this_thread::sleep_for(
-        std::chrono::duration<double, std::milli>(10));
 }
 
 void WindowView::onStop() {

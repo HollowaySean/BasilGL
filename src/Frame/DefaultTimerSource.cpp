@@ -13,6 +13,9 @@ void DefaultTimerSource::frameStart() {
 
 void DefaultTimerSource::frameDone() {
     currentRecord.frameDone = readTimer();
+
+    // Sets frameEnd as well, in case wait is never called
+    currentRecord.frameEnd = currentRecord.frameDone;
 }
 
 void DefaultTimerSource::waitForFrameTime() {

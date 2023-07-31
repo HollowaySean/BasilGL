@@ -1,9 +1,5 @@
 - Overhaul FrameController
-  - ProcessIDs
-  - State flag checking
   - Early & late processes
-  - Permission levels
+  - Process removal
 - Unit tests for FrameController
 - Continue on Window implementation
-
-- Thread safe FrameController

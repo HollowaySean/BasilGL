@@ -60,8 +60,14 @@ class FrameMetrics {
     /** @brief Add a new frame timing record to the buffer. */
     void pushTimerRecord(TimerRecord record);
 
+    /** @brief Get record from timer and push to the buffer. */
+    void pushRecordFromTimer(std::shared_ptr<ITimerSource> timer);
+
     /** @return Return current averaged metrics. */
     FrameMetricsRecord getCurrentMetrics();
+
+    /** @return Return averaged metrics, excluding current frame. */
+    FrameMetricsRecord getExcludingCurrent();
 
     /** @brief Clear currently buffered frame metrics. */
     void clearBuffer();

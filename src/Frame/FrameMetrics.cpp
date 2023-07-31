@@ -105,8 +105,23 @@ void FrameMetrics::pushTimerRecord(TimerRecord record) {
     }
 }
 
+void FrameMetrics::pushRecordFromTimer(
+        std::shared_ptr<ITimerSource> timer) {
+    pushTimerRecord(timer->getRecord());
+}
+
 FrameMetricsRecord FrameMetrics::getCurrentMetrics() {
     return currentSum / getBufferCount();
+}
+
+FrameMetricsRecord FrameMetrics::getExcludingCurrent() {
+    if (getBufferCount() == 0) {
+        return currentSum;
+    }
+
+    FrameMetricsRecord newest =
+        buffer.back();
+    return (currentSum - newest) / (getBufferCount() - 1);
 }
 
 void FrameMetrics::clearBuffer() {

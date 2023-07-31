@@ -16,10 +16,14 @@ int main(int argc, char** argv) {
 
     MetricsReporter reporter = MetricsReporter(
         frameMetrics, frameMetrics->getBufferSize());
-    frameController.addProcess(&reporter);
+    frameController.addProcess(&reporter,
+        FrameController::Privilege::NONE,
+        "MetricsReporter");
 
     WindowView windowView = WindowView();
-    frameController.addProcess(&windowView);
+    frameController.addProcess(&windowView,
+        FrameController::Privilege::HIGH,
+        "WindowView");
 
     frameController.setFrameCap(20);
     frameController.run();
