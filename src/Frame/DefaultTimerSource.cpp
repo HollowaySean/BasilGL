@@ -5,10 +5,10 @@ std::unique_ptr<ITimerSource> DefaultTimerSource::clone() const {
 }
 
 void DefaultTimerSource::frameStart() {
+    frameID++;
+
     currentRecord = TimerRecord(frameID);
     currentRecord.frameStart = readTimer();
-
-    frameID++;
 }
 
 void DefaultTimerSource::frameDone() {
@@ -16,14 +16,13 @@ void DefaultTimerSource::frameDone() {
 }
 
 void DefaultTimerSource::waitForFrameTime() {
-    double elapsedTimeInMS =
+    double elapsedTimeInSeconds =
         currentRecord.frameDone - currentRecord.frameStart;
-    double elapsedTimeInSeconds = elapsedTimeInMS / 1000.;
     double timeToWaitInSeconds = waitTimeInSeconds - elapsedTimeInSeconds;
 
     if (timeToWaitInSeconds > 0) {
-        auto timeToWaitInMS = secondsToDuration(timeToWaitInSeconds);
-        std::this_thread::sleep_for(timeToWaitInMS);
+        auto durationToWait = secondsToDuration(timeToWaitInSeconds);
+        std::this_thread::sleep_for(durationToWait);
     }
 
     currentRecord.frameEnd = readTimer();
@@ -41,7 +40,7 @@ void DefaultTimerSource::processDone(int processID) {
 
 double DefaultTimerSource::readTimer() const {
     time_point timerNow = steady_clock::now();
-    return timePointToMilliseconds(timerNow);
+    return timePointToSeconds(timerNow);
 }
 
 DefaultTimerSource::duration
@@ -49,8 +48,9 @@ DefaultTimerSource::secondsToDuration(double timeInSeconds) {
     return std::chrono::duration<double, std::ratio<1>>(timeInSeconds);
 }
 
-double DefaultTimerSource::timePointToMilliseconds(time_point timePoint) {
-    auto timePointMS =
-        std::chrono::time_point_cast<std::chrono::milliseconds>(timePoint);
-    return timePointMS.time_since_epoch().count();
+double DefaultTimerSource::timePointToSeconds(time_point timePoint) {
+    auto timePointNS =
+        std::chrono::time_point_cast<std::chrono::nanoseconds>(timePoint);
+    double timeCountNS = timePointNS.time_since_epoch().count();
+    return timeCountNS / SECONDS_PER_NANO;
 }

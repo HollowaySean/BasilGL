@@ -1,7 +1,9 @@
-- Increase precision of metrics
 - Overhaul FrameController
   - ProcessIDs
+  - State flag checking
   - Early & late processes
   - Permission levels
-- Create Process factory/binder
+- Unit tests for FrameController
 - Continue on Window implementation
+
+- Thread safe FrameController

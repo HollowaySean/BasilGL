@@ -13,8 +13,9 @@ int main(int argc, char** argv) {
 
     FrameMetrics *frameMetrics = &frameController.metrics;
     frameMetrics->setBufferSize(20);
+
     MetricsReporter reporter = MetricsReporter(
-        frameMetrics, 20);
+        frameMetrics, frameMetrics->getBufferSize());
     frameController.addProcess(&reporter);
 
     WindowView windowView = WindowView();

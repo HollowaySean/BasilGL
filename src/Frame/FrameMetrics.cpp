@@ -63,13 +63,11 @@ FrameMetricsRecord FrameMetricsRecord::operator/(int divisor) {
 }
 
 double FrameMetricsRecord::getFrameRate() {
-    double frameTimeInSeconds = frameTime / 1000.;
-    return 1. / frameTimeInSeconds;
+    return 1. / frameTime;
 }
 
 double FrameMetricsRecord::getUncappedFrameRate() {
-    double workTimeInSeconds = workTime / 1000.;
-    return 1. / workTimeInSeconds;
+    return 1. / workTime;
 }
 
 FrameMetrics::FrameMetrics(int newBufferSize) {

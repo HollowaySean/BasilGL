@@ -26,10 +26,12 @@ class DefaultTimerSource: public ITimerSource {
 
  private:
 #endif
+    constexpr static double SECONDS_PER_NANO = 1e9;
+
     using duration = std::chrono::duration<double>;
     using time_point = steady_clock::time_point;
     static duration secondsToDuration(double timeInSeconds);
-    static double timePointToMilliseconds(time_point timePoint);
+    static double timePointToSeconds(time_point timePoint);
 };
 
 #endif  // SRC_FRAME_DEFAULTTIMERSOURCE_HPP_

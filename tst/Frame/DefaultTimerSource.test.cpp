@@ -6,17 +6,17 @@ using std::chrono::steady_clock;
 using duration = std::chrono::duration<double>;
 using time_point = steady_clock::time_point;
 
-const double WAIT_TIME_MS = 50.;
-const double TIME_MARGIN_MS = 5.;
+const double WAIT_TIME = 0.050;
+const double TIME_MARGIN = 0.005;
 
 void requireWithinMargin(double expected, double measured) {
-    REQUIRE(expected <= measured + TIME_MARGIN_MS);
-    REQUIRE(measured <= expected + TIME_MARGIN_MS);
+    REQUIRE(expected <= measured + TIME_MARGIN);
+    REQUIRE(measured <= expected + TIME_MARGIN);
 }
 
 void checkTimerReturn(std::function<double()> methodUnderTest) {
         double expected =
-            DefaultTimerSource::timePointToMilliseconds(steady_clock::now());
+            DefaultTimerSource::timePointToSeconds(steady_clock::now());
         double measured = methodUnderTest();
 
         requireWithinMargin(expected, measured);
@@ -104,43 +104,42 @@ TEST_CASE("Frame_DefaultTimerSource_processDone") {
 
 void checkWaitTime(
         DefaultTimerSource timer,
-        double elapsedTimeInMS,
-        double expectedWaitTimeInMS) {
+        double elapsedTime,
+        double expectedWaitTime) {
     timer.frameStart();
 
-    double elapsedTimeInSeconds = elapsedTimeInMS / 1000.;
     auto sleepTime =
         std::chrono::duration<double, std::ratio<1>>
-            (elapsedTimeInSeconds);
+            (elapsedTime);
     std::this_thread::sleep_for(sleepTime);
 
     timer.frameDone();
     timer.waitForFrameTime();
 
-    double actualWaitTimeInMS =
-        timer.getRecord().frameEnd - timer.getRecord().frameDone;
+    double actualWaitTime =
+        (timer.getRecord().frameEnd - timer.getRecord().frameDone);
 
-    requireWithinMargin(expectedWaitTimeInMS, actualWaitTimeInMS);
+    requireWithinMargin(expectedWaitTime, actualWaitTime);
 }
 
 TEST_CASE("Frame_DefaultTimerSource_waitForFrameTime") {
     SECTION("Waits for remaining time") {
         DefaultTimerSource timer = DefaultTimerSource();
-        timer.setMinimumFrameTime(WAIT_TIME_MS / 1000.);
+        timer.setMinimumFrameTime(WAIT_TIME);
 
         checkWaitTime(
             timer,
-            WAIT_TIME_MS / 2.,
-            WAIT_TIME_MS / 2.);
+            WAIT_TIME / 2.,
+            WAIT_TIME / 2.);
     }
 
     SECTION("Does not wait if time has overrun") {
         DefaultTimerSource timer = DefaultTimerSource();
-        timer.setMinimumFrameTime(WAIT_TIME_MS / 1000.);
+        timer.setMinimumFrameTime(WAIT_TIME / 1000.);
 
         checkWaitTime(
             timer,
-            WAIT_TIME_MS * 2.,
+            WAIT_TIME * 2.,
             0.);
     }
 
@@ -150,7 +149,7 @@ TEST_CASE("Frame_DefaultTimerSource_waitForFrameTime") {
 
         checkWaitTime(
             timer,
-            WAIT_TIME_MS / 2.,
+            WAIT_TIME / 2.,
             0.);
     }
 }
