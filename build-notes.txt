@@ -1,0 +1,30 @@
+Required build tools:
+- git (if downloading from CLI)
+- CMake
+- A compiler
+
+Required packages:
+- libglew-dev
+- libglfw3 libglfw3-dev
+
+Test packages:
+- catch2
+- gcovr
+
+Commit check packages:
+- pre-commit
+- cpplint
+- cppcheck
+
+TODO:
+- Default to only main executable build
+- Add README instructions
+- Test on other compilers
+- Test on Windows
+- Test on macOS
+- Learn about libraries
+- Determine if there is a way to include test packages without requiring package manager
+- Try out GitHub Actions
+- Learn about GitHub releases
+- Figure out an easy way to distribute binaries
+- Figure out if I should commit .vscode

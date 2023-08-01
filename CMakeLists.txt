@@ -50,15 +50,6 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${GLEW_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
 
-## CUDA setup
-set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
-target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
-set_target_properties(${PROJECT_NAME} PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-# Test output
-#add_executable(cudaTest "${CMAKE_SOURCE_DIR}/src/test.cu")
-#set_target_properties(cudaTest PROPERTIES CUDA_ARCHITECTURES "75")
-#set_target_properties(cudaTest PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-
 ## Testing setup
 find_package(Catch2 REQUIRED)
 include(Catch)
@@ -154,8 +145,3 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
     endif (DOXYGEN_FOUND)
 
 endif()
-
-
-## Bugfixes
-# Only enable CUDA after including CodeCoverage to prevent error
-enable_language(CUDA)
