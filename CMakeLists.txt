@@ -6,7 +6,7 @@ macro(DEBUG_MESSAGE MESSAGE)
 endmacro()
 
 ## Project settings
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.5.0)
 project(BlackHoleViz VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 enable_testing()
@@ -44,11 +44,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-find_package(glfw3 3.3 REQUIRED)
+find_package(glfw3 CONFIG REQUIRED)
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${OPENGL_INCLUDE_DIRS}
     ${GLEW_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
 
 ## Testing setup
 find_package(Catch2 REQUIRED)
