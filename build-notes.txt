@@ -26,5 +26,4 @@ TODO:
 - Determine if there is a way to include test packages without requiring package manager
 - Try out GitHub Actions
 - Learn about GitHub releases
-- Figure out an easy way to distribute binaries
 - Figure out if I should commit .vscode
