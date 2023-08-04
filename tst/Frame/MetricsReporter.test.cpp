@@ -2,6 +2,6 @@
 
 #include "MetricsReporter.hpp"
 
-TEST_CASE("Frame_MetricsReporter_placeholder") {
-    REQUIRE(true);
+TEST_CASE("Frame_MetricsReporter_onLoop") {
+    SECTION("Placeholder") {}
 }

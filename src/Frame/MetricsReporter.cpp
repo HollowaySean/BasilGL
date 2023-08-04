@@ -10,8 +10,8 @@ void MetricsReporter::onLoop() {
     FrameMetricsRecord record =
         metrics->getExcludingCurrent();
 
-    if (record.frameID % regularity == 0
-            && record.frameID > 0) {
+    if (record.frameID % regularity == 1
+            && record.frameID > 1) {
         printf("Frame #: %d\n", record.frameID);
         printf("Frame rate: %.2f\n", record.getFrameRate());
         printf("Max frame rate: %.2f\n", record.getUncappedFrameRate());

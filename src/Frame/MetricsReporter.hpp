@@ -4,7 +4,9 @@
 #include "IFrameProcess.hpp"
 #include "FrameMetrics.hpp"
 
-// TODO(sholloway): Documentation, cleanup
+/** @brief Utility FrameProcess that prints frame rate to
+ *  the command line.
+*/
 class MetricsReporter : public IFrameProcess {
  public:
     explicit MetricsReporter(
@@ -13,6 +15,7 @@ class MetricsReporter : public IFrameProcess {
 
     void onLoop() override;
 
+    /** @brief Number of frames per print out. */
     int regularity;
 
  private:
