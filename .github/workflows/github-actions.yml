@@ -11,6 +11,7 @@ jobs:
             - run: echo "${{ github.repository }} has been cloned successfully"
             - run: echo "Installing OpenGL"
             - uses: openrndr/setup-opengl@v1.1
+            - run: xvfb-run glxinfo
             - run: echo "Configuring CMake"
             - name: Configure CMake
               run: mkdir build && cd build && cmake ..
