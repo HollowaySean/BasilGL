@@ -87,10 +87,6 @@ find_package(glfw3 CONFIG)
 if(${glfw3_FOUND})
     # GLFW from installed binaries
     message("Found GLFW as installed library.")
-    target_include_directories(${PROJECT_NAME} PRIVATE
-        ${GLFW_INCLUDE_DIRS})
-    target_link_libraries(${PROJECT_NAME} PRIVATE
-        glfw)
 else()
     # GLFW from source
     message("Could not find GLFW. Installing from local source.")
@@ -105,17 +101,17 @@ else()
             COMMAND_ERROR_IS_FATAL ANY)
     endif()
 
-    set( GLFW_BUILD_DOCS OFF CACHE BOOL  "" FORCE)
-    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-    set( GLFW_INSTALL OFF CACHE BOOL  "" FORCE)
+    set( GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only")
+    set( GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only")
     add_subdirectory("${CMAKE_SOURCE_DIR}/vendor/glfw")
-    target_include_directories(${PROJECT_NAME} PRIVATE
-        "${CMAKE_SOURCE_DIR}/vendor/glfw/include")
-    target_link_libraries(${PROJECT_NAME} PRIVATE
-        glfw)
+    set(GLFW_INCLUDE_DIRS "${GLEW_SUBMODULE_DIR}/glfw/include")
+
 endif()
-#]]
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${GLFW_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    glfw)
 
 return()
 
