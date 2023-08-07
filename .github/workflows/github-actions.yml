@@ -11,7 +11,7 @@ jobs:
             - run: echo "${{ github.repository }} has been cloned successfully"
             - run: echo "Installing OpenGL"
             - run: sudo apt update
-            - run: sudo apt isntall --fix-missing libgl1-mesa-dev
+            - run: sudo apt install --fix-missing libgl1-mesa-dev
             - run: echo "Configuring CMake"
             - name: Configure CMake
               run: mkdir build && cd build && cmake ..
