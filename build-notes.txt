@@ -18,12 +18,9 @@ Commit check packages:
 
 TODO:
 - Default to only main executable build
+- Fix gcovr language issue
 - Add README instructions
-- Test on other compilers
-- Test on Windows
 - Test on macOS
-- Learn about libraries
-- Determine if there is a way to include test packages without requiring package manager
 - Try out GitHub Actions
 - Learn about GitHub releases
 - Figure out if I should commit .vscode
