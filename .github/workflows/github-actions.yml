@@ -22,7 +22,7 @@ jobs:
             - name: Build executables
               run: |
                 echo "Building targets" && \
-                    cd build && make . && echo "Successful build"
+                    pwd && ls && cd build && make . && echo "Successful build"
             - name: Run unit tests
               run: |
                 ./build/BlackHoleViz_test && \
