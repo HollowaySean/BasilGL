@@ -9,6 +9,8 @@ jobs:
             - name: Check out repository code
               uses: actions/checkout@v3
             - run: echo "${{ github.repository }} has been cloned successfully"
+            - run: echo "Installing OpenGL"
+            - uses: openrndr/setup-opengl@v1.1
             - run: echo "Configuring CMake"
             - name: Configure CMake
               run: mkdir build && cd build && cmake ..
