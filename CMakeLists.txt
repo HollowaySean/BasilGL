@@ -122,7 +122,6 @@ if(${Catch2_FOUND})
     # Catch2 from installed binaries
     message("Found Catch2 as installed library.")
     set(CATCH2_LIBRARIES Catch2::Catch2)
-    set(CATCH2_INCLUDE_DIRS "/usr/include/catch2")
 else()
     #Catch2 from local source
     message("Could not find Catch2. Installing from local source.")
@@ -137,9 +136,9 @@ else()
             COMMAND_ERROR_IS_FATAL ANY)
     endif()
 
-    add_subdirectory("${CMAKE_SOURCE_DIR}/vendor/catch2")
+    add_subdirectory("${CATCH2_SUBMODULE_DIR}")
     set(CATCH2_LIBRARIES Catch2::Catch2)
-    set(CATCH2_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/vendor/catch2/single_include/catch2")
+    set(CATCH2_INCLUDE_DIRS "${CATCH2_SUBMODULE_DIR}/single_include/catch2")
 endif()
 
 
