@@ -87,10 +87,12 @@ find_package(glfw3 CONFIG)
 if(${glfw3_FOUND})
     # GLFW from installed binaries
     message("Found GLFW as installed library.")
+    set(GLFW_LIBRARIES
+        glfw)
 else()
     # GLFW from source
     message("Could not find GLFW. Installing from local source.")
-    set(GLEW_SUBMODULE_DIR "${CMAKE_SOURCE_DIR}/vendor/glfw")
+    set(GLFW_SUBMODULE_DIR "${CMAKE_SOURCE_DIR}/vendor/glfw")
 
     # Install Git submodule
     if(NOT EXISTS "${GLFW_SUBMODULE_DIR}/CMakeLists.txt")
@@ -104,16 +106,15 @@ else()
     set( GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only")
     set( GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only")
     add_subdirectory("${CMAKE_SOURCE_DIR}/vendor/glfw")
-    set(GLFW_INCLUDE_DIRS "${GLEW_SUBMODULE_DIR}/glfw/include")
 
+    set(GLFW_INCLUDE_DIRS "${GLFW_SUBMODULE_DIR}/glfw/include")
+    set(GLFW_LIBRARIES glfw)
 endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE
     ${GLFW_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    glfw)
-
-return()
+    ${GLFW_LIBRARIES})
 
 ## Testing setup
 find_package(Catch2 REQUIRED)
@@ -150,10 +151,14 @@ target_include_directories(
     ${TEST_TARGET_NAME} PRIVATE
     ${TST_DIR_LIST}
     ${SRC_DIR_LIST}
-    "${CMAKE_SOURCE_DIR}/external/catch2/"
+    "${CMAKE_SOURCE_DIR}/vendor/catch2/"
+    ${GLEW_INCLUDE_DIRS}
 )
 target_link_libraries(${TEST_TARGET_NAME} Catch2::Catch2)
-target_link_libraries(${TEST_TARGET_NAME} ${OPENGL_LIBRARIES} GLEW::GLEW glfw)
+target_link_libraries(${TEST_TARGET_NAME}
+    ${OPENGL_LIBRARIES}
+    ${GLEW_LIBRARIES}
+    ${GLFW_LIBRARIES})
 
 catch_discover_tests(${TEST_TARGET_NAME})
 
