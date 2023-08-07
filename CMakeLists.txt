@@ -53,19 +53,19 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 find_package(GLEW)
 if(${GLEW_FOUND})
     # GLEW from installed binaries
-    message("Found installed GLEW as installed library.")
+    message("Found GLEW as installed library.")
     set(GLEW_LIBRARIES
         GLEW::GLEW)
 else()
     # GLEW from source
     message("Could not find GLEW. Installing from local source.")
-    set(GLEW_SUBMODULE_DIR "${CMAKE_SOURCE_DIR}/vendor/glew-cmake")
+    set(GLEW_SUBMODULE_DIR "${CMAKE_SOURCE_DIR}/vendor/glew")
 
     # Install Git submodule
     if(NOT EXISTS "${GLEW_SUBMODULE_DIR}/CMakeLists.txt")
         find_package(Git REQUIRED)
         execute_process(COMMAND ${GIT_EXECUTABLE}
-            submodule update --init --recursive -- glew-cmake
+            submodule update --init --recursive -- vendor/glew
             WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
             COMMAND_ERROR_IS_FATAL ANY)
     endif()
@@ -80,37 +80,41 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${GLEW_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PRIVATE
     ${GLEW_LIBRARIES})
-#]]
 
-#[[
-# GLEW from source
-add_subdirectory("${CMAKE_SOURCE_DIR}/vendor/glew-cmake")
-target_include_directories(${PROJECT_NAME} PRIVATE
-    "${CMAKE_SOURCE_DIR}/vendor/glew-cmake/include")
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    libglew_static)
-#]]
 
-#[
-# GLFW from installed binaries
-find_package(glfw3 CONFIG REQUIRED)
-target_include_directories(${PROJECT_NAME} PRIVATE
-    ${GLFW_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    glfw)
-#]]
+## GLFW setup
+find_package(glfw3 CONFIG)
+if(${glfw3_FOUND})
+    # GLFW from installed binaries
+    message("Found GLFW as installed library.")
+    target_include_directories(${PROJECT_NAME} PRIVATE
+        ${GLFW_INCLUDE_DIRS})
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        glfw)
+else()
+    # GLFW from source
+    message("Could not find GLFW. Installing from local source.")
+    set(GLEW_SUBMODULE_DIR "${CMAKE_SOURCE_DIR}/vendor/glfw")
 
-#[[
-# GLFW from source
-set( GLFW_BUILD_DOCS OFF CACHE BOOL  "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set( GLFW_INSTALL OFF CACHE BOOL  "" FORCE)
-add_subdirectory("${CMAKE_SOURCE_DIR}/vendor/glfw")
-target_include_directories(${PROJECT_NAME} PRIVATE
-    "${CMAKE_SOURCE_DIR}/vendor/glfw/include")
-target_link_libraries(${PROJECT_NAME} PRIVATE
-    glfw)
+    # Install Git submodule
+    if(NOT EXISTS "${GLFW_SUBMODULE_DIR}/CMakeLists.txt")
+        find_package(Git REQUIRED)
+        execute_process(COMMAND ${GIT_EXECUTABLE}
+            submodule update --init --recursive -- vendor/glfw
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            COMMAND_ERROR_IS_FATAL ANY)
+    endif()
+
+    set( GLFW_BUILD_DOCS OFF CACHE BOOL  "" FORCE)
+    set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set( GLFW_INSTALL OFF CACHE BOOL  "" FORCE)
+    add_subdirectory("${CMAKE_SOURCE_DIR}/vendor/glfw")
+    target_include_directories(${PROJECT_NAME} PRIVATE
+        "${CMAKE_SOURCE_DIR}/vendor/glfw/include")
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        glfw)
+endif()
 #]]
 
 return()
