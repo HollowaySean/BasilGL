@@ -1,14 +1,12 @@
-name: Proof of Concept Build Actions
+name: Build and run unit tests
 run-name: ${{ github.actor }} has pushed a commit
 on: [push]
 jobs:
-    Build-with-GCC:
+    Build-and-Test_Ubuntu:
         runs-on: ubuntu-latest
         steps:
-            - run: echo "Checking out repository on ${{ runner.os }} server"
             - name: Check out repository code
               uses: actions/checkout@v3
-            - run: echo "${{ github.repository }} has been cloned successfully"
             - name: Install OpenGL
               run: |
                 echo "Installing OpenGL" && \
@@ -19,12 +17,11 @@ jobs:
               run: |
                 echo "Configuring CMake" && \
                     mkdir build && cd build && cmake ..
-            - name: Build executables
+            - name: Build target binaries
               run: |
                 echo "Building targets" && \
-                    pwd && ls && cd build && make && echo "Successful build"
+                    cd build && make && echo "Successful build"
             - name: Run unit tests
               run: |
-                pwd && ls && cd build && pwd && ls && ./BlackHoleViz_test && \
+                cd build && pwd && ls && ./BlackHoleViz_test && \
                     echo "Unit tests passed."
-            - run: echo "Completed with status ${{ job.status }}"
