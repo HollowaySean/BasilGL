@@ -65,7 +65,7 @@ else()
     if(NOT EXISTS "${GLEW_SUBMODULE_DIR}/CMakeLists.txt")
         find_package(Git REQUIRED)
         execute_process(COMMAND ${GIT_EXECUTABLE}
-            submodule update --init --recursive
+            submodule update --init --recursive -- glew-cmake
             WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
             COMMAND_ERROR_IS_FATAL ANY)
     endif()
