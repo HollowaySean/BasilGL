@@ -148,7 +148,8 @@ find_program( GCOVR_PATH gcovr PATHS ${CMAKE_SOURCE_DIR}/scripts/test)
 find_program( CPPFILT_PATH NAMES c++filt )
 
 if(NOT GCOV_PATH)
-    message(FATAL_ERROR "gcov not found! Aborting...")
+    message(WARNING "gcov not found! Aborting...")
+    return()
 endif() # NOT GCOV_PATH
 
 # Check supported compiler (Clang, GNU and Flang)
@@ -156,11 +157,12 @@ get_property(LANGUAGES GLOBAL PROPERTY ENABLED_LANGUAGES)
 foreach(LANG ${LANGUAGES})
   if("${CMAKE_${LANG}_COMPILER_ID}" MATCHES "(Apple)?[Cc]lang")
     if("${CMAKE_${LANG}_COMPILER_VERSION}" VERSION_LESS 3)
-      message(FATAL_ERROR "Clang version must be 3.0.0 or greater! Aborting...")
+      message(WARNING "Clang version must be 3.0.0 or greater! Aborting coverage...")
+      return()
     endif()
   elseif(NOT "${CMAKE_${LANG}_COMPILER_ID}" MATCHES "GNU"
          AND NOT "${CMAKE_${LANG}_COMPILER_ID}" MATCHES "(LLVM)?[Ff]lang")
-    message(FATAL_ERROR "Compiler is not GNU or Flang! Aborting...")
+    message(NOTICE "Compiler for ${LANG} is not GNU or Flang, skipping coverage.")
   endif()
 endforeach()
 
