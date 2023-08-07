@@ -13,6 +13,7 @@ Required packages:
 Test packages:
 - catch2
 - gcovr (optional)
+- Doxygen (optional)
 
 Commit check packages:
 - pre-commit

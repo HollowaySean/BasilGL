@@ -206,7 +206,8 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
             EXECUTABLE ${TEST_TARGET_NAME}
             EXCLUDE "tst/*" "vendor/*" "include/*" "src/main.cpp"
         )
-
+    else()
+        message("GNUCXX compiler required to run code coverage. Skipping.")
     endif(CMAKE_COMPILER_IS_GNUCXX)
 
 endif()

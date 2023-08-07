@@ -1,0 +1,15 @@
+name: Proof of Concept Build Actions
+run-name: ${{ github.actor }} has pushed a commit
+on: [push]
+jobs:
+    Build-with-GCC:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "Checking out repository on ${{ runner.os }} server"
+            - name: Check out repository code
+              uses: actions/checkout
+            - run: echo "${{ github.repository }} has been cloned successfully"
+            - run: echo "Configuring CMake"
+            - name: Configure CMake
+              run: mkdir build && cd build && cmake ..
+            - run: echo "Completed with status ${{ job.status }}"
