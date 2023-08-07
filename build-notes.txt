@@ -16,11 +16,13 @@ Commit check packages:
 - cpplint
 - cppcheck
 
+Notes:
+- Does not compile out-of-the-box on MacOS
+
 TODO:
 - Default to only main executable build
 - Fix gcovr language issue
 - Add README instructions
-- Test on macOS
 - Try out GitHub Actions
 - Learn about GitHub releases
 - Figure out if I should commit .vscode
