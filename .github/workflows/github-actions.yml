@@ -22,9 +22,9 @@ jobs:
             - name: Build executables
               run: |
                 echo "Building targets" && \
-                    pwd && ls && cd build && make . && echo "Successful build"
+                    pwd && ls && cd build && make && echo "Successful build"
             - name: Run unit tests
               run: |
-                ./build/BlackHoleViz_test && \
+                pwd && ls && cd build && pwd && ls && ./BlackHoleViz_test && \
                     echo "Unit tests passed."
             - run: echo "Completed with status ${{ job.status }}"
