@@ -9,10 +9,18 @@ jobs:
             - name: Check out repository code
               uses: actions/checkout@v3
             - run: echo "${{ github.repository }} has been cloned successfully"
-            - run: echo "Installing OpenGL"
-            - run: sudo apt update
-            - run: sudo apt install --fix-missing libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
+            - run: echo "Installing OpenGL" && \
+                   sudo apt update && \
+                   sudo apt install --fix-missing \
+                   libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
             - run: echo "Configuring CMake"
             - name: Configure CMake
-              run: mkdir build && cd build && cmake ..
+              run: echo "Configuring CMake" && \
+                   mkdir build && cd build && cmake ..
+            - name: Build executables
+              run: echo "Building all targets" && \
+                   make all && echo "Successful build"
+            - name: Run unit tests
+              run: ./BlackHoleViz_test && \
+                   echo "Unit tests passed."
             - run: echo "Completed with status ${{ job.status }}"
