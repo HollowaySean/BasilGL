@@ -141,7 +141,6 @@ else()
     set(CATCH2_INCLUDE_DIRS "${CATCH2_SUBMODULE_DIR}/single_include/catch2")
 endif()
 
-
 include(Catch)
 include(CTest)
 

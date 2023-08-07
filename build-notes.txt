@@ -1,7 +1,10 @@
 Required build tools:
-- git (if downloading from CLI)
+- Git
 - CMake
-- A compiler
+- Recommended C++ compiler:
+  - Linux: GCC
+  - Windows: GCC
+  - macOS: CLang
 
 Required packages:
 - libglew-dev
@@ -9,7 +12,7 @@ Required packages:
 
 Test packages:
 - catch2
-- gcovr
+- gcovr (optional)
 
 Commit check packages:
 - pre-commit
@@ -17,12 +20,11 @@ Commit check packages:
 - cppcheck
 
 Notes:
-- Does not compile out-of-the-box on MacOS
+- Main compiles on macOS with CLang but test target fails to run
 
 TODO:
+- Try building as library
 - Default to only main executable build
-- Fix gcovr language issue
 - Add README instructions
 - Try out GitHub Actions
 - Learn about GitHub releases
-- Figure out if I should commit .vscode

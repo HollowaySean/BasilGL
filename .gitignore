@@ -33,3 +33,7 @@
 
 # Build artifacts
 build
+
+# Visual Studio Code settings
+.vscode/*
+!.vscode/extensions.json
