@@ -26,8 +26,9 @@ Notes:
 TODO:
 - Add README instructions
 - After completing MVP of window library:
-    - Build as library
-    - Test linking to library
-    - Fix build targets
-    - GitHub Actions for all build targets
-    - GitHub release tags and binary downloads
+  - Build as library
+  - Test linking to library
+  - Fix build targets
+  - Build to WASM
+  - GitHub Actions for all build targets
+  - GitHub release tags and binary downloads
