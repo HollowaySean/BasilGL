@@ -7,7 +7,7 @@ jobs:
         steps:
             - run: echo "Checking out repository on ${{ runner.os }} server"
             - name: Check out repository code
-              uses: actions/checkout
+              uses: actions/checkout@v3
             - run: echo "${{ github.repository }} has been cloned successfully"
             - run: echo "Configuring CMake"
             - name: Configure CMake
