@@ -117,7 +117,21 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${GLFW_LIBRARIES})
 
 ## Testing setup
-find_package(Catch2 REQUIRED)
+find_package(Catch2 2 QUIET)
+if(${Catch2_FOUND})
+    # Catch2 from installed binaries
+    message("Found Catch2 as installed library.")
+    set(CATCH2_LIBRARIES Catch2::Catch2)
+    set(CATCH2_INCLUDE_DIRS "/usr/include/catch2")
+else()
+    #Catch2 from local source
+    message("Could not find Catch2. Installing from local source.")
+    add_subdirectory("${CMAKE_SOURCE_DIR}/vendor/catch2")
+    set(CATCH2_LIBRARIES Catch2::Catch2)
+    set(CATCH2_INCLUDE_DIRS "${CMAKE_SOURCE_DIR}/vendor/catch2/single_include/catch2")
+endif()
+
+
 include(Catch)
 include(CTest)
 
@@ -145,20 +159,18 @@ add_executable(
     ${TEST_TARGET_NAME}
     "${CMAKE_SOURCE_DIR}/tst/main.test.cpp"
     ${TST_FILE_LIST}
-    ${SRC_FILE_LIST}
-)
+    ${SRC_FILE_LIST})
+
 target_include_directories(
     ${TEST_TARGET_NAME} PRIVATE
     ${TST_DIR_LIST}
     ${SRC_DIR_LIST}
-    "${CMAKE_SOURCE_DIR}/vendor/catch2/"
-    ${GLEW_INCLUDE_DIRS}
-)
-target_link_libraries(${TEST_TARGET_NAME} Catch2::Catch2)
+    ${CATCH2_INCLUDE_DIRS})
 target_link_libraries(${TEST_TARGET_NAME}
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
-    ${GLFW_LIBRARIES})
+    ${GLFW_LIBRARIES}
+    ${CATCH2_LIBRARIES})
 
 catch_discover_tests(${TEST_TARGET_NAME})
 
@@ -183,7 +195,7 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
         setup_target_for_coverage_gcovr_html(
             NAME ${PROJECT_COVERAGE_NAME}
             EXECUTABLE ${TEST_TARGET_NAME}
-            EXCLUDE "tst/*" "external/*" "include/*" "src/main.cpp"
+            EXCLUDE "tst/*" "vendor/*" "include/*" "src/main.cpp"
         )
 
     endif(CMAKE_COMPILER_IS_GNUCXX)

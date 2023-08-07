@@ -1,3 +1,5 @@
+#include <functional>
+
 #include <catch.hpp>
 
 #include "DefaultTimerSource.hpp"
