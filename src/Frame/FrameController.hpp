@@ -97,6 +97,23 @@ class FrameController {
         std::string processName = "anonymous";
     };
 
+    struct ProcessIterator {
+     public:
+        std::list<ProcessInstance*> early;
+        std::list<ProcessInstance*> main;
+        std::list<ProcessInstance*> late;
+
+        std::list<ProcessInstance*>::iterator currentPointer;
+        std::list<ProcessInstance*> currentList;
+
+        FrameController::ProcessInstance* back();
+        std::list<ProcessInstance*>::iterator begin();
+        std::list<ProcessInstance*>::iterator end();
+        std::list<ProcessInstance*>::iterator next();
+        void rectify();
+        int size();
+    };
+
     class ProcessManager {
      public:
         friend class FrameController;
@@ -105,13 +122,13 @@ class FrameController {
 
      private:
     #endif
-        // Temporary - Will add more detail
         explicit ProcessManager(
             std::shared_ptr<ITimerSource> timerSource = nullptr);
-        std::list<ProcessInstance*> processes;
+        ProcessIterator processes;
         std::shared_ptr<ITimerSource> timerSource;
 
         void addProcess(ProcessInstance *newProcess);
+        void removeProcess(ProcessInstance *processToRemove);
         bool hasProcesses();
 
         void runStart();

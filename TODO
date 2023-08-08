@@ -1,6 +1,6 @@
 - Overhaul FrameController
+  - Unit tests for process manager
   - Early & late processes
-  - Process removal
   - Null-checking in process manager
 - Bring readable name to MetricsReporter
 - Unit tests for MetricsReporter
