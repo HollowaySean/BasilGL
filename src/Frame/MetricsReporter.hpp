@@ -1,6 +1,9 @@
 #ifndef SRC_FRAME_METRICSREPORTER_HPP_
 #define SRC_FRAME_METRICSREPORTER_HPP_
 
+#include <map>
+#include <string>
+
 #include "IFrameProcess.hpp"
 #include "FrameMetrics.hpp"
 
@@ -20,6 +23,7 @@ class MetricsReporter : public IFrameProcess {
 
  private:
     FrameMetrics *metrics;
+    std::map<int, std::string> *processNames;
 };
 
 #endif  // SRC_FRAME_METRICSREPORTER_HPP_

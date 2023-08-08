@@ -1,3 +1,2 @@
-- Bring readable name to MetricsReporter
-- Unit tests for MetricsReporter
-- Continue on Window implementation
+- UI tests?
+- Window Pane implementation

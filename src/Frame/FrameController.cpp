@@ -10,6 +10,8 @@ FrameController::FrameController(
     currentState = READY;
 
     metrics = FrameMetrics();
+    metrics.setProcessNames(&processNames);
+
     manager = ProcessManager(timerSource);
 }
 
@@ -24,6 +26,7 @@ void FrameController::addProcess(IFrameProcess *processToAdd,
         processName
     };
 
+    processNames.emplace(nextProcessID, processName);
     manager.addProcess(instance, ordinal);
     nextProcessID++;
 }
@@ -196,7 +199,6 @@ void FrameController::ProcessManager::removeProcess(
             processes.currentList->remove(*(process));
             break;
         }
-
         process = processes.next();
     }
 

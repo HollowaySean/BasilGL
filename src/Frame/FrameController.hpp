@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <list>
+#include <map>
 #include <memory>
 #include <string>
 
@@ -93,6 +94,9 @@ class FrameController {
     /** @returns The current state of the controller. */
     FCState getCurrentState() { return currentState; }
 
+    /** @returns Reference to map from PID to process name. */
+    std::map<int, std::string>* getProcessNames() { return &processNames; }
+
 
 #ifndef TEST_BUILD
 
@@ -142,9 +146,6 @@ class FrameController {
 
         void addProcess(ProcessInstance *newProcess,
             Ordinal ordinal = Ordinal::MAIN);
-        void addEarlyProcess(ProcessInstance *newProcess);
-        void addMainProcess(ProcessInstance *newProcess);
-        void addLateProcess(ProcessInstance *newProcess);
         void removeProcess(ProcessInstance *processToRemove);
         bool hasProcesses();
 
@@ -155,7 +156,10 @@ class FrameController {
 
         FCState currentState = RUNNING;
     };
+
+    // Processes
     ProcessManager manager;
+    std::map<int, std::string> processNames;
 
     // State
     FCState currentState;

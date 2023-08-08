@@ -4,6 +4,7 @@
 #include <list>
 #include <map>
 #include <memory>
+#include <string>
 
 #include "ITimerSource.hpp"
 
@@ -51,11 +52,21 @@ class FrameMetrics {
     /** @param setBufferSize Number of frames to average over. */
     void setBufferSize(int setBufferSize);
 
+    /** @param processNamesReference Map of PIDs to process names. */
+    void setProcessNames(std::map<int, std::string>* processNamesReference) {
+        processNames = processNamesReference;
+    }
+
     /** @return Number of frames to average over. */
     int getBufferSize();
 
     /** @return Number of frames currently in buffer. */
     int getBufferCount();
+
+    /** @return Map of PIDs to process names. */
+    std::map<int, std::string>* getProcessNames() {
+        return processNames;
+    }
 
     /** @brief Add a new frame timing record to the buffer. */
     void pushTimerRecord(TimerRecord record);
@@ -77,10 +88,9 @@ class FrameMetrics {
  private:
 #endif
     int bufferSize;
-
     FrameMetricsRecord currentSum;
-
     std::list<FrameMetricsRecord> buffer;
+    std::map<int, std::string>* processNames;
 };
 
 #endif  // SRC_FRAME_FRAMEMETRICS_HPP_
