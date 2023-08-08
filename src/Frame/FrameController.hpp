@@ -127,8 +127,10 @@ class FrameController {
         ProcessIterator processes;
         std::shared_ptr<ITimerSource> timerSource;
 
+        void addEarlyProcess(ProcessInstance *newProcess);
         void addProcess(ProcessInstance *newProcess);
-        void removeProcess(ProcessInstance *processToRemove);
+        void addLateProcess(ProcessInstance *newProcess);
+        void removeProcess(const ProcessInstance *processToRemove);
         bool hasProcesses();
 
         void runStart();

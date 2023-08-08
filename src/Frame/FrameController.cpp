@@ -121,7 +121,7 @@ FrameController::ProcessIterator::end() {
 
 std::list<FrameController::ProcessInstance*>::iterator
 FrameController::ProcessIterator::next() {
-    currentPointer++;
+    ++currentPointer;
     rectify();
     return currentPointer;
 }
@@ -134,6 +134,13 @@ FrameController::ProcessManager::ProcessManager(
         std::shared_ptr<ITimerSource> newTimerSource):
             timerSource(newTimerSource) {}
 
+void FrameController::ProcessManager::addEarlyProcess(
+        ProcessInstance *newProcess) {
+    if (newProcess) {
+        processes.early.push_back(newProcess);
+    }
+}
+
 void FrameController::ProcessManager::addProcess(
         ProcessInstance *newProcess) {
     if (newProcess) {
@@ -141,8 +148,15 @@ void FrameController::ProcessManager::addProcess(
     }
 }
 
+void FrameController::ProcessManager::addLateProcess(
+        ProcessInstance *newProcess) {
+    if (newProcess) {
+        processes.late.push_back(newProcess);
+    }
+}
+
 void FrameController::ProcessManager::removeProcess(
-        ProcessInstance *processToRemove) {
+        const ProcessInstance *processToRemove) {
     if (!processToRemove) {
         return;
     }
