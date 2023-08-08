@@ -14,7 +14,9 @@ FrameController::FrameController(
 }
 
 void FrameController::addProcess(IFrameProcess *processToAdd,
-        Privilege privilegeLevel, std::string processName) {
+        Privilege privilegeLevel,
+        std::string processName,
+        Ordinal ordinal) {
     ProcessInstance *instance = new ProcessInstance {
         processToAdd,
         privilegeLevel,
@@ -22,13 +24,25 @@ void FrameController::addProcess(IFrameProcess *processToAdd,
         processName
     };
 
-    manager.addProcess(instance);
+    manager.addProcess(instance, ordinal);
     nextProcessID++;
 }
 
 void FrameController::addProcess(IFrameProcess *processToAdd,
-        std::string const processName) {
-    addProcess(processToAdd, NONE, processName);
+        std::string const processName,
+        Ordinal ordinal) {
+    addProcess(processToAdd, NONE, processName, ordinal);
+}
+
+void FrameController::addProcess(IFrameProcess *processToAdd,
+        Privilege privilegeLevel,
+        Ordinal ordinal) {
+    addProcess(processToAdd, privilegeLevel, "anonymous", ordinal);
+}
+
+void FrameController::addProcess(IFrameProcess *processToAdd,
+        Ordinal ordinal) {
+    addProcess(processToAdd, NONE, "anonymous", ordinal);
 }
 
 void FrameController::setFrameCap(int framesPerSecond) {
@@ -85,19 +99,19 @@ bool FrameController::shouldRunLoop() {
 void FrameController::ProcessIterator::rectify() {
     if (currentPointer == early.end()) {
         currentPointer = main.begin();
-        currentList = main;
+        currentList = &main;
     }
 
     if (currentPointer == main.end()) {
         currentPointer = late.begin();
-        currentList = late;
+        currentList = &late;
     }
 }
 
 std::list<FrameController::ProcessInstance*>::iterator
 FrameController::ProcessIterator::begin() {
     currentPointer = early.begin();
-    currentList = early;
+    currentList = &early;
 
     rectify();
     return currentPointer;
@@ -132,55 +146,63 @@ int FrameController::ProcessIterator::size() {
 
 FrameController::ProcessManager::ProcessManager(
         std::shared_ptr<ITimerSource> newTimerSource):
-            timerSource(newTimerSource) {}
-
-void FrameController::ProcessManager::addEarlyProcess(
-        ProcessInstance *newProcess) {
-    if (newProcess) {
-        processes.early.push_back(newProcess);
-    }
-}
+            timerSource(newTimerSource), processes() {}
 
 void FrameController::ProcessManager::addProcess(
-        ProcessInstance *newProcess) {
-    if (newProcess) {
-        processes.main.push_back(newProcess);
+        ProcessInstance *newProcess, Ordinal ordinal) {
+    std::list<ProcessInstance*>* list;
+    switch (ordinal) {
+        case Ordinal::EARLY:
+            list = &(processes.early);
+            break;
+        case Ordinal::LATE:
+            list = &(processes.late);
+            break;
+        default:
+            list = &(processes.main);
     }
-}
 
-void FrameController::ProcessManager::addLateProcess(
-        ProcessInstance *newProcess) {
     if (newProcess) {
-        processes.late.push_back(newProcess);
+        list->push_back(newProcess);
+
+        if (processes.size() == 1) {
+            processes.currentPointer = processes.begin();
+        }
     }
 }
 
 void FrameController::ProcessManager::removeProcess(
-        const ProcessInstance *processToRemove) {
+        ProcessInstance *processToRemove) {
     if (!processToRemove) {
+        return;
+    }
+
+    // Handle next pointer when removing current
+    if (*(processes.currentPointer) == processToRemove) {
+        std::list<ProcessInstance*> *removeList
+            = &(*(processes).currentList);
+        processes.next();
+        removeList->remove(processToRemove);
         return;
     }
 
     std::list<ProcessInstance*>::iterator placeholder
         = processes.currentPointer;
-    if (*(placeholder) == processToRemove) {
-        std::list<ProcessInstance*> removeList
-            = processes.currentList;
-        processes.next();
-        removeList.remove(*(placeholder));
-    }
 
     std::list<ProcessInstance*>::iterator process
         = processes.begin();
     while (process != processes.end()) {
         if (*(process) == processToRemove) {
-            processes.currentList.remove(*(process));
+            processes.currentList->remove(*(process));
+            break;
         }
 
         process = processes.next();
     }
 
+    // Restore placeholder
     processes.currentPointer = placeholder;
+    processes.next();
     processes.rectify();
 }
 
@@ -230,6 +252,8 @@ void FrameController::ProcessManager::runMethod(
                 break;
             case FPState::REMOVE_PROCESS:
                 removeProcess(*(process));
+                process = processes.currentPointer;
+                continue;
             case FPState::SKIP_PROCESS:
                 process = processes.next();
                 continue;

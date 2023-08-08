@@ -1,5 +1,3 @@
-- Overhaul FrameController
-  - Unit tests for process manager
 - Bring readable name to MetricsReporter
 - Unit tests for MetricsReporter
 - Continue on Window implementation

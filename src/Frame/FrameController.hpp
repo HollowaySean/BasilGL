@@ -34,18 +34,31 @@ class FrameController {
     */
     enum Privilege { NONE, LOW, HIGH };
 
+    /** @brief Enum type representing loose ordering for processes.
+     *  Possible values are EARLY, MAIN, and LATE.
+     */
+    enum Ordinal { EARLY, MAIN, LATE };
+
 
     // Process Management
     /** @brief Adds a process
      *  @param processToAdd     Pointer to process to add
      *  @param privilegeLevel   [Optional] Admin privilege level for process
      *  @param processName      [Optional] Human readable process name
+     *  @param ordinal          [Optional] Enum indicating whether to run early or late
     */
     void addProcess(IFrameProcess *processToAdd,
             Privilege privilegeLevel = NONE,
-            std::string processName = "anonymous");
+            std::string processName = "anonymous",
+            Ordinal ordinal = MAIN);
     void addProcess(IFrameProcess *processToAdd,
-            std::string processName);
+            std::string processName,
+            Ordinal ordinal = MAIN);
+    void addProcess(IFrameProcess *processToAdd,
+            Privilege privilegeLevel,
+            Ordinal ordinal);
+    void addProcess(IFrameProcess *processToAdd,
+            Ordinal ordinal);
 
 
     // Metrics
@@ -104,7 +117,7 @@ class FrameController {
         std::list<ProcessInstance*> late;
 
         std::list<ProcessInstance*>::iterator currentPointer;
-        std::list<ProcessInstance*> currentList;
+        std::list<ProcessInstance*>* currentList;
 
         FrameController::ProcessInstance* back();
         std::list<ProcessInstance*>::iterator begin();
@@ -127,10 +140,12 @@ class FrameController {
         ProcessIterator processes;
         std::shared_ptr<ITimerSource> timerSource;
 
+        void addProcess(ProcessInstance *newProcess,
+            Ordinal ordinal = Ordinal::MAIN);
         void addEarlyProcess(ProcessInstance *newProcess);
-        void addProcess(ProcessInstance *newProcess);
+        void addMainProcess(ProcessInstance *newProcess);
         void addLateProcess(ProcessInstance *newProcess);
-        void removeProcess(const ProcessInstance *processToRemove);
+        void removeProcess(ProcessInstance *processToRemove);
         bool hasProcesses();
 
         void runStart();

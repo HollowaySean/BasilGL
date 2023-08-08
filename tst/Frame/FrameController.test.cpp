@@ -4,10 +4,13 @@
 
 #include "FrameController.hpp"
 
-using FCState = FrameController::FCState;
-using FPState = IFrameProcess::State;
-using Manager = FrameController::ProcessManager;
-using Priv = FrameController::Privilege;
+using FCState   = FrameController::FCState;
+using FPState   = IFrameProcess::State;
+using Manager   = FrameController::ProcessManager;
+using Iterator  = FrameController::ProcessIterator;
+using Instance  = FrameController::ProcessInstance;
+using Priv      = FrameController::Privilege;
+using Ordinal   = FrameController::Ordinal;
 
 class TestProcess : public IFrameProcess {
  public:
@@ -117,6 +120,25 @@ TEST_CASE("Frame_FrameController_addProcess") {
         REQUIRE(processInstance->privilegeLevel == Priv::HIGH);
         REQUIRE(processInstance->processName == "anonymous");
     }
+
+    SECTION("Early and late processes run in correct order") {
+        controller.addProcess(&process, Ordinal::EARLY);
+        controller.addProcess(&process, Priv::HIGH, Ordinal::LATE);
+        controller.addProcess(&process, Ordinal::MAIN);
+
+        auto processUnderTest = manager->processes.begin();
+        int processID = (*(processUnderTest))->processID;
+        REQUIRE(processID == 1);
+        processUnderTest = manager->processes.next();
+        processID = (*(processUnderTest))->processID;
+        REQUIRE(processID == 0);
+        processUnderTest = manager->processes.next();
+        processID = (*(processUnderTest))->processID;
+        REQUIRE(processID == 3);
+        processUnderTest = manager->processes.next();
+        processID = (*(processUnderTest))->processID;
+        REQUIRE(processID == 2);
+    }
 }
 
 TEST_CASE("Frame_FrameController_setFrameCap") {
@@ -184,7 +206,7 @@ TEST_CASE("Frame_FrameController_kill") {
     }
 }
 
-TEST_CASE("Frame_Frameontroller_shouldRunLoop") {
+TEST_CASE("Frame_FrameController_shouldRunLoop") {
     FrameController controller = FrameController();
     TestProcess process = TestProcess();
 
@@ -203,6 +225,40 @@ TEST_CASE("Frame_Frameontroller_shouldRunLoop") {
         controller.currentState = FCState::READY;
         controller.addProcess(&process);
         REQUIRE(controller.shouldRunLoop());
+    }
+}
+
+TEST_CASE("Frame_ProcessIterator_back") {
+    FrameController controller = FrameController();
+    Manager *manager = &controller.manager;
+    Iterator *iterator = &(manager->processes);
+
+    TestProcess earlyProcess = TestProcess();
+    TestProcess mainProcess = TestProcess();
+    TestProcess lateProcess = TestProcess();
+
+    SECTION("Returns late.back if it exists") {
+        controller.addProcess(&earlyProcess, Ordinal::EARLY);
+        controller.addProcess(&mainProcess, Ordinal::MAIN);
+        controller.addProcess(&lateProcess, Ordinal::LATE);
+
+        auto back = iterator->back();
+        REQUIRE(back->frameProcess == &lateProcess);
+    }
+
+    SECTION("Returns main.back if late does not exist") {
+        controller.addProcess(&earlyProcess, Ordinal::EARLY);
+        controller.addProcess(&mainProcess, Ordinal::MAIN);
+
+        auto back = iterator->back();
+        REQUIRE(back->frameProcess == &mainProcess);
+    }
+
+    SECTION("Returns early.back if main and late do not exist") {
+        controller.addProcess(&earlyProcess, Ordinal::EARLY);
+
+        auto back = iterator->back();
+        REQUIRE(back->frameProcess == &earlyProcess);
     }
 }
 
@@ -227,6 +283,50 @@ TEST_CASE("Frame_ProcessManager_addProcess") {
         REQUIRE(processCount == 1);
     }
 }
+
+TEST_CASE("Frame_ProcessManager_removeProcess") {
+    FrameController controller = FrameController();
+    Manager *manager = &controller.manager;
+
+    TestProcess earlyProcess = TestProcess();
+    Instance *earlyInstance = new Instance {
+        &earlyProcess, Priv::NONE, 0, "" };
+    TestProcess mainProcessOne = TestProcess();
+    Instance *mainInstanceOne  = new Instance {
+        &mainProcessOne, Priv::NONE, 1, "" };
+    TestProcess mainProcessTwo = TestProcess();
+    Instance *mainInstanceTwo  = new Instance {
+        &mainProcessTwo, Priv::NONE, 2, "" };
+    TestProcess lateProcess = TestProcess();
+    Instance *lateInstance     = new Instance {
+        &lateProcess, Priv::NONE, 3, "" };
+
+    manager->addProcess(earlyInstance, Ordinal::EARLY);
+    manager->addProcess(mainInstanceOne);
+    manager->addProcess(mainInstanceTwo);
+    manager->addProcess(lateInstance, Ordinal::LATE);
+
+    SECTION("NoOp if process is null") {
+        manager->removeProcess(nullptr);
+        REQUIRE(manager->processes.size() == 4);
+    }
+
+    SECTION("Correctly removes process") {
+        manager->removeProcess(mainInstanceTwo);
+        REQUIRE(manager->processes.size() == 3);
+        manager->processes.begin();
+        manager->removeProcess(earlyInstance);
+        REQUIRE(manager->processes.size() == 2);
+        manager->removeProcess(earlyInstance);
+        REQUIRE(manager->processes.size() == 2);
+        manager->removeProcess(lateInstance);
+        REQUIRE(manager->processes.size() == 1);
+        manager->processes.begin();
+        manager->removeProcess(mainInstanceOne);
+        REQUIRE(manager->processes.size() == 0);
+    }
+}
+
 
 TEST_CASE("Frame_ProcessManager_hasProcesses") {
     FrameController controller = FrameController();
@@ -446,5 +546,22 @@ TEST_CASE("Frame_ProcessManager_runMethod") {
         REQUIRE(firstProcess.hasRunLoop);
         REQUIRE(secondProcess.hasRunLoop);
         REQUIRE_FALSE(thirdProcess.hasRunLoop);
+    }
+
+    SECTION("Removes process when requested") {
+        controller.addProcess(&firstProcess, Priv::HIGH);
+        controller.addProcess(&secondProcess, Priv::LOW);
+        controller.addProcess(&thirdProcess, Priv::NONE);
+
+        firstProcess.currentState = FPState::REMOVE_PROCESS;
+
+        manager->runLoop();
+        REQUIRE(manager->currentState == FCState::RUNNING);
+        REQUIRE_FALSE(firstProcess.hasRunLoop);
+        REQUIRE(secondProcess.hasRunLoop);
+        REQUIRE(thirdProcess.hasRunLoop);
+
+        int numberOfProcesses = manager->processes.size();
+        REQUIRE(numberOfProcesses == 2);
     }
 }
