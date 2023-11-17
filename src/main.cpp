@@ -25,7 +25,7 @@ int main(int argc, char** argv) {
         FrameController::Privilege::HIGH,
         "WindowView");
 
-    frameController.setFrameCap(20);
+    frameController.setFrameCap(30);
     frameController.run();
 
     return 0;

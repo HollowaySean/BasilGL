@@ -70,7 +70,7 @@ double FrameMetricsRecord::getUncappedFrameRate() {
     return 1. / workTime;
 }
 
-FrameMetrics::FrameMetrics(int newBufferSize) {
+FrameMetrics::FrameMetrics(int newBufferSize): processNames() {
     clearBuffer();
     setBufferSize(newBufferSize);
 }

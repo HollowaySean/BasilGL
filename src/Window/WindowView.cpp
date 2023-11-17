@@ -2,10 +2,13 @@
 
 #include <chrono>
 #include <thread>
+#include <cmath>
+#include <vector>
 
 #include "WindowView.hpp"
 
 WindowView::WindowView(): glfwWindow() {
+    pane = nullptr;
     initializeGLFWContext();
 }
 
@@ -23,6 +26,27 @@ void WindowView::onStart() {
     glViewport(0, 0,
         windowOptions.width,
         windowOptions.height);
+
+
+
+    testTexture = new std::vector<float>();
+    for (int i = 0; i < 100; i++) {
+        testTexture->push_back(1.0f);
+    }
+
+    std::filesystem::path vertexPath = "/home/sholloway/dev/BlackHoleViz_v3/src/Window/temp/test.vert";
+    std::filesystem::path fragmentPath = "/home/sholloway/dev/BlackHoleViz_v3/src/Window/temp/test.frag";
+
+    GLVertexShader vertexShader = GLVertexShader(vertexPath);
+    GLFragmentShader fragmentShader = GLFragmentShader(fragmentPath);
+    GLShaderProgram shaderProgram = GLShaderProgram(vertexShader, fragmentShader);
+
+    shaderProgram.setUniformInt(windowOptions.width, "u_width");
+    shaderProgram.setUniformInt(windowOptions.height, "u_height");
+
+    pane = new GLTexturePane(shaderProgram);
+    pane->setTexture(testTexture);
+    pane->setup();
 }
 
 void WindowView::onLoop() {
@@ -36,17 +60,15 @@ void WindowView::onLoop() {
         glfwTerminate();
     }
 
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    float time = std::chrono::steady_clock::now().time_since_epoch().count();
 
-    glBegin(GL_POLYGON);
-        glVertex3f(0.5, 0.0, 0.5);
-        glVertex3f(0.5, 0.0, 0.0);
-        glVertex3f(0.0, 0.5, 0.0);
-        glVertex3f(0.0, 0.0, 0.5);
-    glEnd();
-
-    glFlush();
+    // glClearColor(
+    //     0.5f + 0.5f*sin(time / (1000 * 1000 * 1000)),
+    //     0.1f,
+    //     0.5f + 0.5f*cos(time / (1000 * 1000 * 1000)),
+    //     1.0f);
+    // glClear(GL_COLOR_BUFFER_BIT);
+    pane->draw();
 
     glfwSwapBuffers(glfwWindow);
     glfwPollEvents();

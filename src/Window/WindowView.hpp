@@ -4,8 +4,10 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <string>
+#include <vector>
 
 #include "IFrameProcess.hpp"
+#include "GLTexturePane.hpp"
 
 // #include "../Frame/IFrameProcess.hpp"
 
@@ -39,6 +41,9 @@ class WindowView : public IFrameProcess {
     GLFWwindow* createGLFWWindow();
     void initializeGLFWContext();
     void initializeGLEWContext();
+
+    std::vector<float>* testTexture;
+    GLTexturePane *pane;
 };
 
 #endif  // SRC_WINDOW_WINDOWVIEW_HPP_
