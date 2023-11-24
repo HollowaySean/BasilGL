@@ -183,11 +183,18 @@ target_link_libraries(${TEST_TARGET_NAME}
 
 catch_discover_tests(${TEST_TARGET_NAME})
 
+
+## Preprocessor directives
 # Set test-related preprocessor options
 target_compile_definitions(
     ${TEST_TARGET_NAME} PRIVATE
     TEST_BUILD
 )
+
+# Debug build preprocessor options
+if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
+    add_compile_definitions(DEBUG_BUILD)
+endif()
 
 
 ## Code coverage

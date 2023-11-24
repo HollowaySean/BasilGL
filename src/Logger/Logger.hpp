@@ -4,28 +4,42 @@
 #include <iostream>
 #include <string>
 
-// TODO(sholloway): Use preprocessor statement to set this
-// TODO(sholloway): Documentation
-
+/**
+ * @brief Severity level for log message.
+*/
 enum Level { DEBUG, INFO, WARN, ERROR };
 
+/**
+ * @brief Global logger using Singleton pattern.
+*/
 class Logger {
  public:
+    /** @param message  Message to log.
+     *  @param level    Severity level, defaults to "DEBUG".
+     *  @param ostream  Output stream, defaults to std::cout.
+    */
     void Log(std::string message,
         Level level = DEBUG,
         std::ostream& ostream = std::cout);
 
+    /** @return Get minimum severity level to output to ostream. */
     Level getLevel() { return logLevel; }
+
+    /** @brief Set minimum severity level to output to ostream. */
     void setLevel(Level level) { logLevel = level; }
 
-    // Singleton pattern implementation
+    /** @return Instance of Singleton logger. */
     static Logger& get() {
         static Logger instance;
         return instance;
     }
 
  private:
-    Level logLevel = INFO;
+    #ifdef DEBUG_BUILD
+        Level logLevel = DEBUG;
+    #else
+        Level logLevel = INFO;
+    #endif
 
     Logger() {}
     Logger(Logger const&);
