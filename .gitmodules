@@ -8,3 +8,6 @@
 	path = vendor/catch2
 	url = https://github.com/catchorg/Catch2.git
 	branch = v2.x
+[submodule "vendor/fmt"]
+	path = vendor/fmt
+	url = https://github.com/fmtlib/fmt

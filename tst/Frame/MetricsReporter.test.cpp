@@ -1,10 +1,19 @@
+#include <sstream>
+
 #include <catch.hpp>
 
 #include "MetricsReporter.hpp"
 
 TEST_CASE("Frame_MetricsReporter_onLoop") {
     TimerRecord record = TimerRecord();
+    record.processStart.emplace(0, 0);
+    record.processDone.emplace(0, 1);
+
     FrameMetrics metrics = FrameMetrics();
+    std::map<int, std::string> processNames;
+    processNames.emplace(0, "processName");
+    metrics.setProcessNames(&processNames);
+
     std::ostringstream ostream;
 
     MetricsReporter reporter = MetricsReporter(

@@ -116,6 +116,39 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_libraries(${PROJECT_NAME} PRIVATE
     ${GLFW_LIBRARIES})
 
+
+## Format library
+find_package(fmt CONFIG)
+if(${fmt_FOUND})
+    # fmt from installed binaries
+    message("Found fmt as installed library.")
+    set(FMT_LIBRARIES fmt::fmt)
+else()
+    # fmt from source
+    message("Could not find fmt. Installing from local source.")
+    set(FMT_SUBMODULE_DIR "${CMAKE_SOURCE_DIR}/vendor/fmt")
+
+    # Install Git submodule
+    if(NOT EXISTS "${FMT_SUBMODULE_DIR}/CMakeLists.txt")
+        find_package(Git REQUIRED)
+        execute_process(COMMAND ${GIT_EXECUTABLE}
+            submodule update --init --recursive -- vendor/fmt
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            COMMAND_ERROR_IS_FATAL ANY)
+    endif()
+
+    add_subdirectory("${CMAKE_SOURCE_DIR}/vendor/fmt")
+
+    set(FMT_INCLUDE_DIRS "${FMT_SUBMODULE_DIR}/include")
+    set(FMT_LIBRARIES fmt::fmt)
+endif()
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${FMT_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${FMT_LIBRARIES})
+
+
 ## Testing setup
 find_package(Catch2 2 QUIET)
 if(${Catch2_FOUND})
@@ -174,12 +207,14 @@ target_include_directories(
     ${TEST_TARGET_NAME} PRIVATE
     ${TST_DIR_LIST}
     ${SRC_DIR_LIST}
-    ${CATCH2_INCLUDE_DIRS})
+    ${CATCH2_INCLUDE_DIRS}
+    ${FMT_INCLUDE_DIRS})
 target_link_libraries(${TEST_TARGET_NAME} PRIVATE
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
     ${GLFW_LIBRARIES}
-    ${CATCH2_LIBRARIES})
+    ${CATCH2_LIBRARIES}
+    ${FMT_LIBRARIES})
 
 catch_discover_tests(${TEST_TARGET_NAME})
 
@@ -204,7 +239,7 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
     if(CMAKE_COMPILER_IS_GNUCXX)
 
         include(CodeCoverage)
-        append_coverage_compiler_flags()
+        append_coverage_compiler_flags_to_target(${TEST_TARGET_NAME})
 
         message("Running coverage for test: ${TEST_TARGET_NAME}")
         set(PROJECT_COVERAGE_NAME "${PROJECT_NAME}_coverage")

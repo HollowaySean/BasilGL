@@ -1,7 +1,8 @@
 #ifndef SRC_FRAME_METRICSREPORTER_HPP_
 #define SRC_FRAME_METRICSREPORTER_HPP_
 
-#include <format>
+#include <fmt/core.h>
+
 #include <map>
 #include <string>
 
@@ -42,13 +43,13 @@ class MetricsReporter : public IFrameProcess {
     Level logLevel;
     std::ostream& ostream;
 
-    std::format_string<int> FRAME_FORMAT
+    fmt::format_string<int> FRAME_FORMAT
         = "Frame #: {}";
-    std::format_string<double> FRAME_RATE_FORMAT
+    fmt::format_string<double> FRAME_RATE_FORMAT
         = "Frame rate: {:.2f}";
-    std::format_string<double> MAX_FRAME_RATE_FORMAT
+    fmt::format_string<double> MAX_FRAME_RATE_FORMAT
         = "Max frame rate: {:.2f}";
-    std::format_string<const char*, double> PROCESS_TIME_FORMAT
+    fmt::format_string<const char*, double> PROCESS_TIME_FORMAT
         = "Process \'{}\': {:.3f}ms";
 };
 
