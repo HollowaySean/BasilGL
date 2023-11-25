@@ -1,7 +1,8 @@
-#ifndef SRC_LOGGER_LOGGER_HPP_
-#define SRC_LOGGER_LOGGER_HPP_
+#ifndef SRC_LOGGING_LOGGER_HPP_
+#define SRC_LOGGING_LOGGER_HPP_
 
 #include <iostream>
+#include <map>
 #include <string>
 
 /**
@@ -14,12 +15,22 @@ enum Level { DEBUG, INFO, WARN, ERROR };
 */
 class Logger {
  public:
-    /** @param message  Message to log.
+    /**
+     *  @brief          Logs message to output stream.
+     *  @param message  Message to log.
      *  @param level    Severity level, defaults to "DEBUG".
      *  @param ostream  Output stream, defaults to std::cout.
     */
-    void Log(std::string message,
+    void log(const std::string& message,
         Level level = DEBUG,
+        std::ostream& ostream = std::cout);
+
+    /**
+     * @brief           Logs line break to output stream
+     * @param level     Severity level, defaults to "DEBUG".
+     * @param ostream   Output stream, defaults to std::cout.
+    */
+    void lineBreak(Level level = DEBUG,
         std::ostream& ostream = std::cout);
 
     /** @return Get minimum severity level to output to ostream. */
@@ -41,9 +52,17 @@ class Logger {
         Level logLevel = INFO;
     #endif
 
+    std::map<Level, std::string> levelLabels = {
+        {Level::DEBUG,  "DEBUG"},
+        {Level::INFO,   "INFO"},
+        {Level::WARN,   "WARN"},
+        {Level::ERROR,  "ERROR"}
+    };
+
+
     Logger() {}
     Logger(Logger const&);
     void operator=(Logger const&);
 };
 
-#endif  // SRC_LOGGER_LOGGER_HPP_
+#endif  // SRC_LOGGING_LOGGER_HPP_

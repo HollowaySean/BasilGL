@@ -175,7 +175,7 @@ target_include_directories(
     ${TST_DIR_LIST}
     ${SRC_DIR_LIST}
     ${CATCH2_INCLUDE_DIRS})
-target_link_libraries(${TEST_TARGET_NAME}
+target_link_libraries(${TEST_TARGET_NAME} PRIVATE
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
     ${GLFW_LIBRARIES}

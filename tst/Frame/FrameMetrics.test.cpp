@@ -233,3 +233,17 @@ TEST_CASE("Frame_FrameMetrics_pushRecordFromTimer") {
         REQUIRE(floatCompare(result.processTime[2], 0.010));
     }
 }
+
+TEST_CASE("Frame_FrameMetrics_getProcessNames") {
+    SECTION("Returns map of process names") {
+        FrameMetrics frameMetrics = FrameMetrics();
+
+        std::map<int, std::string> names = std::map<int, std::string>();
+        names.emplace(0, "process_0");
+        names.emplace(1, "process_1");
+
+        frameMetrics.setProcessNames(&names);
+
+        REQUIRE(frameMetrics.getProcessNames() == &names);
+    }
+}
