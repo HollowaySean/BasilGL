@@ -224,6 +224,7 @@ catch_discover_tests(${TEST_TARGET_NAME})
 target_compile_definitions(
     ${TEST_TARGET_NAME} PRIVATE
     TEST_BUILD
+    TEST_DIR="${CMAKE_SOURCE_DIR}/tst"
 )
 
 # Debug build preprocessor options

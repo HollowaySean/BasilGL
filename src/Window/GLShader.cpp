@@ -14,12 +14,18 @@ GLVertexShader::GLVertexShader(filepath path)
 GLFragmentShader::GLFragmentShader(filepath path)
     : GLShader::GLShader(path, ShaderType::FRAGMENT) {}
 
-GLShader::GLShader(filepath path, ShaderType type) {
-    std::string rawShaderCode;
-    const char* shaderCode;
-    std::ifstream shaderFile;
-
+GLShader::GLShader(filepath path, ShaderType type, std::ostream& ostream) {
     // Read shader code from file
+    getShaderFromFile(path, ostream);
+
+    // Compile shader code
+    compileShader(type, ostream);
+}
+
+void GLShader::getShaderFromFile(
+        std::filesystem::path path, std::ostream& ostream) {
+    // Read shader code from file
+    std::ifstream shaderFile;
     shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     try {
         shaderFile.open(path);
@@ -28,20 +34,26 @@ GLShader::GLShader(filepath path, ShaderType type) {
         shaderFile.close();
         rawShaderCode = shaderStream.str();
         shaderCode = rawShaderCode.c_str();
-    }
-    catch(std::ifstream::failure error) {
-        // TODO(sholloway): Error handling
-        std::cerr << "Error: " << strerror(errno) << std::endl;
-        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
-    }
 
+        logger.log("Shader file read successfully.", Level::INFO, ostream);
+    }
+    catch(std::ifstream::failure& error) {
+        logger.log("Unable to read shader file.", Level::ERROR, ostream);
+        logger.log(strerror(errno), Level::ERROR, ostream);
+    }
+}
+
+void GLShader::compileShader(ShaderType type, std::ostream& ostream) {
     // Compile the shader
+    std::string typeString;
     switch (type) {
         case ShaderType::FRAGMENT:
             ID = glCreateShader(GL_FRAGMENT_SHADER);
+            typeString = "fragment";
             break;
         case ShaderType::VERTEX:
             ID = glCreateShader(GL_VERTEX_SHADER);
+            typeString = "vertex";
             break;
     }
 
@@ -53,7 +65,10 @@ GLShader::GLShader(filepath path, ShaderType type) {
     if (!success) {
         char infoLog[512];
         glGetShaderInfoLog(ID, 512, NULL, infoLog);
-        // TODO(sholloway): Error handling
-        std::cout << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << std::endl;
+        logger.log("Unable to compile " + typeString + " shader.",
+            Level::ERROR, ostream);
+        logger.log(infoLog, Level::ERROR, ostream);
+    } else {
+        logger.log("Shader compiled successfully.", Level::INFO, ostream);
     }
 }
