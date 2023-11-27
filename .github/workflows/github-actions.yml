@@ -24,6 +24,8 @@ jobs:
                 echo "Building targets" && \
                     cd build && make && echo "Successful build"
             - name: Run unit tests
-              run: |
-                ctest --test-dir build --output-on-failure && \
-                    echo "Unit tests passed."
+              uses: coactions/setup-xvfb@v1
+              with:
+                run: |
+                  ctest --test-dir build --output-on-failure && \
+                      echo "Unit tests passed."

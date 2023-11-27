@@ -4,35 +4,33 @@
 #include <catch.hpp>
 
 TEST_CASE("Build_OpenGL_SmokeTest") {
-    GLint success = glfwInit();
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    glfwWindowHint(GLFW_VISIBLE, false);
-    GLFWwindow* newWindow = glfwCreateWindow(
-        1, 1, "test",
-        NULL, NULL);
-    glfwMakeContextCurrent(newWindow);
-
-    SECTION("Initializes GLFW") {
-        CHECK(success == GLFW_TRUE);
+    SECTION("Initializes GLEW and GLFW") {
+        GLint success = glfwInit();
 
         const char* errorMessage;
         glfwGetError(&errorMessage);
         INFO(errorMessage);
-    }
 
-    SECTION("Creates GLFW window") {
-        CHECK(newWindow);
-    }
+        REQUIRE(success == GLFW_TRUE);
 
-    SECTION("Initializes GLEW") {
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+        glfwWindowHint(GLFW_VISIBLE, false);
+        GLFWwindow* newWindow = glfwCreateWindow(
+            1, 1, "test",
+            NULL, NULL);
+
+        glfwGetError(&errorMessage);
+        INFO(errorMessage);
+
+        REQUIRE(newWindow);
+
+        glfwMakeContextCurrent(newWindow);
         GLenum error = glewInit();
 
         INFO(glewGetErrorString(error));
-        CHECK(error == GLEW_OK);
-        INFO(glewGetErrorString(error));
+        REQUIRE(error == GLEW_OK);
     }
 }
