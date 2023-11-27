@@ -10,10 +10,16 @@ jobs:
             - name: Install OpenGL
               run: |
                 echo "Installing OpenGL" && \
-                    sudo apt update && \
-                    sudo apt install --fix-missing \
+                    sudo apt update -y && \
+                    sudo apt install -y --fix-missing \
                     libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
-            - name: Configure CMake
+            - name: Setup OpenGL
+              uses: openrndr/setup-opengl@v1.1
+            - name: GLEW Info
+              run: xvfb-run glxinfo
+            - name: Setup CMake
+              uses: jwlawson/actions-setup-cmake@v1.13
+            - name: Configure CMake targets
               run: |
                 echo "Configuring CMake" && \
                     mkdir build && cd build && cmake ..
@@ -23,5 +29,5 @@ jobs:
                     cd build && make && echo "Successful build"
             - name: Run unit tests
               run: |
-                cd build && pwd && ls && ./BlackHoleViz_test && \
+                ctest --test-dir build --output-on-failure && \
                     echo "Unit tests passed."
