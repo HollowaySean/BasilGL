@@ -7,12 +7,6 @@ jobs:
         steps:
             - name: Check out repository code
               uses: actions/checkout@v3
-            - name: Install OpenGL
-              run: |
-                echo "Installing OpenGL" && \
-                    sudo apt update -y && \
-                    sudo apt install -y --fix-missing \
-                    libgl1-mesa-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev
             - name: Setup OpenGL
               uses: openrndr/setup-opengl@v1.1
             - name: GLEW Info
