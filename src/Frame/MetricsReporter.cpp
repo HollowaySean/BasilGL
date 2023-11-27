@@ -2,9 +2,9 @@
 
 MetricsReporter::MetricsReporter(
         FrameMetrics *metricsObserver, int regularity,
-            Level logLevel, std::ostream& ostream):
+            Level logLevel):
         metrics(metricsObserver), regularity(regularity),
-            processNames(), logLevel(logLevel), ostream(ostream) {
+            processNames(), logLevel(logLevel) {
     processNames = metricsObserver->getProcessNames();
 }
 
@@ -14,17 +14,17 @@ void MetricsReporter::onLoop() {
 
     if (record.frameID % regularity == 0
             && record.frameID > 0) {
-        logger.lineBreak(logLevel, ostream);
+        logger.lineBreak(logLevel);
 
         logger.log(fmt::format(FRAME_FORMAT,
             static_cast<int>(record.frameID)),
-            logLevel, ostream);
+            logLevel);
         logger.log(fmt::format(FRAME_RATE_FORMAT,
             record.getFrameRate()),
-            logLevel, ostream);
+            logLevel);
         logger.log(fmt::format(MAX_FRAME_RATE_FORMAT,
             record.getUncappedFrameRate()),
-            logLevel, ostream);
+            logLevel);
 
         for (auto process : record.processTime) {
             std::string processName = "anonymous";
@@ -33,7 +33,7 @@ void MetricsReporter::onLoop() {
             }
             logger.log(fmt::format(PROCESS_TIME_FORMAT,
                 processName.c_str(), 1000. * process.second),
-                logLevel, ostream);
+                logLevel);
         }
     }
 }

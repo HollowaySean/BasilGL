@@ -5,41 +5,43 @@
 #include "Logger.hpp"
 
 TEST_CASE("Logging_Logger_log") {
-    std::ostringstream ostringstream;
-    std::string message = "message";
     Logger& logger = Logger::get();
+    std::string message = "message";
 
     SECTION("Sends message if level is higher than log level") {
         logger.setLevel(Level::INFO);
-        logger.log(message, Level::WARN, ostringstream);
+        logger.log(message, Level::WARN);
 
-        REQUIRE(ostringstream.str() == "[WARN]: " + message + '\n');
+        REQUIRE(logger.getLastLevel() == Level::WARN);
+        REQUIRE(logger.getLastOutput() == "[WARN]: " + message + '\n');
     }
 
     SECTION("Does not send message if level is lower than log level") {
         logger.setLevel(Level::INFO);
-        logger.log(message, Level::DEBUG, ostringstream);
+        logger.log(message, Level::DEBUG);
 
-        REQUIRE(ostringstream.str() == "");
+        REQUIRE(logger.getLastLevel() == Level::DEBUG);
+        REQUIRE(logger.getLastOutput() == "");
     }
 }
 
 TEST_CASE("Logging_Logger_lineBreak") {
-    std::ostringstream ostringstream;
     std::string message = "message";
     Logger& logger = Logger::get();
 
     SECTION("Sends line break if level is higher than log level") {
         logger.setLevel(Level::INFO);
-        logger.lineBreak(Level::WARN, ostringstream);
+        logger.lineBreak(Level::WARN);
 
-        REQUIRE(ostringstream.str() == "\n");
+        REQUIRE(logger.getLastLevel() == Level::WARN);
+        REQUIRE(logger.getLastOutput() == "\n");
     }
 
     SECTION("Does not send line break if level is lower than log level") {
         logger.setLevel(Level::INFO);
-        logger.lineBreak(Level::DEBUG, ostringstream);
+        logger.lineBreak(Level::DEBUG);
 
-        REQUIRE(ostringstream.str() == "");
+        REQUIRE(logger.getLastLevel() == Level::DEBUG);
+        REQUIRE(logger.getLastOutput() == "");
     }
 }

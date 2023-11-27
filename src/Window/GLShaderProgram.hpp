@@ -9,17 +9,18 @@
 
 class GLShaderProgram {
  public:
-    GLShaderProgram(GLVertexShader vertexShader, GLFragmentShader fragmentShader);
+    GLShaderProgram(
+      const GLVertexShader& vertexShader,
+      const GLFragmentShader& fragmentShader);
     GLuint getID() { return ID; }
 
     void use();
 
-   void setUniformInt(int value, const std::string name);
-
-    template<typename T>
-    void setUniform(T value, const std::string name);
+    void setUniformInt(int value, const std::string& name);
 
  private:
+    Logger& logger = Logger::get();
+
     void compile();
     GLuint ID;
     GLuint vertexID, fragmentID;

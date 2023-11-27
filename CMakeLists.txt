@@ -50,7 +50,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     ${OPENGL_LIBRARIES})
 
 ## GLEW setup
-find_package(GLEW)
+find_package(GLEW QUIET CONFIG)
 if(${GLEW_FOUND})
     # GLEW from installed binaries
     message("Found GLEW as installed library.")
@@ -83,7 +83,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 
 ## GLFW setup
-find_package(glfw3 CONFIG)
+find_package(glfw3 QUIET CONFIG)
 if(${glfw3_FOUND})
     # GLFW from installed binaries
     message("Found GLFW as installed library.")
@@ -118,7 +118,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 
 
 ## Format library
-find_package(fmt CONFIG)
+find_package(fmt QUIET CONFIG)
 if(${fmt_FOUND})
     # fmt from installed binaries
     message("Found fmt as installed library.")

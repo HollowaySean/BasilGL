@@ -5,6 +5,8 @@
 #include "MetricsReporter.hpp"
 
 TEST_CASE("Frame_MetricsReporter_onLoop") {
+    Logger& logger = Logger::get();
+
     TimerRecord record = TimerRecord();
     record.processStart.emplace(0, 0);
     record.processDone.emplace(0, 1);
@@ -14,16 +16,14 @@ TEST_CASE("Frame_MetricsReporter_onLoop") {
     processNames.emplace(0, "processName");
     metrics.setProcessNames(&processNames);
 
-    std::ostringstream ostream;
-
     MetricsReporter reporter = MetricsReporter(
-        &metrics, 1, Level::INFO, ostream);
+        &metrics, 1, Level::INFO);
 
     SECTION("Does not log on first frame") {
         metrics.pushTimerRecord(record);
         reporter.onLoop();
 
-        REQUIRE(ostream.str() == "");
+        REQUIRE(logger.getLastOutput() == "");
     }
 
     SECTION("Logs at interval set by regularity value") {
@@ -32,34 +32,30 @@ TEST_CASE("Frame_MetricsReporter_onLoop") {
         // Frame 0 (no readout)
         metrics.pushTimerRecord(record);
         reporter.onLoop();
-        REQUIRE(ostream.str() == "");
-        ostream.str("");
+        REQUIRE(logger.getLastOutput() == "");
 
         // Frame 1 (no readout)
         record.frameID++;
         metrics.pushTimerRecord(record);
         reporter.onLoop();
-        REQUIRE(ostream.str() == "");
-        ostream.str("");
+        REQUIRE(logger.getLastOutput() == "");
 
         // Frame 2 (readout)
         record.frameID++;
         metrics.pushTimerRecord(record);
         reporter.onLoop();
-        REQUIRE_FALSE(ostream.str() == "");
-        ostream.str("");
+        REQUIRE_FALSE(logger.getLastOutput()== "");
 
         // Frame 3 (no readout)
         record.frameID++;
         metrics.pushTimerRecord(record);
         reporter.onLoop();
-        REQUIRE(ostream.str() == "");
-        ostream.str("");
+        REQUIRE(logger.getLastOutput() == "");
 
         // Frame 4 (readout)
         record.frameID++;
         metrics.pushTimerRecord(record);
         reporter.onLoop();
-        REQUIRE_FALSE(ostream.str() == "");
+        REQUIRE_FALSE(logger.getLastOutput() == "");
     }
 }

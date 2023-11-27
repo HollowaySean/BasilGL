@@ -19,13 +19,11 @@ class MetricsReporter : public IFrameProcess {
      * @param metricsObserver   FrameMetrics object to report on.
      * @param regularity        Number of frames per report.
      * @param logLevel          Severity level to log report at.
-     * @param ostream           ostream object to use in logger.
     */
     explicit MetricsReporter(
         FrameMetrics *metricsObserver,
         int regularity = 1,
-        Level logLevel = Level::INFO,
-        std::ostream& ostream = std::cout);
+        Level logLevel = Level::INFO);
 
     void onLoop() override;
 
@@ -41,7 +39,6 @@ class MetricsReporter : public IFrameProcess {
 
     Logger& logger = Logger::get();
     Level logLevel;
-    std::ostream& ostream;
 
     fmt::format_string<int> FRAME_FORMAT
         = "Frame #: {}";

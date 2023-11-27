@@ -13,7 +13,7 @@
 class GLShader {
  public:
     /** @return ID value assigned from OpenGL. */
-    virtual GLuint getID() { return ID; }
+    virtual GLuint getID() const { return ID; }
 
 #ifndef TEST_BUILD
 
@@ -22,8 +22,7 @@ class GLShader {
     enum ShaderType { FRAGMENT, VERTEX };
 
     GLShader(std::filesystem::path path,
-      ShaderType type,
-      std::ostream& ostream = std::cout);
+      ShaderType type);
 
     GLuint ID;
 
@@ -37,12 +36,10 @@ class GLShader {
     const char* shaderCode;
 
     void getShaderFromFile(
-      std::filesystem::path path,
-      std::ostream& ostream = std::cout);
+      std::filesystem::path path);
 
     void compileShader(
-      ShaderType type,
-      std::ostream& ostream = std::cout);
+      ShaderType type);
 
     // Unreachable constructor, used for tests
     GLShader() = default;
