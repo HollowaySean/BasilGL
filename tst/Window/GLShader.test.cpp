@@ -1,24 +1,9 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include <sstream>
 
 #include <catch.hpp>
 
 #include "GLShader.hpp"
-
-void initializeGLContext() {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_VISIBLE, false);
-    GLFWwindow* newWindow = glfwCreateWindow(
-        1, 1, "test",
-        NULL, NULL);
-    glfwMakeContextCurrent(newWindow);
-    glewInit();
-}
+#include "GLTestUtils.hpp"
 
 TEST_CASE("Window_GLShader_getShaderFromFile") {
     Logger& logger = Logger::get();
@@ -45,12 +30,14 @@ TEST_CASE("Window_GLShader_getShaderFromFile") {
         REQUIRE(logger.getLastLevel() == Level::ERROR);
         logger.clearTestInfo();
     }
+
+    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLShader_compileShader") {
     Logger& logger = Logger::get();
     GLShader shader = GLShader();
-    initializeGLContext();
+    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles valid shader code successfully") {
         shader.shaderCode = "#version 330 core\nvoid main() {}\0";
@@ -67,6 +54,8 @@ TEST_CASE("Window_GLShader_compileShader") {
         REQUIRE(logger.getLastLevel() == Level::ERROR);
         logger.clearTestInfo();
     }
+
+    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLVertexShader_GLVertexShader") {
@@ -78,7 +67,7 @@ TEST_CASE("Window_GLVertexShader_GLVertexShader") {
         + "[INFO]: Shader compiled successfully.\n";
 
     std::filesystem::path testPath = TEST_DIR;
-    initializeGLContext();
+    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles vertex shader successfully") {
         std::filesystem::path filePath =
@@ -90,6 +79,8 @@ TEST_CASE("Window_GLVertexShader_GLVertexShader") {
 
         REQUIRE(shader.getID() == 1);
     }
+
+    GLTestUtils::deinitialize();
 }
 
 
@@ -102,7 +93,7 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
         + "[INFO]: Shader compiled successfully.\n";
 
     std::filesystem::path testPath = TEST_DIR;
-    initializeGLContext();
+    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles fragment shader successfully") {
         std::filesystem::path filePath =
@@ -114,4 +105,6 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
 
         REQUIRE(shader.getID() == 1);
     }
+
+    GLTestUtils::deinitialize();
 }

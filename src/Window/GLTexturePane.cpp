@@ -29,7 +29,8 @@ void GLTexturePane::setup() {
     };
     glGenBuffers(1, &EBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+        sizeof(indices), indices, GL_STATIC_DRAW);
 
 
     float blank[100] = {0.0f};
@@ -57,7 +58,8 @@ void GLTexturePane::draw() {
 
     // Bind texture
     glActiveTexture(GL_TEXTURE0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 10, 10, 0, GL_RED, GL_FLOAT, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F,
+        10, 10, 0, GL_RED, GL_FLOAT, texture);
     glBindTexture(GL_TEXTURE_2D, tex);
 
     // Render quad of triangles

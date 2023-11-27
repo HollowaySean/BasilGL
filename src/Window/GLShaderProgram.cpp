@@ -23,6 +23,8 @@ void GLShaderProgram::compile() {
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
 
         logger.log(infoLog, Level::ERROR);
+    } else {
+        logger.log("Shader program compiled successfully.", Level::INFO);
     }
 }
 

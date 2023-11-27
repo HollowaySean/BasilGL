@@ -34,12 +34,15 @@ void WindowView::onStart() {
         testTexture->push_back(1.0f);
     }
 
-    std::filesystem::path vertexPath = "/home/sholloway/dev/BlackHoleViz_v3/src/Window/temp/test.vert";
-    std::filesystem::path fragmentPath = "/home/sholloway/dev/BlackHoleViz_v3/src/Window/temp/test.frag";
+    std::filesystem::path vertexPath =
+        "/home/sholloway/dev/BlackHoleViz_v3/src/Window/temp/test.vert";
+    std::filesystem::path fragmentPath =
+        "/home/sholloway/dev/BlackHoleViz_v3/src/Window/temp/test.frag";
 
     GLVertexShader vertexShader = GLVertexShader(vertexPath);
     GLFragmentShader fragmentShader = GLFragmentShader(fragmentPath);
-    GLShaderProgram shaderProgram = GLShaderProgram(vertexShader, fragmentShader);
+    GLShaderProgram shaderProgram =
+        GLShaderProgram(vertexShader, fragmentShader);
 
     shaderProgram.setUniformInt(windowOptions.width, "u_width");
     shaderProgram.setUniformInt(windowOptions.height, "u_height");
@@ -60,14 +63,6 @@ void WindowView::onLoop() {
         glfwTerminate();
     }
 
-    float time = std::chrono::steady_clock::now().time_since_epoch().count();
-
-    // glClearColor(
-    //     0.5f + 0.5f*sin(time / (1000 * 1000 * 1000)),
-    //     0.1f,
-    //     0.5f + 0.5f*cos(time / (1000 * 1000 * 1000)),
-    //     1.0f);
-    // glClear(GL_COLOR_BUFFER_BIT);
     pane->draw();
 
     glfwSwapBuffers(glfwWindow);

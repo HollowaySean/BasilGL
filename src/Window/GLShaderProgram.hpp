@@ -7,6 +7,9 @@
 
 #include "GLShader.hpp"
 
+// TODO(sholloway): More setters for shader
+// TODO(sholloway): Documentation
+
 class GLShaderProgram {
  public:
     GLShaderProgram(
