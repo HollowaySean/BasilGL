@@ -18,6 +18,10 @@ TEST_CASE("Build_OpenGL_SmokeTest") {
 
     SECTION("Initializes GLFW") {
         CHECK(success == GLFW_TRUE);
+
+        const char* errorMessage;
+        glfwGetError(&errorMessage);
+        INFO(errorMessage);
     }
 
     SECTION("Creates GLFW window") {
