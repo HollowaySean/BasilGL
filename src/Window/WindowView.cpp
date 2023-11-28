@@ -44,6 +44,7 @@ void WindowView::onStart() {
     GLShaderProgram shaderProgram =
         GLShaderProgram(vertexShader, fragmentShader);
 
+    shaderProgram.use();
     shaderProgram.setUniformInt(windowOptions.width, "u_width");
     shaderProgram.setUniformInt(windowOptions.height, "u_height");
 

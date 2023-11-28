@@ -15,8 +15,8 @@
 struct WindowOptions {
  public:
     std::string title = "My Window";
-    int width = 640;
-    int height = 480;
+    int width = 1080;
+    int height = 920;
 };
 
 /**
