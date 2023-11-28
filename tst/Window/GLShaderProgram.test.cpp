@@ -45,6 +45,7 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
 
 TEST_CASE("Window_GLShaderProgram_use") {
     GLTestUtils::initializeGLContext();
+
     SECTION("Sets current program to shader program ID") {
         std::filesystem::path filePath =
             std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
@@ -61,6 +62,37 @@ TEST_CASE("Window_GLShaderProgram_use") {
         glGetIntegerv(GL_CURRENT_PROGRAM, &currentID);
 
         REQUIRE(currentID == shaderProgram.getID());
+    }
+
+    GLTestUtils::deinitialize();
+}
+
+TEST_CASE("Window_GLShaderProgram_setUniformInt") {
+    GLTestUtils::initializeGLContext();
+    SECTION("Sets uniform integer in shader program") {
+        std::filesystem::path filePath =
+            std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
+        GLVertexShader vertexShader = GLVertexShader(filePath);
+        filePath =
+            std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
+        GLFragmentShader fragmentShader = GLFragmentShader(filePath);
+
+        GLShaderProgram shaderProgram = GLShaderProgram(
+            vertexShader, fragmentShader);
+
+        GLint actualValue = 10;
+        std::string name = "myUniformInt";
+
+        shaderProgram.use();
+        shaderProgram.setUniformInt(10, name);
+
+        GLint location =
+            glGetUniformLocation(shaderProgram.getID(), name.c_str());
+
+        GLint setValue;
+        glGetUniformiv(shaderProgram.getID(), location, &setValue);
+
+        REQUIRE(setValue == actualValue);
     }
 
     GLTestUtils::deinitialize();

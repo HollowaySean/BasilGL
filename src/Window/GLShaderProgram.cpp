@@ -33,5 +33,6 @@ void GLShaderProgram::use() {
 }
 
 void GLShaderProgram::setUniformInt(int value, const std::string& name) {
-    glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
+    GLint location = glGetUniformLocation(ID, name.c_str());
+    glUniform1i(location, value);
 }
