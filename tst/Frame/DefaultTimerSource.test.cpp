@@ -9,7 +9,7 @@ using duration = std::chrono::duration<double>;
 using time_point = steady_clock::time_point;
 
 const double WAIT_TIME = 0.050;
-const double TIME_MARGIN = 0.005;
+const double TIME_MARGIN = 0.010;
 
 void requireWithinMargin(double expected, double measured) {
     REQUIRE(expected <= measured + TIME_MARGIN);

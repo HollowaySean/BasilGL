@@ -7,6 +7,7 @@
 
 TEST_CASE("Window_GLShader_getShaderFromFile") {
     Logger& logger = Logger::get();
+    logger.clearTestInfo();
     GLShader shader = GLShader();
     std::filesystem::path testPath = TEST_DIR;
 
