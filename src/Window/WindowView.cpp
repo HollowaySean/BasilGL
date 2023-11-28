@@ -35,9 +35,9 @@ void WindowView::onStart() {
     }
 
     std::filesystem::path vertexPath =
-        "/home/sholloway/dev/BlackHoleViz_v3/src/Window/temp/test.vert";
+        std::filesystem::path(SOURCE_DIR) / "Window/temp/test.vert";
     std::filesystem::path fragmentPath =
-        "/home/sholloway/dev/BlackHoleViz_v3/src/Window/temp/test.frag";
+        std::filesystem::path(SOURCE_DIR) / "Window/temp/test.frag";
 
     GLVertexShader vertexShader = GLVertexShader(vertexPath);
     GLFragmentShader fragmentShader = GLFragmentShader(fragmentPath);
@@ -71,7 +71,7 @@ void WindowView::onLoop() {
 
 void WindowView::onStop() {
     // Dummy code
-    printf("Stopping loop\n");
+    logger.log("Stopping loop", Level::INFO);
 }
 
 GLFWwindow* WindowView::createGLFWWindow() {

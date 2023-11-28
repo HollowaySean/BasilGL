@@ -44,6 +44,8 @@ class WindowView : public IFrameProcess {
 
     std::vector<float>* testTexture;
     GLTexturePane *pane;
+
+    Logger& logger = Logger::get();
 };
 
 #endif  // SRC_WINDOW_WINDOWVIEW_HPP_

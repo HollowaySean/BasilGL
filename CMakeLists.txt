@@ -220,10 +220,17 @@ catch_discover_tests(${TEST_TARGET_NAME})
 
 
 ## Preprocessor directives
+# Set preprocessor options for main executable
+target_compile_definitions(
+    ${PROJECT_NAME} PRIVATE
+    SOURCE_DIR="${CMAKE_SOURCE_DIR}/src"
+)
+
 # Set test-related preprocessor options
 target_compile_definitions(
     ${TEST_TARGET_NAME} PRIVATE
     TEST_BUILD
+    SOURCE_DIR="${CMAKE_SOURCE_DIR}/src"
     TEST_DIR="${CMAKE_SOURCE_DIR}/tst"
 )
 
