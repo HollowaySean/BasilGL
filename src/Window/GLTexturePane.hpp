@@ -6,21 +6,22 @@
 
 #include <vector>
 
+#include "GLTexture.hpp"
 #include "GLShaderProgram.hpp"
 #include "IPane.hpp"
 
 class GLTexturePane : public IPane {
  public:
-    explicit GLTexturePane(GLShaderProgram shaderProgram)
-        : texture(), VAO(), VBO(), EBO(), tex(), shaderProgram(shaderProgram) {}
+    explicit GLTexturePane(GLShaderProgram shaderProgram,
+                           GLTexture<float> texture)
+        : vertexArrayID(), vertexBufferID(), elementBufferID(),
+          shaderProgram(shaderProgram), texture(texture) {}
     void setup();
     void draw();
-    void setTexture(std::vector<float> *newTexture) {
-        texture = newTexture;
-    }
+
  private:
-    std::vector<float> *texture;
-    GLuint VAO, VBO, EBO, tex;
+    GLuint vertexArrayID, vertexBufferID, elementBufferID;
+    GLTexture<float> texture;
     GLShaderProgram shaderProgram;
 };
 

@@ -42,7 +42,14 @@ class WindowView : public IFrameProcess {
     void initializeGLFWContext();
     void initializeGLEWContext();
 
-    std::vector<float>* testTexture;
+    GLVertexShader* vertexShader = nullptr;
+    GLFragmentShader* fragmentShader = nullptr;
+    GLShaderProgram* shaderProgram = nullptr;
+
+    GLTextureProps* textureProps = nullptr;
+    GLTexture<float>* texture = nullptr;
+
+    std::vector<float> testTexture;
     GLTexturePane *pane;
 
     Logger& logger = Logger::get();

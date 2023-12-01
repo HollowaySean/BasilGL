@@ -27,29 +27,35 @@ void WindowView::onStart() {
         windowOptions.width,
         windowOptions.height);
 
-
-
-    testTexture = new std::vector<float>();
-    for (int i = 0; i < 100; i++) {
-        testTexture->push_back(1.0f);
-    }
-
     std::filesystem::path vertexPath =
         std::filesystem::path(SOURCE_DIR) / "Window/temp/test.vert";
     std::filesystem::path fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/temp/test.frag";
 
-    GLVertexShader vertexShader = GLVertexShader(vertexPath);
-    GLFragmentShader fragmentShader = GLFragmentShader(fragmentPath);
-    GLShaderProgram shaderProgram =
-        GLShaderProgram(vertexShader, fragmentShader);
+    vertexShader = new GLVertexShader(vertexPath);
+    fragmentShader = new GLFragmentShader(fragmentPath);
+    shaderProgram = new GLShaderProgram(*vertexShader, *fragmentShader);
 
-    shaderProgram.use();
-    shaderProgram.setUniformInt(windowOptions.width, "u_width");
-    shaderProgram.setUniformInt(windowOptions.height, "u_height");
 
-    pane = new GLTexturePane(shaderProgram);
-    pane->setTexture(testTexture);
+    // NOTE TO SELF: ALL OF THESE OBJECTS DISAPPEAR IN LOOP
+
+    shaderProgram->use();
+
+    testTexture = std::vector<float>();
+    for (int i = 0; i < 100; i++) {
+        testTexture.push_back(static_cast<float>(i) / 100.0f);
+    }
+
+    textureProps = new GLTextureProps();
+    textureProps->width = 10;
+    textureProps->height = 10;
+    textureProps->format = GL_RED;
+    textureProps->internalFormat = GL_R32F;
+    textureProps->dataType = GL_FLOAT;
+
+    texture = new GLTexture<float>(testTexture, *textureProps);
+
+    pane = new GLTexturePane(*shaderProgram, *texture);
     pane->setup();
 }
 
