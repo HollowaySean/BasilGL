@@ -1,11 +1,21 @@
 #include "GLTexturePane.hpp"
 
+GLTexturePane GLTexturePane::fromFile(std::filesystem::path filePath,
+        GLTexture<float> texture) {
+    GLVertexShader vertexShader = GLVertexShader::noOpShader();
+    GLFragmentShader fragmentShader = GLFragmentShader(filePath);
+
+    GLShaderProgram shaderProgram =
+        GLShaderProgram(vertexShader, fragmentShader);
+    return GLTexturePane(shaderProgram, texture);
+}
+
 void GLTexturePane::setup() {
     // Create Vertex Attribute Object
-    glGenVertexArrays(1, &vertexArrayID);
-    glBindVertexArray(vertexArrayID);
+    glGenVertexArrays(1, &vertexAttributeID);
+    glBindVertexArray(vertexAttributeID);
 
-    // Copy vertices of full sized quad into buffer
+    // Copy vertices of unit quad into buffer
     float vertices[] = {
          // Position              // UV coordinates
          1.0f,  1.0f,  0.0f,      1.0f,  1.0f,
@@ -57,7 +67,7 @@ void GLTexturePane::draw() {
     texture.update();
 
     // Render quad of triangles
-    glBindVertexArray(vertexArrayID);
+    glBindVertexArray(vertexAttributeID);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
