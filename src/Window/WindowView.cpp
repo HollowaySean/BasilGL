@@ -27,19 +27,11 @@ void WindowView::onStart() {
         windowOptions.width,
         windowOptions.height);
 
-    std::filesystem::path vertexPath =
-        std::filesystem::path(SOURCE_DIR) / "Window/temp/test.vert";
     std::filesystem::path fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/temp/test.frag";
 
-    vertexShader = new GLVertexShader(vertexPath);
-    fragmentShader = new GLFragmentShader(fragmentPath);
-    shaderProgram = new GLShaderProgram(*vertexShader, *fragmentShader);
-
 
     // NOTE TO SELF: ALL OF THESE OBJECTS DISAPPEAR IN LOOP
-
-    shaderProgram->use();
 
     testTexture = std::vector<float>();
     for (int i = 0; i < 100; i++) {
@@ -55,7 +47,7 @@ void WindowView::onStart() {
 
     texture = new GLTexture<float>(testTexture, *textureProps);
 
-    pane = new GLTexturePane(*shaderProgram, *texture);
+    pane = new GLTexturePane(fragmentPath, *texture);
     pane->setup();
 }
 

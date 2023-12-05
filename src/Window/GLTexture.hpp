@@ -21,27 +21,26 @@ struct GLTextureProps {
 };
 
 /**
- * @brief       Internal class to contain non-template static variable.
- * @attention   Do not use externally.
+ * @brief       Generic interface for template class.
  */
-class GLTextureGeneric {
+class IGLTexture {
+ public:
+    virtual void update() const = 0;
  protected:
-    GLTextureGeneric() = default;
+    IGLTexture() = default;
     static GLenum nextTexture;
 };
 
 /**
  * @brief       Wrapper class for managing OpenGL textures.
- *
  * @tparam T    Data type of texture data source.
  */
 template<class T>
-class GLTexture : private GLTextureGeneric {
+class GLTexture : public IGLTexture {
  public:
     /**
      * @brief           Construct a new GLTexture object and
      *                  initialize OpenGL texture.
-     *
      * @param source    Vector containing texture data.
      * @param props     GLTextureProps structure.
      */
@@ -49,7 +48,7 @@ class GLTexture : private GLTextureGeneric {
                        const GLTextureProps &props);
 
     /** @brief Flush data from source to texture.*/
-    void update();
+    void update() const override;
 
 #ifndef TEST_BUILD
  private:

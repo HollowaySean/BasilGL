@@ -50,7 +50,7 @@ class WindowView : public IFrameProcess {
     GLTexture<float>* texture = nullptr;
 
     std::vector<float> testTexture;
-    GLTexturePane *pane;
+    GLTexturePane* pane;
 
     Logger& logger = Logger::get();
 };

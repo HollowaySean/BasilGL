@@ -4,7 +4,7 @@ template class GLTexture<float>;
 template class GLTexture<int>;
 template class GLTexture<unsigned int>;
 
-GLenum GLTextureGeneric::nextTexture = GL_TEXTURE0;
+GLenum IGLTexture::nextTexture = GL_TEXTURE0;
 
 template<class T>
 GLTexture<T>::GLTexture(const std::vector<T> &source,
@@ -23,7 +23,7 @@ GLTexture<T>::GLTexture(const std::vector<T> &source,
 }
 
 template<class T>
-void GLTexture<T>::update() {
+void GLTexture<T>::update() const {
     glActiveTexture(textureEnum);
     glTexImage2D(GL_TEXTURE_2D,
                  0,

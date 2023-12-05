@@ -12,20 +12,30 @@
 
 class GLTexturePane : public IPane {
  public:
-    static GLTexturePane fromFile(
+    explicit GLTexturePane(
       std::filesystem::path filePath,
-      GLTexture<float> texture);
+      const IGLTexture &texture)
+        : vertexAttributeID(), vertexBufferID(), elementBufferID(),
+          shaderProgram(GLShaderProgram(
+            GLVertexShader::noOpShader(), GLFragmentShader(filePath))),
+          texture(texture) {}
+
     explicit GLTexturePane(
       GLShaderProgram shaderProgram,
-      GLTexture<float> texture)
+      const IGLTexture &texture)
         : vertexAttributeID(), vertexBufferID(), elementBufferID(),
           shaderProgram(shaderProgram), texture(texture) {}
+
     void setup();
-    void draw();
+    void const draw();
 
  private:
+    void createVertexObjects();
+    void createElementBuffer();
+
+
     GLuint vertexAttributeID, vertexBufferID, elementBufferID;
-    GLTexture<float> texture;
+    const IGLTexture &texture;
     GLShaderProgram shaderProgram;
 };
 

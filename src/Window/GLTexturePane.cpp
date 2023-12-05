@@ -1,16 +1,18 @@
 #include "GLTexturePane.hpp"
 
-GLTexturePane GLTexturePane::fromFile(std::filesystem::path filePath,
-        GLTexture<float> texture) {
-    GLVertexShader vertexShader = GLVertexShader::noOpShader();
-    GLFragmentShader fragmentShader = GLFragmentShader(filePath);
+void GLTexturePane::setup() {
+    // Set up OpenGL
+    createVertexObjects();
+    createElementBuffer();
 
-    GLShaderProgram shaderProgram =
-        GLShaderProgram(vertexShader, fragmentShader);
-    return GLTexturePane(shaderProgram, texture);
+    // Assign texture to shader
+    // TODO(sholloway): Move this into texture?? Where is name set
+    GLuint location =
+        glGetUniformLocation(shaderProgram.getID(), "testTexture");
+    glUniform1f(location, 0);
 }
 
-void GLTexturePane::setup() {
+void GLTexturePane::createVertexObjects() {
     // Create Vertex Attribute Object
     glGenVertexArrays(1, &vertexAttributeID);
     glBindVertexArray(vertexAttributeID);
@@ -36,7 +38,9 @@ void GLTexturePane::setup() {
         5 * sizeof(float),
         reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+}
 
+void GLTexturePane::createElementBuffer() {
     // Copy indices into element buffer
     unsigned int indices[] = {
         0, 1, 3,
@@ -46,15 +50,9 @@ void GLTexturePane::setup() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
         sizeof(indices), indices, GL_STATIC_DRAW);
-
-    // TEST: ASSIGN TO SHADER
-    shaderProgram.use();
-    GLuint location =
-        glGetUniformLocation(shaderProgram.getID(), "testTexture");
-    glUniform1f(location, 0);
 }
 
-void GLTexturePane::draw() {
+void const GLTexturePane::draw() {
     // Clear background color
     glBlendFunc(GL_ONE, GL_ZERO);
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -64,6 +62,7 @@ void GLTexturePane::draw() {
     shaderProgram.use();
 
     // Update texture(s)
+    // TODO(sholloway): Loop over multiple textures
     texture.update();
 
     // Render quad of triangles
