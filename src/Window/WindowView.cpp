@@ -52,8 +52,10 @@ void WindowView::onStart() {
         .yOffset = 0
     };
 
-    firstPane = new GLTexturePane(paneProps, fragmentPath, *texture);
-    secondPane = new GLTexturePane(paneProps, fragmentPath, *texture);
+    firstPane = new GLTexturePane(paneProps, fragmentPath);
+    firstPane->addTexture(texture);
+    secondPane = new GLTexturePane(paneProps, fragmentPath);
+    secondPane->addTexture(texture);
 
     topPane = new SplitPane(paneProps, PaneOrientation::VERTICAL);
     topPane->setFirstPane(firstPane);
@@ -70,6 +72,11 @@ void WindowView::onLoop() {
         glfwDestroyWindow(glfwWindow);
         glfwTerminate();
     }
+
+    // Clear background color
+    glBlendFunc(GL_ONE, GL_ZERO);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
 
     topPane->draw();
 

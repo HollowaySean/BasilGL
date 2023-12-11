@@ -4,10 +4,15 @@ void GLTexturePane::setup() {
     // Set up OpenGL
     createVertexObjects();
     createElementBuffer();
+}
+
+void GLTexturePane::addTexture(IGLTexture* newTexture) {
+    // Add texture to list
+    textureList.push_back(newTexture);
 
     // Assign texture to shader
     GLuint location =
-        glGetUniformLocation(shaderProgram.getID(), texture.props.name);
+        glGetUniformLocation(shaderProgram.getID(), newTexture->props.name);
     glUniform1f(location, 0);
 }
 
@@ -52,12 +57,6 @@ void GLTexturePane::createElementBuffer() {
 }
 
 void const GLTexturePane::draw() {
-    // Clear background color
-    // TODO(sholloway): Move to top pane
-    // glBlendFunc(GL_ONE, GL_ZERO);
-    // glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    // glClear(GL_COLOR_BUFFER_BIT);
-
     // Set current viewport
     glViewport(
         paneProps.xOffset,
@@ -69,8 +68,9 @@ void const GLTexturePane::draw() {
     shaderProgram.use();
 
     // Update texture(s)
-    // TODO(sholloway): Loop over multiple textures
-    texture.update();
+    for (IGLTexture* texture : textureList) {
+        texture->update();
+    }
 
     // Render quad of triangles
     glBindVertexArray(vertexAttributeID);

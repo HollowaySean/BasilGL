@@ -29,16 +29,18 @@ struct GLTextureProps {
 class IGLTexture {
  public:
     /** @brief Flushes data from source to texture. */
-    virtual void update() const = 0;
+    virtual void update() const {}
     /** @return OpenGL-assigned ID of texture*/
     GLuint getID() { return textureId; }
 
     /** @brief Struct containing texture properties. */
     const GLTextureProps &props;
 
+    /** @brief Destructor to tear down OpenGL assigned memory. */
+    virtual ~IGLTexture();
+
  protected:
     explicit IGLTexture(const GLTextureProps &props): props(props) {}
-    ~IGLTexture();
 
     static GLenum nextTexture;
 
