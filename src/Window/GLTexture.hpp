@@ -29,7 +29,7 @@ struct GLTextureProps {
 class IGLTexture {
  public:
     /** @brief Flushes data from source to texture. */
-    virtual void update() const {}
+    virtual void update() const = 0;
     /** @return OpenGL-assigned ID of texture*/
     GLuint getID() { return textureId; }
 
