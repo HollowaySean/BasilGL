@@ -36,6 +36,7 @@ void WindowView::onStart() {
     }
 
     textureProps = new GLTextureProps();
+    textureProps->name = "testTexture";
     textureProps->width = 10;
     textureProps->height = 10;
     textureProps->format = GL_RED;

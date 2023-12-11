@@ -3,11 +3,14 @@
 
 #include <GL/glew.h>
 
+#include <string>
 #include <vector>
 
 /** @brief Struct used to pass properties of texture to GLTexture. */
 struct GLTextureProps {
  public:
+    /** @brief Variable name used in shader code. */
+    const char* name;
     /** @brief Width of texture. */
     GLsizei width;
     /** @brief Height of texture. */
@@ -25,10 +28,21 @@ struct GLTextureProps {
  */
 class IGLTexture {
  public:
+    /** @brief Flushes data from source to texture. */
     virtual void update() const = 0;
+    /** @return OpenGL-assigned ID of texture*/
+    GLuint getID() { return textureId; }
+
+    /** @brief Struct containing texture properties. */
+    const GLTextureProps &props;
+
  protected:
-    IGLTexture() = default;
+    explicit IGLTexture(const GLTextureProps &props): props(props) {}
+    ~IGLTexture();
+
     static GLenum nextTexture;
+
+    GLuint textureId;
 };
 
 /**
@@ -55,8 +69,6 @@ class GLTexture : public IGLTexture {
 #endif
     GLenum textureEnum;
     const std::vector<T> &source;
-    const GLTextureProps &props;
-    GLuint textureId;
 };
 
 #endif  // SRC_WINDOW_GLTEXTURE_HPP_

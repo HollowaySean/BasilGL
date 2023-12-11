@@ -15,6 +15,9 @@ class GLShader {
     /** @return ID value assigned from OpenGL. */
     virtual GLuint getID() const { return ID; }
 
+    /** @brief Destructor, tears down OpenGL shader code. */
+    ~GLShader();
+
 #ifndef TEST_BUILD
 
  protected:
@@ -53,7 +56,10 @@ class GLVertexShader : public GLShader {
  public:
     /** @brief Pass-through vertex shader. */
     static GLVertexShader noOpShader();
+
+    /** @brief Create vertex shader from file at path. */
     explicit GLVertexShader(std::filesystem::path path);
+
 #ifndef TEST_BUILD
 
  private:
@@ -64,7 +70,9 @@ class GLVertexShader : public GLShader {
 /** @brief GLShader implementation for fragment shader. */
 class GLFragmentShader : public GLShader {
  public:
+    /** @brief Create fragment shader from file at path. */
     explicit GLFragmentShader(std::filesystem::path path);
+
 #ifndef TEST_BUILD
 
  private:

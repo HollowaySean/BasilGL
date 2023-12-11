@@ -3,8 +3,13 @@
 
 #include <catch.hpp>
 
-GLTextureProps props = GLTextureProps {
-    1, 1, GL_RED, GL_R32F, GL_FLOAT
+GLTextureProps props = {
+    .name = "test",
+    .width = 1,
+    .height = 1,
+    .format = GL_RED,
+    .internalFormat = GL_R32F,
+    .dataType = GL_FLOAT
 };
 
 std::vector<float> floatData { 1.0f };
@@ -24,8 +29,8 @@ TEST_CASE("Window_GLTexture_GLTexture") {
     }
 
     SECTION("Creates OpenGL texture") {
-        REQUIRE(firstTexture.textureId == 1);
-        REQUIRE(secondTexture.textureId == 2);
+        REQUIRE(firstTexture.getID() == 1);
+        REQUIRE(secondTexture.getID() == 2);
     }
 
     GLTestUtils::deinitialize();

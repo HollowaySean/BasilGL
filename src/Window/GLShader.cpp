@@ -101,3 +101,7 @@ void GLShader::compileShader(ShaderType type) {
         logger.log("Shader compiled successfully.", Level::INFO);
     }
 }
+
+GLShader::~GLShader() {
+    glDeleteShader(ID);
+}

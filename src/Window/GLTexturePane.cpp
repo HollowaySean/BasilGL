@@ -6,9 +6,8 @@ void GLTexturePane::setup() {
     createElementBuffer();
 
     // Assign texture to shader
-    // TODO(sholloway): Move this into texture?? Where is name set
     GLuint location =
-        glGetUniformLocation(shaderProgram.getID(), "testTexture");
+        glGetUniformLocation(shaderProgram.getID(), texture.props.name);
     glUniform1f(location, 0);
 }
 
@@ -78,4 +77,10 @@ void const GLTexturePane::draw() {
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
+GLTexturePane::~GLTexturePane() {
+    GLuint vertexArrays[] = { vertexAttributeID };
+    glDeleteVertexArrays(1, vertexArrays);
 
+    GLuint bufferArrays[] = { elementBufferID, vertexBufferID };
+    glDeleteBuffers(2, bufferArrays);
+}

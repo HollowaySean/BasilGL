@@ -10,6 +10,10 @@
 #include "GLShaderProgram.hpp"
 #include "IPane.hpp"
 
+// TODO(sholloway):
+//  Documentation
+//  Tests
+//  Figure out best way to store or create shaderProgram
 class GLTexturePane : public IPane {
  public:
     explicit GLTexturePane(
@@ -36,7 +40,11 @@ class GLTexturePane : public IPane {
           elementBufferID(),
           shaderProgram(shaderProgram),
           texture(texture),
-          IPane(paneProps) {}
+          IPane(paneProps) {
+            setup();
+          }
+
+    ~GLTexturePane();
 
     void const draw() override;
 

@@ -36,3 +36,7 @@ void GLShaderProgram::setUniformInt(int value, const std::string& name) {
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform1i(location, value);
 }
+
+GLShaderProgram::~GLShaderProgram() {
+    glDeleteProgram(ID);
+}

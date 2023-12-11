@@ -9,7 +9,7 @@ GLenum IGLTexture::nextTexture = GL_TEXTURE0;
 template<class T>
 GLTexture<T>::GLTexture(const std::vector<T> &source,
                         const GLTextureProps &props):
-        source(source), props(props), textureEnum(nextTexture++) {
+        source(source), textureEnum(nextTexture++), IGLTexture(props) {
     glGenTextures(1, &textureId);
     glActiveTexture(textureEnum);
     glBindTexture(GL_TEXTURE_2D, textureId);
@@ -35,4 +35,9 @@ void GLTexture<T>::update() const {
                  props.dataType,
                  source.data());
     glBindTexture(GL_TEXTURE_2D, textureId);
+}
+
+IGLTexture::~IGLTexture() {
+    GLuint textureArray[] = { textureId };
+    glDeleteTextures(1, textureArray);
 }
