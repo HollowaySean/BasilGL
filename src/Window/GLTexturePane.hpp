@@ -13,26 +13,37 @@
 class GLTexturePane : public IPane {
  public:
     explicit GLTexturePane(
+      PaneProps paneProps,
       std::filesystem::path filePath,
       const IGLTexture &texture)
-        : vertexAttributeID(), vertexBufferID(), elementBufferID(),
+        : vertexAttributeID(),
+          vertexBufferID(),
+          elementBufferID(),
           shaderProgram(GLShaderProgram(
-            GLVertexShader::noOpShader(), GLFragmentShader(filePath))),
-          texture(texture) {}
+              GLVertexShader::noOpShader(),
+              GLFragmentShader(filePath))),
+          texture(texture),
+          IPane(paneProps) {
+            setup();
+          }
 
     explicit GLTexturePane(
-      GLShaderProgram shaderProgram,
+      PaneProps paneProps,
+      const GLShaderProgram &shaderProgram,
       const IGLTexture &texture)
-        : vertexAttributeID(), vertexBufferID(), elementBufferID(),
-          shaderProgram(shaderProgram), texture(texture) {}
+        : vertexAttributeID(),
+          vertexBufferID(),
+          elementBufferID(),
+          shaderProgram(shaderProgram),
+          texture(texture),
+          IPane(paneProps) {}
 
-    void setup();
-    void const draw();
+    void const draw() override;
 
  private:
+    void setup();
     void createVertexObjects();
     void createElementBuffer();
-
 
     GLuint vertexAttributeID, vertexBufferID, elementBufferID;
     const IGLTexture &texture;

@@ -54,9 +54,17 @@ void GLTexturePane::createElementBuffer() {
 
 void const GLTexturePane::draw() {
     // Clear background color
-    glBlendFunc(GL_ONE, GL_ZERO);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    // TODO(sholloway): Move to top pane
+    // glBlendFunc(GL_ONE, GL_ZERO);
+    // glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    // glClear(GL_COLOR_BUFFER_BIT);
+
+    // Set current viewport
+    glViewport(
+        paneProps.xOffset,
+        paneProps.yOffset,
+        paneProps.width,
+        paneProps.height);
 
     // Use shader
     shaderProgram.use();

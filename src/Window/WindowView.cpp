@@ -8,7 +8,7 @@
 #include "WindowView.hpp"
 
 WindowView::WindowView(): glfwWindow() {
-    pane = nullptr;
+    topPane = nullptr;
     initializeGLFWContext();
 }
 
@@ -23,9 +23,6 @@ void WindowView::onStart() {
     // GLEW can not be initialized before window context
     // has been created
     initializeGLEWContext();
-    glViewport(0, 0,
-        windowOptions.width,
-        windowOptions.height);
 
     std::filesystem::path fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/temp/test.frag";
@@ -47,8 +44,19 @@ void WindowView::onStart() {
 
     texture = new GLTexture<float>(testTexture, *textureProps);
 
-    pane = new GLTexturePane(fragmentPath, *texture);
-    pane->setup();
+    PaneProps paneProps = {
+        .width = windowOptions.width,
+        .height = windowOptions.height,
+        .xOffset = 0,
+        .yOffset = 0
+    };
+
+    firstPane = new GLTexturePane(paneProps, fragmentPath, *texture);
+    secondPane = new GLTexturePane(paneProps, fragmentPath, *texture);
+
+    topPane = new SplitPane(paneProps, PaneOrientation::VERTICAL);
+    topPane->setFirstPane(firstPane);
+    topPane->setSecondPane(secondPane);
 }
 
 void WindowView::onLoop() {
@@ -62,7 +70,7 @@ void WindowView::onLoop() {
         glfwTerminate();
     }
 
-    pane->draw();
+    topPane->draw();
 
     glfwSwapBuffers(glfwWindow);
     glfwPollEvents();
