@@ -10,12 +10,19 @@
 #include "GLShaderProgram.hpp"
 #include "IPane.hpp"
 
-// TODO(sholloway):
-//  Documentation
-//  Tests
-//  Figure out best way to store or create shaderProgram
+/**
+ * @class GLTexturePane
+ * @brief Pane which renders to screen at a given position,
+ *  using shaders and textures provided.
+*/
 class GLTexturePane : public IPane {
  public:
+    /**
+     * @brief Creates GLTexturePane from fragment shader file path.
+     *
+     * @param paneProps   Pane size properties
+     * @param filePath    Path of fragment shader file
+    */
     explicit GLTexturePane(
       PaneProps paneProps,
       std::filesystem::path filePath)
@@ -29,6 +36,12 @@ class GLTexturePane : public IPane {
             setup();
           }
 
+    /**
+     * @brief Creates GLTexturePane from existing GLShaderProgram.
+     *
+     * @param paneProps     Pane size properties
+     * @param shaderProgram GLShaderProgram object to render
+    */
     explicit GLTexturePane(
       PaneProps paneProps,
       const GLShaderProgram &shaderProgram)
@@ -40,13 +53,19 @@ class GLTexturePane : public IPane {
             setup();
           }
 
+    /** @brief Destructor unbinds OpenGL-allocated memory. */
     ~GLTexturePane();
 
+    /** @param newTexture Texture to pass to shader in each draw call. */
     void addTexture(IGLTexture* newTexture);
 
+    /** @brief Draws to screen using shader and texture(s). */
     void const draw() override;
 
+#ifndef TEST_BUILD
+
  private:
+#endif
     void setup();
     void createVertexObjects();
     void createElementBuffer();
