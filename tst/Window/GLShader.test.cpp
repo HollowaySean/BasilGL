@@ -6,6 +6,8 @@
 #include "GLTestUtils.hpp"
 
 TEST_CASE("Window_GLShader_getShaderFromFile") {
+    GLTestUtils::initializeGLContext();
+
     Logger& logger = Logger::get();
     logger.clearTestInfo();
     GLShader shader = GLShader();
