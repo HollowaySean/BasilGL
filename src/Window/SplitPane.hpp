@@ -3,10 +3,14 @@
 
 #include "IPane.hpp"
 
+/** @brief Enum to set SplitPane orientation. */
 enum PaneOrientation {
     HORIZONTAL, VERTICAL
 };
 
+/** @class SplitPane
+ *  @brief IPane implementation which displays two panes inside.
+*/
 class SplitPane : public IPane {
  public:
     SplitPane(const PaneProps &paneProps,
@@ -15,9 +19,14 @@ class SplitPane : public IPane {
             firstPane(nullptr),
             secondPane(nullptr),
             orientation(orientation) {}
+
+    /** @brief Calls draw on contained panes. */
     void const draw();
 
+    /** @param pane Sets upper/left pane. */
     void setFirstPane(IPane* pane);
+
+    /** @param pane Sets lower/right pane. */
     void setSecondPane(IPane* pane);
 
  private:

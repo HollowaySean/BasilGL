@@ -18,14 +18,14 @@ void SplitPane::setFirstPane(IPane* pane) {
         case PaneOrientation::HORIZONTAL:
             newProps.height  = paneProps.height;
             newProps.width   = paneProps.width / 2;
-            newProps.xOffset = paneProps.width / 2;
+            newProps.xOffset = 0;
             newProps.yOffset = 0;
             break;
         case PaneOrientation::VERTICAL:
             newProps.height  = paneProps.height / 2;
             newProps.width   = paneProps.width;
             newProps.xOffset = 0;
-            newProps.yOffset = paneProps.height / 2;
+            newProps.yOffset = 0;
             break;
     }
 
@@ -41,14 +41,14 @@ void SplitPane::setSecondPane(IPane* pane) {
         case PaneOrientation::HORIZONTAL:
             newProps.height  = paneProps.height;
             newProps.width   = paneProps.width / 2;
-            newProps.xOffset = 0;
+            newProps.xOffset = paneProps.width / 2;
             newProps.yOffset = 0;
             break;
         case PaneOrientation::VERTICAL:
             newProps.height  = paneProps.height / 2;
             newProps.width   = paneProps.width;
             newProps.xOffset = 0;
-            newProps.yOffset = 0;
+            newProps.yOffset = paneProps.height / 2;
             break;
     }
 
