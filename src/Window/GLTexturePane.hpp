@@ -6,21 +6,72 @@
 
 #include <vector>
 
+#include "GLTexture.hpp"
 #include "GLShaderProgram.hpp"
 #include "IPane.hpp"
 
+/**
+ * @class GLTexturePane
+ * @brief Pane which renders to screen at a given position,
+ *  using shaders and textures provided.
+*/
 class GLTexturePane : public IPane {
  public:
-    explicit GLTexturePane(GLShaderProgram shaderProgram)
-        : texture(), VAO(), VBO(), EBO(), tex(), shaderProgram(shaderProgram) {}
-    void setup();
-    void draw();
-    void setTexture(std::vector<float> *newTexture) {
-        texture = newTexture;
-    }
+    /**
+     * @brief Creates GLTexturePane from fragment shader file path.
+     *
+     * @param paneProps   Pane size properties
+     * @param filePath    Path of fragment shader file
+    */
+    explicit GLTexturePane(
+      PaneProps paneProps,
+      std::filesystem::path filePath)
+        : vertexAttributeID(),
+          vertexBufferID(),
+          elementBufferID(),
+          shaderProgram(GLShaderProgram(
+              GLVertexShader::noOpShader(),
+              GLFragmentShader(filePath))),
+          IPane(paneProps) {
+            setup();
+          }
+
+    /**
+     * @brief Creates GLTexturePane from existing GLShaderProgram.
+     *
+     * @param paneProps     Pane size properties
+     * @param shaderProgram GLShaderProgram object to render
+    */
+    explicit GLTexturePane(
+      PaneProps paneProps,
+      const GLShaderProgram &shaderProgram)
+        : vertexAttributeID(),
+          vertexBufferID(),
+          elementBufferID(),
+          shaderProgram(shaderProgram),
+          IPane(paneProps) {
+            setup();
+          }
+
+    /** @brief Destructor unbinds OpenGL-allocated memory. */
+    ~GLTexturePane();
+
+    /** @param newTexture Texture to pass to shader in each draw call. */
+    void addTexture(IGLTexture* newTexture);
+
+    /** @brief Draws to screen using shader and texture(s). */
+    void const draw() override;
+
+#ifndef TEST_BUILD
+
  private:
-    std::vector<float> *texture;
-    GLuint VAO, VBO, EBO, tex;
+#endif
+    void setup();
+    void createVertexObjects();
+    void createElementBuffer();
+
+    GLuint vertexAttributeID, vertexBufferID, elementBufferID;
+    std::vector<IGLTexture*> textureList;
     GLShaderProgram shaderProgram;
 };
 

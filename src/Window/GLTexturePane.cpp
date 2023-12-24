@@ -1,70 +1,86 @@
 #include "GLTexturePane.hpp"
 
 void GLTexturePane::setup() {
-    // Create Vertex Attribute Object
-    glGenVertexArrays(1, &VAO);
-    glBindVertexArray(VAO);
+    // Set up OpenGL
+    createVertexObjects();
+    createElementBuffer();
+}
 
-    // Copy vertices of full sized quad into buffer
+void GLTexturePane::addTexture(IGLTexture* newTexture) {
+    // Add texture to list
+    textureList.push_back(newTexture);
+
+    // Assign texture to shader
+    GLuint location =
+        glGetUniformLocation(shaderProgram.getID(), newTexture->props.name);
+    glUniform1f(location, 0);
+}
+
+void GLTexturePane::createVertexObjects() {
+    // Create Vertex Attribute Object
+    glGenVertexArrays(1, &vertexAttributeID);
+    glBindVertexArray(vertexAttributeID);
+
+    // Copy vertices of unit quad into buffer
     float vertices[] = {
          // Position              // UV coordinates
-         1.0f,  1.0f,  0.0f,      1.0f,  0.0f,
-         1.0f, -1.0f,  0.0f,      1.0f,  1.0f,
-        -1.0f, -1.0f,  0.0f,      0.0f,  1.0f,
-        -1.0f,  1.0f,  0.0f,      0.0f,  0.0f
+         1.0f,  1.0f,  0.0f,      1.0f,  1.0f,
+         1.0f, -1.0f,  0.0f,      1.0f,  0.0f,
+        -1.0f, -1.0f,  0.0f,      0.0f,  0.0f,
+        -1.0f,  1.0f,  0.0f,      0.0f,  1.0f
     };
-    glGenBuffers(1, &VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glGenBuffers(1, &vertexBufferID);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // Set up vertex attributes
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-        5 * sizeof(float), reinterpret_cast<void*>(0));
+        5 * sizeof(float),
+        reinterpret_cast<void*>(0));
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE,
+        5 * sizeof(float),
+        reinterpret_cast<void*>(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+}
 
+void GLTexturePane::createElementBuffer() {
     // Copy indices into element buffer
     unsigned int indices[] = {
         0, 1, 3,
         1, 2, 3,
     };
-    glGenBuffers(1, &EBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glGenBuffers(1, &elementBufferID);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementBufferID);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
         sizeof(indices), indices, GL_STATIC_DRAW);
-
-
-    float blank[100] = {0.0f};
-
-
-    glGenTextures(1, &tex);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    float borderColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, 10, 10, 0, GL_RED, GL_FLOAT, blank);
 }
 
-void GLTexturePane::draw() {
-    // Clear background color
-    glBlendFunc(GL_ONE, GL_ZERO);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+void const GLTexturePane::draw() {
+    // Set current viewport
+    glViewport(
+        paneProps.xOffset,
+        paneProps.yOffset,
+        paneProps.width,
+        paneProps.height);
 
     // Use shader
     shaderProgram.use();
 
-    // Bind texture
-    glActiveTexture(GL_TEXTURE0);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F,
-        10, 10, 0, GL_RED, GL_FLOAT, texture);
-    glBindTexture(GL_TEXTURE_2D, tex);
+    // Update texture(s)
+    for (IGLTexture* texture : textureList) {
+        texture->update();
+    }
 
     // Render quad of triangles
-    glBindVertexArray(VAO);
+    glBindVertexArray(vertexAttributeID);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
+GLTexturePane::~GLTexturePane() {
+    GLuint vertexArrays[] = { vertexAttributeID };
+    glDeleteVertexArrays(1, vertexArrays);
 
+    GLuint bufferArrays[] = { elementBufferID, vertexBufferID };
+    glDeleteBuffers(2, bufferArrays);
+}

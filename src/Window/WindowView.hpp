@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "IFrameProcess.hpp"
+#include "SplitPane.hpp"
 #include "GLTexturePane.hpp"
 
 // #include "../Frame/IFrameProcess.hpp"
@@ -42,8 +43,17 @@ class WindowView : public IFrameProcess {
     void initializeGLFWContext();
     void initializeGLEWContext();
 
-    std::vector<float>* testTexture;
-    GLTexturePane *pane;
+    GLVertexShader* vertexShader = nullptr;
+    GLFragmentShader* fragmentShader = nullptr;
+    GLShaderProgram* shaderProgram = nullptr;
+
+    GLTextureProps* textureProps = nullptr;
+    GLTexture<float>* texture = nullptr;
+
+    std::vector<float> testTexture;
+    GLTexturePane* firstPane;
+    GLTexturePane* secondPane;
+    SplitPane* topPane;
 
     Logger& logger = Logger::get();
 };

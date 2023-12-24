@@ -30,7 +30,8 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
     SECTION("Logs error for failed compilation.") {
         GLVertexShader vertexShader = GLVertexShader(
             std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
-        GLFragmentShader fragmentShader = GLFragmentShader("");
+        GLFragmentShader fragmentShader = GLFragmentShader(
+            std::filesystem::path(""));
 
         logger.clearTestInfo();
 

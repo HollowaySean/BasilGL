@@ -20,6 +20,9 @@ class GLShaderProgram {
       const GLVertexShader& vertexShader,
       const GLFragmentShader& fragmentShader);
 
+    /** @brief Deconstructor tears down OpenGL memory usage. */
+    ~GLShaderProgram();
+
     /** @returns  OpenGL-ascribed ID of shader program. */
     GLuint getID() { return ID; }
 

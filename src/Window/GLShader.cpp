@@ -8,18 +8,47 @@
 
 using filepath = std::filesystem::path;
 
+const char* GLShader::noOpVertexCode =
+    "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "layout (location = 1) in vec2 aTexCoord;\n"
+    "out vec2 TexCoord;\n"
+    "void main() {\n"
+    "gl_Position = vec4(aPos, 1.0);\n"
+    "TexCoord = aTexCoord; }\0";
+
 GLVertexShader::GLVertexShader(filepath path)
     : GLShader::GLShader(path, ShaderType::VERTEX) {}
+
+GLVertexShader::GLVertexShader(const std::string &shaderCode)
+    : GLShader::GLShader(shaderCode, ShaderType::VERTEX) {}
+
+GLVertexShader GLVertexShader::noOpShader() {
+    return GLVertexShader(
+        std::string(GLShader::noOpVertexCode));
+}
+
 
 GLFragmentShader::GLFragmentShader(filepath path)
     : GLShader::GLShader(path, ShaderType::FRAGMENT) {}
 
-GLShader::GLShader(filepath path, ShaderType type) {
-    // Read shader code from file
-    getShaderFromFile(path);
+GLFragmentShader::GLFragmentShader(const std::string &shaderCode)
+    : GLShader::GLShader(shaderCode, ShaderType::FRAGMENT) {}
 
-    // Compile shader code
+
+GLShader::GLShader(filepath path, ShaderType type) {
+    getShaderFromFile(path);
     compileShader(type);
+}
+
+GLShader::GLShader(const std::string &shaderCode, ShaderType type) {
+    getShaderFromString(shaderCode);
+    compileShader(type);
+}
+
+void GLShader::getShaderFromString(const std::string &shaderCode) {
+    this->rawShaderCode = shaderCode;
+    this->shaderCode = rawShaderCode.c_str();
 }
 
 void GLShader::getShaderFromFile(
@@ -71,4 +100,8 @@ void GLShader::compileShader(ShaderType type) {
     } else {
         logger.log("Shader compiled successfully.", Level::INFO);
     }
+}
+
+GLShader::~GLShader() {
+    glDeleteShader(ID);
 }

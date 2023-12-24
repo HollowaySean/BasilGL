@@ -8,7 +8,7 @@
 #include "WindowView.hpp"
 
 WindowView::WindowView(): glfwWindow() {
-    pane = nullptr;
+    topPane = nullptr;
     initializeGLFWContext();
 }
 
@@ -23,34 +23,43 @@ void WindowView::onStart() {
     // GLEW can not be initialized before window context
     // has been created
     initializeGLEWContext();
-    glViewport(0, 0,
-        windowOptions.width,
-        windowOptions.height);
 
-
-
-    testTexture = new std::vector<float>();
-    for (int i = 0; i < 100; i++) {
-        testTexture->push_back(1.0f);
-    }
-
-    std::filesystem::path vertexPath =
-        std::filesystem::path(SOURCE_DIR) / "Window/temp/test.vert";
     std::filesystem::path fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/temp/test.frag";
 
-    GLVertexShader vertexShader = GLVertexShader(vertexPath);
-    GLFragmentShader fragmentShader = GLFragmentShader(fragmentPath);
-    GLShaderProgram shaderProgram =
-        GLShaderProgram(vertexShader, fragmentShader);
 
-    shaderProgram.use();
-    shaderProgram.setUniformInt(windowOptions.width, "u_width");
-    shaderProgram.setUniformInt(windowOptions.height, "u_height");
+    // NOTE TO SELF: ALL OF THESE OBJECTS DISAPPEAR IN LOOP
 
-    pane = new GLTexturePane(shaderProgram);
-    pane->setTexture(testTexture);
-    pane->setup();
+    testTexture = std::vector<float>();
+    for (int i = 0; i < 100; i++) {
+        testTexture.push_back(static_cast<float>(i) / 100.0f);
+    }
+
+    textureProps = new GLTextureProps();
+    textureProps->name = "testTexture";
+    textureProps->width = 10;
+    textureProps->height = 10;
+    textureProps->format = GL_RED;
+    textureProps->internalFormat = GL_R32F;
+    textureProps->dataType = GL_FLOAT;
+
+    texture = new GLTexture<float>(testTexture, *textureProps);
+
+    PaneProps paneProps = {
+        .width = windowOptions.width,
+        .height = windowOptions.height,
+        .xOffset = 0,
+        .yOffset = 0
+    };
+
+    firstPane = new GLTexturePane(paneProps, fragmentPath);
+    firstPane->addTexture(texture);
+    secondPane = new GLTexturePane(paneProps, fragmentPath);
+    secondPane->addTexture(texture);
+
+    topPane = new SplitPane(paneProps, PaneOrientation::VERTICAL);
+    topPane->setFirstPane(firstPane);
+    topPane->setSecondPane(secondPane);
 }
 
 void WindowView::onLoop() {
@@ -64,7 +73,12 @@ void WindowView::onLoop() {
         glfwTerminate();
     }
 
-    pane->draw();
+    // Clear background color
+    glBlendFunc(GL_ONE, GL_ZERO);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    topPane->draw();
 
     glfwSwapBuffers(glfwWindow);
     glfwPollEvents();
