@@ -48,7 +48,7 @@ void WindowView::onStart() {
     PaneProps paneProps = {
         .width = windowOptions.width,
         .height = windowOptions.height,
-        .xOffset = 0,
+        .xOffset = 100,
         .yOffset = 0
     };
 
@@ -60,6 +60,9 @@ void WindowView::onStart() {
     topPane = new SplitPane(paneProps, PaneOrientation::VERTICAL);
     topPane->setFirstPane(firstPane);
     topPane->setSecondPane(secondPane);
+
+    topPane->resizeToPercentage(25.f);
+    topPane->setGapWidth(10);
 }
 
 void WindowView::onLoop() {
