@@ -29,8 +29,8 @@ TEST_CASE("Window_SplitPane_setFirstPane") {
 
         REQUIRE(childPane.paneProps.height == paneProps.height);
         REQUIRE(childPane.paneProps.width == paneProps.width / 2);
-        REQUIRE(childPane.paneProps.xOffset == 0);
-        REQUIRE(childPane.paneProps.yOffset == 0);
+        REQUIRE(childPane.paneProps.xOffset == 5);
+        REQUIRE(childPane.paneProps.yOffset == 2);
     }
 
     SECTION("Sets props of child pane for vertical orientation") {
@@ -40,8 +40,8 @@ TEST_CASE("Window_SplitPane_setFirstPane") {
 
         REQUIRE(childPane.paneProps.height == paneProps.height / 2);
         REQUIRE(childPane.paneProps.width == paneProps.width);
-        REQUIRE(childPane.paneProps.xOffset == 0);
-        REQUIRE(childPane.paneProps.yOffset == 0);
+        REQUIRE(childPane.paneProps.xOffset == 5);
+        REQUIRE(childPane.paneProps.yOffset == 2);
     }
 }
 
@@ -55,8 +55,8 @@ TEST_CASE("Window_SplitPane_setSecondPane") {
 
         REQUIRE(childPane.paneProps.height == paneProps.height);
         REQUIRE(childPane.paneProps.width == paneProps.width / 2);
-        REQUIRE(childPane.paneProps.xOffset == paneProps.width / 2);
-        REQUIRE(childPane.paneProps.yOffset == 0);
+        REQUIRE(childPane.paneProps.xOffset == paneProps.xOffset + paneProps.width / 2);
+        REQUIRE(childPane.paneProps.yOffset == paneProps.yOffset);
     }
 
     SECTION("Sets props of child pane for vertical orientation") {
@@ -66,8 +66,8 @@ TEST_CASE("Window_SplitPane_setSecondPane") {
 
         REQUIRE(childPane.paneProps.height == paneProps.height / 2);
         REQUIRE(childPane.paneProps.width == paneProps.width);
-        REQUIRE(childPane.paneProps.xOffset == 0);
-        REQUIRE(childPane.paneProps.yOffset == paneProps.height / 2);
+        REQUIRE(childPane.paneProps.xOffset == paneProps.xOffset);
+        REQUIRE(childPane.paneProps.yOffset == paneProps.yOffset + paneProps.height / 2);
     }
 }
 
@@ -107,13 +107,13 @@ TEST_CASE("Window_SplitPane_resizeToPixelValue") {
 
         REQUIRE(firstPane.paneProps.width == 5);
         REQUIRE(firstPane.paneProps.height == 10);
-        REQUIRE(firstPane.paneProps.xOffset == 0);
-        REQUIRE(firstPane.paneProps.yOffset == 0);
+        REQUIRE(firstPane.paneProps.xOffset == 5);
+        REQUIRE(firstPane.paneProps.yOffset == 2);
 
         REQUIRE(secondPane.paneProps.width == 15);
         REQUIRE(secondPane.paneProps.height == 10);
-        REQUIRE(secondPane.paneProps.xOffset == 5);
-        REQUIRE(secondPane.paneProps.yOffset == 0);
+        REQUIRE(secondPane.paneProps.xOffset == 10);
+        REQUIRE(secondPane.paneProps.yOffset == 2);
 
         REQUIRE(splitPane.getFirstPaneSizeInPixels() == 5);
         REQUIRE(splitPane.getSecondPaneSizeInPixels() == 15);
@@ -130,13 +130,13 @@ TEST_CASE("Window_SplitPane_resizeToPixelValue") {
 
         REQUIRE(firstPane.paneProps.width == 20);
         REQUIRE(firstPane.paneProps.height == 2);
-        REQUIRE(firstPane.paneProps.xOffset == 0);
-        REQUIRE(firstPane.paneProps.yOffset == 0);
+        REQUIRE(firstPane.paneProps.xOffset == 5);
+        REQUIRE(firstPane.paneProps.yOffset == 2);
 
         REQUIRE(secondPane.paneProps.width == 20);
         REQUIRE(secondPane.paneProps.height == 8);
-        REQUIRE(secondPane.paneProps.xOffset == 0);
-        REQUIRE(secondPane.paneProps.yOffset == 2);
+        REQUIRE(secondPane.paneProps.xOffset == 5);
+        REQUIRE(secondPane.paneProps.yOffset == 4);
 
         REQUIRE(splitPane.getFirstPaneSizeInPixels() == 2);
         REQUIRE(splitPane.getSecondPaneSizeInPixels() == 8);
@@ -158,13 +158,13 @@ TEST_CASE("Window_SplitPane_resizeToPercentage") {
 
         REQUIRE(firstPane.paneProps.width == 5);
         REQUIRE(firstPane.paneProps.height == 10);
-        REQUIRE(firstPane.paneProps.xOffset == 0);
-        REQUIRE(firstPane.paneProps.yOffset == 0);
+        REQUIRE(firstPane.paneProps.xOffset == 5);
+        REQUIRE(firstPane.paneProps.yOffset == 2);
 
         REQUIRE(secondPane.paneProps.width == 15);
         REQUIRE(secondPane.paneProps.height == 10);
-        REQUIRE(secondPane.paneProps.xOffset == 5);
-        REQUIRE(secondPane.paneProps.yOffset == 0);
+        REQUIRE(secondPane.paneProps.xOffset == 10);
+        REQUIRE(secondPane.paneProps.yOffset == 2);
 
         REQUIRE(splitPane.getFirstPaneSizeInPixels() == 5);
         REQUIRE(splitPane.getSecondPaneSizeInPixels() == 15);
@@ -181,13 +181,13 @@ TEST_CASE("Window_SplitPane_resizeToPercentage") {
 
         REQUIRE(firstPane.paneProps.width == 20);
         REQUIRE(firstPane.paneProps.height == 2);
-        REQUIRE(firstPane.paneProps.xOffset == 0);
-        REQUIRE(firstPane.paneProps.yOffset == 0);
+        REQUIRE(firstPane.paneProps.xOffset == 5);
+        REQUIRE(firstPane.paneProps.yOffset == 2);
 
         REQUIRE(secondPane.paneProps.width == 20);
         REQUIRE(secondPane.paneProps.height == 8);
-        REQUIRE(secondPane.paneProps.xOffset == 0);
-        REQUIRE(secondPane.paneProps.yOffset == 2);
+        REQUIRE(secondPane.paneProps.xOffset == 5);
+        REQUIRE(secondPane.paneProps.yOffset == 4);
 
         REQUIRE(splitPane.getFirstPaneSizeInPixels() == 2);
         REQUIRE(splitPane.getSecondPaneSizeInPixels() == 8);
@@ -223,13 +223,13 @@ TEST_CASE("Window_SplitPane_setGapWidth") {
 
         REQUIRE(firstPane.paneProps.width == 8);
         REQUIRE(firstPane.paneProps.height == 10);
-        REQUIRE(firstPane.paneProps.xOffset == 0);
-        REQUIRE(firstPane.paneProps.yOffset == 0);
+        REQUIRE(firstPane.paneProps.xOffset == 5);
+        REQUIRE(firstPane.paneProps.yOffset == 2);
 
         REQUIRE(secondPane.paneProps.width == 8);
         REQUIRE(secondPane.paneProps.height == 10);
-        REQUIRE(secondPane.paneProps.xOffset == 12);
-        REQUIRE(secondPane.paneProps.yOffset == 0);
+        REQUIRE(secondPane.paneProps.xOffset == 17);
+        REQUIRE(secondPane.paneProps.yOffset == 2);
     }
 
     SECTION("Resizes to include gap, for vertical orientation") {
@@ -243,13 +243,13 @@ TEST_CASE("Window_SplitPane_setGapWidth") {
 
         REQUIRE(firstPane.paneProps.width == 20);
         REQUIRE(firstPane.paneProps.height == 3);
-        REQUIRE(firstPane.paneProps.xOffset == 0);
-        REQUIRE(firstPane.paneProps.yOffset == 0);
+        REQUIRE(firstPane.paneProps.xOffset == 5);
+        REQUIRE(firstPane.paneProps.yOffset == 2);
 
         REQUIRE(secondPane.paneProps.width == 20);
         REQUIRE(secondPane.paneProps.height == 3);
-        REQUIRE(secondPane.paneProps.xOffset == 0);
-        REQUIRE(secondPane.paneProps.yOffset == 7);
+        REQUIRE(secondPane.paneProps.xOffset == 5);
+        REQUIRE(secondPane.paneProps.yOffset == 9);
     }
 }
 

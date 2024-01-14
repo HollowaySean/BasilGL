@@ -26,19 +26,16 @@ void SplitPane::updateSize() {
             case HORIZONTAL:
                 firstPane->paneProps.width = firstPaneExtent;
                 firstPane->paneProps.height = this->paneProps.height;
-                firstPane->paneProps.xOffset = 0;
-                firstPane->paneProps.yOffset = 0;
-
                 break;
 
             case VERTICAL:
                 firstPane->paneProps.width = this->paneProps.width;
                 firstPane->paneProps.height = firstPaneExtent;
-                firstPane->paneProps.xOffset = 0;
-                firstPane->paneProps.yOffset = 0;
-
                 break;
         }
+
+        firstPane->paneProps.xOffset = this->paneProps.xOffset;
+        firstPane->paneProps.yOffset = this->paneProps.yOffset;
     }
 
     if (secondPane) {
@@ -46,17 +43,15 @@ void SplitPane::updateSize() {
             case HORIZONTAL:
                 secondPane->paneProps.width = secondPaneExtent;
                 secondPane->paneProps.height = this->paneProps.height;
-                secondPane->paneProps.xOffset = firstPaneExtent + gapWidth;
-                secondPane->paneProps.yOffset = 0;
-
+                secondPane->paneProps.xOffset = this->paneProps.xOffset + firstPaneExtent + gapWidth;
+                secondPane->paneProps.yOffset = this->paneProps.yOffset;
                 break;
 
             case VERTICAL:
                 secondPane->paneProps.width = this->paneProps.width;
                 secondPane->paneProps.height = secondPaneExtent;
-                secondPane->paneProps.xOffset = 0;
-                secondPane->paneProps.yOffset = firstPaneExtent + gapWidth;
-
+                secondPane->paneProps.xOffset = this->paneProps.xOffset;
+                secondPane->paneProps.yOffset = this->paneProps.yOffset + firstPaneExtent + gapWidth;
                 break;
         }
     }
