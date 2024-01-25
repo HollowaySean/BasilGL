@@ -25,7 +25,7 @@ void WindowView::onStart() {
     initializeGLEWContext();
 
     std::filesystem::path fragmentPath =
-        std::filesystem::path(SOURCE_DIR) / "Window/temp/test.frag";
+        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
 
 
     // NOTE TO SELF: ALL OF THESE OBJECTS DISAPPEAR IN LOOP
@@ -113,7 +113,7 @@ void WindowView::initializeGLFWContext() {
         fprintf(stderr, "GLFW failed to initialize.");
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
