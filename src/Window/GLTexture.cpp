@@ -7,7 +7,7 @@ template class GLTexture<unsigned int>;
 GLenum IGLTexture::nextTexture = GL_TEXTURE0;
 
 template<class T>
-GLTexture<T>::GLTexture(const std::vector<T> &source,
+GLTexture<T>::GLTexture(std::span<T> source,
                         const GLTextureProps &props):
         source(source), textureEnum(nextTexture++), IGLTexture(props) {
     glGenTextures(1, &textureId);

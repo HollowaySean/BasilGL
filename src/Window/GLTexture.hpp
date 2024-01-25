@@ -3,8 +3,8 @@
 
 #include <GL/glew.h>
 
+#include <span>
 #include <string>
-#include <vector>
 
 /** @brief Struct used to pass properties of texture to GLTexture. */
 struct GLTextureProps {
@@ -60,7 +60,7 @@ class GLTexture : public IGLTexture {
      * @param source    Vector containing texture data.
      * @param props     GLTextureProps structure.
      */
-    explicit GLTexture(const std::vector<T> &source,
+    explicit GLTexture(std::span<T> source,
                        const GLTextureProps &props);
 
     /** @brief Flush data from source to texture.*/
@@ -70,7 +70,7 @@ class GLTexture : public IGLTexture {
  private:
 #endif
     GLenum textureEnum;
-    const std::vector<T> &source;
+    std::span<T> source;
 };
 
 #endif  // SRC_WINDOW_GLTEXTURE_HPP_
