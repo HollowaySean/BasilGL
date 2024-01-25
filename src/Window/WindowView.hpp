@@ -43,6 +43,9 @@ class WindowView : public IFrameProcess {
     void initializeGLFWContext();
     void initializeGLEWContext();
 
+    // TODO(sholloway): Determine best way to implement this.
+    void onResize(GLFWwindow* window, int width, int height);
+
     GLVertexShader* vertexShader = nullptr;
     GLFragmentShader* fragmentShader = nullptr;
     GLShaderProgram* shaderProgram = nullptr;

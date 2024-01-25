@@ -20,6 +20,26 @@ void const SplitPane::draw() {
     }
 }
 
+void SplitPane::onResize(int newWidth, int newHeight) {
+    float currentPercentage;
+    switch (orientation) {
+        case HORIZONTAL:
+            currentPercentage = 100. *
+                static_cast<float>(firstPaneExtent) /
+                static_cast<float>(paneProps.width);
+            break;
+        case VERTICAL:
+            currentPercentage = 100. *
+                static_cast<float>(firstPaneExtent) /
+                static_cast<float>(paneProps.height);
+            break;
+    }
+
+    IPane::onResize(newWidth, newHeight);
+
+    resizeToPercentage(currentPercentage);
+}
+
 void SplitPane::updateSize() {
     if (firstPane) {
         switch (orientation) {
@@ -41,17 +61,25 @@ void SplitPane::updateSize() {
     if (secondPane) {
         switch (orientation) {
             case HORIZONTAL:
-                secondPane->paneProps.width = secondPaneExtent;
-                secondPane->paneProps.height = this->paneProps.height;
-                secondPane->paneProps.xOffset = this->paneProps.xOffset + firstPaneExtent + gapWidth;
-                secondPane->paneProps.yOffset = this->paneProps.yOffset;
+                secondPane->paneProps.width =
+                    secondPaneExtent;
+                secondPane->paneProps.height =
+                    this->paneProps.height;
+                secondPane->paneProps.xOffset =
+                    this->paneProps.xOffset + firstPaneExtent + gapWidth;
+                secondPane->paneProps.yOffset =
+                    this->paneProps.yOffset;
                 break;
 
             case VERTICAL:
-                secondPane->paneProps.width = this->paneProps.width;
-                secondPane->paneProps.height = secondPaneExtent;
-                secondPane->paneProps.xOffset = this->paneProps.xOffset;
-                secondPane->paneProps.yOffset = this->paneProps.yOffset + firstPaneExtent + gapWidth;
+                secondPane->paneProps.width =
+                    this->paneProps.width;
+                secondPane->paneProps.height =
+                    secondPaneExtent;
+                secondPane->paneProps.xOffset =
+                    this->paneProps.xOffset;
+                secondPane->paneProps.yOffset =
+                    this->paneProps.yOffset + firstPaneExtent + gapWidth;
                 break;
         }
     }

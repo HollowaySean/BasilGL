@@ -55,7 +55,8 @@ TEST_CASE("Window_SplitPane_setSecondPane") {
 
         REQUIRE(childPane.paneProps.height == paneProps.height);
         REQUIRE(childPane.paneProps.width == paneProps.width / 2);
-        REQUIRE(childPane.paneProps.xOffset == paneProps.xOffset + paneProps.width / 2);
+        REQUIRE(childPane.paneProps.xOffset ==
+            paneProps.xOffset + paneProps.width / 2);
         REQUIRE(childPane.paneProps.yOffset == paneProps.yOffset);
     }
 
@@ -67,7 +68,8 @@ TEST_CASE("Window_SplitPane_setSecondPane") {
         REQUIRE(childPane.paneProps.height == paneProps.height / 2);
         REQUIRE(childPane.paneProps.width == paneProps.width);
         REQUIRE(childPane.paneProps.xOffset == paneProps.xOffset);
-        REQUIRE(childPane.paneProps.yOffset == paneProps.yOffset + paneProps.height / 2);
+        REQUIRE(childPane.paneProps.yOffset ==
+            paneProps.yOffset + paneProps.height / 2);
     }
 }
 

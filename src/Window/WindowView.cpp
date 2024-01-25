@@ -48,7 +48,7 @@ void WindowView::onStart() {
     PaneProps paneProps = {
         .width = windowOptions.width,
         .height = windowOptions.height,
-        .xOffset = 100,
+        .xOffset = 0,
         .yOffset = 0
     };
 
@@ -63,6 +63,14 @@ void WindowView::onStart() {
 
     topPane->resizeToPercentage(25.f);
     topPane->setGapWidth(10);
+
+    // TODO(sholloway): Codify this
+    glfwSetWindowUserPointer(glfwWindow, this);
+    auto func = [](GLFWwindow* window, int width, int height){
+        static_cast<WindowView*>(
+            glfwGetWindowUserPointer(window))->onResize(window, width, height);
+    };
+    glfwSetFramebufferSizeCallback(glfwWindow, func);
 }
 
 void WindowView::onLoop() {
@@ -106,6 +114,12 @@ GLFWwindow* WindowView::createGLFWWindow() {
     glfwMakeContextCurrent(newWindow);
 
     return newWindow;
+}
+
+void WindowView::onResize(GLFWwindow* window, int width, int height) {
+    if (topPane) {
+        topPane->onResize(width, height);
+    }
 }
 
 void WindowView::initializeGLFWContext() {
