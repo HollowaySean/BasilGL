@@ -21,19 +21,7 @@ void const SplitPane::draw() {
 }
 
 void SplitPane::onResize(int newWidth, int newHeight) {
-    float currentPercentage;
-    switch (orientation) {
-        case HORIZONTAL:
-            currentPercentage = 100. *
-                static_cast<float>(firstPaneExtent) /
-                static_cast<float>(paneProps.width);
-            break;
-        case VERTICAL:
-            currentPercentage = 100. *
-                static_cast<float>(firstPaneExtent) /
-                static_cast<float>(paneProps.height);
-            break;
-    }
+    float currentPercentage = getFirstPaneSizeAsPercentage();
 
     IPane::onResize(newWidth, newHeight);
 
@@ -93,6 +81,26 @@ void SplitPane::setFirstPane(IPane* pane) {
 void SplitPane::setSecondPane(IPane* pane) {
     secondPane = pane;
     updateSize();
+}
+
+float SplitPane::getFirstPaneSizeAsPercentage() {
+    switch (orientation) {
+        case HORIZONTAL:
+            return 100. *
+                static_cast<float>(firstPaneExtent) /
+                static_cast<float>(paneProps.width);
+            break;
+        case VERTICAL:
+        default:
+            return 100. *
+                static_cast<float>(firstPaneExtent) /
+                static_cast<float>(paneProps.height);
+            break;
+    }
+}
+
+float SplitPane::getSecondPaneSizeAsPercentage() {
+    return 100. - getFirstPaneSizeAsPercentage();
 }
 
 void SplitPane::resizeToPixelValue(int extent) {

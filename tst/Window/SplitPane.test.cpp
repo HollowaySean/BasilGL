@@ -19,6 +19,61 @@ class TestPane : public IPane {
     bool didDraw = false;
 };
 
+TEST_CASE("Window_SplitPane_onResize") {
+    SECTION("Sets props of pane") {
+        SplitPane splitPane = SplitPane(paneProps);
+
+        splitPane.onResize(10, 5);
+
+        REQUIRE(splitPane.paneProps.width   == 10);
+        REQUIRE(splitPane.paneProps.height  == 5);
+        REQUIRE(splitPane.paneProps.xOffset == 5);
+        REQUIRE(splitPane.paneProps.yOffset == 2);
+    }
+
+    SECTION("Maintains relative extent for horizontal layout") {
+        SplitPane splitPane = SplitPane(paneProps, HORIZONTAL);
+
+        TestPane firstPane = TestPane(paneProps);
+        TestPane secondPane = TestPane(paneProps);
+
+        splitPane.resizeToPixelValue(5);
+
+        float firstPercentage =
+            splitPane.getFirstPaneSizeAsPercentage();
+        float secondPercentage =
+            splitPane.getSecondPaneSizeAsPercentage();
+
+        splitPane.onResize(200, 100);
+
+        REQUIRE(splitPane.getFirstPaneSizeAsPercentage() ==
+            firstPercentage);
+        REQUIRE(splitPane.getSecondPaneSizeAsPercentage() ==
+            secondPercentage);
+    }
+
+    SECTION("Maintains relative extent for vertical layout") {
+        SplitPane splitPane = SplitPane(paneProps, VERTICAL);
+
+        TestPane firstPane = TestPane(paneProps);
+        TestPane secondPane = TestPane(paneProps);
+
+        splitPane.resizeToPixelValue(2);
+
+        float firstPercentage =
+            splitPane.getFirstPaneSizeAsPercentage();
+        float secondPercentage =
+            splitPane.getSecondPaneSizeAsPercentage();
+
+        splitPane.onResize(200, 100);
+
+        REQUIRE(splitPane.getFirstPaneSizeAsPercentage() ==
+            firstPercentage);
+        REQUIRE(splitPane.getSecondPaneSizeAsPercentage() ==
+            secondPercentage);
+    }
+}
+
 TEST_CASE("Window_SplitPane_setFirstPane") {
     TestPane childPane = TestPane(paneProps);
 
