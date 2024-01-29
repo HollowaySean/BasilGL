@@ -8,7 +8,7 @@
 
 #include "IFrameProcess.hpp"
 #include "FrameMetrics.hpp"
-#include "Logger.hpp"
+#include <Basil/Logging.hpp>
 
 /** @brief Utility FrameProcess that prints frame rate to
  *  the command line.

@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <string>
 
-#include "Logger.hpp"
+#include <Basil/Logging.hpp>
 
 /** @brief Container class for OpenGL shader. */
 class GLShader {

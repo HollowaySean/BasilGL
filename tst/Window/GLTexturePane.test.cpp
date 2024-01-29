@@ -1,7 +1,7 @@
-#include "GLTexturePane.hpp"
-#include "GLTestUtils.hpp"
-
 #include <catch.hpp>
+
+#include "GLTestUtils.hpp"
+#include <Basil/Window.hpp>
 
 std::filesystem::path vertPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";

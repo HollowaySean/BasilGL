@@ -1,7 +1,7 @@
-#include "GLTexture.hpp"
-#include "GLTestUtils.hpp"
-
 #include <catch.hpp>
+
+#include "GLTestUtils.hpp"
+#include <Basil/Window.hpp>
 
 GLTextureProps props = {
     .name = "test",

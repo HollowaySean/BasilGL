@@ -1,13 +1,13 @@
-[submodule "vendor/glew"]
-	path = vendor/glew
+[submodule "extern/glew"]
+	path = extern/glew
 	url = https://github.com/Perlmint/glew-cmake
-[submodule "vendor/glfw"]
-	path = vendor/glfw
+[submodule "extern/glfw"]
+	path = extern/glfw
 	url = https://github.com/glfw/glfw
-[submodule "vendor/catch2"]
-	path = vendor/catch2
+[submodule "extern/catch2"]
+	path = extern/catch2
 	url = https://github.com/catchorg/Catch2.git
 	branch = v2.x
-[submodule "vendor/fmt"]
-	path = vendor/fmt
+[submodule "extern/fmt"]
+	path = extern/fmt
 	url = https://github.com/fmtlib/fmt

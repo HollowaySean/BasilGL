@@ -73,7 +73,7 @@ class Logger {
         Level logLevel = INFO;
     #endif
 
-    Level lastOutputLevel;
+    Level lastOutputLevel = DEBUG;
 
     std::map<Level, std::string> levelLabels = {
         {Level::DEBUG,  "DEBUG"},

@@ -6,7 +6,8 @@
 #include <string>
 #include <vector>
 
-#include "IFrameProcess.hpp"
+#include <Basil/Frame.hpp>
+
 #include "SplitPane.hpp"
 #include "GLTexturePane.hpp"
 

@@ -1,7 +1,7 @@
-#include "GLShaderProgram.hpp"
-#include "GLTestUtils.hpp"
-
 #include <catch.hpp>
+
+#include "GLTestUtils.hpp"
+#include <Basil/Window.hpp>
 
 TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
     Logger& logger = Logger::get();

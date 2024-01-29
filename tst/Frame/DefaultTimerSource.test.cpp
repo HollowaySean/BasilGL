@@ -2,7 +2,7 @@
 
 #include <catch.hpp>
 
-#include "DefaultTimerSource.hpp"
+#include <Basil/Frame.hpp>
 
 using std::chrono::steady_clock;
 using duration = std::chrono::duration<double>;

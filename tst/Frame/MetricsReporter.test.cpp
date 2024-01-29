@@ -2,7 +2,7 @@
 
 #include <catch.hpp>
 
-#include "MetricsReporter.hpp"
+#include <Basil/Frame.hpp>
 
 TEST_CASE("Frame_MetricsReporter_onLoop") {
     Logger& logger = Logger::get();

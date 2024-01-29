@@ -2,8 +2,8 @@
 
 #include <catch.hpp>
 
-#include "GLShader.hpp"
 #include "GLTestUtils.hpp"
+#include <Basil/Window.hpp>
 
 TEST_CASE("Window_GLShader_getShaderFromFile") {
     GLTestUtils::initializeGLContext();

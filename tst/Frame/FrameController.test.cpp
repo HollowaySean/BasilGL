@@ -2,7 +2,7 @@
 
 #include <catch.hpp>
 
-#include "FrameController.hpp"
+#include <Basil/Frame.hpp>
 
 using FCState   = FrameController::FCState;
 using FPState   = IFrameProcess::State;

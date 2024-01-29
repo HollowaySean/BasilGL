@@ -1,6 +1,6 @@
-#include "SplitPane.hpp"
-
 #include <catch.hpp>
+
+#include <Basil/Window.hpp>
 
 PaneProps paneProps = {
     .width = 20,

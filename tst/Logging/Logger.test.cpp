@@ -2,7 +2,7 @@
 
 #include <catch.hpp>
 
-#include "Logger.hpp"
+#include <Basil/Logging.hpp>
 
 TEST_CASE("Logging_Logger_log") {
     Logger& logger = Logger::get();

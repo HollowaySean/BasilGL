@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include "FrameMetrics.hpp"
+#include <Basil/Frame.hpp>
 
 class TestTimer : public ITimerSource {
  public:
