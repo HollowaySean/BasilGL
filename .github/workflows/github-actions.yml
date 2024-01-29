@@ -22,7 +22,7 @@ jobs:
             - name: Build target binaries
               run: |
                 echo "Building targets" && \
-                    cd build && make && echo "Successful build"
+                    cd build && cmake --build && echo "Successful build"
             - name: Run unit tests
               uses: coactions/setup-xvfb@v1
               with:
