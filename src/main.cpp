@@ -1,5 +1,4 @@
-#include "Frame.hpp"
-#include "Window.hpp"
+#include "Logging.hpp"
 
 /**
  * @brief Entry point function.
@@ -9,24 +8,9 @@
  * @return Success code
  */
 int main(int argc, char** argv) {
-    FrameController frameController = FrameController();
+    Logger& logger = Logger::get();
 
-    FrameMetrics *frameMetrics = &frameController.metrics;
-    frameMetrics->setBufferSize(20);
-
-    MetricsReporter reporter = MetricsReporter(
-        frameMetrics, frameMetrics->getBufferSize());
-    frameController.addProcess(&reporter,
-        FrameController::Privilege::NONE,
-        "MetricsReporter");
-
-    WindowView windowView = WindowView();
-    frameController.addProcess(&windowView,
-        FrameController::Privilege::HIGH,
-        "WindowView");
-
-    frameController.setFrameCap(30);
-    frameController.run();
+    logger.log("test", Level::WARN);
 
     return 0;
 }

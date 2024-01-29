@@ -1,3 +1,39 @@
+## CMake version requirements
+cmake_minimum_required(VERSION 3.12...3.28)
+if(${CMAKE_VERSION} VERSION_LESS 3.12)
+    cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
+endif()
+
+## Project settings
+project(BasilGL VERSION 1.0
+    DESCRIPTION "C++ library for simplified setup & management of OpenGL shader-based texture rendering"
+    LANGUAGES C CXX)
+
+## LIBRARY BUILD TEST
+add_library(${PROJECT_NAME} STATIC
+    "${CMAKE_SOURCE_DIR}/src/Logging/Logger.cpp"
+    "${CMAKE_SOURCE_DIR}/src/Logging/Logger.hpp")
+target_include_directories(${PROJECT_NAME} PUBLIC
+    "${CMAKE_SOURCE_DIR}/include"
+    "${CMAKE_SOURCE_DIR}/src/Logging")
+
+## EXEC BUILD TEST
+add_executable("${PROJECT_NAME}_example"
+    "${CMAKE_SOURCE_DIR}/src/main.cpp")
+target_link_libraries("${PROJECT_NAME}_example" PRIVATE
+    ${PROJECT_NAME})
+target_include_directories("${PROJECT_NAME}_example" PRIVATE
+    "${CMAKE_SOURCE_DIR}/include")
+
+
+##STOPPING POINT##
+return()
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+enable_testing()
+
 ## Macros
 macro(DEBUG_MESSAGE MESSAGE)
     if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
@@ -5,16 +41,8 @@ macro(DEBUG_MESSAGE MESSAGE)
     endif()
 endmacro()
 
-## Project settings
-cmake_minimum_required(VERSION 3.5.0)
-project(BasilGL VERSION 0.1.0 LANGUAGES C CXX)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-enable_testing()
-
 ## Find source files and folders
-file(GLOB SRC_CHILDREN
+file(GLOB SRC_CHILDREN CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/*")
 set(SRC_DIR_LIST "")
 set(SRC_FILE_LIST "")
@@ -22,7 +50,7 @@ foreach(CHILD ${SRC_CHILDREN})
     if(IS_DIRECTORY "${CHILD}")
         debug_message("Found source subdirectory: ${CHILD}")
         list(APPEND SRC_DIR_LIST ${CHILD})
-        file(GLOB SRC_CHILDREN_FILES
+        file(GLOB SRC_CHILDREN_FILES CONFIGURE_DEPENDS
             "${CHILD}/*.cpp")
         foreach(GRANDCHILD ${SRC_CHILDREN_FILES})
             debug_message("Found source file: ${GRANDCHILD}")
@@ -180,7 +208,7 @@ include(Catch)
 include(CTest)
 
 # Find test files and folders
-file(GLOB TST_CHILDREN
+file(GLOB TST_CHILDREN CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/tst/*")
 set(TST_DIR_LIST "")
 set(TST_FILE_LIST "")
@@ -188,7 +216,7 @@ foreach(CHILD ${TST_CHILDREN})
     if(IS_DIRECTORY "${CHILD}")
         debug_message("Found test subdirectory: ${CHILD}")
         list(APPEND TST_DIR_LIST ${CHILD})
-        file(GLOB TST_CHILDREN_FILES
+        file(GLOB TST_CHILDREN_FILES CONFIGURE_DEPENDS
             "${CHILD}/*.cpp")
         foreach(GRANDCHILD ${TST_CHILDREN_FILES})
             debug_message("Found test file: ${GRANDCHILD}")
