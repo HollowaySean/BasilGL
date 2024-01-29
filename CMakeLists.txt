@@ -30,6 +30,34 @@ find_package(OpenGL REQUIRED)
 
 ## TODO(sholloway): Turn this into a function/macro
 
+## fmt library
+find_package(fmt QUIET CONFIG)
+if(${fmt_FOUND})
+
+    # fmt from installed binaries
+    message("Found fmt as installed library.")
+    set(FMT_LIBRARIES fmt::fmt)
+else()
+
+    # fmt from source
+    message("Could not find fmt. Installing from local source.")
+    set(FMT_SUBMODULE_DIR "${CMAKE_SOURCE_DIR}/extern/fmt")
+
+    # Install Git submodule
+    if(NOT EXISTS "${FMT_SUBMODULE_DIR}/CMakeLists.txt")
+        find_package(Git REQUIRED)
+        execute_process(COMMAND ${GIT_EXECUTABLE}
+            submodule update --init --recursive -- extern/fmt
+            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+            COMMAND_ERROR_IS_FATAL ANY)
+    endif()
+
+    add_subdirectory("${CMAKE_SOURCE_DIR}/extern/fmt")
+
+    set(FMT_INCLUDE_DIRS "${FMT_SUBMODULE_DIR}/include")
+    set(FMT_LIBRARIES fmt::fmt)
+endif()
+
 ## GLEW
 find_package(GLEW QUIET CONFIG)
 if(${GLEW_FOUND})
@@ -57,34 +85,6 @@ else()
     set(GLEW_INCLUDE_DIRS
         "${GLEW_SUBMODULE_DIR}/include")
     set(GLEW_LIBRARIES libglew_static)
-endif()
-
-## fmt library
-find_package(fmt QUIET CONFIG)
-if(${fmt_FOUND})
-
-    # fmt from installed binaries
-    message("Found fmt as installed library.")
-    set(FMT_LIBRARIES fmt::fmt)
-else()
-
-    # fmt from source
-    message("Could not find fmt. Installing from local source.")
-    set(FMT_SUBMODULE_DIR "${CMAKE_SOURCE_DIR}/extern/fmt")
-
-    # Install Git submodule
-    if(NOT EXISTS "${FMT_SUBMODULE_DIR}/CMakeLists.txt")
-        find_package(Git REQUIRED)
-        execute_process(COMMAND ${GIT_EXECUTABLE}
-            submodule update --init --recursive -- extern/fmt
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-            COMMAND_ERROR_IS_FATAL ANY)
-    endif()
-
-    add_subdirectory("${CMAKE_SOURCE_DIR}/extern/fmt")
-
-    set(FMT_INCLUDE_DIRS "${FMT_SUBMODULE_DIR}/include")
-    set(FMT_LIBRARIES fmt::fmt)
 endif()
 
 ## GLFW
