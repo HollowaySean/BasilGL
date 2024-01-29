@@ -12,11 +12,11 @@ repos:
   hooks:
   - id: cppcheck
     args: [ "src/*", "include/*",
-      "--suppress=*:vendor/*",
+      "--suppress=*:extern/*",
       "--suppress=*:*.hpp",
       "--suppress=unmatchedSuppression",
       "--suppress=missingIncludeSystem",
       "--suppress=unusedFunction"]
   - id: cpplint
-    args: ["--exclude=vendor",
+    args: ["--exclude=extern",
     "--filter=-build/c++11"]
