@@ -24,11 +24,6 @@ class IPane {
         paneProps.height = newHeight;
     }
 
-    // TODO(sholloway): Implement or remove the following
-    // virtual void destroy() = 0;
-    // virtual void onClick(int clickX, int clickY) {}
-    // virtual void onKeyPress() {}
-
     PaneProps paneProps;
 };
 

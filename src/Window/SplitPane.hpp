@@ -59,7 +59,6 @@ class SplitPane : public IPane {
     PaneOrientation getOrientation() { return orientation; }
 
  private:
-    int percentageToPixels(float percentage);
     void updateSize();
 
     PaneOrientation orientation;
