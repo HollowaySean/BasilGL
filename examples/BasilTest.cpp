@@ -25,6 +25,15 @@ int main(int argc, char** argv) {
         FrameController::Privilege::HIGH,
         "WindowView");
 
+
+    std::filesystem::path fragmentPath =
+        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
+
+    PaneProps paneProps = windowView.getTopPaneProps();
+    GLTexturePane topPane = GLTexturePane(paneProps, fragmentPath);
+
+    windowView.setTopPane(&topPane);
+
     frameController.setFrameCap(30);
     frameController.run();
 

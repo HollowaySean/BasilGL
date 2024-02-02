@@ -11,8 +11,6 @@
 #include "SplitPane.hpp"
 #include "GLTexturePane.hpp"
 
-// #include "../Frame/IFrameProcess.hpp"
-
 // Hoisting
 struct WindowOptions {
  public:
@@ -31,33 +29,35 @@ class WindowView : public IFrameProcess {
     WindowView();
     ~WindowView();
 
-    void onStart() override;
     void onStop() override;
 
     /** @brief Main loop function for IFrameProcess parent class. */
     void onLoop() override;
 
+    /** @brief Sets top-level pane for window. */
+    void setTopPane(IPane* newTopPane);
+
+    /** @returns PaneProps object for top pane. */
+    PaneProps getTopPaneProps();
+
+#ifndef TEST_BUILD
+
  private:
+#endif
     WindowOptions windowOptions;
+
     GLFWwindow* glfwWindow = nullptr;
     GLFWwindow* createGLFWWindow();
+
     void initializeGLFWContext();
     void initializeGLEWContext();
+    void draw();
+    void closeWindow();
 
-    // TODO(sholloway): Determine best way to implement this.
+    void setCallbacks();
     void onResize(GLFWwindow* window, int width, int height);
 
-    GLVertexShader* vertexShader = nullptr;
-    GLFragmentShader* fragmentShader = nullptr;
-    GLShaderProgram* shaderProgram = nullptr;
-
-    GLTextureProps* textureProps = nullptr;
-    GLTexture<float>* texture = nullptr;
-
-    std::vector<float> testTexture;
-    GLTexturePane* firstPane;
-    GLTexturePane* secondPane;
-    SplitPane* topPane;
+    IPane* topPane = nullptr;
 
     Logger& logger = Logger::get();
 };

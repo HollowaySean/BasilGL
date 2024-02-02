@@ -10,6 +10,17 @@
 WindowView::WindowView(): glfwWindow() {
     topPane = nullptr;
     initializeGLFWContext();
+
+    // Create window
+    glfwWindow = createGLFWWindow();
+
+    // GLEW can not be initialized before window context
+    // has been created
+    initializeGLEWContext();
+
+    // Set window user pointer
+    glfwSetWindowUserPointer(glfwWindow, this);
+    setCallbacks();
 }
 
 WindowView::~WindowView() {
@@ -17,87 +28,30 @@ WindowView::~WindowView() {
     glfwTerminate();
 }
 
-void WindowView::onStart() {
-    glfwWindow = createGLFWWindow();
-
-    // GLEW can not be initialized before window context
-    // has been created
-    initializeGLEWContext();
-
-    std::filesystem::path fragmentPath =
-        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
-
-
-    // NOTE TO SELF: ALL OF THESE OBJECTS DISAPPEAR IN LOOP
-
-    testTexture = std::vector<float>();
-    for (int i = 0; i < 100; i++) {
-        testTexture.push_back(static_cast<float>(i) / 100.0f);
+void WindowView::onLoop() {
+    if (glfwWindowShouldClose(glfwWindow)) {
+        closeWindow();
+        return;
     }
 
-    textureProps = new GLTextureProps();
-    textureProps->name = "testTexture";
-    textureProps->width = 10;
-    textureProps->height = 10;
-    textureProps->format = GL_RED;
-    textureProps->internalFormat = GL_R32F;
-    textureProps->dataType = GL_FLOAT;
+    draw();
+}
 
-    texture = new GLTexture<float>(testTexture, *textureProps);
+void WindowView::onStop() {
+    logger.log("Stopping loop", Level::INFO);
+}
 
-    PaneProps paneProps = {
+void WindowView::setTopPane(IPane* newTopPane) {
+    this->topPane = newTopPane;
+}
+
+PaneProps WindowView::getTopPaneProps() {
+    return PaneProps {
         .width = windowOptions.width,
         .height = windowOptions.height,
         .xOffset = 0,
         .yOffset = 0
     };
-
-    firstPane = new GLTexturePane(paneProps, fragmentPath);
-    firstPane->addTexture(texture);
-    secondPane = new GLTexturePane(paneProps, fragmentPath);
-    secondPane->addTexture(texture);
-
-    topPane = new SplitPane(paneProps, PaneOrientation::VERTICAL);
-    topPane->setFirstPane(firstPane);
-    topPane->setSecondPane(secondPane);
-
-    topPane->resizeToPercentage(25.f);
-    topPane->setGapWidth(10);
-
-    // TODO(sholloway): Codify this
-    glfwSetWindowUserPointer(glfwWindow, this);
-    auto func = [](GLFWwindow* window, int width, int height){
-        static_cast<WindowView*>(
-            glfwGetWindowUserPointer(window))->onResize(window, width, height);
-    };
-    glfwSetFramebufferSizeCallback(glfwWindow, func);
-}
-
-void WindowView::onLoop() {
-    // Dummy code
-    // printf("In main loop\n");
-
-    if (glfwWindowShouldClose(glfwWindow)) {
-        currentState = State::REQUEST_STOP;
-
-        glfwDestroyWindow(glfwWindow);
-        glfwTerminate();
-    }
-
-    // Clear background color
-    glBlendFunc(GL_ONE, GL_ZERO);
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    topPane->draw();
-
-    glfwSwapBuffers(glfwWindow);
-    glfwPollEvents();
-}
-
-void WindowView::onStop() {
-    // Dummy code
-    logger.log("Stopping loop", Level::INFO);
 }
 
 GLFWwindow* WindowView::createGLFWWindow() {
@@ -137,4 +91,35 @@ void WindowView::initializeGLEWContext() {
     if (GLEW_OK != err) {
         fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
     }
+}
+
+void WindowView::draw() {
+    // Clear background color
+    glBlendFunc(GL_ONE, GL_ZERO);
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // Render using double buffer
+    if (topPane) {
+        topPane->draw();
+    }
+    glfwSwapBuffers(glfwWindow);
+
+    // Check for pending events
+    glfwPollEvents();
+}
+
+void WindowView::closeWindow() {
+    currentState = State::REQUEST_STOP;
+
+    glfwDestroyWindow(glfwWindow);
+    glfwTerminate();
+}
+
+void WindowView::setCallbacks() {
+    auto resizeFunc = [](GLFWwindow* window, int width, int height){
+        static_cast<WindowView*>(
+            glfwGetWindowUserPointer(window))->onResize(window, width, height);
+    };
+    glfwSetFramebufferSizeCallback(glfwWindow, resizeFunc);
 }

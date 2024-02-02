@@ -8,3 +8,11 @@ add_executable(${EXEC_TARGET_NAME} "${EXAMPLE_DIR}/BasilTest.cpp")
 ## Link with library
 target_link_libraries(${EXEC_TARGET_NAME} PRIVATE ${BASIL_LIBRARIES})
 target_include_directories(${EXEC_TARGET_NAME} PRIVATE ${BASIL_INCLUDE_DIRS})
+
+# Temporary: Pass in source directory
+## Pass in compiler definitions
+target_compile_definitions(
+    ${EXEC_TARGET_NAME} PRIVATE
+    SOURCE_DIR="${CMAKE_SOURCE_DIR}/src/"
+    EXAMPLE_DIR="${EXAMPLE_DIR}"
+)
