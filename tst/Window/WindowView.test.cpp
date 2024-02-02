@@ -3,5 +3,72 @@
 #include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
-TEST_CASE("Window_WindowView_placeholder") {
+TEST_CASE("Window_WindowView_WindowView") {
+    SECTION("Initializes GLFW context") {
+        GLFWwindow* glfwContext = glfwGetCurrentContext();
+        REQUIRE(glfwContext == nullptr);
+
+        WindowView windowView = WindowView();
+
+        glfwContext = glfwGetCurrentContext();
+        REQUIRE_FALSE(glfwContext == nullptr);
+    }
+}
+
+TEST_CASE("Window_WindowView_createGLFWWindow") {
+    Logger& logger = Logger::get();
+    logger.clearTestInfo();
+
+    SECTION("Creates glfwWindow object") {
+        WindowView windowView = WindowView();
+
+        GLFWwindow* window = windowView.createGLFWWindow();
+
+        REQUIRE(window != nullptr);
+        REQUIRE(logger.getLastLevel() == Level::INFO);
+    }
+
+    SECTION("Logs error on failure") {
+        WindowView windowView = WindowView();
+        glfwTerminate();
+
+        GLFWwindow* window = windowView.createGLFWWindow();
+
+        REQUIRE(window == nullptr);
+        REQUIRE(logger.getLastLevel() == Level::ERROR);
+    }
+}
+
+TEST_CASE("Window_WindowView_logGLFWError") {
+    Logger& logger = Logger::get();
+    logger.clearTestInfo();
+
+    SECTION("Logs info on success") {
+        WindowView::logGLFWError(1);
+
+        REQUIRE(logger.getLastLevel() == Level::INFO);
+    }
+
+    SECTION("Logs error on failure") {
+        WindowView::logGLFWError(0);
+
+        REQUIRE(logger.getLastLevel() == Level::ERROR);
+    }
+}
+
+TEST_CASE("Window_WindowView_logGLEWError") {
+    Logger& logger = Logger::get();
+    logger.clearTestInfo();
+
+    SECTION("Logs info on success") {
+        WindowView::logGLEWError(GLEW_OK);
+
+        REQUIRE(logger.getLastLevel() == Level::INFO);
+    }
+
+    SECTION("Logs error on failure") {
+        WindowView::logGLEWError(!GLEW_OK);
+
+        REQUIRE(logger.getLastLevel() == Level::ERROR);
+    }
 }

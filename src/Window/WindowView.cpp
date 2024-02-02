@@ -37,6 +37,10 @@ void WindowView::onLoop() {
     draw();
 }
 
+void WindowView::onStart() {
+    glfwShowWindow(glfwWindow);
+}
+
 void WindowView::onStop() {
     logger.log("Stopping loop", Level::INFO);
 }
@@ -62,9 +66,12 @@ GLFWwindow* WindowView::createGLFWWindow() {
         NULL, NULL);
 
     if (!newWindow) {
-        fprintf(stderr, "GLFW failed to create window.");
+        logger.log("GLFW failed to create window.", Level::ERROR);
         glfwTerminate();
+    } else {
+        logger.log("Successfully created GLFW window.", Level::INFO);
     }
+
     glfwMakeContextCurrent(newWindow);
 
     return newWindow;
@@ -77,19 +84,44 @@ void WindowView::onResize(GLFWwindow* window, int width, int height) {
 }
 
 void WindowView::initializeGLFWContext() {
-    if (!glfwInit()) {
-        fprintf(stderr, "GLFW failed to initialize.");
-    }
+    GLenum errorCode = glfwInit();
+    logGLFWError(errorCode);
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    // Default to window not being visible
+    glfwWindowHint(GLFW_VISIBLE, false);
 }
 
 void WindowView::initializeGLEWContext() {
-    GLenum err = glewInit();
-    if (GLEW_OK != err) {
-        fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
+    GLenum errorCode = glewInit();
+    logGLEWError(errorCode);
+}
+
+void WindowView::logGLFWError(GLenum errorCode) {
+    Logger& logger = Logger::get();
+
+    if (errorCode) {
+        logger.log("GLFW context initialized successfully.", Level::INFO);
+    } else {
+        const char* errorMessage;
+        glfwGetError(&errorMessage);
+
+        logger.log("GLFW failed to initialize. Error: "
+            + *errorMessage, Level::ERROR);
+    }
+}
+
+void WindowView::logGLEWError(GLenum errorCode) {
+    Logger& logger = Logger::get();
+
+    if (errorCode == GLEW_OK) {
+        logger.log("GLEW context initialized successfully.", Level::INFO);
+    } else {
+        logger.log("GLEW failed to initialize. Error: "
+            + *glewGetErrorString(errorCode), Level::ERROR);
     }
 }
 

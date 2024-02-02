@@ -22,13 +22,16 @@ struct WindowOptions {
 /**
  * @brief Outer window containing all UI elements and providing simple
  * public facade.
- * TODO: Rewrite this documentation
  */
 class WindowView : public IFrameProcess {
  public:
     WindowView();
     ~WindowView();
 
+    /** @brief Makes window visible. */
+    void onStart() override;
+
+    /** @brief Removes GLFW context and closes window. */
     void onStop() override;
 
     /** @brief Main loop function for IFrameProcess parent class. */
@@ -51,6 +54,8 @@ class WindowView : public IFrameProcess {
 
     void initializeGLFWContext();
     void initializeGLEWContext();
+    static void logGLFWError(GLenum errorCode);
+    static void logGLEWError(GLenum errorCode);
     void draw();
     void closeWindow();
 
