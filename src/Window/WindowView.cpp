@@ -109,8 +109,11 @@ void WindowView::logGLFWError(GLenum errorCode) {
         const char* errorMessage;
         glfwGetError(&errorMessage);
 
+        std::string errorMessageString = errorMessage ?
+            std::string(errorMessage) : "Could not read error message.";
+
         logger.log("GLFW failed to initialize. Error: "
-            + *errorMessage, Level::ERROR);
+            + errorMessageString, Level::ERROR);
     }
 }
 
@@ -120,8 +123,12 @@ void WindowView::logGLEWError(GLenum errorCode) {
     if (errorCode == GLEW_OK) {
         logger.log("GLEW context initialized successfully.", Level::INFO);
     } else {
+        const char* errorMessage =
+            reinterpret_cast<const char*>(glewGetErrorString(errorCode));
+        std::string errorMessageString = std::string(errorMessage);
+
         logger.log("GLEW failed to initialize. Error: "
-            + *glewGetErrorString(errorCode), Level::ERROR);
+            + errorMessageString, Level::ERROR);
     }
 }
 

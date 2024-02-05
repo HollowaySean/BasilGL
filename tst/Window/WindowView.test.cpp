@@ -43,10 +43,15 @@ TEST_CASE("Window_WindowView_logGLFWError") {
     Logger& logger = Logger::get();
     logger.clearTestInfo();
 
+    GLTestUtils::initializeGLContext();
+
     SECTION("Logs info on success") {
         WindowView::logGLFWError(1);
 
-        REQUIRE(logger.getLastLevel() == Level::INFO);
+        REQUIRE(logger.getLastOutput() ==
+            "[INFO]: GLFW context initialized successfully.\n");
+        REQUIRE(logger.getLastLevel() ==
+            Level::INFO);
     }
 
     SECTION("Logs error on failure") {
@@ -54,6 +59,8 @@ TEST_CASE("Window_WindowView_logGLFWError") {
 
         REQUIRE(logger.getLastLevel() == Level::ERROR);
     }
+
+    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_WindowView_logGLEWError") {
@@ -63,7 +70,10 @@ TEST_CASE("Window_WindowView_logGLEWError") {
     SECTION("Logs info on success") {
         WindowView::logGLEWError(GLEW_OK);
 
-        REQUIRE(logger.getLastLevel() == Level::INFO);
+        REQUIRE(logger.getLastOutput() ==
+            "[INFO]: GLEW context initialized successfully.\n");
+        REQUIRE(logger.getLastLevel() ==
+            Level::INFO);
     }
 
     SECTION("Logs error on failure") {
