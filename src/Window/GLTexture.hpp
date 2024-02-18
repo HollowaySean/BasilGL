@@ -42,7 +42,7 @@ class IGLTexture {
  protected:
     explicit IGLTexture(const GLTextureProps &props): props(props) {}
 
-    static GLenum nextTexture;
+    inline static GLenum nextTexture = GL_TEXTURE0;
 
     GLuint textureId;
 };

@@ -7,7 +7,11 @@
 
 #include "WindowView.hpp"
 
-WindowView::WindowView(): glfwWindow() {
+// TODO(sholloway): Retrofit other optional constructors throughout project
+WindowView::WindowView(std::optional<WindowProps> windowProps):
+        glfwWindow() {
+    this->windowProps = windowProps.value_or(WindowProps());
+
     topPane = nullptr;
     initializeGLFWContext();
 
@@ -51,8 +55,8 @@ void WindowView::setTopPane(IPane* newTopPane) {
 
 PaneProps WindowView::getTopPaneProps() {
     return PaneProps {
-        .width = windowOptions.width,
-        .height = windowOptions.height,
+        .width = windowProps.width,
+        .height = windowProps.height,
         .xOffset = 0,
         .yOffset = 0
     };
@@ -60,9 +64,9 @@ PaneProps WindowView::getTopPaneProps() {
 
 GLFWwindow* WindowView::createGLFWWindow() {
     GLFWwindow* newWindow = glfwCreateWindow(
-        windowOptions.width,
-        windowOptions.height,
-        windowOptions.title.c_str(),
+        windowProps.width,
+        windowProps.height,
+        windowProps.title.c_str(),
         NULL, NULL);
 
     if (!newWindow) {

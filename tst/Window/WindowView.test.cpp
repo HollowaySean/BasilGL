@@ -8,10 +8,24 @@ TEST_CASE("Window_WindowView_WindowView") {
         GLFWwindow* glfwContext = glfwGetCurrentContext();
         REQUIRE(glfwContext == nullptr);
 
-        WindowView windowView = WindowView();
+        WindowProps windowProps = WindowProps {
+            .title = "test name",
+            .width = 100,
+            .height = 50
+        };
+        WindowView windowView = WindowView(windowProps);
 
         glfwContext = glfwGetCurrentContext();
         REQUIRE_FALSE(glfwContext == nullptr);
+    }
+
+    SECTION("Uses default WindowProps if none provided") {
+        WindowView windowView = WindowView();
+        WindowProps windowProps = windowView.windowProps;
+
+        REQUIRE(windowProps.width == WindowProps::DEFAULT_WIDTH);
+        REQUIRE(windowProps.height == WindowProps::DEFAULT_HEIGHT);
+        REQUIRE(windowProps.title == WindowProps::DEFAULT_TITLE);
     }
 }
 
@@ -88,7 +102,7 @@ TEST_CASE("Window_WindowView_getTopPaneProps") {
         WindowView window = WindowView();
 
         PaneProps paneProps = window.getTopPaneProps();
-        WindowOptions windowProps = window.windowOptions;
+        WindowProps windowProps = window.windowProps;
 
         REQUIRE(paneProps.width == windowProps.width);
         REQUIRE(paneProps.height == windowProps.height);

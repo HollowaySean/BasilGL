@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -11,12 +12,18 @@
 #include "SplitPane.hpp"
 #include "GLTexturePane.hpp"
 
-// Hoisting
-struct WindowOptions {
+/**
+ * @brief Struct holding basic properties of window.
+*/
+struct WindowProps {
  public:
-    std::string title = "My Window";
-    int width = 1080;
-    int height = 920;
+    inline static const int DEFAULT_WIDTH = 1080;
+    inline static const int DEFAULT_HEIGHT = 920;
+    inline static const std::string DEFAULT_TITLE = "Basil";
+
+    std::string title = DEFAULT_TITLE;
+    int width = DEFAULT_WIDTH;
+    int height = DEFAULT_HEIGHT;
 };
 
 /**
@@ -25,7 +32,7 @@ struct WindowOptions {
  */
 class WindowView : public IFrameProcess {
  public:
-    WindowView();
+    explicit WindowView(std::optional<WindowProps> windowProps = std::nullopt);
     ~WindowView();
 
     /** @brief Makes window visible. */
@@ -47,7 +54,7 @@ class WindowView : public IFrameProcess {
 
  private:
 #endif
-    WindowOptions windowOptions;
+    WindowProps windowProps;
 
     GLFWwindow* glfwWindow = nullptr;
     GLFWwindow* createGLFWWindow();

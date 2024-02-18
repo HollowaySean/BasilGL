@@ -4,8 +4,6 @@ template class GLTexture<float>;
 template class GLTexture<int>;
 template class GLTexture<unsigned int>;
 
-GLenum IGLTexture::nextTexture = GL_TEXTURE0;
-
 template<class T>
 GLTexture<T>::GLTexture(std::span<T> source,
                         const GLTextureProps &props):
