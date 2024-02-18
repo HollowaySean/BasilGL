@@ -82,3 +82,17 @@ TEST_CASE("Window_WindowView_logGLEWError") {
         REQUIRE(logger.getLastLevel() == Level::ERROR);
     }
 }
+
+TEST_CASE("Window_WindowView_getTopPaneProps") {
+    SECTION("Returns PaneProps with window size.") {
+        WindowView window = WindowView();
+
+        PaneProps paneProps = window.getTopPaneProps();
+        WindowOptions windowProps = window.windowOptions;
+
+        REQUIRE(paneProps.width == windowProps.width);
+        REQUIRE(paneProps.height == windowProps.height);
+        REQUIRE(paneProps.xOffset == 0);
+        REQUIRE(paneProps.yOffset == 0);
+    }
+}
