@@ -67,7 +67,7 @@ class WindowView : public IFrameProcess {
     void closeWindow();
 
     void setCallbacks();
-    void onResize(GLFWwindow* window, int width, int height);
+    void onResize(int width, int height);
 
     IPane* topPane = nullptr;
 

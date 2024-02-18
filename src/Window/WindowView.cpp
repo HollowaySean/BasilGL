@@ -81,7 +81,7 @@ GLFWwindow* WindowView::createGLFWWindow() {
     return newWindow;
 }
 
-void WindowView::onResize(GLFWwindow* window, int width, int height) {
+void WindowView::onResize(int width, int height) {
     if (topPane) {
         topPane->onResize(width, height);
     }
@@ -162,7 +162,7 @@ void WindowView::closeWindow() {
 void WindowView::setCallbacks() {
     auto resizeFunc = [](GLFWwindow* window, int width, int height){
         static_cast<WindowView*>(
-            glfwGetWindowUserPointer(window))->onResize(window, width, height);
+            glfwGetWindowUserPointer(window))->onResize(width, height);
     };
     glfwSetFramebufferSizeCallback(glfwWindow, resizeFunc);
 }
