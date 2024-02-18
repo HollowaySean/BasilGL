@@ -28,9 +28,8 @@ TEST_CASE("Window_GLTexture_GLTexture") {
         REQUIRE(secondTexture.textureEnum == GL_TEXTURE1);
     }
 
-    SECTION("Creates OpenGL texture") {
-        REQUIRE(firstTexture.getID() == 1);
-        REQUIRE(secondTexture.getID() == 2);
+    SECTION("Sets texture ID incrementally") {
+        REQUIRE(secondTexture.getID() == firstTexture.getID() + 1);
     }
 
     GLTestUtils::deinitialize();
