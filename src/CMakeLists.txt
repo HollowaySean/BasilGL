@@ -49,9 +49,3 @@ target_include_directories(${LIB_TARGET_NAME}
         "${FMT_INCLUDE_DIRS}"
         "${GLEW_INCLUDE_DIRS}"
         "${GLFW_INCLUDE_DIRS}")
-
-
-## TODO(sholloway)
-#  CPack
-#  IDE Support
-#  Compile features

@@ -28,8 +28,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 set(OpenGL_GL_PREFERENCE GLVND)
 find_package(OpenGL REQUIRED)
 
-## TODO(sholloway): Turn this into a function/macro
-
 ## fmt library
 find_package(fmt QUIET CONFIG)
 if(${fmt_FOUND})
@@ -122,7 +120,6 @@ endif()
 add_subdirectory("${CMAKE_SOURCE_DIR}/src")
 
 ## Examples subdirectory
-## TODO(sholloway): Put behind a flag later
 add_subdirectory("${CMAKE_SOURCE_DIR}/examples")
 
 ## Macros

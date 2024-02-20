@@ -73,9 +73,6 @@ void GLShader::getShaderFromFile(
 }
 
 void GLShader::compileShader(ShaderType type) {
-    // TODO(sholloway): Guard against attempting to
-    //  compile before GLFW context exists
-
     // Compile the shader
     std::string typeString;
     switch (type) {

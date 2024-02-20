@@ -7,7 +7,6 @@
 
 #include "WindowView.hpp"
 
-// TODO(sholloway): Retrofit other optional constructors throughout project
 WindowView::WindowView(std::optional<WindowProps> windowProps):
         glfwWindow() {
     this->windowProps = windowProps.value_or(WindowProps());
