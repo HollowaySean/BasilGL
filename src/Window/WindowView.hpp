@@ -66,6 +66,7 @@ class WindowView : public IFrameProcess {
     void draw();
     void closeWindow();
 
+    static void resizeCallback(GLFWwindow* window, int width, int height);
     void setCallbacks();
     void onResize(int width, int height);
 

@@ -201,3 +201,13 @@ TEST_CASE("Window_WindowView_onResize") {
         REQUIRE(testPane.paneProps.height == 25);
     }
 }
+
+TEST_CASE("Window_WindowView_resizeCallback") {
+    SECTION("Calls resize function on window") {
+        WindowView window = WindowView();
+        WindowView::resizeCallback(window.glfwWindow, 60, 30);
+
+        REQUIRE(window.windowProps.width == 60);
+        REQUIRE(window.windowProps.height == 30);
+    }
+}

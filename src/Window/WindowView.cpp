@@ -82,6 +82,9 @@ GLFWwindow* WindowView::createGLFWWindow() {
 }
 
 void WindowView::onResize(int width, int height) {
+    windowProps.width = width;
+    windowProps.height = height;
+
     if (topPane) {
         topPane->onResize(width, height);
     }
@@ -159,10 +162,12 @@ void WindowView::closeWindow() {
     glfwTerminate();
 }
 
+void WindowView::resizeCallback(GLFWwindow* window, int width, int height) {
+    WindowView* windowView =
+        static_cast<WindowView*>(glfwGetWindowUserPointer(window));
+    windowView->onResize(width, height);
+}
+
 void WindowView::setCallbacks() {
-    auto resizeFunc = [](GLFWwindow* window, int width, int height){
-        static_cast<WindowView*>(
-            glfwGetWindowUserPointer(window))->onResize(width, height);
-    };
-    glfwSetFramebufferSizeCallback(glfwWindow, resizeFunc);
+    glfwSetFramebufferSizeCallback(glfwWindow, WindowView::resizeCallback);
 }
