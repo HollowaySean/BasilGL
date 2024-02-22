@@ -4,7 +4,7 @@
 #include <Basil/Window.hpp>
 
 using basil::Logger;
-using basil::Level;
+using basil::LogLevel;
 using basil::IPane;
 using basil::PaneProps;
 using basil::WindowProps;
@@ -57,7 +57,7 @@ TEST_CASE("Window_WindowView_createGLFWWindow") {
         GLFWwindow* window = windowView.createGLFWWindow();
 
         REQUIRE(window != nullptr);
-        REQUIRE(logger.getLastLevel() == Level::INFO);
+        REQUIRE(logger.getLastLevel() == LogLevel::INFO);
     }
 
     SECTION("Logs error on failure") {
@@ -67,7 +67,7 @@ TEST_CASE("Window_WindowView_createGLFWWindow") {
         GLFWwindow* window = windowView.createGLFWWindow();
 
         REQUIRE(window == nullptr);
-        REQUIRE(logger.getLastLevel() == Level::ERROR);
+        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
     }
 }
 
@@ -83,13 +83,13 @@ TEST_CASE("Window_WindowView_logGLFWError") {
         REQUIRE(logger.getLastOutput() ==
             "[INFO]: GLFW context initialized successfully.\n");
         REQUIRE(logger.getLastLevel() ==
-            Level::INFO);
+            LogLevel::INFO);
     }
 
     SECTION("Logs error on failure") {
         WindowView::logGLFWError(0);
 
-        REQUIRE(logger.getLastLevel() == Level::ERROR);
+        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
     }
 
     GLTestUtils::deinitialize();
@@ -105,13 +105,13 @@ TEST_CASE("Window_WindowView_logGLEWError") {
         REQUIRE(logger.getLastOutput() ==
             "[INFO]: GLEW context initialized successfully.\n");
         REQUIRE(logger.getLastLevel() ==
-            Level::INFO);
+            LogLevel::INFO);
     }
 
     SECTION("Logs error on failure") {
         WindowView::logGLEWError(!GLEW_OK);
 
-        REQUIRE(logger.getLastLevel() == Level::ERROR);
+        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
     }
 }
 
@@ -191,7 +191,7 @@ TEST_CASE("Window_WindowView_onStop") {
         logger.clearTestInfo();
 
         window.onStop();
-        REQUIRE(logger.getLastLevel() == Level::INFO);
+        REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == "[INFO]: Stopping loop\n");
     }
 }

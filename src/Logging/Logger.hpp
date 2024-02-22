@@ -11,7 +11,7 @@ namespace basil {
 /**
  * @brief Severity level for log message.
 */
-enum Level { DEBUG, INFO, WARN, ERROR };
+enum LogLevel { DEBUG, INFO, WARN, ERROR };
 
 /**
  * @brief Global logger using Singleton pattern.
@@ -23,19 +23,19 @@ class Logger {
      *  @param message  Message to log.
      *  @param level    Severity level, defaults to "DEBUG".
     */
-    void log(const std::string& message, Level level = DEBUG);
+    void log(const std::string& message, LogLevel level = DEBUG);
 
     /**
      * @brief           Logs line break to output stream
      * @param level     Severity level, defaults to "DEBUG".
     */
-    void lineBreak(Level level = DEBUG);
+    void lineBreak(LogLevel level = DEBUG);
 
     /** @return Get minimum severity level to output to ostream. */
-    Level getLevel() { return logLevel; }
+    LogLevel getLevel() { return logLevel; }
 
     /** @brief Set minimum severity level to output to ostream. */
-    void setLevel(Level level) { logLevel = level; }
+    void setLevel(LogLevel level) { logLevel = level; }
 
     /** @return Instance of Singleton logger. */
     static Logger& get() {
@@ -50,7 +50,7 @@ class Logger {
         return output;
     }
 
-    Level getLastLevel() {
+    LogLevel getLastLevel() {
         return lastOutputLevel;
     }
 
@@ -70,18 +70,18 @@ class Logger {
 
  private:
     #ifdef DEBUG_BUILD
-        Level logLevel = DEBUG;
+        LogLevel logLevel = DEBUG;
     #else
-        Level logLevel = INFO;
+        LogLevel logLevel = INFO;
     #endif
 
-    Level lastOutputLevel = DEBUG;
+    LogLevel lastOutputLevel = DEBUG;
 
-    std::map<Level, std::string> levelLabels = {
-        {Level::DEBUG,  "DEBUG"},
-        {Level::INFO,   "INFO"},
-        {Level::WARN,   "WARN"},
-        {Level::ERROR,  "ERROR"}
+    std::map<LogLevel, std::string> levelLabels = {
+        {LogLevel::DEBUG,  "DEBUG"},
+        {LogLevel::INFO,   "INFO"},
+        {LogLevel::WARN,   "WARN"},
+        {LogLevel::ERROR,  "ERROR"}
     };
 
     Logger() {}

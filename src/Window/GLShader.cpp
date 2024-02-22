@@ -66,11 +66,11 @@ void GLShader::getShaderFromFile(
         rawShaderCode = shaderStream.str();
         shaderCode = rawShaderCode.c_str();
 
-        logger.log("Shader file read successfully.", Level::INFO);
+        logger.log("Shader file read successfully.", LogLevel::INFO);
     }
     catch(std::ifstream::failure& error) {
-        logger.log("Unable to read shader file.", Level::ERROR);
-        logger.log(strerror(errno), Level::ERROR);
+        logger.log("Unable to read shader file.", LogLevel::ERROR);
+        logger.log(strerror(errno), LogLevel::ERROR);
     }
 }
 
@@ -97,10 +97,10 @@ void GLShader::compileShader(ShaderType type) {
         char infoLog[512];
         glGetShaderInfoLog(ID, 512, NULL, infoLog);
         logger.log("Unable to compile " + typeString + " shader.",
-            Level::ERROR);
-        logger.log(infoLog, Level::ERROR);
+            LogLevel::ERROR);
+        logger.log(infoLog, LogLevel::ERROR);
     } else {
-        logger.log("Shader compiled successfully.", Level::INFO);
+        logger.log("Shader compiled successfully.", LogLevel::INFO);
     }
 }
 

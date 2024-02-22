@@ -2,7 +2,7 @@
 
 namespace basil {
 
-void Logger::log(const std::string& message, Level level) {
+void Logger::log(const std::string& message, LogLevel level) {
     if (level >= logLevel) {
         std::string label = levelLabels[level];
         ostream << "[" << label << "]: " << message << std::endl;
@@ -11,7 +11,7 @@ void Logger::log(const std::string& message, Level level) {
     lastOutputLevel = level;
 }
 
-void Logger::lineBreak(Level level) {
+void Logger::lineBreak(LogLevel level) {
     if (level >= logLevel) {
         ostream << std::endl;
     }

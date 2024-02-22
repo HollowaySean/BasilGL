@@ -4,7 +4,7 @@ namespace basil {
 
 MetricsReporter::MetricsReporter(
         FrameMetrics *metricsObserver, int regularity,
-            Level logLevel):
+            LogLevel logLevel):
         metrics(metricsObserver), regularity(regularity),
             processNames(), logLevel(logLevel) {
     processNames = metricsObserver->getProcessNames();

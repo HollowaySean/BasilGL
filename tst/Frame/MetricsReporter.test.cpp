@@ -8,7 +8,7 @@ using basil::Logger;
 using basil::TimerRecord;
 using basil::MetricsReporter;
 using basil::FrameMetrics;
-using basil::Level;
+using basil::LogLevel;
 
 TEST_CASE("Frame_MetricsReporter_onLoop") {
     Logger& logger = Logger::get();
@@ -23,7 +23,7 @@ TEST_CASE("Frame_MetricsReporter_onLoop") {
     metrics.setProcessNames(&processNames);
 
     MetricsReporter reporter = MetricsReporter(
-        &metrics, 1, Level::INFO);
+        &metrics, 1, LogLevel::INFO);
 
     SECTION("Does not log on first frame") {
         metrics.pushTimerRecord(record);

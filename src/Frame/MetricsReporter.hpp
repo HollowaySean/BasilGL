@@ -25,7 +25,7 @@ class MetricsReporter : public IFrameProcess {
     explicit MetricsReporter(
         FrameMetrics *metricsObserver,
         int regularity = 1,
-        Level logLevel = Level::INFO);
+        LogLevel logLevel = LogLevel::INFO);
 
     void onLoop() override;
 
@@ -40,7 +40,7 @@ class MetricsReporter : public IFrameProcess {
     std::map<int, std::string> *processNames;
 
     Logger& logger = Logger::get();
-    Level logLevel;
+    LogLevel logLevel;
 
     fmt::format_string<int> FRAME_FORMAT
         = "Frame #: {}";

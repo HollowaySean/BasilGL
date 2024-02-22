@@ -47,7 +47,7 @@ void WindowView::onStart() {
 }
 
 void WindowView::onStop() {
-    logger.log("Stopping loop", Level::INFO);
+    logger.log("Stopping loop", LogLevel::INFO);
 }
 
 void WindowView::setTopPane(IPane* newTopPane) {
@@ -71,10 +71,10 @@ GLFWwindow* WindowView::createGLFWWindow() {
         NULL, NULL);
 
     if (!newWindow) {
-        logger.log("GLFW failed to create window.", Level::ERROR);
+        logger.log("GLFW failed to create window.", LogLevel::ERROR);
         glfwTerminate();
     } else {
-        logger.log("Successfully created GLFW window.", Level::INFO);
+        logger.log("Successfully created GLFW window.", LogLevel::INFO);
     }
 
     glfwMakeContextCurrent(newWindow);
@@ -112,7 +112,7 @@ void WindowView::logGLFWError(GLenum errorCode) {
     Logger& logger = Logger::get();
 
     if (errorCode) {
-        logger.log("GLFW context initialized successfully.", Level::INFO);
+        logger.log("GLFW context initialized successfully.", LogLevel::INFO);
     } else {
         const char* errorMessage;
         glfwGetError(&errorMessage);
@@ -121,7 +121,7 @@ void WindowView::logGLFWError(GLenum errorCode) {
             std::string(errorMessage) : "Could not read error message.";
 
         logger.log("GLFW failed to initialize. Error: "
-            + errorMessageString, Level::ERROR);
+            + errorMessageString, LogLevel::ERROR);
     }
 }
 
@@ -129,14 +129,14 @@ void WindowView::logGLEWError(GLenum errorCode) {
     Logger& logger = Logger::get();
 
     if (errorCode == GLEW_OK) {
-        logger.log("GLEW context initialized successfully.", Level::INFO);
+        logger.log("GLEW context initialized successfully.", LogLevel::INFO);
     } else {
         const char* errorMessage =
             reinterpret_cast<const char*>(glewGetErrorString(errorCode));
         std::string errorMessageString = std::string(errorMessage);
 
         logger.log("GLEW failed to initialize. Error: "
-            + errorMessageString, Level::ERROR);
+            + errorMessageString, LogLevel::ERROR);
     }
 }
 

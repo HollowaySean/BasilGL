@@ -4,7 +4,7 @@
 #include <Basil/Window.hpp>
 
 using basil::Logger;
-using basil::Level;
+using basil::LogLevel;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
@@ -29,7 +29,7 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
         std::string successMessage =
             "[INFO]: Shader program compiled successfully.\n";
 
-        CHECK(logger.getLastLevel() == Level::INFO);
+        CHECK(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
     }
 
@@ -44,7 +44,7 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
         GLShaderProgram shaderProgram = GLShaderProgram(
             vertexShader, fragmentShader);
 
-        REQUIRE(logger.getLastLevel() == Level::ERROR);
+        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
     }
 
     GLTestUtils::deinitialize();
