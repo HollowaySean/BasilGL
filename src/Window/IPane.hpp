@@ -1,6 +1,8 @@
 #ifndef SRC_WINDOW_IPANE_HPP_
 #define SRC_WINDOW_IPANE_HPP_
 
+namespace basil {
+
 /** @brief Struct containing pane size & offset. */
 struct PaneProps {
     int width, height;
@@ -26,5 +28,7 @@ class IPane {
 
     PaneProps paneProps;
 };
+
+}  // namespace basil
 
 #endif  // SRC_WINDOW_IPANE_HPP_

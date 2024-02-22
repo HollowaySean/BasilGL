@@ -8,6 +8,8 @@ using std::chrono::steady_clock;
 using duration = std::chrono::duration<double>;
 using time_point = steady_clock::time_point;
 
+using basil::DefaultTimerSource;
+
 const double WAIT_TIME = 0.050;
 const double TIME_MARGIN = 0.010;
 

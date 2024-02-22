@@ -5,6 +5,12 @@
 #include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
+using basil::Logger;
+using basil::Level;
+using basil::GLShader;
+using basil::GLVertexShader;
+using basil::GLFragmentShader;
+
 TEST_CASE("Window_GLShader_getShaderFromFile") {
     GLTestUtils::initializeGLContext();
 

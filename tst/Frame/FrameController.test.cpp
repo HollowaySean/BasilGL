@@ -4,6 +4,13 @@
 
 #include <Basil/Frame.hpp>
 
+using basil::FrameController;
+using basil::IFrameProcess;
+using basil::ITimerSource;
+using basil::TimerRecord;
+using basil::FrameMetrics;
+using basil::FrameMetricsRecord;
+
 using FCState   = FrameController::FCState;
 using FPState   = IFrameProcess::State;
 using Manager   = FrameController::ProcessManager;

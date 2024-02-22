@@ -6,6 +6,8 @@
 
 #include "ITimerSource.hpp"
 
+namespace basil {
+
 using std::chrono::steady_clock;
 
 /**
@@ -33,5 +35,7 @@ class DefaultTimerSource: public ITimerSource {
     static duration secondsToDuration(double timeInSeconds);
     static double timePointToSeconds(time_point timePoint);
 };
+
+}  // namespace basil
 
 #endif  // SRC_FRAME_DEFAULTTIMERSOURCE_HPP_

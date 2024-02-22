@@ -11,6 +11,8 @@
 #include "IFrameProcess.hpp"
 #include "ITimerSource.hpp"
 
+namespace basil {
+
 /**
  * @brief Utility which manages list of IFrameProcess objects, runs
  * their start, loop, and stop functions, and manages timing metrics.
@@ -169,5 +171,7 @@ class FrameController {
     std::shared_ptr<ITimerSource> timerSource;
     int frameCap;
 };
+
+}  // namespace basil
 
 #endif  // SRC_FRAME_FRAMECONTROLLER_HPP_

@@ -1,5 +1,7 @@
 #include "DefaultTimerSource.hpp"
 
+namespace basil {
+
 std::unique_ptr<ITimerSource> DefaultTimerSource::clone() const {
     return std::make_unique<DefaultTimerSource>(*this);
 }
@@ -57,3 +59,5 @@ double DefaultTimerSource::timePointToSeconds(time_point timePoint) {
     double timeCountNS = timePointNS.time_since_epoch().count();
     return timeCountNS / SECONDS_PER_NANO;
 }
+
+}  // namespace basil

@@ -6,6 +6,8 @@
 #include <map>
 #include <string>
 
+namespace basil {
+
 /**
  * @brief Severity level for log message.
 */
@@ -86,5 +88,7 @@ class Logger {
     Logger(Logger const&);
     void operator=(Logger const&);
 };
+
+}  // namespace basil
 
 #endif  // SRC_LOGGING_LOGGER_HPP_

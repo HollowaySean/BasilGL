@@ -1,6 +1,8 @@
 #include "FrameController.hpp"
 #include "DefaultTimerSource.hpp"
 
+namespace basil {
+
 using FPState = IFrameProcess::State;
 
 FrameController::FrameController(
@@ -269,3 +271,5 @@ void FrameController::ProcessManager::runMethod(
     }
     timerSource->frameDone();
 }
+
+}  // namespace basil

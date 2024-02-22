@@ -4,6 +4,12 @@
 
 #include <Basil/Frame.hpp>
 
+using basil::Logger;
+using basil::TimerRecord;
+using basil::MetricsReporter;
+using basil::FrameMetrics;
+using basil::Level;
+
 TEST_CASE("Frame_MetricsReporter_onLoop") {
     Logger& logger = Logger::get();
 

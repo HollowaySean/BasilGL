@@ -3,6 +3,9 @@
 #include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
+using basil::GLTexture;
+using basil::GLTextureProps;
+
 GLTextureProps props = {
     .name = "test",
     .width = 1,

@@ -7,6 +7,8 @@
 
 #include "WindowView.hpp"
 
+namespace basil {
+
 WindowView::WindowView(std::optional<WindowProps> windowProps):
         glfwWindow() {
     this->windowProps = windowProps.value_or(WindowProps());
@@ -170,3 +172,5 @@ void WindowView::resizeCallback(GLFWwindow* window, int width, int height) {
 void WindowView::setCallbacks() {
     glfwSetFramebufferSizeCallback(glfwWindow, WindowView::resizeCallback);
 }
+
+}  // namespace basil

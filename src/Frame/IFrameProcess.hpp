@@ -3,6 +3,8 @@
 
 #include <string>
 
+namespace basil {
+
 using std::string;
 
 /**
@@ -40,5 +42,7 @@ class IFrameProcess {
 #endif
     State currentState = READY;
 };
+
+}  // namespace basil
 
 #endif  // SRC_FRAME_IFRAMEPROCESS_HPP_

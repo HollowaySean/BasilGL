@@ -4,6 +4,8 @@
 #include <map>
 #include <memory>
 
+namespace basil {
+
 /**
  * @brief Record of frame and process times.
 */
@@ -84,5 +86,7 @@ class ITimerSource {
     double waitTimeInSeconds = 0;
     TimerRecord currentRecord;
 };
+
+}  // namespace basil
 
 #endif  // SRC_FRAME_ITIMERSOURCE_HPP_

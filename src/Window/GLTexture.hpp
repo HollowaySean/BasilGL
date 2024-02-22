@@ -6,6 +6,8 @@
 #include <span>
 #include <string>
 
+namespace basil {
+
 /** @brief Struct used to pass properties of texture to GLTexture. */
 struct GLTextureProps {
  public:
@@ -72,5 +74,7 @@ class GLTexture : public IGLTexture {
     GLenum textureEnum;
     std::span<T> source;
 };
+
+}  // namespace basil
 
 #endif  // SRC_WINDOW_GLTEXTURE_HPP_

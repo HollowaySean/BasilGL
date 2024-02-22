@@ -2,6 +2,8 @@
 
 #include <typeinfo>
 
+namespace basil {
+
 GLShaderProgram::GLShaderProgram(
     const GLVertexShader& vertexShader,
     const GLFragmentShader& fragmentShader):
@@ -40,3 +42,5 @@ void GLShaderProgram::setUniformInt(int value, const std::string& name) {
 GLShaderProgram::~GLShaderProgram() {
     glDeleteProgram(ID);
 }
+
+}  // namespace basil

@@ -3,6 +3,14 @@
 #include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
+using basil::Logger;
+using basil::Level;
+using basil::IPane;
+using basil::PaneProps;
+using basil::WindowProps;
+using basil::WindowView;
+using basil::IFrameProcess;
+
 class TestPane : public IPane {
  public:
     explicit TestPane(PaneProps paneProps):

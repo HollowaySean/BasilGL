@@ -3,6 +3,16 @@
 #include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
+using basil::GLVertexShader;
+using basil::GLFragmentShader;
+using basil::GLShaderProgram;
+using basil::IGLTexture;
+using basil::GLTexture;
+using basil::GLTextureProps;
+using basil::GLTexturePane;
+using basil::PaneProps;
+using basil::IPane;
+
 std::filesystem::path vertPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
 std::filesystem::path fragPath =

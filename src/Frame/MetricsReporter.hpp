@@ -10,6 +10,8 @@
 #include "FrameMetrics.hpp"
 #include <Basil/Logging.hpp>
 
+namespace basil {
+
 /** @brief Utility FrameProcess that prints frame rate to
  *  the command line.
 */
@@ -49,5 +51,7 @@ class MetricsReporter : public IFrameProcess {
     fmt::format_string<const char*, double> PROCESS_TIME_FORMAT
         = "Process \'{}\': {:.3f}ms";
 };
+
+}  // namespace basil
 
 #endif  // SRC_FRAME_METRICSREPORTER_HPP_

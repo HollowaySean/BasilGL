@@ -6,6 +6,8 @@
 #include <fstream>
 #include <iostream>
 
+namespace basil {
+
 using filepath = std::filesystem::path;
 
 const char* GLShader::noOpVertexCode =
@@ -105,3 +107,5 @@ void GLShader::compileShader(ShaderType type) {
 GLShader::~GLShader() {
     glDeleteShader(ID);
 }
+
+}  // namespace basil

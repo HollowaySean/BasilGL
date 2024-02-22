@@ -1,5 +1,7 @@
 #include "GLTexture.hpp"
 
+namespace basil {
+
 template class GLTexture<float>;
 template class GLTexture<int>;
 template class GLTexture<unsigned int>;
@@ -39,3 +41,5 @@ IGLTexture::~IGLTexture() {
     GLuint textureArray[] = { textureId };
     glDeleteTextures(1, textureArray);
 }
+
+}  // namespace basil

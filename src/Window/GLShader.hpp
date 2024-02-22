@@ -9,6 +9,8 @@
 
 #include <Basil/Logging.hpp>
 
+namespace basil {
+
 /** @brief Container class for OpenGL shader. */
 class GLShader {
  public:
@@ -79,5 +81,7 @@ class GLFragmentShader : public GLShader {
 #endif
     explicit GLFragmentShader(const std::string &shaderCode);
 };
+
+}  // namespace basil
 
 #endif  // SRC_WINDOW_GLSHADER_HPP_

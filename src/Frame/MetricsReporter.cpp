@@ -1,5 +1,7 @@
 #include "MetricsReporter.hpp"
 
+namespace basil {
+
 MetricsReporter::MetricsReporter(
         FrameMetrics *metricsObserver, int regularity,
             Level logLevel):
@@ -37,3 +39,5 @@ void MetricsReporter::onLoop() {
         }
     }
 }
+
+}  // namespace basil

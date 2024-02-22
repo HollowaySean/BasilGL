@@ -3,6 +3,12 @@
 #include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
+using basil::Logger;
+using basil::Level;
+using basil::GLVertexShader;
+using basil::GLFragmentShader;
+using basil::GLShaderProgram;
+
 TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
     Logger& logger = Logger::get();
     std::filesystem::path testPath = TEST_DIR;

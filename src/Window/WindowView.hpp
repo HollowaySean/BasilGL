@@ -12,6 +12,8 @@
 #include "SplitPane.hpp"
 #include "GLTexturePane.hpp"
 
+namespace basil {
+
 /**
  * @brief Struct holding basic properties of window.
 */
@@ -74,5 +76,7 @@ class WindowView : public IFrameProcess {
 
     Logger& logger = Logger::get();
 };
+
+}  // namespace basil
 
 #endif  // SRC_WINDOW_WINDOWVIEW_HPP_

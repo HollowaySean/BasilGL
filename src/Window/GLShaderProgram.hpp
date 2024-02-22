@@ -7,6 +7,8 @@
 
 #include "GLShader.hpp"
 
+namespace basil {
+
 /** @brief Container class for compiled and linked shader program. */
 class GLShaderProgram {
  public:
@@ -44,5 +46,7 @@ class GLShaderProgram {
     GLuint ID;
     GLuint vertexID, fragmentID;
 };
+
+}  // namespace basil
 
 #endif  // SRC_WINDOW_GLSHADERPROGRAM_HPP_

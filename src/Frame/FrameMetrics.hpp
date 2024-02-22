@@ -8,6 +8,8 @@
 
 #include "ITimerSource.hpp"
 
+namespace basil {
+
 /** @brief Struct containing process and frame durations. */
 struct FrameMetricsRecord {
  public:
@@ -92,5 +94,7 @@ class FrameMetrics {
     std::list<FrameMetricsRecord> buffer;
     std::map<int, std::string>* processNames;
 };
+
+}  // namespace basil
 
 #endif  // SRC_FRAME_FRAMEMETRICS_HPP_

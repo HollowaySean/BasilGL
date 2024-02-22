@@ -2,6 +2,11 @@
 
 #include <Basil/Frame.hpp>
 
+using basil::ITimerSource;
+using basil::TimerRecord;
+using basil::FrameMetrics;
+using basil::FrameMetricsRecord;
+
 class TestTimer : public ITimerSource {
  public:
     TimerRecord testRecord;

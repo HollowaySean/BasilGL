@@ -3,6 +3,8 @@
 
 #include "IPane.hpp"
 
+namespace basil {
+
 /** @brief Enum to set SplitPane orientation. */
 enum PaneOrientation {
     HORIZONTAL, VERTICAL
@@ -69,5 +71,7 @@ class SplitPane : public IPane {
     int secondPaneExtent;
     int gapWidth;
 };
+
+}  // namespace basil
 
 #endif  // SRC_WINDOW_SPLITPANE_HPP_

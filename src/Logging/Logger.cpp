@@ -1,5 +1,7 @@
 #include "Logger.hpp"
 
+namespace basil {
+
 void Logger::log(const std::string& message, Level level) {
     if (level >= logLevel) {
         std::string label = levelLabels[level];
@@ -16,3 +18,5 @@ void Logger::lineBreak(Level level) {
 
     lastOutputLevel = level;
 }
+
+}  // namespace basil

@@ -1,5 +1,7 @@
 #include "SplitPane.hpp"
 
+namespace basil {
+
 SplitPane::SplitPane(const PaneProps &paneProps, PaneOrientation orientation):
         IPane(paneProps),
         firstPane(nullptr),
@@ -158,3 +160,5 @@ void SplitPane::setOrientation(PaneOrientation orientation) {
 
     updateSize();
 }
+
+}  // namespace basil

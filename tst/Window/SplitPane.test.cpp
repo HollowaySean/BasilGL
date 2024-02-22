@@ -2,6 +2,13 @@
 
 #include <Basil/Window.hpp>
 
+using basil::PaneProps;
+using basil::IPane;
+using basil::SplitPane;
+using basil::PaneOrientation;
+using basil::PaneOrientation::HORIZONTAL;
+using basil::PaneOrientation::VERTICAL;
+
 PaneProps paneProps = {
     .width = 20,
     .height = 10,

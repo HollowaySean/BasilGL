@@ -1,5 +1,7 @@
 #include "FrameMetrics.hpp"
 
+namespace basil {
+
 
 FrameMetricsRecord FrameMetricsRecord::operator+(FrameMetricsRecord other) {
     FrameMetricsRecord result = FrameMetricsRecord();
@@ -151,3 +153,5 @@ FrameMetricsRecord FrameMetricsRecord::fromTimestamp(TimerRecord record) {
 
     return newMetrics;
 }
+
+}  // namespace basil

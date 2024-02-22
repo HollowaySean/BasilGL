@@ -1,5 +1,7 @@
 #include "GLTexturePane.hpp"
 
+namespace basil {
+
 void GLTexturePane::setup() {
     // Set up OpenGL
     createVertexObjects();
@@ -84,3 +86,5 @@ GLTexturePane::~GLTexturePane() {
     GLuint bufferArrays[] = { elementBufferID, vertexBufferID };
     glDeleteBuffers(2, bufferArrays);
 }
+
+}  // namespace basil

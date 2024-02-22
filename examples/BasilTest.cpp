@@ -1,6 +1,13 @@
 #include <Basil/Frame.hpp>
 #include <Basil/Window.hpp>
 
+using basil::FrameController;
+using basil::FrameMetrics;
+using basil::GLTexturePane;
+using basil::PaneProps;
+using basil::WindowView;
+using basil::MetricsReporter;
+
 /**
  * @brief Entry point function.
  *

@@ -4,6 +4,9 @@
 
 #include <Basil/Logging.hpp>
 
+using basil::Logger;
+using basil::Level;
+
 TEST_CASE("Logging_Logger_log") {
     Logger& logger = Logger::get();
     std::string message = "message";

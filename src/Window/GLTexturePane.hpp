@@ -10,6 +10,8 @@
 #include "GLShaderProgram.hpp"
 #include "IPane.hpp"
 
+namespace basil {
+
 /**
  * @class GLTexturePane
  * @brief Pane which renders to screen at a given position,
@@ -74,5 +76,7 @@ class GLTexturePane : public IPane {
     std::vector<IGLTexture*> textureList;
     GLShaderProgram shaderProgram;
 };
+
+}  // namespace basil
 
 #endif  // SRC_WINDOW_GLTEXTUREPANE_HPP_
