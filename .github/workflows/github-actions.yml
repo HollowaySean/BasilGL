@@ -1,6 +1,6 @@
 name: Build and run unit tests
 run-name: ${{ github.actor }} has pushed a commit
-on: [push]
+on: [pull_request]
 jobs:
     Build-and-Test_Ubuntu:
         runs-on: ubuntu-latest
