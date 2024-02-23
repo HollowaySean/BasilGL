@@ -1,5 +1,5 @@
 name: Build and run unit tests
-run-name: ${{ github.actor }} has pushed a commit
+run-name: ${{ github.actor }} has submitted a pull request
 on: [pull_request]
 jobs:
     Build-and-Test_Ubuntu:
