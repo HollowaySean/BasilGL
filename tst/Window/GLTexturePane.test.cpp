@@ -142,13 +142,6 @@ TEST_CASE("Window_GLTexturePane_draw") {
         REQUIRE(pane.shaderProgram.getID() == ID);
     }
 
-    SECTION("Sets current shader active") {
-        GLint ID;
-        glGetIntegerv(GL_CURRENT_PROGRAM, &ID);
-
-        REQUIRE(pane.shaderProgram.getID() == ID);
-    }
-
     SECTION("Binds textures in textureList") {
         GLint ID;
         glGetIntegerv(GL_TEXTURE_BINDING_2D, &ID);
