@@ -3,6 +3,12 @@
 
 #include <catch.hpp>
 
+TEST_CASE("Intentionally breaking test, to test branch protection") {
+    SECTION("Auto fail") {
+        REQUIRE(false);
+    }
+}
+
 TEST_CASE("Build_OpenGL_SmokeTest") {
     SECTION("Initializes GLEW and GLFW") {
         GLint success = glfwInit();
