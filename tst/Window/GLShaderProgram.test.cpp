@@ -20,12 +20,11 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
             std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
         GLFragmentShader fragmentShader = GLFragmentShader(filePath);
 
-        logger.clearTestInfo();
         GLShaderProgram shaderProgram = GLShaderProgram(
             vertexShader, fragmentShader);
 
         std::string successMessage =
-            "[INFO]: Shader program compiled successfully.\n";
+            "Shader program compiled successfully.";
 
         CHECK(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
@@ -36,8 +35,6 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
             std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
         GLFragmentShader fragmentShader = GLFragmentShader(
             std::filesystem::path(""));
-
-        logger.clearTestInfo();
 
         GLShaderProgram shaderProgram = GLShaderProgram(
             vertexShader, fragmentShader);

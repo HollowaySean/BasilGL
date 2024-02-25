@@ -8,13 +8,12 @@ using basil::LogLevel;
 
 TEST_CASE("Context_BasilContext_logGLFWError") {
     Logger& logger = Logger::get();
-    logger.clearTestInfo();
 
     SECTION("Logs info on success") {
         BasilContext::logGLFWError(1);
 
         REQUIRE(logger.getLastOutput() ==
-            "[INFO]: GLFW context initialized successfully.\n");
+            "GLFW context initialized successfully.");
         REQUIRE(logger.getLastLevel() ==
             LogLevel::INFO);
     }
@@ -28,13 +27,12 @@ TEST_CASE("Context_BasilContext_logGLFWError") {
 
 TEST_CASE("Context_BasilContext_logGLEWError") {
     Logger& logger = Logger::get();
-    logger.clearTestInfo();
 
     SECTION("Logs info on success") {
         BasilContext::logGLEWError(GLEW_OK);
 
         REQUIRE(logger.getLastOutput() ==
-            "[INFO]: GLEW context initialized successfully.\n");
+            "GLEW context initialized successfully.");
         REQUIRE(logger.getLastLevel() ==
             LogLevel::INFO);
     }

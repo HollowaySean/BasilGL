@@ -15,7 +15,6 @@ TEST_CASE("Window_GLShader_getShaderFromFile") {
     std::filesystem::path testPath = TEST_DIR;
 
     Logger& logger = Logger::get();
-    logger.clearTestInfo();
 
     SECTION("Reads valid file successfully") {
         std::filesystem::path filePath =
@@ -25,7 +24,7 @@ TEST_CASE("Window_GLShader_getShaderFromFile") {
         REQUIRE(shader.rawShaderCode == "test-message");
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() ==
-            "[INFO]: Shader file read successfully.\n");
+            "Shader file read successfully.");
     }
 
     SECTION("Prints error for missing file") {
@@ -35,7 +34,6 @@ TEST_CASE("Window_GLShader_getShaderFromFile") {
 
         REQUIRE(shader.rawShaderCode == "");
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
-        logger.clearTestInfo();
     }
 }
 
@@ -48,7 +46,7 @@ TEST_CASE("Window_GLShader_compileShader") {
         shader.compileShader(GLShader::ShaderType::FRAGMENT);
 
         REQUIRE(logger.getLastOutput() ==
-            "[INFO]: Shader compiled successfully.\n");
+            "Shader compiled successfully.");
     }
 
     SECTION("Fails to compile invalid shader code") {
@@ -56,7 +54,6 @@ TEST_CASE("Window_GLShader_compileShader") {
         shader.compileShader(GLShader::ShaderType::FRAGMENT);
 
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
-        logger.clearTestInfo();
     }
 }
 
@@ -65,8 +62,7 @@ TEST_CASE("Window_GLVertexShader_GLVertexShader") {
     logger.setLevel(LogLevel::DEBUG);
 
     std::string successMessage =
-        std::string("[INFO]: Shader file read successfully.\n")
-        + "[INFO]: Shader compiled successfully.\n";
+        "Shader compiled successfully.";
 
     std::filesystem::path testPath = TEST_DIR;
 
@@ -78,7 +74,7 @@ TEST_CASE("Window_GLVertexShader_GLVertexShader") {
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
 
-        REQUIRE(shader.getID() == 1);
+        REQUIRE_FALSE(shader.getID() == 0);
     }
 }
 
@@ -87,7 +83,7 @@ TEST_CASE("Window_GLVertexShader_noOpShader") {
     logger.setLevel(LogLevel::DEBUG);
 
     std::string successMessage =
-        "[INFO]: Shader compiled successfully.\n";
+        "Shader compiled successfully.";
 
     std::filesystem::path testPath = TEST_DIR;
 
@@ -97,7 +93,7 @@ TEST_CASE("Window_GLVertexShader_noOpShader") {
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
 
-        REQUIRE(shader.getID() == 1);
+        REQUIRE_FALSE(shader.getID() == 0);
     }
 }
 
@@ -113,13 +109,12 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
         GLFragmentShader shader = GLFragmentShader(filePath);
 
         std::string successMessage =
-            std::string("[INFO]: Shader file read successfully.\n")
-            + "[INFO]: Shader compiled successfully.\n";
+            "Shader compiled successfully.";
 
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
 
-        REQUIRE(shader.getID() == 1);
+        REQUIRE_FALSE(shader.getID() == 0);
     }
 
     SECTION("Compiles fragment shader from string") {
@@ -131,13 +126,13 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
                 "gl_FragCoord.y / 480);\n"
                 "gl_FragColor = vec4(st.x, st.y, 0.0, 1.0); }\0";
         std::string successMessage =
-            "[INFO]: Shader compiled successfully.\n";
+            "Shader compiled successfully.";
 
         GLFragmentShader shader = GLFragmentShader(shaderCode);
 
         CHECK(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
 
-        REQUIRE(shader.getID() == 1);
+        REQUIRE_FALSE(shader.getID() == 0);
     }
 }

@@ -11,9 +11,6 @@ using basil::FrameMetrics;
 using basil::LogLevel;
 
 TEST_CASE("Frame_MetricsReporter_onLoop") {
-    Logger& logger = Logger::get();
-    logger.clearTestInfo();
-
     TimerRecord record = TimerRecord();
     record.processStart.emplace(0, 0);
     record.processDone.emplace(0, 1);
@@ -25,6 +22,9 @@ TEST_CASE("Frame_MetricsReporter_onLoop") {
 
     MetricsReporter reporter = MetricsReporter(
         &metrics, 1, LogLevel::INFO);
+
+    Logger& logger = Logger::get();
+    logger.clearTestInfo();
 
     SECTION("Does not log on first frame") {
         metrics.pushTimerRecord(record);
@@ -40,24 +40,28 @@ TEST_CASE("Frame_MetricsReporter_onLoop") {
         metrics.pushTimerRecord(record);
         reporter.onLoop();
         REQUIRE(logger.getLastOutput() == "");
+        logger.clearTestInfo();
 
         // Frame 1 (no readout)
         record.frameID++;
         metrics.pushTimerRecord(record);
         reporter.onLoop();
         REQUIRE(logger.getLastOutput() == "");
+        logger.clearTestInfo();
 
         // Frame 2 (readout)
         record.frameID++;
         metrics.pushTimerRecord(record);
         reporter.onLoop();
         REQUIRE_FALSE(logger.getLastOutput()== "");
+        logger.clearTestInfo();
 
         // Frame 3 (no readout)
         record.frameID++;
         metrics.pushTimerRecord(record);
         reporter.onLoop();
         REQUIRE(logger.getLastOutput() == "");
+        logger.clearTestInfo();
 
         // Frame 4 (readout)
         record.frameID++;

@@ -52,7 +52,6 @@ TEST_CASE("Window_WindowView_WindowView") {
 
 TEST_CASE("Window_WindowView_createGLFWWindow") {
     Logger& logger = Logger::get();
-    logger.clearTestInfo();
 
     SECTION("Creates glfwWindow object") {
         WindowView windowView = WindowView();
@@ -147,11 +146,10 @@ TEST_CASE("Window_WindowView_onStop") {
 
     SECTION("Logs closing message") {
         WindowView window = WindowView();
-        logger.clearTestInfo();
 
         window.onStop();
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
-        REQUIRE(logger.getLastOutput() == "[INFO]: Stopping loop\n");
+        REQUIRE(logger.getLastOutput() == "Stopping loop");
     }
 }
 
