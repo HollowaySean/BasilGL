@@ -70,10 +70,14 @@ GLFWwindow* WindowView::createGLFWWindow() {
 
     if (!newWindow) {
         logger.log("GLFW failed to create window.", LogLevel::ERROR);
+
         glfwTerminate();
-    } else {
-        logger.log("Successfully created GLFW window.", LogLevel::INFO);
+        BasilContext::terminate();
+
+        return nullptr;
     }
+
+    logger.log("Successfully created GLFW window.", LogLevel::INFO);
 
     glfwMakeContextCurrent(newWindow);
 

@@ -5,6 +5,7 @@
 
 namespace basil {
 
+/** @brief Requires derived classes to initialize context. */
 class BasilContextConsumer {
  protected:
     BasilContextConsumer() {

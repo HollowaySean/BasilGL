@@ -76,7 +76,6 @@ TEST_CASE("Window_WindowView_createGLFWWindow") {
 
 TEST_CASE("Window_WindowView_getTopPaneProps") {
     SECTION("Returns PaneProps with window size.") {
-        BasilContext::terminate();
         WindowView window = WindowView();
 
         PaneProps paneProps = window.getTopPaneProps();

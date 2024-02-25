@@ -40,7 +40,7 @@ struct WindowProps {
  * public facade.
  */
 class WindowView :  public IFrameProcess,
-                    private BasilContextConsumer {
+                    private BasilContextDependency {
  public:
     explicit WindowView(std::optional<WindowProps> windowProps = std::nullopt);
     ~WindowView();
