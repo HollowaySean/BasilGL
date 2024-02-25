@@ -1,6 +1,5 @@
 #include <catch.hpp>
 
-#include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
 using basil::GLTexture;
@@ -19,8 +18,6 @@ std::vector<float> floatData { 1.0f };
 std::vector<int> intData { 5 };
 
 TEST_CASE("Window_GLTexture_GLTexture") {
-    GLTestUtils::initializeGLContext();
-
     GLTexture<float> firstTexture = GLTexture<float>(
         floatData, props);
     GLTexture<int> secondTexture = GLTexture<int>(
@@ -34,13 +31,9 @@ TEST_CASE("Window_GLTexture_GLTexture") {
     SECTION("Sets texture ID incrementally") {
         REQUIRE(secondTexture.getID() == firstTexture.getID() + 1);
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLTexture_update") {
-    GLTestUtils::initializeGLContext();
-
     GLTexture<float> texture = GLTexture<float>(
         floatData, props);
     texture.update();
@@ -54,6 +47,4 @@ TEST_CASE("Window_GLTexture_update") {
 
         REQUIRE(expected[0] == actual[0]);
     }
-
-    GLTestUtils::deinitialize();
 }

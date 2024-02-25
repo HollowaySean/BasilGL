@@ -1,6 +1,5 @@
 #include <catch.hpp>
 
-#include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
 using basil::GLVertexShader;
@@ -19,8 +18,6 @@ std::filesystem::path fragPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
 
 TEST_CASE("Window_GLTexturePane_GLTexturePane") {
-    GLTestUtils::initializeGLContext();
-
     GLVertexShader vertexShader = GLVertexShader(vertPath);
     GLFragmentShader fragmentShader = GLFragmentShader(fragPath);
     GLShaderProgram shaderProgram = GLShaderProgram(
@@ -53,13 +50,9 @@ TEST_CASE("Window_GLTexturePane_GLTexturePane") {
         REQUIRE(pane.vertexBufferID > 0);
         REQUIRE(pane.elementBufferID > 0);
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLTexturePane_addTexture") {
-    GLTestUtils::initializeGLContext();
-
     GLVertexShader vertexShader = GLVertexShader(vertPath);
     GLFragmentShader fragmentShader = GLFragmentShader(fragPath);
     GLShaderProgram shaderProgram = GLShaderProgram(
@@ -91,13 +84,9 @@ TEST_CASE("Window_GLTexturePane_addTexture") {
         IGLTexture* actual = pane.textureList.back();
         REQUIRE(actual == &texture);
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLTexturePane_draw") {
-    GLTestUtils::initializeGLContext();
-
     GLVertexShader vertexShader = GLVertexShader(vertPath);
     GLFragmentShader fragmentShader = GLFragmentShader(fragPath);
     GLShaderProgram shaderProgram = GLShaderProgram(
@@ -155,6 +144,4 @@ TEST_CASE("Window_GLTexturePane_draw") {
 
         REQUIRE(pane.vertexAttributeID == ID);
     }
-
-    GLTestUtils::deinitialize();
 }

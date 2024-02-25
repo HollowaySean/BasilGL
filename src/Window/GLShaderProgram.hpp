@@ -7,10 +7,12 @@
 
 #include "GLShader.hpp"
 
+#include <Basil/Context.hpp>
+
 namespace basil {
 
 /** @brief Container class for compiled and linked shader program. */
-class GLShaderProgram {
+class GLShaderProgram : private BasilContextConsumer {
  public:
     /**
      * @brief Construct a new GLShaderProgram object.

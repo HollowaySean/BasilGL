@@ -6,6 +6,8 @@
 #include <span>
 #include <string>
 
+#include <Basil/Context.hpp>
+
 namespace basil {
 
 /** @brief Struct used to pass properties of texture to GLTexture. */
@@ -28,7 +30,7 @@ struct GLTextureProps {
 /**
  * @brief       Generic interface for template class.
  */
-class IGLTexture {
+class IGLTexture : private BasilContextConsumer {
  public:
     /** @brief Flushes data from source to texture. */
     virtual void update() const = 0;

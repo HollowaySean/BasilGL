@@ -7,12 +7,13 @@
 #include <filesystem>
 #include <string>
 
+#include <Basil/Context.hpp>
 #include <Basil/Logging.hpp>
 
 namespace basil {
 
 /** @brief Container class for OpenGL shader. */
-class GLShader {
+class GLShader : private BasilContextConsumer {
  public:
     /** @return ID value assigned from OpenGL. */
     virtual GLuint getID() const { return ID; }

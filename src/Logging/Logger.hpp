@@ -84,6 +84,7 @@ class Logger {
         {LogLevel::ERROR,  "ERROR"}
     };
 
+    // Inaccessable methods to enforce Singleton
     Logger() {}
     Logger(Logger const&);
     void operator=(Logger const&);

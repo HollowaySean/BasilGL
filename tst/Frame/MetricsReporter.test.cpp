@@ -12,6 +12,7 @@ using basil::LogLevel;
 
 TEST_CASE("Frame_MetricsReporter_onLoop") {
     Logger& logger = Logger::get();
+    logger.clearTestInfo();
 
     TimerRecord record = TimerRecord();
     record.processStart.emplace(0, 0);

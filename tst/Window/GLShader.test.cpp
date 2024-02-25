@@ -2,7 +2,6 @@
 
 #include <catch.hpp>
 
-#include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
 using basil::Logger;
@@ -12,12 +11,11 @@ using basil::GLVertexShader;
 using basil::GLFragmentShader;
 
 TEST_CASE("Window_GLShader_getShaderFromFile") {
-    GLTestUtils::initializeGLContext();
+    GLShader shader = GLShader();
+    std::filesystem::path testPath = TEST_DIR;
 
     Logger& logger = Logger::get();
     logger.clearTestInfo();
-    GLShader shader = GLShader();
-    std::filesystem::path testPath = TEST_DIR;
 
     SECTION("Reads valid file successfully") {
         std::filesystem::path filePath =
@@ -39,14 +37,11 @@ TEST_CASE("Window_GLShader_getShaderFromFile") {
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
         logger.clearTestInfo();
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLShader_compileShader") {
     Logger& logger = Logger::get();
     GLShader shader = GLShader();
-    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles valid shader code successfully") {
         shader.shaderCode = "#version 330 core\nvoid main() {}\0";
@@ -63,8 +58,6 @@ TEST_CASE("Window_GLShader_compileShader") {
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
         logger.clearTestInfo();
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLVertexShader_GLVertexShader") {
@@ -76,7 +69,6 @@ TEST_CASE("Window_GLVertexShader_GLVertexShader") {
         + "[INFO]: Shader compiled successfully.\n";
 
     std::filesystem::path testPath = TEST_DIR;
-    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles vertex shader successfully") {
         std::filesystem::path filePath =
@@ -88,8 +80,6 @@ TEST_CASE("Window_GLVertexShader_GLVertexShader") {
 
         REQUIRE(shader.getID() == 1);
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLVertexShader_noOpShader") {
@@ -100,7 +90,6 @@ TEST_CASE("Window_GLVertexShader_noOpShader") {
         "[INFO]: Shader compiled successfully.\n";
 
     std::filesystem::path testPath = TEST_DIR;
-    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles vertex shader successfully") {
         GLVertexShader shader = GLVertexShader::noOpShader();
@@ -110,8 +99,6 @@ TEST_CASE("Window_GLVertexShader_noOpShader") {
 
         REQUIRE(shader.getID() == 1);
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
@@ -119,7 +106,6 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
     logger.setLevel(LogLevel::DEBUG);
 
     std::filesystem::path testPath = TEST_DIR;
-    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles fragment shader successfully") {
         std::filesystem::path filePath =
@@ -154,6 +140,4 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
 
         REQUIRE(shader.getID() == 1);
     }
-
-    GLTestUtils::deinitialize();
 }
