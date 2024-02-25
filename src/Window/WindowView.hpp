@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#include <Basil/Context.hpp>
 #include <Basil/Frame.hpp>
 
 #include "SplitPane.hpp"
@@ -19,8 +20,14 @@ namespace basil {
 */
 struct WindowProps {
  public:
+    #ifndef TEST_BUILD
     inline static const int DEFAULT_WIDTH = 1080;
     inline static const int DEFAULT_HEIGHT = 920;
+    #else
+    inline static const int DEFAULT_WIDTH = 2;
+    inline static const int DEFAULT_HEIGHT = 1;
+    #endif
+
     inline static const std::string DEFAULT_TITLE = "Basil";
 
     std::string title = DEFAULT_TITLE;
@@ -32,7 +39,8 @@ struct WindowProps {
  * @brief Outer window containing all UI elements and providing simple
  * public facade.
  */
-class WindowView : public IFrameProcess {
+class WindowView :  public IFrameProcess,
+                    private BasilContextDependency {
  public:
     explicit WindowView(std::optional<WindowProps> windowProps = std::nullopt);
     ~WindowView();
@@ -61,10 +69,6 @@ class WindowView : public IFrameProcess {
     GLFWwindow* glfwWindow = nullptr;
     GLFWwindow* createGLFWWindow();
 
-    void initializeGLFWContext();
-    void initializeGLEWContext();
-    static void logGLFWError(GLenum errorCode);
-    static void logGLEWError(GLenum errorCode);
     void draw();
     void closeWindow();
 
@@ -74,6 +78,7 @@ class WindowView : public IFrameProcess {
 
     IPane* topPane = nullptr;
 
+    BasilContext& context = BasilContext::get();
     Logger& logger = Logger::get();
 };
 

@@ -45,23 +45,30 @@ class Logger {
 
 #ifdef TEST_BUILD
     std::string getLastOutput() {
-        std::string output = stringStream.str();
-        clearTestInfo();
-        return output;
+        return lastMessage;
     }
 
     LogLevel getLastLevel() {
         return lastOutputLevel;
     }
 
+    bool didOutputLastMessage() {
+        return didOutput;
+    }
+
     void clearTestInfo() {
-        stringStream.str("");
-        stringStream.clear();
+        lastOutputLevel = DEBUG;
+        lastMessage = "";
+        didOutput = false;
     }
 
  private:
     std::ostringstream stringStream;
     std::ostream& ostream = stringStream;
+
+    LogLevel lastOutputLevel = DEBUG;
+    std::string lastMessage = "";
+    bool didOutput = false;
 #else
 
  private:
@@ -75,8 +82,6 @@ class Logger {
         LogLevel logLevel = INFO;
     #endif
 
-    LogLevel lastOutputLevel = DEBUG;
-
     std::map<LogLevel, std::string> levelLabels = {
         {LogLevel::DEBUG,  "DEBUG"},
         {LogLevel::INFO,   "INFO"},
@@ -84,6 +89,7 @@ class Logger {
         {LogLevel::ERROR,  "ERROR"}
     };
 
+    // Inaccessable methods to enforce Singleton
     Logger() {}
     Logger(Logger const&);
     void operator=(Logger const&);

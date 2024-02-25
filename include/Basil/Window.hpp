@@ -6,6 +6,7 @@
 #include "Window/GLTexture.hpp"
 #include "Window/GLTexturePane.hpp"
 #include "Window/IPane.hpp"
+#include "Window/SplitPane.hpp"
 #include "Window/WindowView.hpp"
 
 #endif  // INCLUDE_BASIL_WINDOW_HPP_

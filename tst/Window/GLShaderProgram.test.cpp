@@ -1,6 +1,5 @@
 #include <catch.hpp>
 
-#include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
 using basil::Logger;
@@ -12,7 +11,6 @@ using basil::GLShaderProgram;
 TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
     Logger& logger = Logger::get();
     std::filesystem::path testPath = TEST_DIR;
-    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles shader program.") {
         std::filesystem::path filePath =
@@ -22,12 +20,11 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
             std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
         GLFragmentShader fragmentShader = GLFragmentShader(filePath);
 
-        logger.clearTestInfo();
         GLShaderProgram shaderProgram = GLShaderProgram(
             vertexShader, fragmentShader);
 
         std::string successMessage =
-            "[INFO]: Shader program compiled successfully.\n";
+            "Shader program compiled successfully.";
 
         CHECK(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
@@ -39,20 +36,14 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
         GLFragmentShader fragmentShader = GLFragmentShader(
             std::filesystem::path(""));
 
-        logger.clearTestInfo();
-
         GLShaderProgram shaderProgram = GLShaderProgram(
             vertexShader, fragmentShader);
 
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLShaderProgram_use") {
-    GLTestUtils::initializeGLContext();
-
     SECTION("Sets current program to shader program ID") {
         std::filesystem::path filePath =
             std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
@@ -70,12 +61,9 @@ TEST_CASE("Window_GLShaderProgram_use") {
 
         REQUIRE(currentID == shaderProgram.getID());
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLShaderProgram_setUniformInt") {
-    GLTestUtils::initializeGLContext();
     SECTION("Sets uniform integer in shader program") {
         std::filesystem::path filePath =
             std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
@@ -101,6 +89,4 @@ TEST_CASE("Window_GLShaderProgram_setUniformInt") {
 
         REQUIRE(setValue == actualValue);
     }
-
-    GLTestUtils::deinitialize();
 }

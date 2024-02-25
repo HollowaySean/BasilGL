@@ -2,7 +2,6 @@
 
 #include <catch.hpp>
 
-#include "GLTestUtils.hpp"
 #include <Basil/Window.hpp>
 
 using basil::Logger;
@@ -12,12 +11,10 @@ using basil::GLVertexShader;
 using basil::GLFragmentShader;
 
 TEST_CASE("Window_GLShader_getShaderFromFile") {
-    GLTestUtils::initializeGLContext();
-
-    Logger& logger = Logger::get();
-    logger.clearTestInfo();
     GLShader shader = GLShader();
     std::filesystem::path testPath = TEST_DIR;
+
+    Logger& logger = Logger::get();
 
     SECTION("Reads valid file successfully") {
         std::filesystem::path filePath =
@@ -27,7 +24,7 @@ TEST_CASE("Window_GLShader_getShaderFromFile") {
         REQUIRE(shader.rawShaderCode == "test-message");
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() ==
-            "[INFO]: Shader file read successfully.\n");
+            "Shader file read successfully.");
     }
 
     SECTION("Prints error for missing file") {
@@ -37,23 +34,19 @@ TEST_CASE("Window_GLShader_getShaderFromFile") {
 
         REQUIRE(shader.rawShaderCode == "");
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
-        logger.clearTestInfo();
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLShader_compileShader") {
     Logger& logger = Logger::get();
     GLShader shader = GLShader();
-    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles valid shader code successfully") {
         shader.shaderCode = "#version 330 core\nvoid main() {}\0";
         shader.compileShader(GLShader::ShaderType::FRAGMENT);
 
         REQUIRE(logger.getLastOutput() ==
-            "[INFO]: Shader compiled successfully.\n");
+            "Shader compiled successfully.");
     }
 
     SECTION("Fails to compile invalid shader code") {
@@ -61,10 +54,7 @@ TEST_CASE("Window_GLShader_compileShader") {
         shader.compileShader(GLShader::ShaderType::FRAGMENT);
 
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
-        logger.clearTestInfo();
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLVertexShader_GLVertexShader") {
@@ -72,11 +62,9 @@ TEST_CASE("Window_GLVertexShader_GLVertexShader") {
     logger.setLevel(LogLevel::DEBUG);
 
     std::string successMessage =
-        std::string("[INFO]: Shader file read successfully.\n")
-        + "[INFO]: Shader compiled successfully.\n";
+        "Shader compiled successfully.";
 
     std::filesystem::path testPath = TEST_DIR;
-    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles vertex shader successfully") {
         std::filesystem::path filePath =
@@ -86,10 +74,8 @@ TEST_CASE("Window_GLVertexShader_GLVertexShader") {
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
 
-        REQUIRE(shader.getID() == 1);
+        REQUIRE_FALSE(shader.getID() == 0);
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLVertexShader_noOpShader") {
@@ -97,10 +83,9 @@ TEST_CASE("Window_GLVertexShader_noOpShader") {
     logger.setLevel(LogLevel::DEBUG);
 
     std::string successMessage =
-        "[INFO]: Shader compiled successfully.\n";
+        "Shader compiled successfully.";
 
     std::filesystem::path testPath = TEST_DIR;
-    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles vertex shader successfully") {
         GLVertexShader shader = GLVertexShader::noOpShader();
@@ -108,10 +93,8 @@ TEST_CASE("Window_GLVertexShader_noOpShader") {
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
 
-        REQUIRE(shader.getID() == 1);
+        REQUIRE_FALSE(shader.getID() == 0);
     }
-
-    GLTestUtils::deinitialize();
 }
 
 TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
@@ -119,7 +102,6 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
     logger.setLevel(LogLevel::DEBUG);
 
     std::filesystem::path testPath = TEST_DIR;
-    GLTestUtils::initializeGLContext();
 
     SECTION("Compiles fragment shader successfully") {
         std::filesystem::path filePath =
@@ -127,13 +109,12 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
         GLFragmentShader shader = GLFragmentShader(filePath);
 
         std::string successMessage =
-            std::string("[INFO]: Shader file read successfully.\n")
-            + "[INFO]: Shader compiled successfully.\n";
+            "Shader compiled successfully.";
 
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
 
-        REQUIRE(shader.getID() == 1);
+        REQUIRE_FALSE(shader.getID() == 0);
     }
 
     SECTION("Compiles fragment shader from string") {
@@ -145,15 +126,13 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
                 "gl_FragCoord.y / 480);\n"
                 "gl_FragColor = vec4(st.x, st.y, 0.0, 1.0); }\0";
         std::string successMessage =
-            "[INFO]: Shader compiled successfully.\n";
+            "Shader compiled successfully.";
 
         GLFragmentShader shader = GLFragmentShader(shaderCode);
 
         CHECK(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
 
-        REQUIRE(shader.getID() == 1);
+        REQUIRE_FALSE(shader.getID() == 0);
     }
-
-    GLTestUtils::deinitialize();
 }

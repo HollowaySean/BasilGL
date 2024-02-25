@@ -14,14 +14,9 @@ WindowView::WindowView(std::optional<WindowProps> windowProps):
     this->windowProps = windowProps.value_or(WindowProps());
 
     topPane = nullptr;
-    initializeGLFWContext();
 
     // Create window
     glfwWindow = createGLFWWindow();
-
-    // GLEW can not be initialized before window context
-    // has been created
-    initializeGLEWContext();
 
     // Set window user pointer
     glfwSetWindowUserPointer(glfwWindow, this);
@@ -29,8 +24,7 @@ WindowView::WindowView(std::optional<WindowProps> windowProps):
 }
 
 WindowView::~WindowView() {
-    glfwDestroyWindow(glfwWindow);
-    glfwTerminate();
+    closeWindow();
 }
 
 void WindowView::onLoop() {
@@ -43,6 +37,10 @@ void WindowView::onLoop() {
 }
 
 void WindowView::onStart() {
+    #ifdef TEST_BUILD
+    glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+    glfwIconifyWindow(glfwWindow);
+    #endif
     glfwShowWindow(glfwWindow);
 }
 
@@ -72,10 +70,14 @@ GLFWwindow* WindowView::createGLFWWindow() {
 
     if (!newWindow) {
         logger.log("GLFW failed to create window.", LogLevel::ERROR);
+
         glfwTerminate();
-    } else {
-        logger.log("Successfully created GLFW window.", LogLevel::INFO);
+        BasilContext::terminate();
+
+        return nullptr;
     }
+
+    logger.log("Successfully created GLFW window.", LogLevel::INFO);
 
     glfwMakeContextCurrent(newWindow);
 
@@ -88,55 +90,6 @@ void WindowView::onResize(int width, int height) {
 
     if (topPane) {
         topPane->onResize(width, height);
-    }
-}
-
-void WindowView::initializeGLFWContext() {
-    GLenum errorCode = glfwInit();
-    logGLFWError(errorCode);
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    // Default to window not being visible
-    glfwWindowHint(GLFW_VISIBLE, false);
-}
-
-void WindowView::initializeGLEWContext() {
-    GLenum errorCode = glewInit();
-    logGLEWError(errorCode);
-}
-
-void WindowView::logGLFWError(GLenum errorCode) {
-    Logger& logger = Logger::get();
-
-    if (errorCode) {
-        logger.log("GLFW context initialized successfully.", LogLevel::INFO);
-    } else {
-        const char* errorMessage;
-        glfwGetError(&errorMessage);
-
-        std::string errorMessageString = errorMessage ?
-            std::string(errorMessage) : "Could not read error message.";
-
-        logger.log("GLFW failed to initialize. Error: "
-            + errorMessageString, LogLevel::ERROR);
-    }
-}
-
-void WindowView::logGLEWError(GLenum errorCode) {
-    Logger& logger = Logger::get();
-
-    if (errorCode == GLEW_OK) {
-        logger.log("GLEW context initialized successfully.", LogLevel::INFO);
-    } else {
-        const char* errorMessage =
-            reinterpret_cast<const char*>(glewGetErrorString(errorCode));
-        std::string errorMessageString = std::string(errorMessage);
-
-        logger.log("GLEW failed to initialize. Error: "
-            + errorMessageString, LogLevel::ERROR);
     }
 }
 
@@ -160,7 +113,8 @@ void WindowView::closeWindow() {
     currentState = State::REQUEST_STOP;
 
     glfwDestroyWindow(glfwWindow);
-    glfwTerminate();
+
+    BasilContext::terminate();
 }
 
 void WindowView::resizeCallback(GLFWwindow* window, int width, int height) {
