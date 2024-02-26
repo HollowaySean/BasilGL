@@ -1,6 +1,6 @@
-#ifndef INCLUDE_BASIL_APP_HPP_
-#define INCLUDE_BASIL_APP_HPP_
+#ifndef INCLUDE_BASIL_APPLICATION_HPP_
+#define INCLUDE_BASIL_APPLICATION_HPP_
 
 #include "Application/BasilApp.hpp"
 
-#endif  // INCLUDE_BASIL_APP_HPP_
+#endif  // INCLUDE_BASIL_APPLICATION_HPP_
