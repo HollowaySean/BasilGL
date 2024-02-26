@@ -9,7 +9,11 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
 ## Release Plan
 
 0. ~~Basic window, support for simple ray tracer~~
-1. Input system, ray tracer, minor improvements and cleanup
+1. Input system, render utilities, ray tracer, minor improvements and cleanup
+   - Support for a pared down clone of "shadertoy"
+   - Ease of use for example setup
+   - Fill in gaps from P0
+   - One or two actual examples
 2. CI/CD and build system improvements
    - This phase is essentially the "v1.0" release, with user-friendly documentation and build systems
 3. Output system

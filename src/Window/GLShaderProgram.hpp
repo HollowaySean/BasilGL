@@ -34,12 +34,27 @@ class GLShaderProgram : private BasilContextConsumer {
     void use();
 
     /**
-     * @brief Sets a 1D integer uniform in shader program.
+     * @brief Sets a 1D boolean uniform in shader program.
      *
-     * @param value  Integer value of uniform.
      * @param name   Name of uniform within shader.
+     * @param value  Value of uniform.
      */
-    void setUniformInt(int value, const std::string& name);
+    void setUniform(const std::string& name, bool value);
+    void setUniform(const std::string& name, int value);
+    void setUniform(const std::string& name, uint value);
+    void setUniform(const std::string& name, float value);
+
+    template<class T>
+    void setUniformVector(const std::string& name,
+      T value1, T value2);
+
+    template<class T>
+    void setUniformVector(const std::string& name,
+      T value1, T value2, T value3);
+
+    template<class T>
+    void setUniformVector(const std::string& name,
+      T value1, T value2, T value3, T value4);
 
  private:
     Logger& logger = Logger::get();
