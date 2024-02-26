@@ -11,7 +11,7 @@ repos:
   rev: v1.3.5
   hooks:
   - id: cppcheck
-    args: [ "src/*", "include/*",
+    args: [ "src/**/*.cpp", "tst/**/*.cpp",
       "--suppress=*:extern/*",
       "--suppress=*:*.hpp",
       "--suppress=unmatchedSuppression",

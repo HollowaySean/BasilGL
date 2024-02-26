@@ -65,8 +65,8 @@ template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         bool value1, bool value2, bool value3) {
     GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform3i(location,
-        static_cast<int>(value1), static_cast<int>(value2), static_cast<int>(value3));
+    glUniform3i(location, static_cast<int>(value1),
+        static_cast<int>(value2), static_cast<int>(value3));
 }
 
 template<>

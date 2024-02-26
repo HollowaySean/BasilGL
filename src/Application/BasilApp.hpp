@@ -9,7 +9,8 @@
 
 namespace basil {
 
-// TODO(sholloway): Read this https://www.slideshare.net/DimitriosPlatis/builder-pattern-in-cpdf
+// TODO(sholloway): Read this
+//  https://www.slideshare.net/DimitriosPlatis/builder-pattern-in-cpdf
 
 class BasilApp : private BasilContextDependency {
  public:

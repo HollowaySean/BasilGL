@@ -43,19 +43,22 @@ BasilApp BasilApp::Builder::build() {
     return BasilApp(*this);
 }
 
-BasilApp::Builder& BasilApp::Builder::withShaderPane(std::filesystem::path shaderPath) {
+BasilApp::Builder&
+BasilApp::Builder::withShaderPane(std::filesystem::path shaderPath) {
     this->topPane =
         std::make_shared<GLTexturePane>(PaneProps(), shaderPath);
     return *this;
 }
 
-BasilApp::Builder& BasilApp::Builder::withMetricsReporter(int bufferSize) {
+BasilApp::Builder&
+BasilApp::Builder::withMetricsReporter(int bufferSize) {
     this->shouldIncludeMetrics = true;
     this->bufferSize = bufferSize;
     return *this;
 }
 
-BasilApp::Builder& BasilApp::Builder::withFrameRateCap(int maxFrameRate) {
+BasilApp::Builder&
+BasilApp::Builder::withFrameRateCap(int maxFrameRate) {
     this->frameRateCap = maxFrameRate;
     return *this;
 }
