@@ -12,9 +12,11 @@ using basil::BasilApp;
 int main(int argc, char** argv) {
     std::filesystem::path fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
+    std::filesystem::path vertexPath =
+        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.vert";
 
     BasilApp app = BasilApp::Builder()
-        .withShaderPane(fragmentPath)
+        .withShaderPane(vertexPath, fragmentPath)
         .withFrameRateCap(30)
         .build();
 

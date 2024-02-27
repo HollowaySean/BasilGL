@@ -44,13 +44,15 @@ BasilApp BasilApp::Builder::build() {
 }
 
 BasilApp::Builder&
-BasilApp::Builder::withShaderPane(std::filesystem::path shaderPath) {
+BasilApp::Builder::withShaderPane(
+        std::filesystem::path vertexPath,
+        std::filesystem::path fragmentPath) {
     std::shared_ptr<GLFragmentShader> fragmentShader =
-        std::make_shared<GLFragmentShader>(shaderPath);
+        std::make_shared<GLFragmentShader>(fragmentPath);
     std::shared_ptr<GLVertexShader> vertexShader =
-        std::make_shared<GLVertexShader>(GLVertexShader::noOpShader());
+        std::make_shared<GLVertexShader>(vertexPath);
     std::shared_ptr<GLShaderProgram> shaderProgram =
-        std::make_shared<GLShaderProgram>(*vertexShader, *fragmentShader);
+        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
     this->topPane =
         std::make_shared<GLTexturePane>(PaneProps(), shaderProgram);
