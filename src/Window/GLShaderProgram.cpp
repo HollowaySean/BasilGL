@@ -5,17 +5,17 @@
 namespace basil {
 
 GLShaderProgram::GLShaderProgram(
-    const GLVertexShader& vertexShader,
-    const GLFragmentShader& fragmentShader):
-        vertexID(vertexShader.getID()),
-        fragmentID(fragmentShader.getID()) {
+    std::shared_ptr<GLVertexShader> vertexShader,
+    std::shared_ptr<GLFragmentShader> fragmentShader):
+        vertexShader(vertexShader),
+        fragmentShader(fragmentShader) {
     this->compile();
 }
 
 void GLShaderProgram::compile() {
     ID = glCreateProgram();
-    glAttachShader(ID, vertexID);
-    glAttachShader(ID, fragmentID);
+    glAttachShader(ID, vertexShader->getID());
+    glAttachShader(ID, fragmentShader->getID());
     glLinkProgram(ID);
 
     int success;

@@ -3,6 +3,9 @@
 
 using basil::FrameController;
 using basil::FrameMetrics;
+using basil::GLVertexShader;
+using basil::GLFragmentShader;
+using basil::GLShaderProgram;
 using basil::GLTexturePane;
 using basil::PaneProps;
 using basil::WindowView;
@@ -37,9 +40,19 @@ int main(int argc, char** argv) {
         std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
 
     PaneProps paneProps = windowView.getTopPaneProps();
-    GLTexturePane topPane = GLTexturePane(paneProps, fragmentPath);
+    GLVertexShader noOpVertex = GLVertexShader::noOpShader();
 
-    windowView.setTopPane(&topPane);
+    std::shared_ptr<GLVertexShader> vertexShader =
+        std::shared_ptr<GLVertexShader>(&noOpVertex);
+    std::shared_ptr<GLFragmentShader> fragmentShader =
+        std::make_shared<GLFragmentShader>(fragmentPath);
+    std::shared_ptr<GLShaderProgram> shaderProgram =
+        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
+
+    std::shared_ptr<GLTexturePane> topPane =
+        std::make_shared<GLTexturePane>(paneProps, shaderProgram);
+
+    windowView.setTopPane(topPane);
 
     frameController.setFrameCap(30);
     frameController.run();

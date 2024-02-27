@@ -24,7 +24,9 @@ class BasilApp : private BasilContextDependency {
 
         Builder& withFrameRateCap(int maxFrameRate);
         Builder& withMetricsReporter(int bufferSize = 20);
-        Builder& withShaderPane(std::filesystem::path shaderPath);
+        Builder& withShaderPane(
+            std::filesystem::path vertexPath,
+            std::filesystem::path fragmentPath);
 
      private:
         friend BasilApp;

@@ -13,8 +13,6 @@ WindowView::WindowView(std::optional<WindowProps> windowProps):
         glfwWindow() {
     this->windowProps = windowProps.value_or(WindowProps());
 
-    topPane = nullptr;
-
     // Create window
     glfwWindow = createGLFWWindow();
 
