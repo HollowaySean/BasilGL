@@ -12,15 +12,20 @@ using basil::GLTexturePane;
 using basil::PaneProps;
 using basil::IPane;
 
+template<class T>
+using s_p = std::shared_ptr<T>;
+
 std::filesystem::path vertPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
 std::filesystem::path fragPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
 
 TEST_CASE("Window_GLTexturePane_GLTexturePane") {
-    GLVertexShader vertexShader = GLVertexShader(vertPath);
-    GLFragmentShader fragmentShader = GLFragmentShader(fragPath);
-    std::shared_ptr<GLShaderProgram> shaderProgram =
+    s_p<GLVertexShader> vertexShader =
+        std::make_shared<GLVertexShader>(vertPath);
+    s_p<GLFragmentShader> fragmentShader =
+        std::make_shared<GLFragmentShader>(fragPath);
+    s_p<GLShaderProgram> shaderProgram =
         std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
     PaneProps props = {
@@ -41,9 +46,11 @@ TEST_CASE("Window_GLTexturePane_GLTexturePane") {
 }
 
 TEST_CASE("Window_GLTexturePane_addTexture") {
-    GLVertexShader vertexShader = GLVertexShader(vertPath);
-    GLFragmentShader fragmentShader = GLFragmentShader(fragPath);
-    std::shared_ptr<GLShaderProgram> shaderProgram =
+    s_p<GLVertexShader> vertexShader =
+        std::make_shared<GLVertexShader>(vertPath);
+    s_p<GLFragmentShader> fragmentShader =
+        std::make_shared<GLFragmentShader>(fragPath);
+    s_p<GLShaderProgram> shaderProgram =
         std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
     GLTextureProps textureProps = {
@@ -76,9 +83,11 @@ TEST_CASE("Window_GLTexturePane_addTexture") {
 }
 
 TEST_CASE("Window_GLTexturePane_draw") {
-    GLVertexShader vertexShader = GLVertexShader(vertPath);
-    GLFragmentShader fragmentShader = GLFragmentShader(fragPath);
-    std::shared_ptr<GLShaderProgram> shaderProgram =
+    s_p<GLVertexShader> vertexShader =
+        std::make_shared<GLVertexShader>(vertPath);
+    s_p<GLFragmentShader> fragmentShader =
+        std::make_shared<GLFragmentShader>(fragPath);
+    s_p<GLShaderProgram> shaderProgram =
         std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
     PaneProps paneProps = {

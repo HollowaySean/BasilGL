@@ -76,13 +76,16 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
     SECTION("Compiles shader program.") {
         std::filesystem::path filePath =
             std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
-        GLVertexShader vertexShader = GLVertexShader(filePath);
+        std::shared_ptr<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(filePath);
+
         filePath =
             std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
-        GLFragmentShader fragmentShader = GLFragmentShader(filePath);
+        std::shared_ptr<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(filePath);
 
-        GLShaderProgram shaderProgram = GLShaderProgram(
-            vertexShader, fragmentShader);
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
 
         std::string successMessage =
             "Shader program compiled successfully.";
@@ -92,13 +95,15 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
     }
 
     SECTION("Logs error for failed compilation.") {
-        GLVertexShader vertexShader = GLVertexShader(
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
-        GLFragmentShader fragmentShader = GLFragmentShader(
-            std::filesystem::path(""));
+        std::shared_ptr<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
+        std::shared_ptr<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(
+                std::filesystem::path(""));
 
-        GLShaderProgram shaderProgram = GLShaderProgram(
-            vertexShader, fragmentShader);
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
 
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
     }
@@ -106,14 +111,15 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
 
 TEST_CASE("Window_GLShaderProgram_use") {
     SECTION("Sets current program to shader program ID") {
-        std::filesystem::path filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
-        GLVertexShader vertexShader = GLVertexShader(filePath);
-        filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
-        GLFragmentShader fragmentShader = GLFragmentShader(filePath);
-        GLShaderProgram shaderProgram = GLShaderProgram(
-            vertexShader, fragmentShader);
+        std::shared_ptr<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
+        std::shared_ptr<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.frag");
+
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
 
         shaderProgram.use();
 
@@ -126,15 +132,15 @@ TEST_CASE("Window_GLShaderProgram_use") {
 
 TEST_CASE("Window_GLShaderProgram_setUniform") {
     SECTION("Sets uniform in shader program") {
-        std::filesystem::path filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
-        GLVertexShader vertexShader = GLVertexShader(filePath);
-        filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
-        GLFragmentShader fragmentShader = GLFragmentShader(filePath);
+        std::shared_ptr<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
+        std::shared_ptr<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.frag");
 
-        GLShaderProgram shaderProgram = GLShaderProgram(
-            vertexShader, fragmentShader);
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
         shaderProgram.use();
 
         verifyUniforms<bool,  1>(shaderProgram,
@@ -150,15 +156,15 @@ TEST_CASE("Window_GLShaderProgram_setUniform") {
 
 TEST_CASE("Window_GLShaderProgram_setUniformVector") {
     SECTION("Sets uniform vector in shader program") {
-        std::filesystem::path filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
-        GLVertexShader vertexShader = GLVertexShader(filePath);
-        filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
-        GLFragmentShader fragmentShader = GLFragmentShader(filePath);
+        std::shared_ptr<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
+        std::shared_ptr<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.frag");
 
-        GLShaderProgram shaderProgram = GLShaderProgram(
-            vertexShader, fragmentShader);
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
         shaderProgram.use();
 
         verifyUniforms<bool,  2>(shaderProgram,
