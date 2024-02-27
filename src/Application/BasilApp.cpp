@@ -22,7 +22,7 @@ BasilApp::BasilApp(Builder builder) : BasilApp() {
         this->topPane = builder.topPane;
         this->topPane->paneProps = windowView->getTopPaneProps();
 
-        this->windowView->setTopPane(builder.topPane.get());
+        this->windowView->setTopPane(builder.topPane);
     }
 
     if (builder.shouldIncludeMetrics) {
@@ -45,8 +45,15 @@ BasilApp BasilApp::Builder::build() {
 
 BasilApp::Builder&
 BasilApp::Builder::withShaderPane(std::filesystem::path shaderPath) {
+    std::shared_ptr<GLFragmentShader> fragmentShader =
+        std::make_shared<GLFragmentShader>(shaderPath);
+    std::shared_ptr<GLVertexShader> vertexShader =
+        std::make_shared<GLVertexShader>(GLVertexShader::noOpShader());
+    std::shared_ptr<GLShaderProgram> shaderProgram =
+        std::make_shared<GLShaderProgram>(*vertexShader, *fragmentShader);
+
     this->topPane =
-        std::make_shared<GLTexturePane>(PaneProps(), shaderPath);
+        std::make_shared<GLTexturePane>(PaneProps(), shaderProgram);
     return *this;
 }
 
