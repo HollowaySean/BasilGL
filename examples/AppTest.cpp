@@ -16,7 +16,6 @@ int main(int argc, char** argv) {
     BasilApp app = BasilApp::Builder()
         .withShaderPane(fragmentPath)
         .withFrameRateCap(30)
-        .withMetricsReporter(20)
         .build();
 
     app.run();

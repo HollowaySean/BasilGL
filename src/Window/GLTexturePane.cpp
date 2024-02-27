@@ -14,7 +14,7 @@ void GLTexturePane::addTexture(IGLTexture* newTexture) {
 
     // Assign texture to shader
     GLuint location =
-        glGetUniformLocation(shaderProgram.getID(), newTexture->props.name);
+        glGetUniformLocation(shaderProgram->getID(), newTexture->props.name);
     glUniform1f(location, 0);
 }
 
@@ -67,7 +67,7 @@ void const GLTexturePane::draw() {
         paneProps.height);
 
     // Use shader
-    shaderProgram.use();
+    shaderProgram->use();
 
     // Update texture(s)
     for (IGLTexture* texture : textureList) {

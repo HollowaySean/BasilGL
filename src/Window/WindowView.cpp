@@ -48,7 +48,7 @@ void WindowView::onStop() {
     logger.log("Stopping loop", LogLevel::INFO);
 }
 
-void WindowView::setTopPane(IPane* newTopPane) {
+void WindowView::setTopPane(std::shared_ptr<IPane> newTopPane) {
     this->topPane = newTopPane;
 }
 

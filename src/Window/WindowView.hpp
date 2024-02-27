@@ -3,6 +3,8 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
@@ -55,7 +57,7 @@ class WindowView :  public IFrameProcess,
     void onLoop() override;
 
     /** @brief Sets top-level pane for window. */
-    void setTopPane(IPane* newTopPane);
+    void setTopPane(std::shared_ptr<IPane> newTopPane);
 
     /** @returns PaneProps object for top pane. */
     PaneProps getTopPaneProps();
@@ -76,7 +78,7 @@ class WindowView :  public IFrameProcess,
     void setCallbacks();
     void onResize(int width, int height);
 
-    IPane* topPane = nullptr;
+    std::shared_ptr<IPane> topPane;
 
     BasilContext& context = BasilContext::get();
     Logger& logger = Logger::get();

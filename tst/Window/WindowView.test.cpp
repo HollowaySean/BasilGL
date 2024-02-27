@@ -12,6 +12,9 @@ using basil::WindowProps;
 using basil::WindowView;
 using basil::IFrameProcess;
 
+template<class T>
+using s_pt = std::shared_ptr<T>;
+
 class TestPane : public IPane {
  public:
     explicit TestPane(PaneProps paneProps):
@@ -92,13 +95,13 @@ TEST_CASE("Window_WindowView_draw") {
         WindowView window = WindowView();
 
         PaneProps paneProps = window.getTopPaneProps();
-        TestPane testPane = TestPane(paneProps);
+        s_pt<TestPane> testPane = std::make_shared<TestPane>(paneProps);
 
         window.draw();
-        REQUIRE_FALSE(testPane.didDraw);
-        window.setTopPane(&testPane);
+        REQUIRE_FALSE(testPane->didDraw);
+        window.setTopPane(testPane);
         window.draw();
-        REQUIRE(testPane.didDraw);
+        REQUIRE(testPane->didDraw);
     }
 }
 
@@ -107,12 +110,12 @@ TEST_CASE("Window_WindowView_onLoop") {
         WindowView window = WindowView();
 
         PaneProps paneProps = window.getTopPaneProps();
-        TestPane testPane = TestPane(paneProps);
+        s_pt<TestPane> testPane = std::make_shared<TestPane>(paneProps);
 
-        REQUIRE_FALSE(testPane.didDraw);
-        window.setTopPane(&testPane);
+        REQUIRE_FALSE(testPane->didDraw);
+        window.setTopPane(testPane);
         window.onLoop();
-        REQUIRE(testPane.didDraw);
+        REQUIRE(testPane->didDraw);
     }
 
     SECTION("Closes window if requested by GLFW") {
@@ -158,12 +161,13 @@ TEST_CASE("Window_WindowView_onResize") {
         WindowView window = WindowView();
 
         PaneProps paneProps = window.getTopPaneProps();
-        TestPane testPane = TestPane(paneProps);
-        window.setTopPane(&testPane);
+        s_pt<TestPane> testPane = std::make_shared<TestPane>(paneProps);
+
+        window.setTopPane(testPane);
 
         window.onResize(50, 25);
-        REQUIRE(testPane.paneProps.width == 50);
-        REQUIRE(testPane.paneProps.height == 25);
+        REQUIRE(testPane->paneProps.width == 50);
+        REQUIRE(testPane->paneProps.height == 25);
     }
 }
 

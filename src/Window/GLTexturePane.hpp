@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <memory>
 #include <vector>
 
 #include "GLTexture.hpp"
@@ -20,33 +21,14 @@ namespace basil {
 class GLTexturePane : public IPane, private BasilContextConsumer {
  public:
     /**
-     * @brief Creates GLTexturePane from fragment shader file path.
-     *
-     * @param paneProps   Pane size properties
-     * @param filePath    Path of fragment shader file
-    */
-    explicit GLTexturePane(
-      PaneProps paneProps,
-      std::filesystem::path filePath)
-        : vertexAttributeID(),
-          vertexBufferID(),
-          elementBufferID(),
-          shaderProgram(GLShaderProgram(
-              GLVertexShader::noOpShader(),
-              GLFragmentShader(filePath))),
-          IPane(paneProps) {
-            setup();
-          }
-
-    /**
      * @brief Creates GLTexturePane from existing GLShaderProgram.
      *
      * @param paneProps     Pane size properties
      * @param shaderProgram GLShaderProgram object to render
     */
     explicit GLTexturePane(
-      PaneProps paneProps,
-      const GLShaderProgram &shaderProgram)
+      const PaneProps& paneProps,
+      std::shared_ptr<GLShaderProgram> shaderProgram)
         : vertexAttributeID(),
           vertexBufferID(),
           elementBufferID(),
@@ -74,7 +56,7 @@ class GLTexturePane : public IPane, private BasilContextConsumer {
 
     GLuint vertexAttributeID, vertexBufferID, elementBufferID;
     std::vector<IGLTexture*> textureList;
-    GLShaderProgram shaderProgram;
+    std::shared_ptr<GLShaderProgram> shaderProgram;
 };
 
 }  // namespace basil

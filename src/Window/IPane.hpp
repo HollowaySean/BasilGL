@@ -15,7 +15,7 @@ struct PaneProps {
 class IPane {
  public:
     /** @param paneProps Struct containing pane size & offset. */
-    explicit IPane(PaneProps paneProps): paneProps(paneProps) {}
+    explicit IPane(const PaneProps& paneProps): paneProps(paneProps) {}
 
     /** @brief Render contents of pane. */
     virtual void const draw() = 0;

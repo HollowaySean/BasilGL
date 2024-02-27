@@ -75,12 +75,12 @@ void SplitPane::updateSize() {
     }
 }
 
-void SplitPane::setFirstPane(IPane* pane) {
+void SplitPane::setFirstPane(std::shared_ptr<IPane> pane) {
     firstPane = pane;
     updateSize();
 }
 
-void SplitPane::setSecondPane(IPane* pane) {
+void SplitPane::setSecondPane(std::shared_ptr<IPane> pane) {
     secondPane = pane;
     updateSize();
 }

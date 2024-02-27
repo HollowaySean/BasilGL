@@ -38,7 +38,7 @@ class IGLTexture : private BasilContextConsumer {
     GLuint getID() { return textureId; }
 
     /** @brief Struct containing texture properties. */
-    const GLTextureProps &props;
+    GLTextureProps props;
 
     /** @brief Destructor to tear down OpenGL assigned memory. */
     virtual ~IGLTexture();
