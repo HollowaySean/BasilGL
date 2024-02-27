@@ -59,6 +59,13 @@ PaneProps WindowView::getTopPaneProps() {
     };
 }
 
+void WindowView::setWindowProps(WindowProps newWindowProps) {
+    this->windowProps = newWindowProps;
+
+    glfwSetWindowTitle(glfwWindow, newWindowProps.title.c_str());
+    glfwSetWindowSize(glfwWindow, newWindowProps.width, newWindowProps.height);
+}
+
 GLFWwindow* WindowView::createGLFWWindow() {
     GLFWwindow* newWindow = glfwCreateWindow(
         windowProps.width,

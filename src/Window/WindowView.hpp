@@ -62,6 +62,12 @@ class WindowView :  public IFrameProcess,
     /** @returns PaneProps object for top pane. */
     PaneProps getTopPaneProps();
 
+    /** @brief Update window size & title. */
+    void setWindowProps(WindowProps newWindowProps);
+
+    /** @returns Window settings as struct. */
+    WindowProps getWindowProps () { return windowProps; }
+
 #ifndef TEST_BUILD
 
  private:
