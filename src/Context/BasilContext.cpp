@@ -20,23 +20,24 @@ void BasilContext::terminate() {
 }
 
 void BasilContext::initializeGLFWContext() {
+    // Initialize log errors, and update flag
     GLenum errorCode = glfwInit();
     logGLFWError(errorCode);
+    hasInitialized &= errorCode;
 
+    // Create non-visible window and attach context
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, BASIL_GLFW_VERSION_MAJOR);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, BASIL_GLFW_VERSION_MINOR);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Create non-visible window and attach context
     glfwWindowHint(GLFW_VISIBLE, false);
     glfwWindow = glfwCreateWindow(
         1, 1, WINDOW_TITLE, NULL, NULL);
     glfwMakeContextCurrent(glfwWindow);
 
-    // TODO(sholloway): Decide if I need to error check window creation
-
-    // Save success/failure flag
-    hasInitialized &= errorCode;
+    // Save success/failure flag and log errors
+    hasInitialized &= glfwWindow != nullptr;
+    logGLFWWindowError(glfwWindow);
 }
 
 void BasilContext::initializeGLEWContext() {
@@ -61,6 +62,17 @@ void BasilContext::logGLFWError(GLenum errorCode) {
 
         logger.log("GLFW failed to initialize. Error: "
             + errorMessageString, LogLevel::ERROR);
+    }
+}
+
+void BasilContext::logGLFWWindowError(const GLFWwindow* window) {
+    Logger& logger = Logger::get();
+
+    if (window) {
+        logger.log("GLFW window created successfully.", LogLevel::INFO);
+    } else {
+        logger.log("GLFW failed to create window.", LogLevel::ERROR);
+        BasilContext::terminate();
     }
 }
 

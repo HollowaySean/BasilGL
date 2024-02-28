@@ -53,29 +53,6 @@ TEST_CASE("Window_WindowView_WindowView") {
     }
 }
 
-TEST_CASE("Window_WindowView_createGLFWWindow") {
-    Logger& logger = Logger::get();
-
-    SECTION("Creates glfwWindow object") {
-        WindowView windowView = WindowView();
-
-        GLFWwindow* window = windowView.createGLFWWindow();
-
-        REQUIRE(window != nullptr);
-        REQUIRE(logger.getLastLevel() == LogLevel::INFO);
-    }
-
-    SECTION("Logs error on failure") {
-        WindowView windowView = WindowView();
-        glfwTerminate();
-
-        GLFWwindow* window = windowView.createGLFWWindow();
-
-        REQUIRE(window == nullptr);
-        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
-    }
-}
-
 TEST_CASE("Window_WindowView_getTopPaneProps") {
     SECTION("Returns PaneProps with window size.") {
         WindowView window = WindowView();
@@ -87,6 +64,57 @@ TEST_CASE("Window_WindowView_getTopPaneProps") {
         REQUIRE(paneProps.height == windowProps.height);
         REQUIRE(paneProps.xOffset == 0);
         REQUIRE(paneProps.yOffset == 0);
+    }
+}
+
+TEST_CASE("Window_WindowView_setWindowProps") {
+    SECTION("Sets windowProps to new values") {
+        WindowView window = WindowView();
+        WindowProps newProps = WindowProps {
+            .title = "test",
+            .width = 55,
+            .height = 22
+        };
+
+        window.setWindowProps(newProps);
+
+        REQUIRE(window.windowProps.title == newProps.title);
+        REQUIRE(window.windowProps.width == newProps.width);
+        REQUIRE(window.windowProps.height == newProps.height);
+    }
+}
+
+TEST_CASE("Window_WindowView_setWindowTitle") {
+    SECTION("Sets GLFW window title") {
+        WindowView window = WindowView();
+
+        std::string newTitle = "newTitle";
+        window.setWindowTitle(newTitle);
+
+        REQUIRE(window.windowProps.title == newTitle);
+
+        const char* glfwTitle = glfwGetWindowTitle(window.glfwWindow);
+        REQUIRE(std::string(glfwTitle) == newTitle);
+    }
+}
+
+TEST_CASE("Window_WindowView_setWindowSize") {
+    SECTION("Sets GLFW window title") {
+        WindowView window = WindowView();
+
+        int newWidth = 55;
+        int newHeight = 22;
+        window.setWindowSize(newWidth, newHeight);
+
+        REQUIRE(window.windowProps.width == newWidth);
+        REQUIRE(window.windowProps.height == newHeight);
+
+        // TODO(sholloway): Reinstate after
+        //  achieving thread safety for GLFW context
+        // int actualWidth, actualHeight;
+        // glfwGetWindowSize(window.glfwWindow, &actualWidth, &actualHeight);
+        // REQUIRE(actualWidth == newWidth);
+        // REQUIRE(actualHeight == newHeight);
     }
 }
 
@@ -178,5 +206,25 @@ TEST_CASE("Window_WindowView_resizeCallback") {
 
         REQUIRE(window.windowProps.width == 60);
         REQUIRE(window.windowProps.height == 30);
+    }
+}
+
+TEST_CASE("Window_WindowView_Builder") {
+    SECTION("Builds WindowView object") {
+        std::string title = "testTitle";
+        int width = 54;
+        int height = 23;
+        auto pane = std::make_shared<TestPane>(PaneProps());
+
+        auto window = WindowView::Builder()
+            .withDimensions(width, height)
+            .withTitle(title)
+            .withTopPane(pane)
+            .build();
+
+        REQUIRE(window->windowProps.title == title);
+        REQUIRE(window->windowProps.width == width);
+        REQUIRE(window->windowProps.height == height);
+        REQUIRE(window->topPane == pane);
     }
 }

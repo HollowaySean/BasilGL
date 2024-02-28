@@ -53,6 +53,7 @@ class BasilContext {
     void initializeGLEWContext();
 
     static void logGLFWError(GLenum errorCode);
+    static void logGLFWWindowError(const GLFWwindow* window);
     static void logGLEWError(GLenum errorCode);
 
     Logger& logger = Logger::get();

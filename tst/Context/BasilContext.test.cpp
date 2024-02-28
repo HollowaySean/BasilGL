@@ -25,6 +25,34 @@ TEST_CASE("Context_BasilContext_logGLFWError") {
     }
 }
 
+TEST_CASE("Context_BasilContext_logGLFWWindowError") {
+    Logger& logger = Logger::get();
+
+    SECTION("Logs info on success") {
+        GLFWwindow* window = BasilContext::getGLFWWindow();
+        BasilContext::logGLFWWindowError(window);
+
+        REQUIRE(logger.getLastOutput() ==
+            "GLFW window created successfully.");
+        REQUIRE(logger.getLastLevel() ==
+            LogLevel::INFO);
+    }
+
+    SECTION("Logs error and terminates on failure") {
+        BasilContext::initialize();
+        REQUIRE(BasilContext::isInitialized());
+
+        BasilContext::logGLFWWindowError(nullptr);
+
+        REQUIRE(logger.getLastOutput() == "GLFW failed to create window.");
+        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
+        REQUIRE_FALSE(BasilContext::isInitialized());
+
+        // Re-initialize to prevent issues
+        BasilContext::initialize();
+    }
+}
+
 TEST_CASE("Context_BasilContext_logGLEWError") {
     Logger& logger = Logger::get();
 
