@@ -1,5 +1,5 @@
-#ifndef SRC_APPLICATION_IBUILDER_HPP_
-#define SRC_APPLICATION_IBUILDER_HPP_
+#ifndef SRC_BUILDER_IBUILDER_HPP_
+#define SRC_BUILDER_IBUILDER_HPP_
 
 #include <memory>
 #include <utility>
@@ -21,4 +21,4 @@ class IBuilder {
 
 }  // namespace basil
 
-#endif  // SRC_APPLICATION_IBUILDER_HPP_
+#endif  // SRC_BUILDER_IBUILDER_HPP_

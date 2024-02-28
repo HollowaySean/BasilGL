@@ -29,9 +29,11 @@ void BasilContext::initializeGLFWContext() {
 
     // Create non-visible window and attach context
     glfwWindowHint(GLFW_VISIBLE, false);
-    GLFWwindow* newWindow = glfwCreateWindow(
+    glfwWindow = glfwCreateWindow(
         1, 1, WINDOW_TITLE, NULL, NULL);
-    glfwMakeContextCurrent(newWindow);
+    glfwMakeContextCurrent(glfwWindow);
+
+    // TODO(sholloway): Decide if I need to error check window creation
 
     // Save success/failure flag
     hasInitialized &= errorCode;
@@ -75,6 +77,15 @@ void BasilContext::logGLEWError(GLenum errorCode) {
         logger.log("GLEW failed to initialize. Error: "
             + errorMessageString, LogLevel::ERROR);
     }
+}
+
+GLFWwindow* BasilContext::getGLFWWindow() {
+    if (!hasInitialized) {
+        initialize();
+    }
+
+    const BasilContext& instance = get();
+    return instance.glfwWindow;
 }
 
 }  // namespace basil

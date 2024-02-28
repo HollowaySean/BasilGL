@@ -1,4 +1,3 @@
-#include <Basil/Application.hpp>
 #include <Basil/Frame.hpp>
 #include <Basil/Window.hpp>
 
@@ -11,7 +10,6 @@ using basil::GLTexturePane;
 using basil::PaneProps;
 using basil::WindowView;
 using basil::MetricsReporter;
-using basil::WindowBuilder;
 
 /**
  * @brief Entry point function.
@@ -32,33 +30,38 @@ int main(int argc, char** argv) {
         FrameController::Privilege::NONE,
         "MetricsReporter");
 
-    std::unique_ptr<WindowView> windowView = WindowBuilder()
+    std::filesystem::path vertexPath =
+        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.vert";
+    std::filesystem::path fragmentPath =
+        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
+
+    auto vertexShader =
+        std::make_shared<GLVertexShader>(vertexPath);
+    auto fragmentShader =
+        std::make_shared<GLFragmentShader>(fragmentPath);
+    auto shaderProgram =
+        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
+
+    // TODO(sholloway): Default GLTexturePane or optional PaneProps
+    PaneProps paneProps = PaneProps {
+        .width = 500,
+        .height = 500,
+        .xOffset = 0,
+        .yOffset = 0
+    };
+
+    auto topPane =
+        std::make_shared<GLTexturePane>(PaneProps(), shaderProgram);
+
+    auto windowView = WindowView::Builder()
         .withTitle("My window")
         .withDimensions(500, 500)
+        .withTopPane(topPane)
         .build();
 
     frameController.addProcess(windowView.get(),
         FrameController::Privilege::HIGH,
         "WindowView");
-
-
-    std::filesystem::path fragmentPath =
-        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
-
-    PaneProps paneProps = windowView->getTopPaneProps();
-    GLVertexShader noOpVertex = GLVertexShader::noOpShader();
-
-    std::shared_ptr<GLVertexShader> vertexShader =
-        std::shared_ptr<GLVertexShader>(&noOpVertex);
-    std::shared_ptr<GLFragmentShader> fragmentShader =
-        std::make_shared<GLFragmentShader>(fragmentPath);
-    std::shared_ptr<GLShaderProgram> shaderProgram =
-        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
-
-    std::shared_ptr<GLTexturePane> topPane =
-        std::make_shared<GLTexturePane>(paneProps, shaderProgram);
-
-    windowView->setTopPane(topPane);
 
     frameController.setFrameCap(30);
     frameController.run();

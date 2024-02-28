@@ -9,6 +9,7 @@
 #include <string>
 #include <vector>
 
+#include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
 #include <Basil/Frame.hpp>
 
@@ -42,7 +43,8 @@ struct WindowProps {
  * public facade.
  */
 class WindowView :  public IFrameProcess,
-                    private BasilContextDependency {
+                    private BasilContextDependency,
+                    public IBuildable<WindowView> {
  public:
     explicit WindowView(std::optional<WindowProps> windowProps = std::nullopt);
     ~WindowView();
@@ -65,8 +67,22 @@ class WindowView :  public IFrameProcess,
     /** @brief Update window size & title. */
     void setWindowProps(WindowProps newWindowProps);
 
+    /** @brief Update window size. */
+    void setWindowSize(int width, int height);
+
+    /** @brief Update window title. */
+    void setWindowTitle(const std::string& title);
+
     /** @returns Window settings as struct. */
     WindowProps getWindowProps () { return windowProps; }
+
+    // TODO(sholloway): Documentation for builder
+    class Builder : public IBuilder<WindowView> {
+     public:
+        Builder& withDimensions(int width, int height);
+        Builder& withTitle(const std::string& title);
+        Builder& withTopPane(std::shared_ptr<IPane> topPane);
+    };
 
 #ifndef TEST_BUILD
 
@@ -74,8 +90,7 @@ class WindowView :  public IFrameProcess,
 #endif
     WindowProps windowProps;
 
-    GLFWwindow* glfwWindow = nullptr;
-    GLFWwindow* createGLFWWindow();
+    GLFWwindow* glfwWindow;
 
     void draw();
     void closeWindow();

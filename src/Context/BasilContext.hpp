@@ -4,6 +4,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <memory>
+
 #include <Basil/Logging.hpp>
 
 namespace basil {
@@ -29,6 +31,8 @@ class BasilContext {
         return instance;
     }
 
+    static GLFWwindow* getGLFWWindow();
+
 #ifdef TEST_BUILD
 
  public:
@@ -42,6 +46,8 @@ class BasilContext {
         "Uninitialized BasilGL Window";
 
     inline static bool hasInitialized = false;
+
+    GLFWwindow* glfwWindow = nullptr;
 
     void initializeGLFWContext();
     void initializeGLEWContext();
