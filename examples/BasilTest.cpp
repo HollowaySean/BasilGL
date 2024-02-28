@@ -1,4 +1,3 @@
-#include <Basil/Application.hpp>
 #include <Basil/Frame.hpp>
 #include <Basil/Window.hpp>
 
@@ -11,7 +10,6 @@ using basil::GLTexturePane;
 using basil::PaneProps;
 using basil::WindowView;
 using basil::MetricsReporter;
-using basil::WindowBuilder;
 
 /**
  * @brief Entry point function.
