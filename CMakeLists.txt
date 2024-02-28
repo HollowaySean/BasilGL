@@ -110,6 +110,7 @@ else()
 
     # TODO(sholloway): Make platform independent
     set( GLFW_BUILD_X11 ON CACHE BOOL "Build for X11 Unix")
+    set( GLFW_BUILD_WAYLAND OFF CACHE BOOL "Do not build for Wayland Unix")
 
     set( GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only")
     set( GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only")
