@@ -4,13 +4,16 @@
 
 #include <Basil/Window.hpp>
 
+#include "TestUtils.hpp"
+
+using basil::BasilContextLock;
 using basil::Logger;
 using basil::LogLevel;
 using basil::GLShader;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 
-TEST_CASE("Window_GLShader_getShaderFromFile") {
+TEST_CASE("Window_GLShader_getShaderFromFile") { BASIL_LOCK_TEST
     GLShader shader = GLShader();
     std::filesystem::path testPath = TEST_DIR;
 
@@ -37,7 +40,7 @@ TEST_CASE("Window_GLShader_getShaderFromFile") {
     }
 }
 
-TEST_CASE("Window_GLShader_compileShader") {
+TEST_CASE("Window_GLShader_compileShader") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
     GLShader shader = GLShader();
 
@@ -57,7 +60,7 @@ TEST_CASE("Window_GLShader_compileShader") {
     }
 }
 
-TEST_CASE("Window_GLVertexShader_GLVertexShader") {
+TEST_CASE("Window_GLVertexShader_GLVertexShader") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
     logger.setLevel(LogLevel::DEBUG);
 
@@ -78,7 +81,7 @@ TEST_CASE("Window_GLVertexShader_GLVertexShader") {
     }
 }
 
-TEST_CASE("Window_GLVertexShader_noOpShader") {
+TEST_CASE("Window_GLVertexShader_noOpShader") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
     logger.setLevel(LogLevel::DEBUG);
 
@@ -97,7 +100,7 @@ TEST_CASE("Window_GLVertexShader_noOpShader") {
     }
 }
 
-TEST_CASE("Window_GLFragmentShader_GLFragmentShader") {
+TEST_CASE("Window_GLFragmentShader_GLFragmentShader") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
     logger.setLevel(LogLevel::DEBUG);
 

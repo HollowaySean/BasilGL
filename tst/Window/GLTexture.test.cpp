@@ -2,6 +2,9 @@
 
 #include <Basil/Window.hpp>
 
+#include "TestUtils.hpp"
+
+using basil::BasilContextLock;
 using basil::GLTexture;
 using basil::GLTextureProps;
 
@@ -17,7 +20,7 @@ GLTextureProps props = {
 std::vector<float> floatData { 1.0f };
 std::vector<int> intData { 5 };
 
-TEST_CASE("Window_GLTexture_GLTexture") {
+TEST_CASE("Window_GLTexture_GLTexture") { BASIL_LOCK_TEST
     GLTexture<float> firstTexture = GLTexture<float>(
         floatData, props);
     GLTexture<int> secondTexture = GLTexture<int>(
@@ -33,7 +36,7 @@ TEST_CASE("Window_GLTexture_GLTexture") {
     }
 }
 
-TEST_CASE("Window_GLTexture_update") {
+TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
     GLTexture<float> texture = GLTexture<float>(
         floatData, props);
     texture.update();

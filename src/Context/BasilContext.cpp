@@ -20,21 +20,24 @@ void BasilContext::terminate() {
 }
 
 void BasilContext::initializeGLFWContext() {
+    // Initialize log errors, and update flag
     GLenum errorCode = glfwInit();
     logGLFWError(errorCode);
+    hasInitialized &= errorCode;
 
+    // Create non-visible window and attach context
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, BASIL_GLFW_VERSION_MAJOR);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, BASIL_GLFW_VERSION_MINOR);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Create non-visible window and attach context
     glfwWindowHint(GLFW_VISIBLE, false);
-    GLFWwindow* newWindow = glfwCreateWindow(
+    glfwWindow = glfwCreateWindow(
         1, 1, WINDOW_TITLE, NULL, NULL);
-    glfwMakeContextCurrent(newWindow);
+    glfwMakeContextCurrent(glfwWindow);
 
-    // Save success/failure flag
-    hasInitialized &= errorCode;
+    // Save success/failure flag and log errors
+    hasInitialized &= glfwWindow != nullptr;
+    logGLFWWindowError(glfwWindow);
 }
 
 void BasilContext::initializeGLEWContext() {
@@ -62,6 +65,17 @@ void BasilContext::logGLFWError(GLenum errorCode) {
     }
 }
 
+void BasilContext::logGLFWWindowError(const GLFWwindow* window) {
+    Logger& logger = Logger::get();
+
+    if (window) {
+        logger.log("GLFW window created successfully.", LogLevel::INFO);
+    } else {
+        logger.log("GLFW failed to create window.", LogLevel::ERROR);
+        BasilContext::terminate();
+    }
+}
+
 void BasilContext::logGLEWError(GLenum errorCode) {
     Logger& logger = Logger::get();
 
@@ -74,6 +88,40 @@ void BasilContext::logGLEWError(GLenum errorCode) {
 
         logger.log("GLEW failed to initialize. Error: "
             + errorMessageString, LogLevel::ERROR);
+    }
+}
+
+GLFWwindow* BasilContext::getGLFWWindow() {
+    if (!hasInitialized) {
+        initialize();
+    }
+
+    const BasilContext& instance = get();
+    return instance.glfwWindow;
+}
+
+void BasilContext::lock(u_int64_t contextID) {
+    spinIfLocked(contextID);
+
+    isLocked = true;
+    lockID = contextID;
+}
+
+void BasilContext::unlock(u_int64_t contextID) {
+    if (lockID != contextID) return;
+
+    isLocked = false;
+    lockID = 0;
+}
+
+void BasilContext::spinIfLocked(u_int64_t contextID) {
+    int spinTime = 0;
+    while (isLocked &&
+            lockID != contextID &&
+            spinTime < timeoutInMS) {
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(spinTimeInMS));
+        spinTime += spinTimeInMS;
     }
 }
 

@@ -3,10 +3,13 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
+#include <memory>
 #include <optional>
 #include <string>
 #include <vector>
 
+#include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
 #include <Basil/Frame.hpp>
 
@@ -30,8 +33,13 @@ struct WindowProps {
 
     inline static const std::string DEFAULT_TITLE = "Basil";
 
+    /** @brief Title to display in OS window banner.  */
     std::string title = DEFAULT_TITLE;
+
+    /** @brief Width of window in screen coordinates. */
     int width = DEFAULT_WIDTH;
+
+    /** @brief Height of window in screen coordinates. */
     int height = DEFAULT_HEIGHT;
 };
 
@@ -40,8 +48,10 @@ struct WindowProps {
  * public facade.
  */
 class WindowView :  public IFrameProcess,
-                    private BasilContextDependency {
+                    public IBuildable<WindowView>,
+                    private IBasilContextDependency {
  public:
+    /** @param windowProps Optional struct containing window options. */
     explicit WindowView(std::optional<WindowProps> windowProps = std::nullopt);
     ~WindowView();
 
@@ -55,10 +65,36 @@ class WindowView :  public IFrameProcess,
     void onLoop() override;
 
     /** @brief Sets top-level pane for window. */
-    void setTopPane(IPane* newTopPane);
+    void setTopPane(std::shared_ptr<IPane> newTopPane);
 
     /** @returns PaneProps object for top pane. */
     PaneProps getTopPaneProps();
+
+    /** @brief Update window size & title. */
+    void setWindowProps(WindowProps newWindowProps);
+
+    /** @brief Update window size. */
+    void setWindowSize(int width, int height);
+
+    /** @brief Update window title. */
+    void setWindowTitle(const std::string& title);
+
+    /** @returns Window settings as struct. */
+    WindowProps getWindowProps () { return windowProps; }
+
+    /** @class WindowView::Builder
+     *  Builder pattern to construct WindowView */
+    class Builder : public IBuilder<WindowView> {
+     public:
+        /** @brief Set height and width of window. */
+        Builder& withDimensions(int width, int height);
+
+        /** @brief Set title of window. */
+        Builder& withTitle(const std::string& title);
+
+        /** @brief Set top IPane object for window. */
+        Builder& withTopPane(std::shared_ptr<IPane> topPane);
+    };
 
 #ifndef TEST_BUILD
 
@@ -66,8 +102,7 @@ class WindowView :  public IFrameProcess,
 #endif
     WindowProps windowProps;
 
-    GLFWwindow* glfwWindow = nullptr;
-    GLFWwindow* createGLFWWindow();
+    GLFWwindow* glfwWindow;
 
     void draw();
     void closeWindow();
@@ -76,7 +111,7 @@ class WindowView :  public IFrameProcess,
     void setCallbacks();
     void onResize(int width, int height);
 
-    IPane* topPane = nullptr;
+    std::shared_ptr<IPane> topPane;
 
     BasilContext& context = BasilContext::get();
     Logger& logger = Logger::get();

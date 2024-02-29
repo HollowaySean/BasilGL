@@ -13,7 +13,7 @@
 namespace basil {
 
 /** @brief Container class for OpenGL shader. */
-class GLShader : private BasilContextConsumer {
+class GLShader : private IBasilContextConsumer {
  public:
     /** @return ID value assigned from OpenGL. */
     virtual GLuint getID() const { return ID; }

@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 
+#include <memory>
 #include <string>
 
 #include "GLShader.hpp"
@@ -12,7 +13,7 @@
 namespace basil {
 
 /** @brief Container class for compiled and linked shader program. */
-class GLShaderProgram : private BasilContextConsumer {
+class GLShaderProgram : private IBasilContextConsumer {
  public:
     /**
      * @brief Construct a new GLShaderProgram object.
@@ -21,8 +22,8 @@ class GLShaderProgram : private BasilContextConsumer {
      * @param fragmentShader  Const reference to GLFragmentShader object.
      */
     GLShaderProgram(
-      const GLVertexShader& vertexShader,
-      const GLFragmentShader& fragmentShader);
+      std::shared_ptr<GLVertexShader> vertexShader,
+      std::shared_ptr<GLFragmentShader> fragmentShader);
 
     /** @brief Deconstructor tears down OpenGL memory usage. */
     ~GLShaderProgram();
@@ -61,7 +62,9 @@ class GLShaderProgram : private BasilContextConsumer {
 
     void compile();
     GLuint ID;
-    GLuint vertexID, fragmentID;
+
+    std::shared_ptr<GLVertexShader> vertexShader;
+    std::shared_ptr<GLFragmentShader> fragmentShader;
 };
 
 }  // namespace basil

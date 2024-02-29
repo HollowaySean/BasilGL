@@ -30,7 +30,7 @@ struct GLTextureProps {
 /**
  * @brief       Generic interface for template class.
  */
-class IGLTexture : private BasilContextConsumer {
+class IGLTexture : private IBasilContextConsumer {
  public:
     /** @brief Flushes data from source to texture. */
     virtual void update() const = 0;
@@ -38,7 +38,7 @@ class IGLTexture : private BasilContextConsumer {
     GLuint getID() { return textureId; }
 
     /** @brief Struct containing texture properties. */
-    const GLTextureProps &props;
+    GLTextureProps props;
 
     /** @brief Destructor to tear down OpenGL assigned memory. */
     virtual ~IGLTexture();

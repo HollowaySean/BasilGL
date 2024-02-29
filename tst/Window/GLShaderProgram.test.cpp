@@ -2,6 +2,9 @@
 
 #include <Basil/Window.hpp>
 
+#include "TestUtils.hpp"
+
+using basil::BasilContextLock;
 using basil::Logger;
 using basil::LogLevel;
 using basil::GLVertexShader;
@@ -45,7 +48,8 @@ void verifyUniforms(GLShaderProgram shaderProgram,
     }
 }
 
-template<unsigned int N> void getUniform(GLint ID, GLint location, bool* returnValue) {
+template<unsigned int N> void getUniform(
+        GLint ID, GLint location, bool* returnValue) {
     GLint returnValueInt[N];
     glGetUniformiv(ID, location, returnValueInt);
     for (int i = 0; i < N; i++) {
@@ -53,32 +57,38 @@ template<unsigned int N> void getUniform(GLint ID, GLint location, bool* returnV
     }
 }
 
-template<unsigned int N> void getUniform(GLint ID, GLint location, int* returnValue) {
+template<unsigned int N> void getUniform(
+        GLint ID, GLint location, int* returnValue) {
     glGetUniformiv(ID, location, returnValue);
 }
 
-template<unsigned int N> void getUniform(GLint ID, GLint location, uint* returnValue) {
+template<unsigned int N> void getUniform(
+        GLint ID, GLint location, uint* returnValue) {
     glGetUniformuiv(ID, location, returnValue);
 }
 
-template<unsigned int N> void getUniform(GLint ID, GLint location, float* returnValue) {
+template<unsigned int N> void getUniform(
+        GLint ID, GLint location, float* returnValue) {
     glGetUniformfv(ID, location, returnValue);
 }
 
-TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
+TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
     std::filesystem::path testPath = TEST_DIR;
 
     SECTION("Compiles shader program.") {
         std::filesystem::path filePath =
             std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
-        GLVertexShader vertexShader = GLVertexShader(filePath);
+        std::shared_ptr<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(filePath);
+
         filePath =
             std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
-        GLFragmentShader fragmentShader = GLFragmentShader(filePath);
+        std::shared_ptr<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(filePath);
 
-        GLShaderProgram shaderProgram = GLShaderProgram(
-            vertexShader, fragmentShader);
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
 
         std::string successMessage =
             "Shader program compiled successfully.";
@@ -88,28 +98,31 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
     }
 
     SECTION("Logs error for failed compilation.") {
-        GLVertexShader vertexShader = GLVertexShader(
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
-        GLFragmentShader fragmentShader = GLFragmentShader(
-            std::filesystem::path(""));
+        std::shared_ptr<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
+        std::shared_ptr<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(
+                std::filesystem::path(""));
 
-        GLShaderProgram shaderProgram = GLShaderProgram(
-            vertexShader, fragmentShader);
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
 
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_use") {
+TEST_CASE("Window_GLShaderProgram_use") { BASIL_LOCK_TEST
     SECTION("Sets current program to shader program ID") {
-        std::filesystem::path filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
-        GLVertexShader vertexShader = GLVertexShader(filePath);
-        filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
-        GLFragmentShader fragmentShader = GLFragmentShader(filePath);
-        GLShaderProgram shaderProgram = GLShaderProgram(
-            vertexShader, fragmentShader);
+        std::shared_ptr<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
+        std::shared_ptr<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.frag");
+
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
 
         shaderProgram.use();
 
@@ -120,52 +133,68 @@ TEST_CASE("Window_GLShaderProgram_use") {
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_setUniform") {
+TEST_CASE("Window_GLShaderProgram_setUniform") { BASIL_LOCK_TEST
     SECTION("Sets uniform in shader program") {
-        std::filesystem::path filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
-        GLVertexShader vertexShader = GLVertexShader(filePath);
-        filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
-        GLFragmentShader fragmentShader = GLFragmentShader(filePath);
+        std::shared_ptr<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
+        std::shared_ptr<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.frag");
 
-        GLShaderProgram shaderProgram = GLShaderProgram(
-            vertexShader, fragmentShader);
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
         shaderProgram.use();
 
-        verifyUniforms<bool,  1>(shaderProgram, "myUniformBool", testBool);
-        verifyUniforms<int,   1>(shaderProgram, "myUniformInt",  testInt);
-        verifyUniforms<uint,  1>(shaderProgram, "myUniformUnsignedInt", testUint);
-        verifyUniforms<float, 1>(shaderProgram, "myUniformFloat", testFloat);
+        verifyUniforms<bool,  1>(shaderProgram,
+            "myUniformBool", testBool);
+        verifyUniforms<int,   1>(shaderProgram,
+            "myUniformInt",  testInt);
+        verifyUniforms<uint,  1>(shaderProgram,
+            "myUniformUnsignedInt", testUint);
+        verifyUniforms<float, 1>(shaderProgram,
+            "myUniformFloat", testFloat);
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_setUniformVector") {
+TEST_CASE("Window_GLShaderProgram_setUniformVector") { BASIL_LOCK_TEST
     SECTION("Sets uniform vector in shader program") {
-        std::filesystem::path filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
-        GLVertexShader vertexShader = GLVertexShader(filePath);
-        filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
-        GLFragmentShader fragmentShader = GLFragmentShader(filePath);
+        std::shared_ptr<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
+        std::shared_ptr<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(
+                std::filesystem::path(TEST_DIR) / "Window/assets/test.frag");
 
-        GLShaderProgram shaderProgram = GLShaderProgram(
-            vertexShader, fragmentShader);
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
         shaderProgram.use();
 
-        verifyUniforms<bool,  2>(shaderProgram, "myUniformBool2", testBool);
-        verifyUniforms<int,   2>(shaderProgram, "myUniformInt2",  testInt);
-        verifyUniforms<uint,  2>(shaderProgram, "myUniformUnsignedInt2", testUint);
-        verifyUniforms<float, 2>(shaderProgram, "myUniformFloat2", testFloat);
+        verifyUniforms<bool,  2>(shaderProgram,
+            "myUniformBool2", testBool);
+        verifyUniforms<int,   2>(shaderProgram,
+            "myUniformInt2",  testInt);
+        verifyUniforms<uint,  2>(shaderProgram,
+            "myUniformUnsignedInt2", testUint);
+        verifyUniforms<float, 2>(shaderProgram,
+            "myUniformFloat2", testFloat);
 
-        verifyUniforms<bool,  3>(shaderProgram, "myUniformBool3", testBool);
-        verifyUniforms<int,   3>(shaderProgram, "myUniformInt3",  testInt);
-        verifyUniforms<uint,  3>(shaderProgram, "myUniformUnsignedInt3", testUint);
-        verifyUniforms<float, 3>(shaderProgram, "myUniformFloat3", testFloat);
+        verifyUniforms<bool,  3>(shaderProgram,
+            "myUniformBool3", testBool);
+        verifyUniforms<int,   3>(shaderProgram,
+            "myUniformInt3",  testInt);
+        verifyUniforms<uint,  3>(shaderProgram,
+            "myUniformUnsignedInt3", testUint);
+        verifyUniforms<float, 3>(shaderProgram,
+            "myUniformFloat3", testFloat);
 
-        verifyUniforms<bool,  4>(shaderProgram, "myUniformBool4", testBool);
-        verifyUniforms<int,   4>(shaderProgram, "myUniformInt4",  testInt);
-        verifyUniforms<uint,  4>(shaderProgram, "myUniformUnsignedInt4", testUint);
-        verifyUniforms<float, 4>(shaderProgram, "myUniformFloat4", testFloat);
+        verifyUniforms<bool,  4>(shaderProgram,
+            "myUniformBool4", testBool);
+        verifyUniforms<int,   4>(shaderProgram,
+            "myUniformInt4",  testInt);
+        verifyUniforms<uint,  4>(shaderProgram,
+            "myUniformUnsignedInt4", testUint);
+        verifyUniforms<float, 4>(shaderProgram,
+            "myUniformFloat4", testFloat);
     }
 }

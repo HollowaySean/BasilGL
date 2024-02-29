@@ -3,6 +3,9 @@
 
 using basil::FrameController;
 using basil::FrameMetrics;
+using basil::GLVertexShader;
+using basil::GLFragmentShader;
+using basil::GLShaderProgram;
 using basil::GLTexturePane;
 using basil::PaneProps;
 using basil::WindowView;
@@ -27,19 +30,38 @@ int main(int argc, char** argv) {
         FrameController::Privilege::NONE,
         "MetricsReporter");
 
-    WindowView windowView = WindowView();
-    frameController.addProcess(&windowView,
-        FrameController::Privilege::HIGH,
-        "WindowView");
-
-
+    std::filesystem::path vertexPath =
+        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.vert";
     std::filesystem::path fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
 
-    PaneProps paneProps = windowView.getTopPaneProps();
-    GLTexturePane topPane = GLTexturePane(paneProps, fragmentPath);
+    auto vertexShader =
+        std::make_shared<GLVertexShader>(vertexPath);
+    auto fragmentShader =
+        std::make_shared<GLFragmentShader>(fragmentPath);
+    auto shaderProgram =
+        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
-    windowView.setTopPane(&topPane);
+    // TODO(sholloway): Default GLTexturePane or optional PaneProps
+    PaneProps paneProps = PaneProps {
+        .width = 500,
+        .height = 500,
+        .xOffset = 0,
+        .yOffset = 0
+    };
+
+    auto topPane =
+        std::make_shared<GLTexturePane>(PaneProps(), shaderProgram);
+
+    auto windowView = WindowView::Builder()
+        .withTitle("My window")
+        .withDimensions(500, 500)
+        .withTopPane(topPane)
+        .build();
+
+    frameController.addProcess(windowView.get(),
+        FrameController::Privilege::HIGH,
+        "WindowView");
 
     frameController.setFrameCap(30);
     frameController.run();

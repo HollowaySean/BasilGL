@@ -1,6 +1,8 @@
 #ifndef SRC_WINDOW_SPLITPANE_HPP_
 #define SRC_WINDOW_SPLITPANE_HPP_
 
+#include <memory>
+
 #include "IPane.hpp"
 
 namespace basil {
@@ -25,10 +27,10 @@ class SplitPane : public IPane {
     void onResize(int newWidth, int newHeight) override;
 
     /** @param pane Sets upper/left pane. */
-    void setFirstPane(IPane* pane);
+    void setFirstPane(std::shared_ptr<IPane> pane);
 
     /** @param pane Sets lower/right pane. */
-    void setSecondPane(IPane* pane);
+    void setSecondPane(std::shared_ptr<IPane> pane);
 
     /** @param extent Size of first pane, in pixels. */
     void resizeToPixelValue(int extent);
@@ -64,8 +66,8 @@ class SplitPane : public IPane {
     void updateSize();
 
     PaneOrientation orientation;
-    IPane* firstPane;
-    IPane* secondPane;
+    std::shared_ptr<IPane> firstPane;
+    std::shared_ptr<IPane> secondPane;
 
     int firstPaneExtent;
     int secondPaneExtent;

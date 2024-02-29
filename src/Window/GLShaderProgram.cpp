@@ -5,17 +5,17 @@
 namespace basil {
 
 GLShaderProgram::GLShaderProgram(
-    const GLVertexShader& vertexShader,
-    const GLFragmentShader& fragmentShader):
-        vertexID(vertexShader.getID()),
-        fragmentID(fragmentShader.getID()) {
+    std::shared_ptr<GLVertexShader> vertexShader,
+    std::shared_ptr<GLFragmentShader> fragmentShader):
+        vertexShader(vertexShader),
+        fragmentShader(fragmentShader) {
     this->compile();
 }
 
 void GLShaderProgram::compile() {
     ID = glCreateProgram();
-    glAttachShader(ID, vertexID);
-    glAttachShader(ID, fragmentID);
+    glAttachShader(ID, vertexShader->getID());
+    glAttachShader(ID, fragmentShader->getID());
     glLinkProgram(ID);
 
     int success;
@@ -65,8 +65,8 @@ template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         bool value1, bool value2, bool value3) {
     GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform3i(location,
-        static_cast<int>(value1), static_cast<int>(value2), static_cast<int>(value3));
+    glUniform3i(location, static_cast<int>(value1),
+        static_cast<int>(value2), static_cast<int>(value3));
 }
 
 template<>

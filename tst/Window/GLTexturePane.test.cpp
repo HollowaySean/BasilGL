@@ -2,6 +2,9 @@
 
 #include <Basil/Window.hpp>
 
+#include "TestUtils.hpp"
+
+using basil::BasilContextLock;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
@@ -12,16 +15,21 @@ using basil::GLTexturePane;
 using basil::PaneProps;
 using basil::IPane;
 
+template<class T>
+using s_p = std::shared_ptr<T>;
+
 std::filesystem::path vertPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
 std::filesystem::path fragPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
 
-TEST_CASE("Window_GLTexturePane_GLTexturePane") {
-    GLVertexShader vertexShader = GLVertexShader(vertPath);
-    GLFragmentShader fragmentShader = GLFragmentShader(fragPath);
-    GLShaderProgram shaderProgram = GLShaderProgram(
-        vertexShader, fragmentShader);
+TEST_CASE("Window_GLTexturePane_GLTexturePane") { BASIL_LOCK_TEST
+    s_p<GLVertexShader> vertexShader =
+        std::make_shared<GLVertexShader>(vertPath);
+    s_p<GLFragmentShader> fragmentShader =
+        std::make_shared<GLFragmentShader>(fragPath);
+    s_p<GLShaderProgram> shaderProgram =
+        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
     PaneProps props = {
         .width = 200,
@@ -38,25 +46,15 @@ TEST_CASE("Window_GLTexturePane_GLTexturePane") {
         REQUIRE(pane.vertexBufferID > 0);
         REQUIRE(pane.elementBufferID > 0);
     }
-
-    SECTION("Creates pane from file") {
-        std::filesystem::path filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
-
-        GLTexturePane pane = GLTexturePane(
-            props, filePath);
-
-        REQUIRE(pane.vertexAttributeID > 0);
-        REQUIRE(pane.vertexBufferID > 0);
-        REQUIRE(pane.elementBufferID > 0);
-    }
 }
 
-TEST_CASE("Window_GLTexturePane_addTexture") {
-    GLVertexShader vertexShader = GLVertexShader(vertPath);
-    GLFragmentShader fragmentShader = GLFragmentShader(fragPath);
-    GLShaderProgram shaderProgram = GLShaderProgram(
-        vertexShader, fragmentShader);
+TEST_CASE("Window_GLTexturePane_addTexture") { BASIL_LOCK_TEST
+    s_p<GLVertexShader> vertexShader =
+        std::make_shared<GLVertexShader>(vertPath);
+    s_p<GLFragmentShader> fragmentShader =
+        std::make_shared<GLFragmentShader>(fragPath);
+    s_p<GLShaderProgram> shaderProgram =
+        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
     GLTextureProps textureProps = {
         .name = "textureName",
@@ -76,7 +74,8 @@ TEST_CASE("Window_GLTexturePane_addTexture") {
         .yOffset = 0
     };
 
-    GLTexturePane pane = GLTexturePane(paneProps, shaderProgram);
+    GLTexturePane pane = GLTexturePane(
+        paneProps, shaderProgram);
 
     SECTION("Adds texture to list") {
         pane.addTexture(&texture);
@@ -86,11 +85,13 @@ TEST_CASE("Window_GLTexturePane_addTexture") {
     }
 }
 
-TEST_CASE("Window_GLTexturePane_draw") {
-    GLVertexShader vertexShader = GLVertexShader(vertPath);
-    GLFragmentShader fragmentShader = GLFragmentShader(fragPath);
-    GLShaderProgram shaderProgram = GLShaderProgram(
-        vertexShader, fragmentShader);
+TEST_CASE("Window_GLTexturePane_draw") { BASIL_LOCK_TEST
+    s_p<GLVertexShader> vertexShader =
+        std::make_shared<GLVertexShader>(vertPath);
+    s_p<GLFragmentShader> fragmentShader =
+        std::make_shared<GLFragmentShader>(fragPath);
+    s_p<GLShaderProgram> shaderProgram =
+        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
     PaneProps paneProps = {
         .width = 20,
@@ -99,7 +100,8 @@ TEST_CASE("Window_GLTexturePane_draw") {
         .yOffset = 0
     };
 
-    GLTexturePane pane = GLTexturePane(paneProps, shaderProgram);
+    GLTexturePane pane = GLTexturePane(
+        paneProps, shaderProgram);
 
     GLTextureProps textureProps = {
         .name = "textureName",
@@ -128,7 +130,7 @@ TEST_CASE("Window_GLTexturePane_draw") {
         GLint ID;
         glGetIntegerv(GL_CURRENT_PROGRAM, &ID);
 
-        REQUIRE(pane.shaderProgram.getID() == ID);
+        REQUIRE(pane.shaderProgram->getID() == ID);
     }
 
     SECTION("Binds textures in textureList") {
