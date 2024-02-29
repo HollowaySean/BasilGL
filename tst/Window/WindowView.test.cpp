@@ -3,7 +3,10 @@
 #include <Basil/Context.hpp>
 #include <Basil/Window.hpp>
 
+#include "TestUtils.hpp"
+
 using basil::BasilContext;
+using basil::BasilContextLock;
 using basil::Logger;
 using basil::LogLevel;
 using basil::IPane;
@@ -25,7 +28,7 @@ class TestPane : public IPane {
     bool didDraw = false;
 };
 
-TEST_CASE("Window_WindowView_WindowView") {
+TEST_CASE("Window_WindowView_WindowView") { BASIL_LOCK_TEST
     SECTION("Initializes GLFW context") {
         BasilContext::terminate();
 
@@ -67,7 +70,7 @@ TEST_CASE("Window_WindowView_getTopPaneProps") {
     }
 }
 
-TEST_CASE("Window_WindowView_setWindowProps") {
+TEST_CASE("Window_WindowView_setWindowProps") { BASIL_LOCK_TEST
     SECTION("Sets windowProps to new values") {
         WindowView window = WindowView();
         WindowProps newProps = WindowProps {
@@ -84,7 +87,7 @@ TEST_CASE("Window_WindowView_setWindowProps") {
     }
 }
 
-TEST_CASE("Window_WindowView_setWindowTitle") {
+TEST_CASE("Window_WindowView_setWindowTitle") { BASIL_LOCK_TEST
     SECTION("Sets GLFW window title") {
         WindowView window = WindowView();
 
@@ -98,8 +101,8 @@ TEST_CASE("Window_WindowView_setWindowTitle") {
     }
 }
 
-TEST_CASE("Window_WindowView_setWindowSize") {
-    SECTION("Sets GLFW window title") {
+TEST_CASE("Window_WindowView_setWindowSize") { BASIL_LOCK_TEST
+    SECTION("Sets GLFW window dimensions") {
         WindowView window = WindowView();
 
         int newWidth = 55;
@@ -109,12 +112,16 @@ TEST_CASE("Window_WindowView_setWindowSize") {
         REQUIRE(window.windowProps.width == newWidth);
         REQUIRE(window.windowProps.height == newHeight);
 
-        // TODO(sholloway): Reinstate after
-        //  achieving thread safety for GLFW context
-        // int actualWidth, actualHeight;
-        // glfwGetWindowSize(window.glfwWindow, &actualWidth, &actualHeight);
-        // REQUIRE(actualWidth == newWidth);
-        // REQUIRE(actualHeight == newHeight);
+        // glfwGetWindowSize seems to require at least
+        //  one frame to pass before update
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(100));
+
+        int actualWidth, actualHeight;
+        glfwGetWindowSize(window.glfwWindow, &actualWidth, &actualHeight);
+
+        REQUIRE(actualWidth == newWidth);
+        REQUIRE(actualHeight == newHeight);
     }
 }
 
@@ -147,6 +154,8 @@ TEST_CASE("Window_WindowView_onLoop") {
     }
 
     SECTION("Closes window if requested by GLFW") {
+        BASIL_LOCK_TEST
+
         WindowView window = WindowView();
 
         glfwSetWindowShouldClose(window.glfwWindow, GLFW_TRUE);
@@ -159,7 +168,7 @@ TEST_CASE("Window_WindowView_onLoop") {
     }
 }
 
-TEST_CASE("Window_WindowView_onStart") {
+TEST_CASE("Window_WindowView_onStart") { BASIL_LOCK_TEST
     SECTION("Makes window visible") {
         WindowView window = WindowView();
 
@@ -199,7 +208,7 @@ TEST_CASE("Window_WindowView_onResize") {
     }
 }
 
-TEST_CASE("Window_WindowView_resizeCallback") {
+TEST_CASE("Window_WindowView_resizeCallback") { BASIL_LOCK_TEST
     SECTION("Calls resize function on window") {
         WindowView window = WindowView();
         WindowView::resizeCallback(window.glfwWindow, 60, 30);
@@ -209,7 +218,7 @@ TEST_CASE("Window_WindowView_resizeCallback") {
     }
 }
 
-TEST_CASE("Window_WindowView_Builder") {
+TEST_CASE("Window_WindowView_Builder") { BASIL_LOCK_TEST
     SECTION("Builds WindowView object") {
         std::string title = "testTitle";
         int width = 54;

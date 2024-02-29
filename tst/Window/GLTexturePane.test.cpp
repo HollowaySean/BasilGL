@@ -2,6 +2,9 @@
 
 #include <Basil/Window.hpp>
 
+#include "TestUtils.hpp"
+
+using basil::BasilContextLock;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
@@ -20,7 +23,7 @@ std::filesystem::path vertPath =
 std::filesystem::path fragPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
 
-TEST_CASE("Window_GLTexturePane_GLTexturePane") {
+TEST_CASE("Window_GLTexturePane_GLTexturePane") { BASIL_LOCK_TEST
     s_p<GLVertexShader> vertexShader =
         std::make_shared<GLVertexShader>(vertPath);
     s_p<GLFragmentShader> fragmentShader =
@@ -45,7 +48,7 @@ TEST_CASE("Window_GLTexturePane_GLTexturePane") {
     }
 }
 
-TEST_CASE("Window_GLTexturePane_addTexture") {
+TEST_CASE("Window_GLTexturePane_addTexture") { BASIL_LOCK_TEST
     s_p<GLVertexShader> vertexShader =
         std::make_shared<GLVertexShader>(vertPath);
     s_p<GLFragmentShader> fragmentShader =
@@ -82,7 +85,7 @@ TEST_CASE("Window_GLTexturePane_addTexture") {
     }
 }
 
-TEST_CASE("Window_GLTexturePane_draw") {
+TEST_CASE("Window_GLTexturePane_draw") { BASIL_LOCK_TEST
     s_p<GLVertexShader> vertexShader =
         std::make_shared<GLVertexShader>(vertPath);
     s_p<GLFragmentShader> fragmentShader =

@@ -2,11 +2,15 @@
 
 #include <Basil/Context.hpp>
 
+using basil::BasilContextLock;
 using basil::BasilContext;
 using basil::Logger;
 using basil::LogLevel;
 
 TEST_CASE("Context_BasilContext_logGLFWError") {
+    auto lock = BasilContextLock(std::hash<std::string>{}(
+        Catch::getResultCapture().getCurrentTestName()));
+
     Logger& logger = Logger::get();
 
     SECTION("Logs info on success") {
@@ -26,6 +30,9 @@ TEST_CASE("Context_BasilContext_logGLFWError") {
 }
 
 TEST_CASE("Context_BasilContext_logGLFWWindowError") {
+    auto lock = BasilContextLock(std::hash<std::string>{}(
+        Catch::getResultCapture().getCurrentTestName()));
+
     Logger& logger = Logger::get();
 
     SECTION("Logs info on success") {
@@ -54,6 +61,9 @@ TEST_CASE("Context_BasilContext_logGLFWWindowError") {
 }
 
 TEST_CASE("Context_BasilContext_logGLEWError") {
+    auto lock = BasilContextLock(std::hash<std::string>{}(
+        Catch::getResultCapture().getCurrentTestName()));
+
     Logger& logger = Logger::get();
 
     SECTION("Logs info on success") {

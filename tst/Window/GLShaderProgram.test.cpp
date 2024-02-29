@@ -2,6 +2,9 @@
 
 #include <Basil/Window.hpp>
 
+#include "TestUtils.hpp"
+
+using basil::BasilContextLock;
 using basil::Logger;
 using basil::LogLevel;
 using basil::GLVertexShader;
@@ -69,7 +72,7 @@ template<unsigned int N> void getUniform(
     glGetUniformfv(ID, location, returnValue);
 }
 
-TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
+TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
     std::filesystem::path testPath = TEST_DIR;
 
@@ -109,7 +112,7 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") {
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_use") {
+TEST_CASE("Window_GLShaderProgram_use") { BASIL_LOCK_TEST
     SECTION("Sets current program to shader program ID") {
         std::shared_ptr<GLVertexShader> vertexShader =
             std::make_shared<GLVertexShader>(
@@ -130,7 +133,7 @@ TEST_CASE("Window_GLShaderProgram_use") {
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_setUniform") {
+TEST_CASE("Window_GLShaderProgram_setUniform") { BASIL_LOCK_TEST
     SECTION("Sets uniform in shader program") {
         std::shared_ptr<GLVertexShader> vertexShader =
             std::make_shared<GLVertexShader>(
@@ -154,7 +157,7 @@ TEST_CASE("Window_GLShaderProgram_setUniform") {
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_setUniformVector") {
+TEST_CASE("Window_GLShaderProgram_setUniformVector") { BASIL_LOCK_TEST
     SECTION("Sets uniform vector in shader program") {
         std::shared_ptr<GLVertexShader> vertexShader =
             std::make_shared<GLVertexShader>(

@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <thread>
 #include <memory>
 
 #include <Basil/Logging.hpp>
@@ -32,6 +33,39 @@ class BasilContext {
     }
 
     static GLFWwindow* getGLFWWindow();
+
+    // Spinlocking for multithreaded testing support
+    // TODO(sholloway): Clean this mess up
+    inline static bool isLocked = false;
+    inline static u_int64_t lockID = 0;
+
+    inline static int spinTimeInMS = 100;
+    inline static int timeoutInMS = 3000;
+
+    static void lock(u_int64_t contextID) {
+        spinIfLocked(contextID);
+
+        isLocked = true;
+        lockID = contextID;
+    }
+
+    static void unlock(u_int64_t contextID) {
+        if (lockID != contextID) return;
+
+        isLocked = false;
+        lockID = 0;
+    }
+
+    static void spinIfLocked(u_int64_t contextID = 0) {
+        int spinTime = 0;
+        while (isLocked &&
+                lockID != contextID &&
+                spinTime < timeoutInMS) {
+            std::this_thread::sleep_for(
+                std::chrono::milliseconds(spinTimeInMS));
+            spinTime += spinTimeInMS;
+        }
+    }
 
 #ifdef TEST_BUILD
 
