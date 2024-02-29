@@ -30,7 +30,7 @@ struct GLTextureProps {
 /**
  * @brief       Generic interface for template class.
  */
-class IGLTexture : private BasilContextConsumer {
+class IGLTexture : private IBasilContextConsumer {
  public:
     /** @brief Flushes data from source to texture. */
     virtual void update() const = 0;

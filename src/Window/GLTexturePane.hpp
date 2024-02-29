@@ -18,7 +18,8 @@ namespace basil {
  * @brief Pane which renders to screen at a given position,
  *  using shaders and textures provided.
 */
-class GLTexturePane : public IPane, private BasilContextConsumer {
+class GLTexturePane : public IPane,
+                      private IBasilContextConsumer {
  public:
     /**
      * @brief Creates GLTexturePane from existing GLShaderProgram.

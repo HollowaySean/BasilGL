@@ -13,7 +13,7 @@
 namespace basil {
 
 /** @brief Container class for compiled and linked shader program. */
-class GLShaderProgram : private BasilContextConsumer {
+class GLShaderProgram : private IBasilContextConsumer {
  public:
     /**
      * @brief Construct a new GLShaderProgram object.

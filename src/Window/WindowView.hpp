@@ -33,8 +33,13 @@ struct WindowProps {
 
     inline static const std::string DEFAULT_TITLE = "Basil";
 
+    /** @brief Title to display in OS window banner.  */
     std::string title = DEFAULT_TITLE;
+
+    /** @brief Width of window in screen coordinates. */
     int width = DEFAULT_WIDTH;
+
+    /** @brief Height of window in screen coordinates. */
     int height = DEFAULT_HEIGHT;
 };
 
@@ -43,9 +48,10 @@ struct WindowProps {
  * public facade.
  */
 class WindowView :  public IFrameProcess,
-                    private BasilContextDependency,
-                    public IBuildable<WindowView> {
+                    public IBuildable<WindowView>,
+                    private IBasilContextDependency {
  public:
+    /** @param windowProps Optional struct containing window options. */
     explicit WindowView(std::optional<WindowProps> windowProps = std::nullopt);
     ~WindowView();
 
@@ -76,11 +82,17 @@ class WindowView :  public IFrameProcess,
     /** @returns Window settings as struct. */
     WindowProps getWindowProps () { return windowProps; }
 
-    // TODO(sholloway): Documentation for builder
+    /** @class WindowView::Builder
+     *  Builder pattern to construct WindowView */
     class Builder : public IBuilder<WindowView> {
      public:
+        /** @brief Set height and width of window. */
         Builder& withDimensions(int width, int height);
+
+        /** @brief Set title of window. */
         Builder& withTitle(const std::string& title);
+
+        /** @brief Set top IPane object for window. */
         Builder& withTopPane(std::shared_ptr<IPane> topPane);
     };
 

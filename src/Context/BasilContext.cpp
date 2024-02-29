@@ -100,4 +100,29 @@ GLFWwindow* BasilContext::getGLFWWindow() {
     return instance.glfwWindow;
 }
 
+void BasilContext::lock(u_int64_t contextID) {
+    spinIfLocked(contextID);
+
+    isLocked = true;
+    lockID = contextID;
+}
+
+void BasilContext::unlock(u_int64_t contextID) {
+    if (lockID != contextID) return;
+
+    isLocked = false;
+    lockID = 0;
+}
+
+void BasilContext::spinIfLocked(u_int64_t contextID) {
+    int spinTime = 0;
+    while (isLocked &&
+            lockID != contextID &&
+            spinTime < timeoutInMS) {
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(spinTimeInMS));
+        spinTime += spinTimeInMS;
+    }
+}
+
 }  // namespace basil

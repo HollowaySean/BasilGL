@@ -32,40 +32,14 @@ class BasilContext {
         return instance;
     }
 
+    /** @return Pointer to GLFW window. */
     static GLFWwindow* getGLFWWindow();
 
-    // Spinlocking for multithreaded testing support
-    // TODO(sholloway): Clean this mess up
-    inline static bool isLocked = false;
-    inline static u_int64_t lockID = 0;
+    /** @brief Locks context for other consumers. */
+    static void lock(u_int64_t contextID);
 
-    inline static int spinTimeInMS = 100;
-    inline static int timeoutInMS = 3000;
-
-    static void lock(u_int64_t contextID) {
-        spinIfLocked(contextID);
-
-        isLocked = true;
-        lockID = contextID;
-    }
-
-    static void unlock(u_int64_t contextID) {
-        if (lockID != contextID) return;
-
-        isLocked = false;
-        lockID = 0;
-    }
-
-    static void spinIfLocked(u_int64_t contextID = 0) {
-        int spinTime = 0;
-        while (isLocked &&
-                lockID != contextID &&
-                spinTime < timeoutInMS) {
-            std::this_thread::sleep_for(
-                std::chrono::milliseconds(spinTimeInMS));
-            spinTime += spinTimeInMS;
-        }
-    }
+    /** @brief Unlocks context for other consumers. */
+    static void unlock(u_int64_t contextID);
 
 #ifdef TEST_BUILD
 
@@ -74,6 +48,16 @@ class BasilContext {
 
  private:
 #endif
+
+
+    static void spinIfLocked(u_int64_t contextID = 0);
+
+    inline static bool isLocked = false;
+    inline static u_int64_t lockID = 0;
+
+    inline static int spinTimeInMS = 100;
+    inline static int timeoutInMS = 1000;
+
     inline static const int BASIL_GLFW_VERSION_MAJOR = 4;
     inline static const int BASIL_GLFW_VERSION_MINOR = 5;
     inline static const char* WINDOW_TITLE =
