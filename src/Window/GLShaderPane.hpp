@@ -1,5 +1,5 @@
-#ifndef SRC_WINDOW_GLTEXTUREPANE_HPP_
-#define SRC_WINDOW_GLTEXTUREPANE_HPP_
+#ifndef SRC_WINDOW_GLSHADERPANE_HPP_
+#define SRC_WINDOW_GLSHADERPANE_HPP_
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -14,20 +14,20 @@
 namespace basil {
 
 /**
- * @class GLTexturePane
+ * @class GLShaderPane
  * @brief Pane which renders to screen at a given position,
  *  using shaders and textures provided.
 */
-class GLTexturePane : public IPane,
+class GLShaderPane :  public IPane,
                       private IBasilContextConsumer {
  public:
     /**
-     * @brief Creates GLTexturePane from existing GLShaderProgram.
+     * @brief Creates GLShaderPane from existing GLShaderProgram.
      *
      * @param paneProps     Pane size properties
      * @param shaderProgram GLShaderProgram object to render
     */
-    explicit GLTexturePane(
+    explicit GLShaderPane(
       const PaneProps& paneProps,
       std::shared_ptr<GLShaderProgram> shaderProgram)
         : vertexAttributeID(),
@@ -39,7 +39,7 @@ class GLTexturePane : public IPane,
           }
 
     /** @brief Destructor unbinds OpenGL-allocated memory. */
-    ~GLTexturePane();
+    ~GLShaderPane();
 
     /** @param newTexture Texture to pass to shader in each draw call. */
     void addTexture(IGLTexture* newTexture);
@@ -62,4 +62,4 @@ class GLTexturePane : public IPane,
 
 }  // namespace basil
 
-#endif  // SRC_WINDOW_GLTEXTUREPANE_HPP_
+#endif  // SRC_WINDOW_GLSHADERPANE_HPP_

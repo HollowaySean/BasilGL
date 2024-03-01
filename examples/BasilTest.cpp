@@ -6,7 +6,7 @@ using basil::FrameMetrics;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
-using basil::GLTexturePane;
+using basil::GLShaderPane;
 using basil::PaneProps;
 using basil::WindowView;
 using basil::MetricsReporter;
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
         .withDefaultVertexShader()
         .build();
 
-    // TODO(sholloway): Default GLTexturePane or optional PaneProps
+    // TODO(sholloway): Default GLShaderPane or optional PaneProps
     PaneProps paneProps = PaneProps {
         .width = 500,
         .height = 500,
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     };
 
     auto topPane =
-        std::make_shared<GLTexturePane>(PaneProps(), std::move(shaderProgram));
+        std::make_shared<GLShaderPane>(PaneProps(), std::move(shaderProgram));
 
     auto windowView = WindowView::Builder()
         .withTitle("My window")

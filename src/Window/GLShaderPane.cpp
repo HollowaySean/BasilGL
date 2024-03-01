@@ -1,14 +1,14 @@
-#include "GLTexturePane.hpp"
+#include "GLShaderPane.hpp"
 
 namespace basil {
 
-void GLTexturePane::setup() {
+void GLShaderPane::setup() {
     // Set up OpenGL
     createVertexObjects();
     createElementBuffer();
 }
 
-void GLTexturePane::addTexture(IGLTexture* newTexture) {
+void GLShaderPane::addTexture(IGLTexture* newTexture) {
     // Add texture to list
     textureList.push_back(newTexture);
 
@@ -18,7 +18,7 @@ void GLTexturePane::addTexture(IGLTexture* newTexture) {
     glUniform1f(location, 0);
 }
 
-void GLTexturePane::createVertexObjects() {
+void GLShaderPane::createVertexObjects() {
     // Create Vertex Attribute Object
     glGenVertexArrays(1, &vertexAttributeID);
     glBindVertexArray(vertexAttributeID);
@@ -46,7 +46,7 @@ void GLTexturePane::createVertexObjects() {
     glEnableVertexAttribArray(1);
 }
 
-void GLTexturePane::createElementBuffer() {
+void GLShaderPane::createElementBuffer() {
     // Copy indices into element buffer
     unsigned int indices[] = {
         0, 1, 3,
@@ -58,7 +58,7 @@ void GLTexturePane::createElementBuffer() {
         sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
-void const GLTexturePane::draw() {
+void const GLShaderPane::draw() {
     // Set current viewport
     glViewport(
         paneProps.xOffset,
@@ -79,7 +79,7 @@ void const GLTexturePane::draw() {
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-GLTexturePane::~GLTexturePane() {
+GLShaderPane::~GLShaderPane() {
     GLuint vertexArrays[] = { vertexAttributeID };
     glDeleteVertexArrays(1, vertexArrays);
 

@@ -11,7 +11,7 @@ using basil::GLShaderProgram;
 using basil::IGLTexture;
 using basil::GLTexture;
 using basil::GLTextureProps;
-using basil::GLTexturePane;
+using basil::GLShaderPane;
 using basil::PaneProps;
 using basil::IPane;
 
@@ -23,7 +23,7 @@ std::filesystem::path vertPath =
 std::filesystem::path fragPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
 
-TEST_CASE("Window_GLTexturePane_GLTexturePane") { BASIL_LOCK_TEST
+TEST_CASE("Window_GLShaderPane_GLShaderPane") { BASIL_LOCK_TEST
     s_p<GLVertexShader> vertexShader =
         std::make_shared<GLVertexShader>(vertPath);
     s_p<GLFragmentShader> fragmentShader =
@@ -39,7 +39,7 @@ TEST_CASE("Window_GLTexturePane_GLTexturePane") { BASIL_LOCK_TEST
     };
 
     SECTION("Creates pane from shader program") {
-        GLTexturePane pane = GLTexturePane(
+        GLShaderPane pane = GLShaderPane(
             props, shaderProgram);
 
         REQUIRE(pane.vertexAttributeID > 0);
@@ -48,7 +48,7 @@ TEST_CASE("Window_GLTexturePane_GLTexturePane") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLTexturePane_addTexture") { BASIL_LOCK_TEST
+TEST_CASE("Window_GLShaderPane_addTexture") { BASIL_LOCK_TEST
     s_p<GLVertexShader> vertexShader =
         std::make_shared<GLVertexShader>(vertPath);
     s_p<GLFragmentShader> fragmentShader =
@@ -74,7 +74,7 @@ TEST_CASE("Window_GLTexturePane_addTexture") { BASIL_LOCK_TEST
         .yOffset = 0
     };
 
-    GLTexturePane pane = GLTexturePane(
+    GLShaderPane pane = GLShaderPane(
         paneProps, shaderProgram);
 
     SECTION("Adds texture to list") {
@@ -85,7 +85,7 @@ TEST_CASE("Window_GLTexturePane_addTexture") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLTexturePane_draw") { BASIL_LOCK_TEST
+TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
     s_p<GLVertexShader> vertexShader =
         std::make_shared<GLVertexShader>(vertPath);
     s_p<GLFragmentShader> fragmentShader =
@@ -100,7 +100,7 @@ TEST_CASE("Window_GLTexturePane_draw") { BASIL_LOCK_TEST
         .yOffset = 0
     };
 
-    GLTexturePane pane = GLTexturePane(
+    GLShaderPane pane = GLShaderPane(
         paneProps, shaderProgram);
 
     GLTextureProps textureProps = {
