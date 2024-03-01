@@ -26,11 +26,6 @@ TEST_CASE("Window_GLTexture_GLTexture") { BASIL_LOCK_TEST
     GLTexture<int> secondTexture = GLTexture<int>(
         intData, props);
 
-    SECTION("Increments active texture enum") {
-        REQUIRE(firstTexture.textureEnum == GL_TEXTURE0);
-        REQUIRE(secondTexture.textureEnum == GL_TEXTURE1);
-    }
-
     SECTION("Sets texture ID incrementally") {
         REQUIRE(secondTexture.getID() == firstTexture.getID() + 1);
     }

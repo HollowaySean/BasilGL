@@ -7,9 +7,11 @@ using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
 using basil::GLShaderPane;
-using basil::PaneProps;
-using basil::WindowView;
 using basil::MetricsReporter;
+using basil::PaneProps;
+using basil::PaneOrientation;
+using basil::SplitPane;
+using basil::WindowView;
 
 /**
  * @brief Entry point function.
@@ -38,21 +40,27 @@ int main(int argc, char** argv) {
         .withDefaultVertexShader()
         .build();
 
-    // TODO(sholloway): Default GLShaderPane or optional PaneProps
-    PaneProps paneProps = PaneProps {
-        .width = 500,
-        .height = 500,
-        .xOffset = 0,
-        .yOffset = 0
-    };
-
     auto topPane =
         std::make_shared<GLShaderPane>(PaneProps(), std::move(shaderProgram));
+
+
+    auto secondProgram = GLShaderProgram::Builder()
+        .withFragmentShader(fragmentPath)
+        .withDefaultVertexShader()
+        .build();
+    auto secondPane =
+        std::make_shared<GLShaderPane>(PaneProps(), std::move(secondProgram));
 
     auto windowView = WindowView::Builder()
         .withTitle("My window")
         .withDimensions(500, 500)
-        .withTopPane(topPane)
+        .withTopPane(SplitPane::Builder()
+            .withFirstPane(topPane)
+            .withSecondPane(secondPane)
+            .withOrientation(PaneOrientation::VERTICAL)
+            .withGapWidth(5)
+            .withPaneExtentInPercent(66.6)
+            .build())
         .build();
 
     frameController.addProcess(windowView.get(),

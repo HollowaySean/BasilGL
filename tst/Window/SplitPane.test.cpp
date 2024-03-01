@@ -260,7 +260,7 @@ TEST_CASE("Window_SplitPane_resizeToPercentage") {
         REQUIRE(splitPane.getSecondPaneSizeInPixels() == 8);
     }
 
-    SECTION("Does nothing if extent out of bounds") {
+    SECTION("Clamps value if extent out of bounds") {
         SplitPane splitPane = SplitPane(
             paneProps, PaneOrientation::HORIZONTAL);
 
@@ -268,10 +268,10 @@ TEST_CASE("Window_SplitPane_resizeToPercentage") {
         splitPane.setSecondPane(secondPane);
 
         splitPane.resizeToPercentage(-5.f);
-        REQUIRE(firstPane->paneProps.width == 10);
+        REQUIRE(firstPane->paneProps.width == 0);
 
         splitPane.resizeToPercentage(120.f);
-        REQUIRE(firstPane->paneProps.width == 10);
+        REQUIRE(firstPane->paneProps.width == paneProps.width);
     }
 }
 

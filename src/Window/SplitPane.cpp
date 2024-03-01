@@ -2,10 +2,13 @@
 
 namespace basil {
 
-SplitPane::SplitPane(const PaneProps &paneProps, PaneOrientation orientation):
+SplitPane::SplitPane(): IPane(PaneProps()), orientation(HORIZONTAL) {
+    resizeToPercentage(50.f);
+    updateSize();
+}
+
+SplitPane::SplitPane(PaneProps paneProps, PaneOrientation orientation):
         IPane(paneProps),
-        firstPane(nullptr),
-        secondPane(nullptr),
         orientation(orientation),
         gapWidth(0) {
     // Default to even 50% split
@@ -23,11 +26,9 @@ void const SplitPane::draw() {
 }
 
 void SplitPane::onResize(int newWidth, int newHeight) {
-    float currentPercentage = getFirstPaneSizeAsPercentage();
-
     IPane::onResize(newWidth, newHeight);
 
-    resizeToPercentage(currentPercentage);
+    resizeToPercentage(percentageExtent);
 }
 
 void SplitPane::updateSize() {
@@ -76,29 +77,27 @@ void SplitPane::updateSize() {
 }
 
 void SplitPane::setFirstPane(std::shared_ptr<IPane> pane) {
-    firstPane = pane;
+    if (pane == secondPane) {
+        // TODO(sholloway): Log this event
+    } else {
+        firstPane = pane;
+    }
+
     updateSize();
 }
 
 void SplitPane::setSecondPane(std::shared_ptr<IPane> pane) {
-    secondPane = pane;
+    if (pane == firstPane) {
+        // TODO(sholloway): Log this event
+    } else {
+        secondPane = pane;
+    }
+
     updateSize();
 }
 
 float SplitPane::getFirstPaneSizeAsPercentage() {
-    switch (orientation) {
-        case HORIZONTAL:
-            return 100. *
-                static_cast<float>(firstPaneExtent) /
-                static_cast<float>(paneProps.width);
-            break;
-        case VERTICAL:
-        default:
-            return 100. *
-                static_cast<float>(firstPaneExtent) /
-                static_cast<float>(paneProps.height);
-            break;
-    }
+    return percentageExtent;
 }
 
 float SplitPane::getSecondPaneSizeAsPercentage() {
@@ -121,9 +120,13 @@ void SplitPane::resizeToPixelValue(int extent) {
 }
 
 void SplitPane::resizeToPercentage(float extent) {
-    if (extent < 0 || extent > 100) {
-        return;
+    if (extent < 0) {
+        extent = 0;
+    } else if (extent > 100) {
+        extent = 100;
     }
+
+    percentageExtent = extent;
 
     int extentInPixels;
     switch (orientation) {
@@ -159,6 +162,42 @@ void SplitPane::setOrientation(PaneOrientation orientation) {
     this->orientation = orientation;
 
     updateSize();
+}
+
+SplitPane::Builder&
+SplitPane::Builder::withFirstPane(std::shared_ptr<IPane> firstPane) {
+    impl->setFirstPane(firstPane);
+    return (*this);
+}
+
+SplitPane::Builder&
+SplitPane::Builder::withSecondPane(std::shared_ptr<IPane> secondPane) {
+    impl->setSecondPane(secondPane);
+    return (*this);
+}
+
+SplitPane::Builder&
+SplitPane::Builder::withOrientation(PaneOrientation orientation) {
+    impl->setOrientation(orientation);
+    return (*this);
+}
+
+SplitPane::Builder&
+SplitPane::Builder::withGapWidth(int gapWidth) {
+    impl->setGapWidth(gapWidth);
+    return (*this);
+}
+
+SplitPane::Builder&
+SplitPane::Builder::withPaneExtentInPixels(int extent) {
+    impl->resizeToPixelValue(extent);
+    return (*this);
+}
+
+SplitPane::Builder&
+SplitPane::Builder::withPaneExtentInPercent(float extent) {
+    impl->resizeToPercentage(extent);
+    return (*this);
 }
 
 }  // namespace basil

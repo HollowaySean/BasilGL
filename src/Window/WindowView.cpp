@@ -50,7 +50,9 @@ void WindowView::onStop() {
 }
 
 void WindowView::setTopPane(std::shared_ptr<IPane> newTopPane) {
-    newTopPane->paneProps = getTopPaneProps();
+    PaneProps propsFromWindow = getTopPaneProps();
+    newTopPane->setPaneProps(propsFromWindow);
+
     this->topPane = newTopPane;
 }
 

@@ -3,6 +3,8 @@
 
 #include <memory>
 
+#include <Basil/Builder.hpp>
+
 #include "IPane.hpp"
 
 namespace basil {
@@ -15,9 +17,11 @@ enum PaneOrientation {
 /** @class SplitPane
  *  @brief IPane implementation which displays two panes inside.
 */
-class SplitPane : public IPane {
+class SplitPane :   public IPane,
+                    public IBuildable<SplitPane> {
  public:
-    SplitPane(const PaneProps &paneProps,
+    SplitPane();
+    SplitPane(PaneProps paneProps,
         PaneOrientation orientation = PaneOrientation::HORIZONTAL);
 
     /** @brief Calls draw on contained panes. */
@@ -62,16 +66,28 @@ class SplitPane : public IPane {
     /** @returns Orientation of split. */
     PaneOrientation getOrientation() { return orientation; }
 
+    /** @brief Builder pattern for SplitPane. */
+    class Builder : public IBuilder<SplitPane> {
+     public:
+        Builder& withFirstPane(std::shared_ptr<IPane> firstPane);
+        Builder& withSecondPane(std::shared_ptr<IPane> secondPane);
+        Builder& withOrientation(PaneOrientation orientation);
+        Builder& withGapWidth(int gapWidth);
+        Builder& withPaneExtentInPixels(int extent);
+        Builder& withPaneExtentInPercent(float extent);
+    };
+
  private:
     void updateSize();
 
-    PaneOrientation orientation;
-    std::shared_ptr<IPane> firstPane;
-    std::shared_ptr<IPane> secondPane;
+    PaneOrientation orientation = HORIZONTAL;
+    std::shared_ptr<IPane> firstPane = nullptr;
+    std::shared_ptr<IPane> secondPane = nullptr;
 
     int firstPaneExtent;
     int secondPaneExtent;
-    int gapWidth;
+    float percentageExtent;
+    int gapWidth = 0;
 };
 
 }  // namespace basil
