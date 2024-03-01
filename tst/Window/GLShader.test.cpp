@@ -13,8 +13,15 @@ using basil::GLShader;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 
+class TestShader : public GLShader {
+ public:
+    TestShader() = default;
+    void setShader(std::filesystem::path path) override {}
+    void setShader(const std::string& shaderCode) override {}
+};
+
 TEST_CASE("Window_GLShader_getShaderFromFile") { BASIL_LOCK_TEST
-    GLShader shader = GLShader();
+    TestShader shader = TestShader();
     std::filesystem::path testPath = TEST_DIR;
 
     Logger& logger = Logger::get();
@@ -42,7 +49,7 @@ TEST_CASE("Window_GLShader_getShaderFromFile") { BASIL_LOCK_TEST
 
 TEST_CASE("Window_GLShader_compileShader") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
-    GLShader shader = GLShader();
+    TestShader shader = TestShader();
 
     SECTION("Compiles valid shader code successfully") {
         shader.shaderCode = "#version 330 core\nvoid main() {}\0";

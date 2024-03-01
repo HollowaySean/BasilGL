@@ -30,17 +30,13 @@ int main(int argc, char** argv) {
         FrameController::Privilege::NONE,
         "MetricsReporter");
 
-    std::filesystem::path vertexPath =
-        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.vert";
-    std::filesystem::path fragmentPath =
+    auto fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
 
-    auto vertexShader =
-        std::make_shared<GLVertexShader>(vertexPath);
-    auto fragmentShader =
-        std::make_shared<GLFragmentShader>(fragmentPath);
-    auto shaderProgram =
-        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
+    auto shaderProgram = GLShaderProgram::Builder()
+        .withFragmentShader(fragmentPath)
+        .withDefaultVertexShader()
+        .build();
 
     // TODO(sholloway): Default GLTexturePane or optional PaneProps
     PaneProps paneProps = PaneProps {
@@ -51,7 +47,7 @@ int main(int argc, char** argv) {
     };
 
     auto topPane =
-        std::make_shared<GLTexturePane>(PaneProps(), shaderProgram);
+        std::make_shared<GLTexturePane>(PaneProps(), std::move(shaderProgram));
 
     auto windowView = WindowView::Builder()
         .withTitle("My window")

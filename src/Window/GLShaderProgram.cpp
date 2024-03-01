@@ -9,7 +9,7 @@ GLShaderProgram::GLShaderProgram(
     std::shared_ptr<GLFragmentShader> fragmentShader):
         vertexShader(vertexShader),
         fragmentShader(fragmentShader) {
-    this->compile();
+    this->updateShaders();
 }
 
 void GLShaderProgram::compile() {
@@ -30,8 +30,28 @@ void GLShaderProgram::compile() {
     }
 }
 
+void GLShaderProgram::updateShaders() {
+    destroyShaderProgram();
+
+    if (vertexShader && fragmentShader) {
+        compile();
+    }
+}
+
 void GLShaderProgram::use() {
     glUseProgram(ID);
+}
+
+void GLShaderProgram::setVertexShader(
+        std::shared_ptr<GLVertexShader> vertexShader) {
+    this->vertexShader = vertexShader;
+    updateShaders();
+}
+
+void GLShaderProgram::setFragmentShader(
+        std::shared_ptr<GLFragmentShader> fragmentShader) {
+    this->fragmentShader = fragmentShader;
+    updateShaders();
 }
 
 void GLShaderProgram::setUniform(const std::string& name, bool value) {
@@ -141,8 +161,33 @@ void GLShaderProgram::setUniformVector(const std::string& name,
     glUniform4f(location, value1, value2, value3, value4);
 }
 
-GLShaderProgram::~GLShaderProgram() {
+void GLShaderProgram::destroyShaderProgram() {
     glDeleteProgram(ID);
+}
+
+GLShaderProgram::~GLShaderProgram() {
+    destroyShaderProgram();
+}
+
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withFragmentShader(std::filesystem::path path) {
+    impl->setFragmentShader(
+        std::make_shared<GLFragmentShader>(path));
+    return (*this);
+}
+
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withVertexShader(std::filesystem::path path) {
+    impl->setVertexShader(
+        std::make_shared<GLVertexShader>(path));
+    return (*this);
+}
+
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withDefaultVertexShader() {
+    impl->setVertexShader(
+        std::make_shared<GLVertexShader>(GLVertexShader::noOpShader()));
+    return (*this);
 }
 
 }  // namespace basil

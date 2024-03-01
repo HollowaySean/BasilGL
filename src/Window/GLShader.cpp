@@ -6,9 +6,9 @@
 #include <fstream>
 #include <iostream>
 
-namespace basil {
-
 using filepath = std::filesystem::path;
+
+namespace basil {
 
 const char* GLShader::noOpVertexCode =
     "#version 330 core\n"
@@ -30,12 +30,28 @@ GLVertexShader GLVertexShader::noOpShader() {
         std::string(GLShader::noOpVertexCode));
 }
 
+void GLVertexShader::setShader(filepath path) {
+    setShaderWithType(path, ShaderType::VERTEX);
+}
+
+void GLVertexShader::setShader(const std::string &shaderCode) {
+    setShaderWithType(shaderCode, ShaderType::VERTEX);
+}
+
 
 GLFragmentShader::GLFragmentShader(filepath path)
     : GLShader::GLShader(path, ShaderType::FRAGMENT) {}
 
 GLFragmentShader::GLFragmentShader(const std::string &shaderCode)
     : GLShader::GLShader(shaderCode, ShaderType::FRAGMENT) {}
+
+void GLFragmentShader::setShader(filepath path) {
+    setShaderWithType(path, ShaderType::FRAGMENT);
+}
+
+void GLFragmentShader::setShader(const std::string &shaderCode) {
+    setShaderWithType(shaderCode, ShaderType::FRAGMENT);
+}
 
 
 GLShader::GLShader(filepath path, ShaderType type) {
@@ -44,6 +60,21 @@ GLShader::GLShader(filepath path, ShaderType type) {
 }
 
 GLShader::GLShader(const std::string &shaderCode, ShaderType type) {
+    getShaderFromString(shaderCode);
+    compileShader(type);
+}
+
+void GLShader::setShaderWithType(filepath path, ShaderType type) {
+    destroyShader();
+
+    getShaderFromFile(path);
+    compileShader(type);
+}
+
+void GLShader::setShaderWithType(
+        const std::string &shaderCode, ShaderType type) {
+    destroyShader();
+
     getShaderFromString(shaderCode);
     compileShader(type);
 }
@@ -104,8 +135,12 @@ void GLShader::compileShader(ShaderType type) {
     }
 }
 
-GLShader::~GLShader() {
+void GLShader::destroyShader() {
     glDeleteShader(ID);
+}
+
+GLShader::~GLShader() {
+    destroyShader();
 }
 
 }  // namespace basil
