@@ -65,7 +65,7 @@ TEST_CASE("Window_GLShaderPane_addTexture") { BASIL_LOCK_TEST
         .dataType = GL_FLOAT
     };
     std::vector<float> data = { 1.0 };
-    GLTexture<float> texture = GLTexture<float>(data, textureProps);
+    auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
 
     PaneProps paneProps = {
         .width = 20,
@@ -78,10 +78,10 @@ TEST_CASE("Window_GLShaderPane_addTexture") { BASIL_LOCK_TEST
         paneProps, shaderProgram);
 
     SECTION("Adds texture to list") {
-        pane.addTexture(&texture);
+        pane.addTexture(texture);
 
-        IGLTexture* actual = pane.textureList.back();
-        REQUIRE(actual == &texture);
+        auto actual = pane.textureList.back();
+        REQUIRE(actual == texture);
     }
 }
 
@@ -112,9 +112,9 @@ TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
         .dataType = GL_FLOAT
     };
     std::vector<float> data = { 1.0 };
-    GLTexture<float> texture = GLTexture<float>(data, textureProps);
+    auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
 
-    pane.addTexture(&texture);
+    pane.addTexture(texture);
     pane.draw();
 
     SECTION("Sets viewport size and position") {
@@ -137,7 +137,7 @@ TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
         GLint ID;
         glGetIntegerv(GL_TEXTURE_BINDING_2D, &ID);
 
-        REQUIRE(texture.getID() == ID);
+        REQUIRE(texture->getID() == ID);
     }
 
     SECTION("Binds the vertex array") {

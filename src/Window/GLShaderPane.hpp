@@ -28,7 +28,7 @@ class GLShaderPane :  public IPane,
      * @param shaderProgram GLShaderProgram object to render
     */
     explicit GLShaderPane(
-      const PaneProps& paneProps,
+      PaneProps paneProps,
       std::shared_ptr<GLShaderProgram> shaderProgram)
         : vertexAttributeID(),
           vertexBufferID(),
@@ -42,7 +42,7 @@ class GLShaderPane :  public IPane,
     ~GLShaderPane();
 
     /** @param newTexture Texture to pass to shader in each draw call. */
-    void addTexture(IGLTexture* newTexture);
+    void addTexture(std::shared_ptr<IGLTexture> newTexture);
 
     /** @brief Draws to screen using shader and texture(s). */
     void const draw() override;
@@ -56,7 +56,7 @@ class GLShaderPane :  public IPane,
     void createElementBuffer();
 
     GLuint vertexAttributeID, vertexBufferID, elementBufferID;
-    std::vector<IGLTexture*> textureList;
+    std::vector<std::shared_ptr<IGLTexture>> textureList;
     std::shared_ptr<GLShaderProgram> shaderProgram;
 };
 

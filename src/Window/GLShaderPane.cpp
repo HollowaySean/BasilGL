@@ -8,7 +8,7 @@ void GLShaderPane::setup() {
     createElementBuffer();
 }
 
-void GLShaderPane::addTexture(IGLTexture* newTexture) {
+void GLShaderPane::addTexture(std::shared_ptr<IGLTexture> newTexture) {
     // Add texture to list
     textureList.push_back(newTexture);
 
@@ -70,7 +70,7 @@ void const GLShaderPane::draw() {
     shaderProgram->use();
 
     // Update texture(s)
-    for (IGLTexture* texture : textureList) {
+    for (std::shared_ptr<IGLTexture> texture : textureList) {
         texture->update();
     }
 
