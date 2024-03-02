@@ -54,17 +54,25 @@ class GLShaderPane :  public IPane,
 
     class Builder : public IBuilder<GLShaderPane> {
      public:
+        /** @brief Creates pane from GLFragmentShader object. */
         Builder& fromShader(
             std::shared_ptr<GLFragmentShader> fragmentShader);
+
+        /** @brief Creates pane from fragment shader file. */
         Builder& fromShaderFile(
             std::filesystem::path filePath);
+
+        /** @brief Creates pane from raw fragment shader code. */
         Builder& fromShaderCode(
             const std::string& shaderCode);
+
+        /** @brief Creates pane from GLShaderProgram object. */
         Builder& withShaderProgram(
           std::shared_ptr<GLShaderProgram> shaderProgram);
+
+        /** @brief Uses texture in shader program. */
         Builder& withTexture(
             std::shared_ptr<IGLTexture> texture);
-        Builder& withPaneProps(PaneProps paneProps);
     };
 
 #ifndef TEST_BUILD

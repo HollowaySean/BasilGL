@@ -117,17 +117,38 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
 
     class Builder : public IBuilder<GLShaderProgram> {
      public:
+        /** @brief Add fragment shader object to program. */
         Builder& withFragmentShader(
             std::shared_ptr<GLFragmentShader> fragmentShader);
-        Builder& withFragmentShaderFromFile(std::filesystem::path filePath);
-        Builder& withFragmentShaderFromCode(const std::string& shaderCode);
-        Builder& withVertexShader(std::shared_ptr<GLVertexShader> vertexShader);
-        Builder& withVertexShaderFromFile(std::filesystem::path filePath);
-        Builder& withVertexShaderFromCode(const std::string& shaderCode);
+
+        /** @brief Build fragment shader from filepath. */
+        Builder& withFragmentShaderFromFile(
+            std::filesystem::path filePath);
+
+        /** @brief Build fragment shader from raw code. */
+        Builder& withFragmentShaderFromCode(
+            const std::string& shaderCode);
+
+        /** @brief Add vertex shader object to program. */
+        Builder& withVertexShader(
+            std::shared_ptr<GLVertexShader> vertexShader);
+
+        /** @brief Build vertex shader from filepath. */
+        Builder& withVertexShaderFromFile(
+            std::filesystem::path filePath);
+
+        /** @brief Build vertex shader from raw code. */
+        Builder& withVertexShaderFromCode(
+            const std::string& shaderCode);
+
+        /** @brief Add no-op vertex shader. */
         Builder& withDefaultVertexShader();
     };
 
+#ifndef TEST_BUILD
+
  private:
+#endif
     Logger& logger = Logger::get();
 
     void compile();

@@ -10,6 +10,8 @@ void GLShaderPane::setup() {
 
 void GLShaderPane::setShaderProgram(
         std::shared_ptr<GLShaderProgram> shaderProgram) {
+    if (!shaderProgram) return;
+
     if (!this->shaderProgram) {
         this->shaderProgram = shaderProgram;
         setup();
@@ -27,7 +29,9 @@ void GLShaderPane::addTexture(std::shared_ptr<IGLTexture> newTexture) {
     textureList.push_back(newTexture);
 
     // Assign texture to shader
-    this->shaderProgram->addTexture(newTexture);
+    if (shaderProgram) {
+        this->shaderProgram->addTexture(newTexture);
+    }
 }
 
 void GLShaderPane::createVertexObjects() {
@@ -79,7 +83,9 @@ void const GLShaderPane::draw() {
         paneProps.height);
 
     // Use shader
-    shaderProgram->use();
+    if (shaderProgram) {
+        shaderProgram->use();
+    }
 
     // Update texture(s)
     for (std::shared_ptr<IGLTexture> texture : textureList) {
@@ -143,12 +149,6 @@ GLShaderPane::Builder&
 GLShaderPane::Builder::withTexture(
         std::shared_ptr<IGLTexture> texture) {
     impl->addTexture(texture);
-    return (*this);
-}
-
-GLShaderPane::Builder&
-GLShaderPane::Builder::withPaneProps(PaneProps paneProps) {
-    impl->setPaneProps(paneProps);
     return (*this);
 }
 

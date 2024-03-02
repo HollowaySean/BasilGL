@@ -18,27 +18,22 @@ using basil::IPane;
 template<class T>
 using s_p = std::shared_ptr<T>;
 
-std::filesystem::path vertPath =
-    std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
-std::filesystem::path fragPath =
-    std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
+TEST_CASE("Window_GLShaderPane_GLShaderPane") {
+    SECTION("Creates pane from shader program") { BASIL_LOCK_TEST
+        s_p<GLVertexShader> vertexShader =
+            std::make_shared<GLVertexShader>(vertexPath);
+        s_p<GLFragmentShader> fragmentShader =
+            std::make_shared<GLFragmentShader>(fragmentPath);
+        s_p<GLShaderProgram> shaderProgram =
+            std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
-TEST_CASE("Window_GLShaderPane_GLShaderPane") { BASIL_LOCK_TEST
-    s_p<GLVertexShader> vertexShader =
-        std::make_shared<GLVertexShader>(vertPath);
-    s_p<GLFragmentShader> fragmentShader =
-        std::make_shared<GLFragmentShader>(fragPath);
-    s_p<GLShaderProgram> shaderProgram =
-        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
+        PaneProps props = {
+            .width = 200,
+            .height = 100,
+            .xOffset = 10,
+            .yOffset = 0
+        };
 
-    PaneProps props = {
-        .width = 200,
-        .height = 100,
-        .xOffset = 10,
-        .yOffset = 0
-    };
-
-    SECTION("Creates pane from shader program") {
         GLShaderPane pane = GLShaderPane(
             props, shaderProgram);
 
@@ -46,16 +41,17 @@ TEST_CASE("Window_GLShaderPane_GLShaderPane") { BASIL_LOCK_TEST
         REQUIRE(pane.vertexBufferID > 0);
         REQUIRE(pane.elementBufferID > 0);
     }
+
+    SECTION("Creates uninitialized pane") {
+        GLShaderPane pane = GLShaderPane();
+
+        REQUIRE(pane.vertexAttributeID == 0);
+        REQUIRE(pane.vertexBufferID == 0);
+        REQUIRE(pane.elementBufferID == 0);
+    }
 }
 
 TEST_CASE("Window_GLShaderPane_addTexture") { BASIL_LOCK_TEST
-    s_p<GLVertexShader> vertexShader =
-        std::make_shared<GLVertexShader>(vertPath);
-    s_p<GLFragmentShader> fragmentShader =
-        std::make_shared<GLFragmentShader>(fragPath);
-    s_p<GLShaderProgram> shaderProgram =
-        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
-
     GLTextureProps textureProps = {
         .name = "textureName",
         .width = 10,
@@ -67,15 +63,7 @@ TEST_CASE("Window_GLShaderPane_addTexture") { BASIL_LOCK_TEST
     std::vector<float> data = { 1.0 };
     auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
 
-    PaneProps paneProps = {
-        .width = 20,
-        .height = 40,
-        .xOffset = 10,
-        .yOffset = 0
-    };
-
-    GLShaderPane pane = GLShaderPane(
-        paneProps, shaderProgram);
+    GLShaderPane pane = GLShaderPane();
 
     SECTION("Adds texture to list") {
         pane.addTexture(texture);
@@ -87,9 +75,9 @@ TEST_CASE("Window_GLShaderPane_addTexture") { BASIL_LOCK_TEST
 
 TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
     s_p<GLVertexShader> vertexShader =
-        std::make_shared<GLVertexShader>(vertPath);
+        std::make_shared<GLVertexShader>(vertexPath);
     s_p<GLFragmentShader> fragmentShader =
-        std::make_shared<GLFragmentShader>(fragPath);
+        std::make_shared<GLFragmentShader>(fragmentPath);
     s_p<GLShaderProgram> shaderProgram =
         std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 

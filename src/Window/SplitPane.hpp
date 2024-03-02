@@ -70,15 +70,29 @@ class SplitPane :   public IPane,
     /** @brief Builder pattern for SplitPane. */
     class Builder : public IBuilder<SplitPane> {
      public:
+        /** @brief Sets top/left pane. */
         Builder& withFirstPane(std::shared_ptr<IPane> firstPane);
+
+        /** @brief Sets bottom/right pane. */
         Builder& withSecondPane(std::shared_ptr<IPane> secondPane);
+
+        /** @brief Sets vertical vs. horizontal split. */
         Builder& withOrientation(PaneOrientation orientation);
+
+        /** @brief Sets gap between panes, in pixels. */
         Builder& withGapWidth(int gapWidth);
+
+        /** @brief Sets size of top/left pane, in pixels. */
         Builder& withPaneExtentInPixels(int extent);
+
+        /** @brief Sets size of top/left pane, as a percentage. */
         Builder& withPaneExtentInPercent(float extent);
     };
 
+#ifndef TEST_BUILD
+
  private:
+#endif
     void updateSize();
 
     Logger& logger = Logger::get();

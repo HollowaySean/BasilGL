@@ -8,6 +8,8 @@ using basil::SplitPane;
 using basil::PaneOrientation;
 using basil::PaneOrientation::HORIZONTAL;
 using basil::PaneOrientation::VERTICAL;
+using basil::Logger;
+using basil::LogLevel;
 
 template<class T>
 using s_pt = std::shared_ptr<T>;
@@ -28,6 +30,21 @@ class TestPane : public IPane {
     }
     bool didDraw = false;
 };
+
+TEST_CASE("Window_SplitPane_SplitPane") {
+    SECTION("Initializes with defaults") {
+        SplitPane pane = SplitPane();
+        PaneProps defaultProps = PaneProps();
+
+        REQUIRE(pane.getGapWidth() == 0);
+        REQUIRE(pane.getFirstPaneSizeAsPercentage() == 50.);
+
+        REQUIRE(pane.paneProps.width    == defaultProps.width);
+        REQUIRE(pane.paneProps.height   == defaultProps.height);
+        REQUIRE(pane.paneProps.xOffset  == defaultProps.xOffset);
+        REQUIRE(pane.paneProps.yOffset  == defaultProps.yOffset);
+    }
+}
 
 TEST_CASE("Window_SplitPane_onResize") {
     SECTION("Sets props of pane") {
@@ -108,6 +125,19 @@ TEST_CASE("Window_SplitPane_setFirstPane") {
         REQUIRE(childPane->paneProps.xOffset == 5);
         REQUIRE(childPane->paneProps.yOffset == 2);
     }
+
+    SECTION("Logs warning if duplicate pane") {
+        Logger& logger = Logger::get();
+
+        s_pt<SplitPane> splitPane = std::make_shared<SplitPane>();
+        splitPane->setSecondPane(childPane);
+        splitPane->setFirstPane(childPane);
+
+        REQUIRE(splitPane->firstPane == nullptr);
+        REQUIRE(logger.getLastOutput() ==
+            "First pane has same address as second. Pane not set.");
+        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
+    }
 }
 
 TEST_CASE("Window_SplitPane_setSecondPane") {
@@ -135,6 +165,19 @@ TEST_CASE("Window_SplitPane_setSecondPane") {
         REQUIRE(childPane->paneProps.xOffset == paneProps.xOffset);
         REQUIRE(childPane->paneProps.yOffset ==
             paneProps.yOffset + paneProps.height / 2);
+    }
+
+    SECTION("Logs warning if duplicate pane") {
+        Logger& logger = Logger::get();
+
+        s_pt<SplitPane> splitPane = std::make_shared<SplitPane>();
+        splitPane->setFirstPane(childPane);
+        splitPane->setSecondPane(childPane);
+
+        REQUIRE(splitPane->secondPane == nullptr);
+        REQUIRE(logger.getLastOutput() ==
+            "Second pane has same address as first. Pane not set.");
+        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
     }
 }
 
@@ -328,5 +371,36 @@ TEST_CASE("Window_SplitPane_setOrientation") {
         splitPane.setOrientation(VERTICAL);
 
         REQUIRE(splitPane.getOrientation() == VERTICAL);
+    }
+}
+
+TEST_CASE("Window_SplitPane_Builder") {
+    s_pt<TestPane> firstPane = std::make_shared<TestPane>(paneProps);
+    s_pt<TestPane> secondPane = std::make_shared<TestPane>(paneProps);
+
+    SECTION("Builds SplitPane object") {
+        auto splitPane = SplitPane::Builder()
+            .withFirstPane(firstPane)
+            .withSecondPane(secondPane)
+            .withPaneExtentInPercent(30.)
+            .withGapWidth(3)
+            .withOrientation(PaneOrientation::VERTICAL)
+            .build();
+
+        REQUIRE(splitPane->firstPane == firstPane);
+        REQUIRE(splitPane->secondPane == secondPane);
+        REQUIRE(splitPane->gapWidth == 3);
+        REQUIRE(splitPane->getFirstPaneSizeAsPercentage() == 30.);
+        REQUIRE(splitPane->getOrientation() == PaneOrientation::VERTICAL);
+
+        splitPane = SplitPane::Builder()
+            .withPaneExtentInPixels(15)
+            .build();
+
+        REQUIRE(splitPane->firstPane == nullptr);
+        REQUIRE(splitPane->secondPane == nullptr);
+        REQUIRE(splitPane->gapWidth == 0);
+        REQUIRE(splitPane->getFirstPaneSizeInPixels() == 15);
+        REQUIRE(splitPane->getOrientation() == PaneOrientation::HORIZONTAL);
     }
 }

@@ -169,6 +169,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 
 void GLShaderProgram::destroyShaderProgram() {
     glDeleteProgram(ID);
+    ID = 0;
 }
 
 GLShaderProgram::~GLShaderProgram() {

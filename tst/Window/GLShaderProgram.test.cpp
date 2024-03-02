@@ -74,35 +74,32 @@ template<unsigned int N> void getUniform(
 
 TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
-    std::filesystem::path testPath = TEST_DIR;
+
+    auto vertexShader =
+        std::make_shared<GLVertexShader>(vertexPath);
+
+    std::string successMessage =
+        "Shader program compiled successfully.";
+
+    SECTION("Does not compile for default contruction") {
+        GLShaderProgram program = GLShaderProgram();
+
+        CHECK(logger.getLastOutput() != successMessage);
+    }
 
     SECTION("Compiles shader program.") {
-        std::filesystem::path filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
-        std::shared_ptr<GLVertexShader> vertexShader =
-            std::make_shared<GLVertexShader>(filePath);
-
-        filePath =
-            std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
-        std::shared_ptr<GLFragmentShader> fragmentShader =
-            std::make_shared<GLFragmentShader>(filePath);
+        auto fragmentShader =
+            std::make_shared<GLFragmentShader>(fragmentPath);
 
         GLShaderProgram shaderProgram =
             GLShaderProgram(vertexShader, fragmentShader);
-
-        std::string successMessage =
-            "Shader program compiled successfully.";
 
         CHECK(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
     }
 
     SECTION("Logs error for failed compilation.") {
-        std::shared_ptr<GLVertexShader> vertexShader =
-            std::make_shared<GLVertexShader>(
-                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
-        std::shared_ptr<GLFragmentShader> fragmentShader =
-            std::make_shared<GLFragmentShader>(
+        auto fragmentShader = std::make_shared<GLFragmentShader>(
                 std::filesystem::path(""));
 
         GLShaderProgram shaderProgram =
@@ -113,14 +110,12 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
 }
 
 TEST_CASE("Window_GLShaderProgram_use") { BASIL_LOCK_TEST
-    SECTION("Sets current program to shader program ID") {
-        std::shared_ptr<GLVertexShader> vertexShader =
-            std::make_shared<GLVertexShader>(
-                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
-        std::shared_ptr<GLFragmentShader> fragmentShader =
-            std::make_shared<GLFragmentShader>(
-                std::filesystem::path(TEST_DIR) / "Window/assets/test.frag");
+    auto vertexShader =
+        std::make_shared<GLVertexShader>(vertexPath);
+    auto fragmentShader =
+        std::make_shared<GLFragmentShader>(fragmentPath);
 
+    SECTION("Sets current program to shader program ID") {
         GLShaderProgram shaderProgram =
             GLShaderProgram(vertexShader, fragmentShader);
 
@@ -133,14 +128,45 @@ TEST_CASE("Window_GLShaderProgram_use") { BASIL_LOCK_TEST
     }
 }
 
+TEST_CASE("Window_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
+    auto vertexShader =
+        std::make_shared<GLVertexShader>(vertexPath);
+    auto fragmentShader =
+        std::make_shared<GLFragmentShader>(fragmentPath);
+    auto secondFragmentShader =
+        std::make_shared<GLFragmentShader>(fragmentPath);
+
+
+    SECTION("Only compiles when both shaders are present") {
+        GLShaderProgram shaderProgram = GLShaderProgram();
+        REQUIRE(shaderProgram.getID() == 0);
+
+        shaderProgram.setFragmentShader(fragmentShader);
+        REQUIRE(shaderProgram.getID() == 0);
+
+        shaderProgram.setVertexShader(vertexShader);
+        REQUIRE_FALSE(shaderProgram.getID() == 0);
+    }
+
+    SECTION("Re-compiles when shader is replaced") {
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
+        REQUIRE_FALSE(shaderProgram.getID() == 0);
+
+        shaderProgram.setFragmentShader(nullptr);
+        REQUIRE(shaderProgram.getID() == 0);
+
+        shaderProgram.setFragmentShader(secondFragmentShader);
+        REQUIRE_FALSE(shaderProgram.getID() == 0);
+    }
+}
+
 TEST_CASE("Window_GLShaderProgram_setUniform") { BASIL_LOCK_TEST
     SECTION("Sets uniform in shader program") {
-        std::shared_ptr<GLVertexShader> vertexShader =
-            std::make_shared<GLVertexShader>(
-                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
-        std::shared_ptr<GLFragmentShader> fragmentShader =
-            std::make_shared<GLFragmentShader>(
-                std::filesystem::path(TEST_DIR) / "Window/assets/test.frag");
+        auto vertexShader =
+            std::make_shared<GLVertexShader>(vertexPath);
+        auto fragmentShader =
+            std::make_shared<GLFragmentShader>(fragmentPath);
 
         GLShaderProgram shaderProgram =
             GLShaderProgram(vertexShader, fragmentShader);
@@ -159,12 +185,10 @@ TEST_CASE("Window_GLShaderProgram_setUniform") { BASIL_LOCK_TEST
 
 TEST_CASE("Window_GLShaderProgram_setUniformVector") { BASIL_LOCK_TEST
     SECTION("Sets uniform vector in shader program") {
-        std::shared_ptr<GLVertexShader> vertexShader =
-            std::make_shared<GLVertexShader>(
-                std::filesystem::path(TEST_DIR) / "Window/assets/test.vert");
-        std::shared_ptr<GLFragmentShader> fragmentShader =
-            std::make_shared<GLFragmentShader>(
-                std::filesystem::path(TEST_DIR) / "Window/assets/test.frag");
+        auto vertexShader =
+            std::make_shared<GLVertexShader>(vertexPath);
+        auto fragmentShader =
+            std::make_shared<GLFragmentShader>(fragmentPath);
 
         GLShaderProgram shaderProgram =
             GLShaderProgram(vertexShader, fragmentShader);
@@ -196,5 +220,53 @@ TEST_CASE("Window_GLShaderProgram_setUniformVector") { BASIL_LOCK_TEST
             "myUniformUnsignedInt4", testUint);
         verifyUniforms<float, 4>(shaderProgram,
             "myUniformFloat4", testFloat);
+    }
+}
+
+TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
+    SECTION("Builds shaders from objects") {
+        auto vertexShader =
+            std::make_shared<GLVertexShader>(vertexPath);
+        auto fragmentShader =
+            std::make_shared<GLFragmentShader>(fragmentPath);
+
+        auto program = GLShaderProgram::Builder()
+            .withFragmentShader(fragmentShader)
+            .withVertexShader(vertexShader)
+            .build();
+
+        REQUIRE(program->fragmentShader == fragmentShader);
+        REQUIRE(program->vertexShader == vertexShader);
+        REQUIRE_FALSE(program->getID() == 0);
+
+        program = GLShaderProgram::Builder()
+            .withDefaultVertexShader()
+            .build();
+
+        REQUIRE(program->fragmentShader == nullptr);
+        REQUIRE_FALSE(program->vertexShader == nullptr);
+        REQUIRE(program->vertexShader->rawShaderCode
+            == basil::GLShader::noOpVertexCode);
+        REQUIRE(program->getID() == 0);
+    }
+
+    SECTION("Builds shaders from file") {
+        auto program = GLShaderProgram::Builder()
+            .withFragmentShaderFromFile(fragmentPath)
+            .withVertexShaderFromFile(vertexPath)
+            .build();
+
+        REQUIRE_FALSE(program->fragmentShader == nullptr);
+        REQUIRE_FALSE(program->vertexShader == nullptr);
+        REQUIRE_FALSE(program->getID() == 0);
+
+        program = GLShaderProgram::Builder()
+            .withFragmentShaderFromCode(program->fragmentShader->rawShaderCode)
+            .withVertexShaderFromCode(program->vertexShader->rawShaderCode)
+            .build();
+
+        REQUIRE_FALSE(program->fragmentShader == nullptr);
+        REQUIRE_FALSE(program->vertexShader == nullptr);
+        REQUIRE_FALSE(program->getID() == 0);
     }
 }

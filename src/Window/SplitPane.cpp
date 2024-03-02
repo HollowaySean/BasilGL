@@ -8,9 +8,7 @@ SplitPane::SplitPane(): IPane(PaneProps()), orientation(HORIZONTAL) {
 }
 
 SplitPane::SplitPane(PaneProps paneProps, PaneOrientation orientation):
-        IPane(paneProps),
-        orientation(orientation),
-        gapWidth(0) {
+        IPane(paneProps), orientation(orientation) {
     // Default to even 50% split
     resizeToPercentage(50.f);
     updateSize();
