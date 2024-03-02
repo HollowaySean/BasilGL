@@ -35,28 +35,16 @@ int main(int argc, char** argv) {
     auto fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
 
-    auto shaderProgram = GLShaderProgram::Builder()
-        .withFragmentShader(fragmentPath)
-        .withDefaultVertexShader()
-        .build();
-
-    auto topPane =
-        std::make_shared<GLShaderPane>(PaneProps(), std::move(shaderProgram));
-
-
-    auto secondProgram = GLShaderProgram::Builder()
-        .withFragmentShader(fragmentPath)
-        .withDefaultVertexShader()
-        .build();
-    auto secondPane =
-        std::make_shared<GLShaderPane>(PaneProps(), std::move(secondProgram));
-
     auto windowView = WindowView::Builder()
         .withTitle("My window")
         .withDimensions(500, 500)
         .withTopPane(SplitPane::Builder()
-            .withFirstPane(topPane)
-            .withSecondPane(secondPane)
+            .withFirstPane(GLShaderPane::Builder()
+                .fromShaderFile(fragmentPath)
+                .build())
+            .withSecondPane(GLShaderPane::Builder()
+                .fromShaderFile(fragmentPath)
+                .build())
             .withOrientation(PaneOrientation::VERTICAL)
             .withGapWidth(5)
             .withPaneExtentInPercent(66.6)

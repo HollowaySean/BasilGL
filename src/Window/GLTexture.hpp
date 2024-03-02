@@ -44,7 +44,7 @@ class IGLTexture : private IBasilContextConsumer {
     virtual ~IGLTexture();
 
  protected:
-    explicit IGLTexture(const GLTextureProps &props): props(props) {}
+    explicit IGLTexture(GLTextureProps props): props(props) {}
 
     inline static GLenum nextTexture = GL_TEXTURE0;
 
@@ -65,7 +65,7 @@ class GLTexture : public IGLTexture {
      * @param props     GLTextureProps structure.
      */
     explicit GLTexture(std::span<T> source,
-                       const GLTextureProps &props);
+                       GLTextureProps props);
 
     /** @brief Flush data from source to texture.*/
     void update() const override;

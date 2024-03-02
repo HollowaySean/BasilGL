@@ -54,6 +54,12 @@ void GLShaderProgram::setFragmentShader(
     updateShaders();
 }
 
+void GLShaderProgram::addTexture(std::shared_ptr<IGLTexture> texture) {
+    GLuint location =
+        glGetUniformLocation(ID, texture->props.name);
+    glUniform1f(location, 0);
+}
+
 void GLShaderProgram::setUniform(const std::string& name, bool value) {
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform1i(location, static_cast<int>(value));
@@ -170,16 +176,48 @@ GLShaderProgram::~GLShaderProgram() {
 }
 
 GLShaderProgram::Builder&
-GLShaderProgram::Builder::withFragmentShader(std::filesystem::path path) {
-    impl->setFragmentShader(
-        std::make_shared<GLFragmentShader>(path));
+GLShaderProgram::Builder::withFragmentShader(
+        std::shared_ptr<GLFragmentShader> fragmentShader) {
+    impl->setFragmentShader(fragmentShader);
     return (*this);
 }
 
 GLShaderProgram::Builder&
-GLShaderProgram::Builder::withVertexShader(std::filesystem::path path) {
+GLShaderProgram::Builder::withFragmentShaderFromFile(
+        std::filesystem::path filePath) {
+    impl->setFragmentShader(
+        std::make_shared<GLFragmentShader>(filePath));
+    return (*this);
+}
+
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withFragmentShaderFromCode(
+        const std::string& shaderCode) {
+    impl->setFragmentShader(
+        std::make_shared<GLFragmentShader>(shaderCode));
+    return (*this);
+}
+
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withVertexShader(
+        std::shared_ptr<GLVertexShader> vertexShader) {
+    impl->setVertexShader(vertexShader);
+    return (*this);
+}
+
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withVertexShaderFromFile(
+        std::filesystem::path path) {
     impl->setVertexShader(
         std::make_shared<GLVertexShader>(path));
+    return (*this);
+}
+
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withVertexShaderFromCode(
+        const std::string& shaderCode) {
+    impl->setVertexShader(
+        std::make_shared<GLVertexShader>(shaderCode));
     return (*this);
 }
 

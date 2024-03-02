@@ -8,14 +8,26 @@ void GLShaderPane::setup() {
     createElementBuffer();
 }
 
+void GLShaderPane::setShaderProgram(
+        std::shared_ptr<GLShaderProgram> shaderProgram) {
+    if (!this->shaderProgram) {
+        this->shaderProgram = shaderProgram;
+        setup();
+    } else {
+        this->shaderProgram = shaderProgram;
+    }
+
+    for (std::shared_ptr<IGLTexture> texture : textureList) {
+        this->shaderProgram->addTexture(texture);
+    }
+}
+
 void GLShaderPane::addTexture(std::shared_ptr<IGLTexture> newTexture) {
     // Add texture to list
     textureList.push_back(newTexture);
 
     // Assign texture to shader
-    GLuint location =
-        glGetUniformLocation(shaderProgram->getID(), newTexture->props.name);
-    glUniform1f(location, 0);
+    this->shaderProgram->addTexture(newTexture);
 }
 
 void GLShaderPane::createVertexObjects() {
@@ -85,6 +97,59 @@ GLShaderPane::~GLShaderPane() {
 
     GLuint bufferArrays[] = { elementBufferID, vertexBufferID };
     glDeleteBuffers(2, bufferArrays);
+}
+
+GLShaderPane::Builder&
+GLShaderPane::Builder::fromShader(
+        std::shared_ptr<GLFragmentShader> fragmentShader) {
+    auto shaderProgram = GLShaderProgram::Builder()
+        .withFragmentShader(fragmentShader)
+        .withDefaultVertexShader()
+        .build();
+    impl->setShaderProgram(std::move(shaderProgram));
+    return (*this);
+}
+
+GLShaderPane::Builder&
+GLShaderPane::Builder::fromShaderFile(
+        std::filesystem::path filePath) {
+    auto shaderProgram = GLShaderProgram::Builder()
+        .withFragmentShader(std::make_shared<GLFragmentShader>(filePath))
+        .withDefaultVertexShader()
+        .build();
+    impl->setShaderProgram(std::move(shaderProgram));
+    return (*this);
+}
+
+GLShaderPane::Builder&
+GLShaderPane::Builder::fromShaderCode(
+        const std::string& shaderCode) {
+    auto shaderProgram = GLShaderProgram::Builder()
+        .withFragmentShader(std::make_shared<GLFragmentShader>(shaderCode))
+        .withDefaultVertexShader()
+        .build();
+    impl->setShaderProgram(std::move(shaderProgram));
+    return (*this);
+}
+
+GLShaderPane::Builder&
+GLShaderPane::Builder::withShaderProgram(
+        std::shared_ptr<GLShaderProgram> shaderProgram) {
+    impl->setShaderProgram(shaderProgram);
+    return (*this);
+}
+
+GLShaderPane::Builder&
+GLShaderPane::Builder::withTexture(
+        std::shared_ptr<IGLTexture> texture) {
+    impl->addTexture(texture);
+    return (*this);
+}
+
+GLShaderPane::Builder&
+GLShaderPane::Builder::withPaneProps(PaneProps paneProps) {
+    impl->setPaneProps(paneProps);
+    return (*this);
 }
 
 }  // namespace basil

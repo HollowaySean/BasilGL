@@ -78,7 +78,8 @@ void SplitPane::updateSize() {
 
 void SplitPane::setFirstPane(std::shared_ptr<IPane> pane) {
     if (pane == secondPane) {
-        // TODO(sholloway): Log this event
+        logger.log("First pane has same address as second. Pane not set.",
+            LogLevel::WARN);
     } else {
         firstPane = pane;
     }
@@ -88,7 +89,8 @@ void SplitPane::setFirstPane(std::shared_ptr<IPane> pane) {
 
 void SplitPane::setSecondPane(std::shared_ptr<IPane> pane) {
     if (pane == firstPane) {
-        // TODO(sholloway): Log this event
+        logger.log("Second pane has same address as first. Pane not set.",
+            LogLevel::WARN);
     } else {
         secondPane = pane;
     }

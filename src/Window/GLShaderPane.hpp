@@ -5,6 +5,8 @@
 #include <GLFW/glfw3.h>
 
 #include <memory>
+#include <string>
+#include <utility>
 #include <vector>
 
 #include "GLTexture.hpp"
@@ -19,6 +21,7 @@ namespace basil {
  *  using shaders and textures provided.
 */
 class GLShaderPane :  public IPane,
+                      public IBuildable<GLShaderPane>,
                       private IBasilContextConsumer {
  public:
     /**
@@ -27,25 +30,42 @@ class GLShaderPane :  public IPane,
      * @param paneProps     Pane size properties
      * @param shaderProgram GLShaderProgram object to render
     */
-    explicit GLShaderPane(
-      PaneProps paneProps,
+    GLShaderPane(PaneProps paneProps,
       std::shared_ptr<GLShaderProgram> shaderProgram)
-        : vertexAttributeID(),
-          vertexBufferID(),
-          elementBufferID(),
-          shaderProgram(shaderProgram),
+        : shaderProgram(shaderProgram),
           IPane(paneProps) {
             setup();
           }
 
+    /** @brief Creates blank GLShaderPane. */
+    GLShaderPane() = default;
+
     /** @brief Destructor unbinds OpenGL-allocated memory. */
     ~GLShaderPane();
+
+    /** @brief Set shader program in use. */
+    void setShaderProgram(std::shared_ptr<GLShaderProgram> shaderProgram);
 
     /** @param newTexture Texture to pass to shader in each draw call. */
     void addTexture(std::shared_ptr<IGLTexture> newTexture);
 
     /** @brief Draws to screen using shader and texture(s). */
     void const draw() override;
+
+    class Builder : public IBuilder<GLShaderPane> {
+     public:
+        Builder& fromShader(
+            std::shared_ptr<GLFragmentShader> fragmentShader);
+        Builder& fromShaderFile(
+            std::filesystem::path filePath);
+        Builder& fromShaderCode(
+            const std::string& shaderCode);
+        Builder& withShaderProgram(
+          std::shared_ptr<GLShaderProgram> shaderProgram);
+        Builder& withTexture(
+            std::shared_ptr<IGLTexture> texture);
+        Builder& withPaneProps(PaneProps paneProps);
+    };
 
 #ifndef TEST_BUILD
 
@@ -55,9 +75,11 @@ class GLShaderPane :  public IPane,
     void createVertexObjects();
     void createElementBuffer();
 
-    GLuint vertexAttributeID, vertexBufferID, elementBufferID;
+    GLuint vertexAttributeID = 0;
+    GLuint vertexBufferID = 0;
+    GLuint elementBufferID = 0;
     std::vector<std::shared_ptr<IGLTexture>> textureList;
-    std::shared_ptr<GLShaderProgram> shaderProgram;
+    std::shared_ptr<GLShaderProgram> shaderProgram = nullptr;
 };
 
 }  // namespace basil

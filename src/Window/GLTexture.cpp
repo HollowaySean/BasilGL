@@ -8,7 +8,7 @@ template class GLTexture<unsigned int>;
 
 template<class T>
 GLTexture<T>::GLTexture(std::span<T> source,
-                        const GLTextureProps &props):
+                        GLTextureProps props):
         source(source), textureEnum(nextTexture++), IGLTexture(props) {
     glGenTextures(1, &textureId);
     glActiveTexture(textureEnum);

@@ -7,6 +7,7 @@
 #include <string>
 
 #include "GLShader.hpp"
+#include "GLTexture.hpp"
 
 #include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
@@ -46,6 +47,9 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
     /** @brief Set GLFragmentShader object. */
     void setFragmentShader(
       std::shared_ptr<GLFragmentShader> fragmentShader);
+
+    /** @brief Adds reference to texture in shader. */
+    void addTexture(std::shared_ptr<IGLTexture> texture);
 
     /**
      * @brief Sets a 1D boolean uniform in shader program.
@@ -113,8 +117,13 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
 
     class Builder : public IBuilder<GLShaderProgram> {
      public:
-        Builder& withFragmentShader(std::filesystem::path filePath);
-        Builder& withVertexShader(std::filesystem::path filePath);
+        Builder& withFragmentShader(
+            std::shared_ptr<GLFragmentShader> fragmentShader);
+        Builder& withFragmentShaderFromFile(std::filesystem::path filePath);
+        Builder& withFragmentShaderFromCode(const std::string& shaderCode);
+        Builder& withVertexShader(std::shared_ptr<GLVertexShader> vertexShader);
+        Builder& withVertexShaderFromFile(std::filesystem::path filePath);
+        Builder& withVertexShaderFromCode(const std::string& shaderCode);
         Builder& withDefaultVertexShader();
     };
 

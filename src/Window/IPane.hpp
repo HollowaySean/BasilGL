@@ -19,6 +19,9 @@ class IPane {
     /** @param paneProps Struct containing pane size & offset. */
     explicit IPane(PaneProps paneProps): paneProps(paneProps) {}
 
+    /** @brief Returns IPane with default paneProps. */
+    IPane(): paneProps(PaneProps()) {}
+
     /** @brief Render contents of pane. */
     virtual void const draw() = 0;
 

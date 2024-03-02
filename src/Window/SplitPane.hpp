@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <Basil/Builder.hpp>
+#include <Basil/Logging.hpp>
 
 #include "IPane.hpp"
 
@@ -79,6 +80,8 @@ class SplitPane :   public IPane,
 
  private:
     void updateSize();
+
+    Logger& logger = Logger::get();
 
     PaneOrientation orientation = HORIZONTAL;
     std::shared_ptr<IPane> firstPane = nullptr;
