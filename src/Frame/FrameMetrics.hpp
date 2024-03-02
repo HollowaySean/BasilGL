@@ -55,6 +55,8 @@ class FrameMetrics {
     void setBufferSize(int setBufferSize);
 
     /** @param processNamesReference Map of PIDs to process names. */
+    // TODO(sholloway): These arent references,
+    //  also they shouldn't even be pointers
     void setProcessNames(std::map<int, std::string>* processNamesReference) {
         processNames = processNamesReference;
     }

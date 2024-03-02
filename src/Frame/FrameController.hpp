@@ -21,6 +21,7 @@ class FrameController {
  public:
     /** @brief Creates new FrameController with optional argument of ITimerSource,
      *  which otherwise creates new DefaultTimerSource. */
+    // TODO(sholloway): use optionals and/or smart pointers
     explicit FrameController(ITimerSource *timerSource = nullptr);
 
 
@@ -50,6 +51,7 @@ class FrameController {
      *  @param processName      [Optional] Human readable process name
      *  @param ordinal          [Optional] Enum indicating whether to run early or late
     */
+    // TODO(sholloway): Clean up with optionals
     void addProcess(IFrameProcess *processToAdd,
             Privilege privilegeLevel = NONE,
             std::string processName = "anonymous",
@@ -118,6 +120,7 @@ class FrameController {
 
     struct ProcessIterator {
      public:
+        // TODO(sholloway): Fewer/no raw pointers plz
         std::list<ProcessInstance*> early;
         std::list<ProcessInstance*> main;
         std::list<ProcessInstance*> late;

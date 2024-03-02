@@ -46,6 +46,7 @@ class ITimerSource {
     }
 
     /** @brief Copy constructor for creating child pointers */
+    // TODO(sholloway): Make it so this isn't necessary
     virtual std::unique_ptr<ITimerSource> clone() const = 0;
 
     /** @param waitTimeInSeconds Time in seconds that must

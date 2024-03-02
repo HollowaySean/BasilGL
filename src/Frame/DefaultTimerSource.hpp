@@ -14,6 +14,8 @@ using std::chrono::steady_clock;
  * @brief Default implementation of ITimerSource.
  * Uses chrono and thread libraries to measure time and sleep the thread.
  */
+// TODO(sholloway): Rename this class
+// TODO(sholloway): Add documentation
 class DefaultTimerSource: public ITimerSource {
  public:
     std::unique_ptr<ITimerSource> clone() const override;

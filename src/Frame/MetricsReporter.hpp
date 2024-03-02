@@ -22,6 +22,7 @@ class MetricsReporter : public IFrameProcess {
      * @param regularity        Number of frames per report.
      * @param logLevel          Severity level to log report at.
     */
+    // TODO(sholloway): Remove pointers and optionals
     explicit MetricsReporter(
         FrameMetrics *metricsObserver,
         int regularity = 1,

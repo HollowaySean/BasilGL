@@ -5,8 +5,6 @@
 
 namespace basil {
 
-using std::string;
-
 /**
  * @brief Interface consumable by FrameController
  * Contains 'onLoop' function which is run within frame.
