@@ -6,10 +6,12 @@ using basil::FrameMetrics;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
-using basil::GLTexturePane;
-using basil::PaneProps;
-using basil::WindowView;
+using basil::GLShaderPane;
 using basil::MetricsReporter;
+using basil::PaneProps;
+using basil::PaneOrientation;
+using basil::SplitPane;
+using basil::WindowView;
 
 /**
  * @brief Entry point function.
@@ -30,33 +32,23 @@ int main(int argc, char** argv) {
         FrameController::Privilege::NONE,
         "MetricsReporter");
 
-    std::filesystem::path vertexPath =
-        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.vert";
-    std::filesystem::path fragmentPath =
+    auto fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
-
-    auto vertexShader =
-        std::make_shared<GLVertexShader>(vertexPath);
-    auto fragmentShader =
-        std::make_shared<GLFragmentShader>(fragmentPath);
-    auto shaderProgram =
-        std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
-
-    // TODO(sholloway): Default GLTexturePane or optional PaneProps
-    PaneProps paneProps = PaneProps {
-        .width = 500,
-        .height = 500,
-        .xOffset = 0,
-        .yOffset = 0
-    };
-
-    auto topPane =
-        std::make_shared<GLTexturePane>(PaneProps(), shaderProgram);
 
     auto windowView = WindowView::Builder()
         .withTitle("My window")
         .withDimensions(500, 500)
-        .withTopPane(topPane)
+        .withTopPane(SplitPane::Builder()
+            .withFirstPane(GLShaderPane::Builder()
+                .fromShaderFile(fragmentPath)
+                .build())
+            .withSecondPane(GLShaderPane::Builder()
+                .fromShaderFile(fragmentPath)
+                .build())
+            .withOrientation(PaneOrientation::VERTICAL)
+            .withGapWidth(5)
+            .withPaneExtentInPercent(66.6)
+            .build())
         .build();
 
     frameController.addProcess(windowView.get(),

@@ -14,7 +14,7 @@
 #include <Basil/Frame.hpp>
 
 #include "SplitPane.hpp"
-#include "GLTexturePane.hpp"
+#include "GLShaderPane.hpp"
 
 namespace basil {
 

@@ -11,12 +11,13 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
 0. ~~Basic window, support for simple ray tracer~~
 1. First "usable" build, with a couple examples
    - Support for a pared down clone of "shadertoy"
-      - Including
+      - Including various default inputs
    - Ease of use for example setup
       - Specifically builders for public facing classes
    - Fill in gaps from P0
       - GLTexture extension
       - Better constructors for GL* classes
+   - Data model for setting uniforms & textures?
    - One or two actual examples
 2. CI/CD and build system improvements
    - This phase is essentially the "v1.0" release, with user-friendly documentation and build systems
@@ -24,9 +25,11 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
       - Multi platform support
       - Installation
       - Auto releases with tags, binaries, and Doxygen pages
-      - More Github Actions automations, such as checking code coverage
+      - More Github Actions automations, such as checking code coverage and updating dependencies
       - Compiler flags
       - Streamlined dependency intake
+      - Visual Studio support
+      - Github issues & projects
 3. Output system
    - The ability to save screenshots and video
 4. Compute shader support
