@@ -82,8 +82,7 @@ class WindowView :  public IFrameProcess,
     /** @returns Window settings as struct. */
     WindowProps getWindowProps () { return windowProps; }
 
-    /** @class WindowView::Builder
-     *  Builder pattern to construct WindowView */
+    /** Builder pattern to construct WindowView */
     class Builder : public IBuilder<WindowView> {
      public:
         /** @brief Set height and width of window. */

@@ -16,7 +16,6 @@
 namespace basil {
 
 /**
- * @class GLShaderPane
  * @brief Pane which renders to screen at a given position,
  *  using shaders and textures provided.
 */

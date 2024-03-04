@@ -1,9 +1,9 @@
 #include "FrameController.hpp"
 #include "DefaultTimerSource.hpp"
 
-namespace basil {
+using FPState = basil::IFrameProcess::State;
 
-using FPState = IFrameProcess::State;
+namespace basil {
 
 FrameController::FrameController(
         ITimerSource *newTimerSource) {

@@ -6,9 +6,9 @@
 
 #include "ITimerSource.hpp"
 
-namespace basil {
-
 using std::chrono::steady_clock;
+
+namespace basil {
 
 /**
  * @brief Default implementation of ITimerSource.

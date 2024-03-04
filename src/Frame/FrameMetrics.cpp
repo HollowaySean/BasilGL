@@ -2,7 +2,6 @@
 
 namespace basil {
 
-
 FrameMetricsRecord FrameMetricsRecord::operator+(FrameMetricsRecord other) {
     FrameMetricsRecord result = FrameMetricsRecord();
     result.frameID = frameID;

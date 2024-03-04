@@ -11,7 +11,9 @@ namespace basil {
 /**
  * @brief Severity level for log message.
 */
-enum LogLevel { DEBUG, INFO, WARN, ERROR };
+enum class LogLevel {
+    DEBUG, INFO, WARN, ERROR
+};
 
 /**
  * @brief Global logger using Singleton pattern.
@@ -23,13 +25,13 @@ class Logger {
      *  @param message  Message to log.
      *  @param level    Severity level, defaults to "DEBUG".
     */
-    void log(const std::string& message, LogLevel level = DEBUG);
+    void log(const std::string& message, LogLevel level = LogLevel::DEBUG);
 
     /**
      * @brief           Logs line break to output stream
      * @param level     Severity level, defaults to "DEBUG".
     */
-    void lineBreak(LogLevel level = DEBUG);
+    void lineBreak(LogLevel level = LogLevel::DEBUG);
 
     /** @return Get minimum severity level to output to ostream. */
     LogLevel getLevel() { return logLevel; }
@@ -57,7 +59,7 @@ class Logger {
     }
 
     void clearTestInfo() {
-        lastOutputLevel = DEBUG;
+        lastOutputLevel = LogLevel::DEBUG;
         lastMessage = "";
         didOutput = false;
     }
@@ -66,7 +68,7 @@ class Logger {
     std::ostringstream stringStream;
     std::ostream& ostream = stringStream;
 
-    LogLevel lastOutputLevel = DEBUG;
+    LogLevel lastOutputLevel = LogLevel::DEBUG;
     std::string lastMessage = "";
     bool didOutput = false;
 #else
@@ -77,9 +79,9 @@ class Logger {
 
  private:
     #ifdef DEBUG_BUILD
-        LogLevel logLevel = DEBUG;
+        LogLevel logLevel = LogLevel::DEBUG;
     #else
-        LogLevel logLevel = INFO;
+        LogLevel logLevel = LogLevel::INFO;
     #endif
 
     std::map<LogLevel, std::string> levelLabels = {

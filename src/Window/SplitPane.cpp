@@ -2,7 +2,8 @@
 
 namespace basil {
 
-SplitPane::SplitPane(): IPane(PaneProps()), orientation(HORIZONTAL) {
+SplitPane::SplitPane(): IPane(PaneProps()),
+        orientation(PaneOrientation::HORIZONTAL) {
     resizeToPercentage(50.f);
     updateSize();
 }
@@ -32,12 +33,12 @@ void SplitPane::onResize(int newWidth, int newHeight) {
 void SplitPane::updateSize() {
     if (firstPane) {
         switch (orientation) {
-            case HORIZONTAL:
+            case PaneOrientation::HORIZONTAL:
                 firstPane->paneProps.width = firstPaneExtent;
                 firstPane->paneProps.height = this->paneProps.height;
                 break;
 
-            case VERTICAL:
+            case PaneOrientation::VERTICAL:
                 firstPane->paneProps.width = this->paneProps.width;
                 firstPane->paneProps.height = firstPaneExtent;
                 break;
@@ -49,7 +50,7 @@ void SplitPane::updateSize() {
 
     if (secondPane) {
         switch (orientation) {
-            case HORIZONTAL:
+            case PaneOrientation::HORIZONTAL:
                 secondPane->paneProps.width =
                     secondPaneExtent;
                 secondPane->paneProps.height =
@@ -60,7 +61,7 @@ void SplitPane::updateSize() {
                     this->paneProps.yOffset;
                 break;
 
-            case VERTICAL:
+            case PaneOrientation::VERTICAL:
                 secondPane->paneProps.width =
                     this->paneProps.width;
                 secondPane->paneProps.height =
@@ -108,10 +109,10 @@ void SplitPane::resizeToPixelValue(int extent) {
     firstPaneExtent = extent;
 
     switch (orientation) {
-        case HORIZONTAL:
+        case PaneOrientation::HORIZONTAL:
             secondPaneExtent = paneProps.width - gapWidth - firstPaneExtent;
             break;
-        case VERTICAL:
+        case PaneOrientation::VERTICAL:
             secondPaneExtent = paneProps.height - gapWidth - firstPaneExtent;
             break;
     }
@@ -130,10 +131,10 @@ void SplitPane::resizeToPercentage(float extent) {
 
     int extentInPixels;
     switch (orientation) {
-        case HORIZONTAL:
+        case PaneOrientation::HORIZONTAL:
             extentInPixels = paneProps.width * extent / 100.f;
             break;
-        case VERTICAL:
+        case PaneOrientation::VERTICAL:
             extentInPixels = paneProps.height * extent / 100.f;
             break;
     }
@@ -147,10 +148,10 @@ void SplitPane::setGapWidth(int extent) {
     firstPaneExtent -= gapWidth / 2;
 
     switch (orientation) {
-        case HORIZONTAL:
+        case PaneOrientation::HORIZONTAL:
             secondPaneExtent = paneProps.width - gapWidth - firstPaneExtent;
             break;
-        case VERTICAL:
+        case PaneOrientation::VERTICAL:
             secondPaneExtent = paneProps.height - gapWidth - firstPaneExtent;
             break;
     }
