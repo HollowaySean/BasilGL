@@ -103,6 +103,7 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
         auto fragmentShader = std::make_shared<GLFragmentShader>(
                 std::filesystem::path(""));
 
+        logger.clearTestInfo();
         GLShaderProgram shaderProgram =
             GLShaderProgram(vertexShader, fragmentShader);
 
