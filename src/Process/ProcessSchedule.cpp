@@ -2,12 +2,6 @@
 
 namespace basil {
 
-ProcessInstance::ProcessInstance(const IFrameProcess& frameProcess)
-        : frameProcess(frameProcess) {
-    processID = NEXT_ID++;
-    processName = DEFAULT_NAME + std::to_string(processID);
-}
-
 void ProcessSchedule::addProcess(std::shared_ptr<ProcessInstance> newProcess) {
     if (!newProcess) return;
 

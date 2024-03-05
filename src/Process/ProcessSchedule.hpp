@@ -3,51 +3,10 @@
 
 #include <list>
 #include <memory>
-#include <string>
 
-#include <Basil/Frame.hpp>
+#include "ProcessInstance.hpp"
 
 namespace basil {
-
-/** @brief Enum type representing privilege levels for a given process.
- *  NONE - Can run, pause itself, and remove itself
- *  LOW  - Can stop controller
- *  HIGH - Can kill controller
-*/
-enum class ProcessPrivilege { NONE, LOW, HIGH };
-
-/** @brief Enum type representing loose ordering for processes.
- *  Possible values are EARLY, MAIN, and LATE.
- */
-enum class ProcessOrdinal { EARLY, MAIN, LATE };
-
-// TODO(sholloway): Documentation
-struct ProcessInstance {
- public:
-    explicit ProcessInstance(const IFrameProcess& frameProcess);
-
-    const IFrameProcess& frameProcess;
-
-    ProcessPrivilege privilegeLevel = DEFAULT_PRIVILEGE;
-    ProcessOrdinal ordinal = DEFAULT_ORDINAL;
-    std::string processName;
-
-    unsigned int getID() { return processID; }
-
-#ifndef TEST_BUILD
-
- private:
-#endif
-    unsigned int processID;
-
-    inline static const ProcessOrdinal DEFAULT_ORDINAL
-        = ProcessOrdinal::MAIN;
-    inline static const ProcessPrivilege DEFAULT_PRIVILEGE
-        = ProcessPrivilege::NONE;
-    inline static const std::string DEFAULT_NAME
-        = "anonymous";
-    inline static unsigned int NEXT_ID = 0;
-};
 
 // TODO(sholloway): Documentation
 class ProcessSchedule {
