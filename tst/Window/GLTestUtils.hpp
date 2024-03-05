@@ -1,5 +1,5 @@
-#ifndef TST_GLTESTUTILS_HPP_
-#define TST_GLTESTUTILS_HPP_
+#ifndef TST_WINDOW_GLTESTUTILS_HPP_
+#define TST_WINDOW_GLTESTUTILS_HPP_
 
 #include <string>
 
@@ -32,4 +32,4 @@ inline std::filesystem::path invalidPath =
 
 inline const char* validShaderCode = "#version 330 core\nvoid main() {}\0";
 
-#endif  // TST_GLTESTUTILS_HPP_
+#endif  // TST_WINDOW_GLTESTUTILS_HPP_
