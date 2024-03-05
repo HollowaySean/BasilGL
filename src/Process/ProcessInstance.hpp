@@ -5,36 +5,34 @@
 
 #include <Basil/Frame.hpp>
 
+#include "ProcessEnums.hpp"
+
 namespace basil {
 
-/** @brief Enum type representing privilege levels for a given process.
- *  NONE - Can run, pause itself, and remove itself
- *  LOW  - Can stop controller
- *  HIGH - Can kill controller
-*/
-enum class ProcessPrivilege { NONE, LOW, HIGH };
-
-/** @brief Enum type representing loose ordering for processes.
- *  Possible values are EARLY, MAIN, and LATE.
- */
-enum class ProcessOrdinal { EARLY, MAIN, LATE };
-
-// TODO(sholloway): Documentation
+/** @brief Struct containing metadata related to an instance of a process. */
 struct ProcessInstance {
  public:
+    /** @brief Create instance from IFrameProcess */
     explicit ProcessInstance(const IFrameProcess& frameProcess)
             : frameProcess(frameProcess) {
         processID = NEXT_ID++;
         processName = DEFAULT_NAME + std::to_string(processID);
     }
 
+    /** @brief Const reference to frame process */
     const IFrameProcess& frameProcess;
 
+    /** @brief Human readable name of process */
     std::string processName;
 
+    /** @brief Level of privilege for process
+     *  @note  See ProcessPrivilege doc for more info */
     ProcessPrivilege privilegeLevel = DEFAULT_PRIVILEGE;
+
+    /** @brief Loose ordering for process in schedule */
     ProcessOrdinal ordinal = DEFAULT_ORDINAL;
 
+    /** @returns Unique ID of process instance */
     unsigned int getID() { return processID; }
 
 #ifndef TEST_BUILD

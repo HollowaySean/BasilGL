@@ -5,19 +5,19 @@ namespace basil {
 void ProcessSchedule::addProcess(std::shared_ptr<ProcessInstance> newProcess) {
     if (!newProcess) return;
 
-    std::list<std::shared_ptr<ProcessInstance>> listToAppend;
+    std::list<std::shared_ptr<ProcessInstance>>* listToAppend;
     switch (newProcess->ordinal) {
         case ProcessOrdinal::EARLY:
-            listToAppend = early;
+            listToAppend = &early;
             break;
         case ProcessOrdinal::LATE:
-            listToAppend = late;
+            listToAppend = &late;
             break;
         default:
-            listToAppend = main;
+            listToAppend = &main;
     }
 
-    listToAppend.push_back(newProcess);
+    listToAppend->push_back(newProcess);
 }
 
 void ProcessSchedule::removeProcess(
@@ -33,7 +33,7 @@ void ProcessSchedule::removeProcess(
                 next();
             }
 
-            listToRemoveFrom.remove(processToRemove);
+            listToRemoveFrom->remove(processToRemove);
         }
     }
 }
@@ -53,7 +53,7 @@ std::shared_ptr<ProcessInstance> ProcessSchedule::back() {
 std::list<std::shared_ptr<ProcessInstance>>::const_iterator
 ProcessSchedule::begin() {
     currentInstance = early.begin();
-    currentList = early;
+    currentList = &early;
 
     rectifySchedule();
     return currentInstance;
@@ -78,12 +78,12 @@ unsigned int ProcessSchedule::size() {
 void ProcessSchedule::rectifySchedule() {
     if (currentInstance == early.end()) {
         currentInstance = main.begin();
-        currentList = main;
+        currentList = &main;
     }
 
     if (currentInstance == main.end()) {
         currentInstance = late.begin();
-        currentList = late;
+        currentList = &late;
     }
 }
 
