@@ -2,13 +2,13 @@
 
 #include <catch.hpp>
 
-#include <Basil/Frame.hpp>
+#include <Basil/Process.hpp>
 
 #include "ChronoTestUtils.hpp"
 
 using basil::TimeSource;
 
-TEST_CASE("Frame_TimeSource_now") {
+TEST_CASE("Process_TimeSource_now") {
     SECTION("Returns value specified by clock source") {
         TimeSource<TestClock> timeSource = TimeSource<TestClock>();
 

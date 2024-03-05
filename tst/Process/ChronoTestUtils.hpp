@@ -1,5 +1,5 @@
-#ifndef TST_FRAME_CHRONOTESTUTILS_HPP_
-#define TST_FRAME_CHRONOTESTUTILS_HPP_
+#ifndef TST_PROCESS_CHRONOTESTUTILS_HPP_
+#define TST_PROCESS_CHRONOTESTUTILS_HPP_
 
 #include <chrono>
 
@@ -18,4 +18,4 @@ class TestClock {
     inline static int nextTimeStamp = 0.;
 };
 
-#endif  // TST_FRAME_CHRONOTESTUTILS_HPP_
+#endif  // TST_PROCESS_CHRONOTESTUTILS_HPP_

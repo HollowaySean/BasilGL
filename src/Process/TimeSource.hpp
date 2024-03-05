@@ -1,7 +1,8 @@
-#ifndef SRC_FRAME_TIMESOURCE_HPP_
-#define SRC_FRAME_TIMESOURCE_HPP_
+#ifndef SRC_PROCESS_TIMESOURCE_HPP_
+#define SRC_PROCESS_TIMESOURCE_HPP_
 
 #include <chrono>
+#include <thread>
 
 namespace basil {
 
@@ -40,4 +41,4 @@ class TimeSource {
 
 }  // namespace basil
 
-#endif  // SRC_FRAME_TIMESOURCE_HPP_
+#endif  // SRC_PROCESS_TIMESOURCE_HPP_
