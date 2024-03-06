@@ -2,9 +2,14 @@
 #define SRC_LOGGING_LOGGER_HPP_
 
 #include <iostream>
-#include <sstream>
 #include <map>
 #include <string>
+
+#ifdef TEST_BUILD
+#include <sstream>
+#include <thread>
+#include <unordered_map>
+#endif  // TEST_BUILD
 
 namespace basil {
 
@@ -46,43 +51,44 @@ class Logger {
     }
 
 #ifdef TEST_BUILD
-    std::string getLastOutput() {
-        return lastMessage;
-    }
 
-    LogLevel getLastLevel() {
-        return lastOutputLevel;
-    }
+    struct TestOutput {
+        TestOutput() : level(), message(""), didOutput(false) {}
 
-    bool didOutputLastMessage() {
-        return didOutput;
-    }
+        TestOutput(LogLevel level, std::string message, bool didOutput) :
+            level(level), message(message), didOutput(didOutput) {}
 
-    void clearTestInfo() {
-        lastOutputLevel = LogLevel::DEBUG;
-        lastMessage = "";
-        didOutput = false;
-    }
+        LogLevel level;
+        std::string message;
+        bool didOutput;
+    };
+
+    std::unordered_map<std::thread::id, TestOutput> lastOutputMap;
+
+    std::string getLastOutput();
+    LogLevel getLastLevel();
+    bool didOutputLastMessage();
+    void clearTestInfo();
 
  private:
+    TestOutput getLastOutputForThread();
+    void recordTestInfo(
+        LogLevel level, const std::string& message, bool didOutput);
+
     std::ostringstream stringStream;
     std::ostream& ostream = stringStream;
-
-    LogLevel lastOutputLevel = LogLevel::DEBUG;
-    std::string lastMessage = "";
-    bool didOutput = false;
 #else
 
  private:
     std::ostream& ostream = std::cout;
-#endif
+#endif  // TEST_BUILD
 
  private:
     #ifdef DEBUG_BUILD
         LogLevel logLevel = LogLevel::DEBUG;
     #else
         LogLevel logLevel = LogLevel::INFO;
-    #endif
+    #endif  // DEBUG_BUILD
 
     std::map<LogLevel, std::string> levelLabels = {
         {LogLevel::DEBUG,  "DEBUG"},
