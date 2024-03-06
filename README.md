@@ -18,6 +18,8 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
       - Revisit Frame directory to fix and simplify
       - GLTexture extension
       - ~~Better constructors for GL* classes~~
+      - Thread-independent logging test utilities
+      - Consolidate compile-time defaults and test directives
    - Hot reload shader pane?
    - Data model for setting uniforms & textures?
    - One or two actual examples
@@ -33,6 +35,7 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
       - Streamlined dependency intake
       - Visual Studio support
       - Github issues & projects
+      - Package manager distribution
 3. Output system
    - The ability to save screenshots and video
 4. Compute shader support

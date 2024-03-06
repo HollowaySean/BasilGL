@@ -1,20 +1,19 @@
 #include <catch.hpp>
 
-#include <Basil/Frame.hpp>
 #include <Basil/Process.hpp>
 
-using basil::IFrameProcess;
+using basil::IProcess;
 using basil::ProcessInstance;
 using basil::ProcessOrdinal;
 using basil::ProcessSchedule;
 
-class TestProcess : public IFrameProcess {
+class TestProcess : public IProcess {
     void onLoop() override {}
 };
 
 TEST_CASE("Process_ProcessSchedule_addProcess") {
     ProcessSchedule schedule = ProcessSchedule();
-    TestProcess process = TestProcess();
+    auto process = std::make_shared<TestProcess>();
 
     auto instance =
         std::make_shared<ProcessInstance>(process);
@@ -60,7 +59,7 @@ TEST_CASE("Process_ProcessSchedule_addProcess") {
 
 TEST_CASE("Process_ProcessSchedule_back") {
     ProcessSchedule schedule = ProcessSchedule();
-    TestProcess process = TestProcess();
+    auto process = std::make_shared<TestProcess>();
 
     auto instance =
         std::make_shared<ProcessInstance>(process);
@@ -95,7 +94,7 @@ TEST_CASE("Process_ProcessSchedule_back") {
 
 TEST_CASE("Process_ProcessSchedule_removeProcess") {
     ProcessSchedule schedule = ProcessSchedule();
-    TestProcess process = TestProcess();
+    auto process = std::make_shared<TestProcess>();
     auto firstInstance =
         std::make_shared<ProcessInstance>(process);
     auto secondInstance =

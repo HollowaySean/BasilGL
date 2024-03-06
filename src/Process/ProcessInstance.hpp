@@ -1,10 +1,12 @@
 #ifndef SRC_PROCESS_PROCESSINSTANCE_HPP_
 #define SRC_PROCESS_PROCESSINSTANCE_HPP_
 
+#include <memory>
 #include <string>
 
-#include <Basil/Frame.hpp>
+#include <Basil/Builder.hpp>
 
+#include "IProcess.hpp"
 #include "ProcessEnums.hpp"
 
 namespace basil {
@@ -12,15 +14,21 @@ namespace basil {
 /** @brief Struct containing metadata related to an instance of a process. */
 struct ProcessInstance {
  public:
-    /** @brief Create instance from IFrameProcess */
-    explicit ProcessInstance(const IFrameProcess& frameProcess)
-            : frameProcess(frameProcess) {
+    /** @brief Create instance from IProcess */
+    explicit ProcessInstance(std::shared_ptr<IProcess> process) {
+        this->process = process;
+
         processID = NEXT_ID++;
-        processName = DEFAULT_NAME + std::to_string(processID);
+
+        if (process->getProcessName().has_value()) {
+            processName = process->getProcessName().value();
+        } else {
+            processName = DEFAULT_NAME + std::to_string(processID);
+        }
     }
 
-    /** @brief Const reference to frame process */
-    const IFrameProcess& frameProcess;
+    /** @brief Shared pointer to frame process */
+    std::shared_ptr<IProcess> process;
 
     /** @brief Human readable name of process */
     std::string processName;
@@ -35,6 +43,9 @@ struct ProcessInstance {
     /** @returns Unique ID of process instance */
     unsigned int getID() { return processID; }
 
+    /** @returns Current state from IProcess */
+    ProcessState getCurrentState() { return process->getCurrentState(); }
+
 #ifndef TEST_BUILD
 
  private:
@@ -46,7 +57,7 @@ struct ProcessInstance {
     inline static const ProcessPrivilege DEFAULT_PRIVILEGE
         = ProcessPrivilege::NONE;
     inline static const std::string DEFAULT_NAME
-        = "anonymous";
+        = "process";
     inline static unsigned int NEXT_ID = 0;
 };
 

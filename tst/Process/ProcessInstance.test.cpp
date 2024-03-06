@@ -1,19 +1,20 @@
 #include <catch.hpp>
 
-#include <Basil/Frame.hpp>
 #include <Basil/Process.hpp>
 
-using basil::IFrameProcess;
+using basil::IProcess;
 using basil::ProcessInstance;
 using basil::ProcessPrivilege;
 using basil::ProcessOrdinal;
 
-class TestProcess : public IFrameProcess {
+class TestProcess : public IProcess {
+ public:
+    TestProcess() = default;
     void onLoop() override {}
 };
 
 TEST_CASE("Process_ProcessInstance_ProcessInstance") {
-    TestProcess process = TestProcess();
+    auto process = std::make_shared<TestProcess>();
 
     SECTION("Increments process ID") {
         ProcessInstance firstInstance = ProcessInstance(process);
