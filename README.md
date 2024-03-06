@@ -36,6 +36,8 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
       - Visual Studio support
       - Github issues & projects
       - Package manager distribution
+      - Separable tests
+      - Complete VS Code support
 3. Output system
    - The ability to save screenshots and video
 4. Compute shader support

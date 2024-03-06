@@ -28,13 +28,13 @@ class ProcessController {
 
     void addProcess(
         std::shared_ptr<IProcess> process,
-        std::optional<ProcessPrivilege> privilege);
+        std::optional<ProcessPrivilege> privilege = std::nullopt);
     void addEarlyProcess(
         std::shared_ptr<IProcess> process,
-        std::optional<ProcessPrivilege> privilege);
+        std::optional<ProcessPrivilege> privilege = std::nullopt);
     void addLateProcess(
         std::shared_ptr<IProcess> process,
-        std::optional<ProcessPrivilege> privilege);
+        std::optional<ProcessPrivilege> privilege = std::nullopt);
 
     void run();
     void stop();
@@ -45,7 +45,7 @@ class ProcessController {
     void setFrameCap(unsigned int framesPerSecond);
     unsigned int getFrameCap() { return frameCap; }
 
-#ifdef TEST_BUILD
+#ifndef TEST_BUILD
 
  private:
 #endif
@@ -53,7 +53,7 @@ class ProcessController {
 
     void sleepForRestOfFrame(FrameClock::time_point frameStartTime);
 
-    void addProcess(std::shared_ptr<IProcess> process,
+    void addProcessWithOrdinal(std::shared_ptr<IProcess> process,
         ProcessOrdinal ordinal,
         ProcessPrivilege privilege);
     void runProcessMethod(

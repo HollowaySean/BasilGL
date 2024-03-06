@@ -4,7 +4,7 @@ namespace basil {
 
 ProcessController::ProcessController() : schedule(), metrics(), timeSource() {}
 
-void ProcessController::addProcess(std::shared_ptr<IProcess> process,
+void ProcessController::addProcessWithOrdinal(std::shared_ptr<IProcess> process,
         ProcessOrdinal ordinal, ProcessPrivilege privilege) {
     auto processInstance = std::make_shared<ProcessInstance>(process);
 
@@ -16,21 +16,21 @@ void ProcessController::addProcess(std::shared_ptr<IProcess> process,
 
 void ProcessController::addProcess(std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege) {
-    addProcess(process,
+    addProcessWithOrdinal(process,
         ProcessOrdinal::MAIN,
         privilege.value_or(ProcessPrivilege::NONE));
 }
 
 void ProcessController::addEarlyProcess(std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege) {
-    addProcess(process,
+    addProcessWithOrdinal(process,
         ProcessOrdinal::EARLY,
         privilege.value_or(ProcessPrivilege::NONE));
 }
 
 void ProcessController::addLateProcess(std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege) {
-    addProcess(process,
+    addProcessWithOrdinal(process,
         ProcessOrdinal::LATE,
         privilege.value_or(ProcessPrivilege::NONE));
 }
