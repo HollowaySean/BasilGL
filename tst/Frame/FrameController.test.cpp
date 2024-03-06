@@ -19,7 +19,7 @@ using Instance  = FrameController::ProcessInstance;
 using Priv      = FrameController::Privilege;
 using Ordinal   = FrameController::Ordinal;
 
-class TestProcess : public IFrameProcess {
+class FrameTestProcess : public IFrameProcess {
  public:
     bool hasRunStart = false;
     bool hasRunLoop = false;
@@ -89,7 +89,7 @@ TEST_CASE("Frame_FrameController_FrameController") {
 
 TEST_CASE("Frame_FrameController_addProcess") {
     FrameController controller = FrameController();
-    TestProcess process = TestProcess();
+    FrameTestProcess process = FrameTestProcess();
 
     controller.addProcess(&process,
         Priv::LOW, "firstProcess");
@@ -169,8 +169,8 @@ TEST_CASE("Frame_FrameController_run") {
     Manager *manager = &controller.manager;
     FrameMetrics *metrics = &controller.metrics;
 
-    TestProcess firstProcess = TestProcess();
-    TestProcess secondProcess = TestProcess();
+    FrameTestProcess firstProcess = FrameTestProcess();
+    FrameTestProcess secondProcess = FrameTestProcess();
     NoOpProcess thirdProcess = NoOpProcess();
 
     controller.addProcess(&firstProcess);
@@ -215,7 +215,7 @@ TEST_CASE("Frame_FrameController_kill") {
 
 TEST_CASE("Frame_FrameController_shouldRunLoop") {
     FrameController controller = FrameController();
-    TestProcess process = TestProcess();
+    FrameTestProcess process = FrameTestProcess();
 
     SECTION("Returns false if no processes are present") {
         controller.currentState = FCState::RUNNING;
@@ -240,9 +240,9 @@ TEST_CASE("Frame_ProcessIterator_back") {
     Manager *manager = &controller.manager;
     Iterator *iterator = &(manager->processes);
 
-    TestProcess earlyProcess = TestProcess();
-    TestProcess mainProcess = TestProcess();
-    TestProcess lateProcess = TestProcess();
+    FrameTestProcess earlyProcess = FrameTestProcess();
+    FrameTestProcess mainProcess = FrameTestProcess();
+    FrameTestProcess lateProcess = FrameTestProcess();
 
     SECTION("Returns late.back if it exists") {
         controller.addProcess(&earlyProcess, Ordinal::EARLY);
@@ -271,7 +271,7 @@ TEST_CASE("Frame_ProcessIterator_back") {
 
 TEST_CASE("Frame_ProcessManager_addProcess") {
     FrameController controller = FrameController();
-    TestProcess process = TestProcess();
+    FrameTestProcess process = FrameTestProcess();
     Manager *manager = &controller.manager;
 
     SECTION("Does not add process if null") {
@@ -295,16 +295,16 @@ TEST_CASE("Frame_ProcessManager_removeProcess") {
     FrameController controller = FrameController();
     Manager *manager = &controller.manager;
 
-    TestProcess earlyProcess = TestProcess();
+    FrameTestProcess earlyProcess = FrameTestProcess();
     Instance *earlyInstance = new Instance {
         &earlyProcess, Priv::NONE, 0, "" };
-    TestProcess mainProcessOne = TestProcess();
+    FrameTestProcess mainProcessOne = FrameTestProcess();
     Instance *mainInstanceOne  = new Instance {
         &mainProcessOne, Priv::NONE, 1, "" };
-    TestProcess mainProcessTwo = TestProcess();
+    FrameTestProcess mainProcessTwo = FrameTestProcess();
     Instance *mainInstanceTwo  = new Instance {
         &mainProcessTwo, Priv::NONE, 2, "" };
-    TestProcess lateProcess = TestProcess();
+    FrameTestProcess lateProcess = FrameTestProcess();
     Instance *lateInstance     = new Instance {
         &lateProcess, Priv::NONE, 3, "" };
 
@@ -337,7 +337,7 @@ TEST_CASE("Frame_ProcessManager_removeProcess") {
 
 TEST_CASE("Frame_ProcessManager_hasProcesses") {
     FrameController controller = FrameController();
-    TestProcess process = TestProcess();
+    FrameTestProcess process = FrameTestProcess();
     Manager *manager = &controller.manager;
 
     SECTION("Returns false if no processes have been added") {
@@ -354,7 +354,7 @@ TEST_CASE("Frame_ProcessManager_runStart") {
     FrameController controller = FrameController();
     Manager *manager = &controller.manager;
 
-    TestProcess firstProcess = TestProcess();
+    FrameTestProcess firstProcess = FrameTestProcess();
     NoOpProcess secondProcess = NoOpProcess();
     controller.addProcess(&firstProcess);
     controller.addProcess(&secondProcess);
@@ -374,7 +374,7 @@ TEST_CASE("Frame_ProcessManager_runLoop") {
     FrameController controller = FrameController();
     Manager *manager = &controller.manager;
 
-    TestProcess firstProcess = TestProcess();
+    FrameTestProcess firstProcess = FrameTestProcess();
     NoOpProcess secondProcess = NoOpProcess();
     controller.addProcess(&firstProcess);
     controller.addProcess(&secondProcess);
@@ -394,7 +394,7 @@ TEST_CASE("Frame_ProcessManager_runStop") {
     FrameController controller = FrameController();
     Manager *manager = &controller.manager;
 
-    TestProcess firstProcess = TestProcess();
+    FrameTestProcess firstProcess = FrameTestProcess();
     NoOpProcess secondProcess = NoOpProcess();
     controller.addProcess(&firstProcess);
     controller.addProcess(&secondProcess);
@@ -415,8 +415,8 @@ TEST_CASE("Frame_ProcessManager_runMethod") {
     Manager *manager = &controller.manager;
     std::shared_ptr<ITimerSource> timer = controller.timerSource;
 
-    TestProcess firstProcess = TestProcess();
-    TestProcess secondProcess = TestProcess();
+    FrameTestProcess firstProcess = FrameTestProcess();
+    FrameTestProcess secondProcess = FrameTestProcess();
     NoOpProcess thirdProcess = NoOpProcess();
 
     bool didRunMethod = false;

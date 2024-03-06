@@ -14,7 +14,7 @@ namespace basil {
 class IProcess {
  public:
     /** @return Current state of process. */
-    virtual ProcessState getCurrentState() const {
+    ProcessState getCurrentState() const {
         return currentState;
     }
 
@@ -42,8 +42,8 @@ class IProcess {
  protected:
 #endif
     /** @brief Sets state of process. */
-    virtual void setCurrentState(ProcessState newState) {
-        newState = currentState;
+    void setCurrentState(ProcessState newState) {
+        currentState = newState;
     }
 
 #ifndef TEST_BUILD

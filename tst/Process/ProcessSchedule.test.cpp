@@ -2,14 +2,12 @@
 
 #include <Basil/Process.hpp>
 
+#include "ProcessTestUtils.hpp"
+
 using basil::IProcess;
 using basil::ProcessInstance;
 using basil::ProcessOrdinal;
 using basil::ProcessSchedule;
-
-class TestProcess : public IProcess {
-    void onLoop() override {}
-};
 
 TEST_CASE("Process_ProcessSchedule_addProcess") {
     ProcessSchedule schedule = ProcessSchedule();
