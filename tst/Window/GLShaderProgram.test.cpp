@@ -107,7 +107,7 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
         GLShaderProgram shaderProgram =
             GLShaderProgram(vertexShader, fragmentShader);
 
-        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
+        CHECK_NOFAIL(logger.getLastLevel() == LogLevel::ERROR);
     }
 }
 
