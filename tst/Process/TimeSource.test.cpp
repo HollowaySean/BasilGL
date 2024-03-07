@@ -12,12 +12,12 @@ TEST_CASE("Process_TimeSource_getTimestamp") {
     SECTION("Returns value specified by clock source") {
         TimeSource<TestClock> timeSource = TimeSource<TestClock>();
 
+        TestClock::setNextTimeStamp(0);
         REQUIRE(timeSource.getTimestamp() ==
             TestClock::time_point(TestClock::duration(0)));
-        TestClock::nextTimeStamp = 1;
+        TestClock::setNextTimeStamp(1);
         REQUIRE(timeSource.getTimestamp() ==
             TestClock::time_point(TestClock::duration(1)));
-        TestClock::nextTimeStamp = 0;
     }
 }
 

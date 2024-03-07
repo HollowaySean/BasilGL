@@ -15,10 +15,11 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
    - Ease of use for example setup
       - Specifically builders for public facing classes
    - Fill in gaps from P0
-      - Revisit Frame directory to fix and simplify
+      - ~~Revisit Frame directory to fix and simplify~~
       - GLTexture extension
       - ~~Better constructors for GL* classes~~
-      - Thread-independent logging test utilities
+      - ~~Thread-independent logging test utilities~~
+      - Turn thread-dependent variable into pattern
       - Consolidate compile-time defaults and test directives
    - Hot reload shader pane?
    - Data model for setting uniforms & textures?
