@@ -12,13 +12,12 @@
 // Include stubbed clock source for test build
 // TODO(sholloway): Consolidate definitions like these
 #ifdef TEST_BUILD
-
 #include "Process/ChronoTestUtils.hpp"
 using FrameClock = TestClock;
-
 #else
-    using FrameClock = std::chrono::steady_clock;
+using FrameClock = std::chrono::steady_clock;
 #endif
+using Timer = basil::TimeSource<FrameClock>;
 
 namespace basil {
 
@@ -74,8 +73,6 @@ class ProcessController {
 
  private:
 #endif
-    TimeSource<FrameClock> timeSource;
-
     void sleepForRestOfFrame(FrameClock::time_point frameStartTime);
 
     void addProcessWithOrdinal(std::shared_ptr<IProcess> process,

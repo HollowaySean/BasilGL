@@ -22,35 +22,47 @@ template <
 >
 class TimeSource {
  public:
-    TimeSource() {
-        static_assert(std::chrono::is_clock_v<T>,
+    // Must follow chrono's strict typing
+    static_assert(std::chrono::is_clock_v<T>,
             "T must be a Clock type from std::chrono");
-    }
 
     /** @returns Current time, as time point type P */
-    time_point getTimestamp() {
+    static time_point getTimestamp() {
         return T::now();
     }
 
     /** @brief Waits for a given duration */
-    void waitForDuration(duration sleepDuration) {
+    static void waitForDuration(duration sleepDuration) {
         std::this_thread::sleep_for(sleepDuration);
     }
 
     /** @brief Waits until a given time point */
-    void waitUntilTime(time_point wakeTime) {
+    static void waitUntilTime(time_point wakeTime) {
         std::this_thread::sleep_until(wakeTime);
     }
 
     /** @brief Calculates period for a given frequency */
-    duration frequencyToPeriod(double frequency) {
-        if (frequency == 0.) return std::chrono::seconds(0);
+    static duration frequencyToPeriod(double frequency) {
+        if (frequency == 0.) return duration::zero();
 
         int nanoSecondsPerPeriod = static_cast<int>(1'000'000'000. / frequency);
         auto timeInNanoseconds = std::chrono::nanoseconds(nanoSecondsPerPeriod);
 
         return duration(timeInNanoseconds);
     }
+
+    /** @brief Calculates frequency for a given period */
+    static double periodToFrequency(duration timeSpan) {
+        if (timeSpan == duration::zero()) return 0.;
+
+        auto timeInNanoseconds = std::chrono::nanoseconds(timeSpan);
+        double frequencyInHertz = 1'000'000'000 / timeInNanoseconds.count();
+
+        return frequencyInHertz;
+    }
+
+ private:
+    TimeSource() = delete;
 };
 
 }  // namespace basil

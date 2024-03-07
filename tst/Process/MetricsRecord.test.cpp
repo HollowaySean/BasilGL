@@ -7,9 +7,7 @@
 using basil::MetricsRecord;
 using basil::ProcessInstance;
 
-TestClock::duration getDuration(unsigned int durationInMS) {
-    return std::chrono::milliseconds(durationInMS);
-}
+using ms = std::chrono::milliseconds;
 
 TEST_CASE("Process_MetricsRecord_operator") {
     auto process = std::make_shared<TestProcess>();
@@ -19,40 +17,70 @@ TEST_CASE("Process_MetricsRecord_operator") {
 
     MetricsRecord firstRecord = MetricsRecord();
     firstRecord.frameID = 1;
-    firstRecord.frameTime = getDuration(100);
-    firstRecord.workTime = getDuration(50);
-    firstRecord.processTimes.emplace(instance1, getDuration(30));
-    firstRecord.processTimes.emplace(instance2, getDuration(20));
+    firstRecord.frameTime = ms(100);
+    firstRecord.workTime = ms(50);
+    firstRecord.processTimes.emplace(instance1, ms(30));
+    firstRecord.processTimes.emplace(instance2, ms(20));
 
     MetricsRecord secondRecord = MetricsRecord();
     secondRecord.frameID = 0;
-    secondRecord.frameTime = getDuration(80);
-    secondRecord.workTime = getDuration(40);
-    secondRecord.processTimes.emplace(instance1, getDuration(25));
-    secondRecord.processTimes.emplace(instance3, getDuration(15));
+    secondRecord.frameTime = ms(80);
+    secondRecord.workTime = ms(40);
+    secondRecord.processTimes.emplace(instance1, ms(25));
+    secondRecord.processTimes.emplace(instance3, ms(15));
 
     SECTION("operator+ adds subfields") {
         MetricsRecord result = firstRecord + secondRecord;
 
         REQUIRE(result.frameID      == 1);
-        REQUIRE(result.frameTime    == getDuration(180));
-        REQUIRE(result.workTime     == getDuration(90));
+        REQUIRE(result.frameTime    == ms(180));
+        REQUIRE(result.workTime     == ms(90));
 
         REQUIRE(result.processTimes.size()      == 3);
-        REQUIRE(result.processTimes[instance1]  == getDuration(55));
-        REQUIRE(result.processTimes[instance2]  == getDuration(20));
-        REQUIRE(result.processTimes[instance3]  == getDuration(15));
+        REQUIRE(result.processTimes[instance1]  == ms(55));
+        REQUIRE(result.processTimes[instance2]  == ms(20));
+        REQUIRE(result.processTimes[instance3]  == ms(15));
     }
 
     SECTION("operator- subtracts subfields") {
         MetricsRecord result = firstRecord - secondRecord;
 
         REQUIRE(result.frameID      == 1);
-        REQUIRE(result.frameTime    == getDuration(20));
-        REQUIRE(result.workTime     == getDuration(10));
+        REQUIRE(result.frameTime    == ms(20));
+        REQUIRE(result.workTime     == ms(10));
 
         REQUIRE(result.processTimes.size()      == 2);
-        REQUIRE(result.processTimes[instance1]  == getDuration(5));
-        REQUIRE(result.processTimes[instance2]  == getDuration(20));
+        REQUIRE(result.processTimes[instance1]  == ms(5));
+        REQUIRE(result.processTimes[instance2]  == ms(20));
+    }
+
+    SECTION("operator/ divides by integer") {
+        MetricsRecord result = firstRecord / 5;
+
+        REQUIRE(result.frameID      == 1);
+        REQUIRE(result.frameTime    == ms(20));
+        REQUIRE(result.workTime     == ms(10));
+
+        REQUIRE(result.processTimes.size()      == 2);
+        REQUIRE(result.processTimes[instance1]  == ms(6));
+        REQUIRE(result.processTimes[instance2]  == ms(4));
+    }
+}
+
+TEST_CASE("Process_MetricsRecord_getFrameRate") {
+    MetricsRecord record = MetricsRecord();
+    record.frameTime = ms(100);
+
+    SECTION("Calculates from frame time") {
+        REQUIRE(record.getFrameRate() == 10.);
+    }
+}
+
+TEST_CASE("Process_MetricsRecord_getUncappedFrameRate") {
+    MetricsRecord record = MetricsRecord();
+    record.workTime = ms(50);
+
+    SECTION("Calculates from work time") {
+        REQUIRE(record.getUncappedFrameRate() == 20.);
     }
 }

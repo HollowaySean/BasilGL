@@ -2,7 +2,7 @@
 
 namespace basil {
 
-ProcessController::ProcessController() : schedule(), metrics(), timeSource() {}
+ProcessController::ProcessController() : schedule(), metrics() {}
 
 void ProcessController::addProcessWithOrdinal(std::shared_ptr<IProcess> process,
         ProcessOrdinal ordinal, ProcessPrivilege privilege) {
@@ -63,20 +63,20 @@ void ProcessController::kill() {
 
 void ProcessController::setFrameCap(unsigned int framesPerSecond) {
     frameCap = framesPerSecond;
-    frameTime = timeSource.frequencyToPeriod(framesPerSecond);
+    frameTime = Timer::frequencyToPeriod(framesPerSecond);
 }
 
 void ProcessController::runProcessMethod(
         std::function<void(std::shared_ptr<IProcess>)> method) {
-    auto frameStartTime = timeSource.getTimestamp();
+    auto frameStartTime = Timer::getTimestamp();
 
     for (auto instance = schedule.begin();
             instance != schedule.end();
             instance = schedule.next()) {
         if (shouldRunProcess(*instance)) {
-            auto processStartTime = timeSource.getTimestamp();
+            auto processStartTime = Timer::getTimestamp();
             method((*instance)->process);
-            auto processStopTime = timeSource.getTimestamp();
+            auto processStopTime = Timer::getTimestamp();
 
             auto processDuration = processStopTime - processStartTime;
             metrics.recordProcessTime(*instance, processDuration);
@@ -85,12 +85,12 @@ void ProcessController::runProcessMethod(
         interpretProcessState(*instance);
     }
 
-    auto frameStopTime = timeSource.getTimestamp();
+    auto frameStopTime = Timer::getTimestamp();
     metrics.recordWorkEnd(frameStopTime);
 
     sleepForRestOfFrame(frameStartTime);
 
-    auto wakeTime = timeSource.getTimestamp();
+    auto wakeTime = Timer::getTimestamp();
     metrics.recordFrameEnd(wakeTime);
 }
 
@@ -122,7 +122,7 @@ void ProcessController::interpretProcessState(
 void ProcessController::sleepForRestOfFrame(
         FrameClock::time_point frameStartTime) {
     auto frameWakeTime = frameStartTime + frameTime;
-    timeSource.waitUntilTime(frameWakeTime);
+    Timer::waitUntilTime(frameWakeTime);
 }
 
 bool ProcessController::shouldRunProcess(

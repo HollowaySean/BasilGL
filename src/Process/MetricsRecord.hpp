@@ -6,20 +6,26 @@
 #include <memory>
 
 #include "ProcessInstance.hpp"
+#include "TimeSource.hpp"
 
+// Include stubbed clock source for test build
+// TODO(sholloway): Consolidate definitions like these
 #ifdef TEST_BUILD
-
 #include "Process/ChronoTestUtils.hpp"
 using FrameClock = TestClock;
-
 #else
-    using FrameClock = std::chrono::steady_clock;
+using FrameClock = std::chrono::steady_clock;
 #endif
+using Timer = basil::TimeSource<FrameClock>;
 
 namespace basil {
 
 struct MetricsRecord {
  public:
+    /** @brief Initialize record with all zeros. */
+    explicit MetricsRecord(unsigned int frameID = 0)
+        : frameID(frameID) {}
+
     /** @brief Frame number that this record represeents. */
     unsigned int frameID;
 
