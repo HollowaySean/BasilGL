@@ -67,8 +67,9 @@ TEST_CASE("Process_ProcessController_run") {
         controller.addProcess(process, ProcessPrivilege::HIGH);
         controller.run();
 
-        REQUIRE(controller.getCurrentState()
-            == ProcessControllerState::STOPPED);
+        REQUIRE(process->didStart);
+        REQUIRE(process->didLoop);
+        REQUIRE(process->didStop);
 
         REQUIRE(process->startPCState
             == ProcessControllerState::STARTING);
@@ -76,6 +77,27 @@ TEST_CASE("Process_ProcessController_run") {
             == ProcessControllerState::RUNNING);
         REQUIRE(process->stopPCState
             == ProcessControllerState::STOPPING);
+        REQUIRE(controller.getCurrentState()
+            == ProcessControllerState::STOPPED);
+    }
+
+    SECTION("Does not continue if killed") {
+        REQUIRE(controller.getCurrentState()
+            == ProcessControllerState::READY);
+
+        process->stateAfterStart = ProcessState::REQUEST_KILL;
+
+        controller.addProcess(process, ProcessPrivilege::HIGH);
+        controller.run();
+
+        REQUIRE(process->startPCState
+            == ProcessControllerState::STARTING);
+        REQUIRE(controller.getCurrentState()
+            == ProcessControllerState::KILLED);
+
+        REQUIRE(process->didStart);
+        REQUIRE_FALSE(process->didLoop);
+        REQUIRE_FALSE(process->didStop);
     }
 }
 

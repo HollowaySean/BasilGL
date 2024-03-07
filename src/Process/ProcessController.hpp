@@ -22,27 +22,52 @@ using FrameClock = TestClock;
 
 namespace basil {
 
+/** @brief Class which manages processes, keeps time, and records metrics. */
 class ProcessController {
  public:
+    /** @brief Create new process controller. */
     ProcessController();
 
+    /** @brief Add process to main schedule.
+     *  @param process      Pointer to IProcess to add
+     *  @param privilege    Optional privilege level for process
+    */
     void addProcess(
         std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege = std::nullopt);
+
+    /** @brief Add process to early schedule.
+     *  @param process      Pointer to IProcess to add
+     *  @param privilege    Optional privilege level for process
+    */
     void addEarlyProcess(
         std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege = std::nullopt);
+
+    /** @brief Add process to late schedule.
+     *  @param process      Pointer to IProcess to add
+     *  @param privilege    Optional privilege level for process
+    */
     void addLateProcess(
         std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege = std::nullopt);
 
+    /** @brief Starts running processes. */
     void run();
+
+    /** @brief Gracefully stops running. */
     void stop();
+
+    /** @brief Stops running immediately. */
     void kill();
 
+    /** @brief Current state enum of controller. */
     ProcessControllerState getCurrentState() { return currentState; }
 
+    /** @brief Cap frame rate to specific value. */
     void setFrameCap(unsigned int framesPerSecond);
+
+    /** @brief Get maximum frame rate. */
     unsigned int getFrameCap() { return frameCap; }
 
 #ifndef TEST_BUILD

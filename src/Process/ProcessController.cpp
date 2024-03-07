@@ -38,11 +38,15 @@ void ProcessController::addLateProcess(std::shared_ptr<IProcess> process,
 void ProcessController::run() {
     currentState = ProcessControllerState::STARTING;
     runProcessMethod(startMethod);
-    currentState = ProcessControllerState::RUNNING;
 
+    if (currentState == ProcessControllerState::KILLED) return;
+
+    currentState = ProcessControllerState::RUNNING;
     while (shouldContinueLoop()) {
         runProcessMethod(loopMethod);
     }
+
+    if (currentState == ProcessControllerState::KILLED) return;
 
     currentState = ProcessControllerState::STOPPING;
     runProcessMethod(stopMethod);
