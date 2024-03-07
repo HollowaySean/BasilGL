@@ -49,7 +49,7 @@ class TimeSource {
         int nanoSecondsPerPeriod = static_cast<int>(1'000'000'000. / frequency);
         auto timeInNanoseconds = std::chrono::nanoseconds(nanoSecondsPerPeriod);
 
-        return std::chrono::duration_cast<duration>(timeInNanoseconds);
+        return duration(timeInNanoseconds);
     }
 };
 

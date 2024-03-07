@@ -129,9 +129,8 @@ TEST_CASE("Process_ProcessController_setFrameCap") {
         controller.setFrameCap(50);
 
         REQUIRE(controller.frameCap == 50);
-        REQUIRE(controller.frameTime ==
-            std::chrono::duration_cast<FrameClock::duration>(
-                std::chrono::milliseconds(200)));
+        TestClock::duration durNS = std::chrono::milliseconds(20);
+        REQUIRE(controller.frameTime == durNS);
     }
 }
 
@@ -217,8 +216,7 @@ TEST_CASE("Process_ProcessController_sleepForRestOfFrame") {
         unsigned int frameStartTimeCount =
             frameStartTime.time_since_epoch().count();
 
-        controller.frameTime = std::chrono::duration_cast<TestClock::duration>(
-            std::chrono::milliseconds(100));
+        controller.frameTime = std::chrono::milliseconds(100);
         unsigned int frameTimeCount = controller.frameTime.count();
 
         controller.sleepForRestOfFrame(frameStartTime);

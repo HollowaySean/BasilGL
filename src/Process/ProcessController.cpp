@@ -86,10 +86,12 @@ void ProcessController::runProcessMethod(
     }
 
     auto frameStopTime = timeSource.getTimestamp();
-    auto frameDuration = frameStopTime - frameStartTime;
-    metrics.recordFrameTime(frameDuration);
+    metrics.recordWorkEnd(frameStopTime);
 
     sleepForRestOfFrame(frameStartTime);
+
+    auto wakeTime = timeSource.getTimestamp();
+    metrics.recordFrameEnd(wakeTime);
 }
 
 void ProcessController::interpretProcessState(
