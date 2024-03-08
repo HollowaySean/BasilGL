@@ -55,6 +55,20 @@ MetricsRecord MetricsRecord::operator/(int divisor) {
     return *this;
 }
 
+bool MetricsRecord::isEqual(const MetricsRecord& comparison) {
+    bool samePrimitives =
+            frameID      == comparison.frameID
+        &&  frameTime    == comparison.frameTime
+        &&  workTime     == comparison.workTime;
+
+    bool sameMap =
+        processTimes.size() == comparison.processTimes.size()
+            && std::equal(processTimes.begin(), processTimes.end(),
+                          comparison.processTimes.begin());
+
+    return samePrimitives && sameMap;
+}
+
 double MetricsRecord::getFrameRate() {
     return Timer::periodToFrequency(frameTime);
 }

@@ -23,7 +23,7 @@ TEST_CASE("Process_MetricsRecord_operator") {
     firstRecord.processTimes.emplace(instance2, ms(20));
 
     MetricsRecord secondRecord = MetricsRecord();
-    secondRecord.frameID = 0;
+    secondRecord.frameID = 2;
     secondRecord.frameTime = ms(80);
     secondRecord.workTime = ms(40);
     secondRecord.processTimes.emplace(instance1, ms(25));
@@ -32,7 +32,7 @@ TEST_CASE("Process_MetricsRecord_operator") {
     SECTION("operator+ adds subfields") {
         MetricsRecord result = firstRecord + secondRecord;
 
-        REQUIRE(result.frameID      == 1);
+        REQUIRE(result.frameID      == 2);
         REQUIRE(result.frameTime    == ms(180));
         REQUIRE(result.workTime     == ms(90));
 
@@ -45,7 +45,7 @@ TEST_CASE("Process_MetricsRecord_operator") {
     SECTION("operator- subtracts subfields") {
         MetricsRecord result = firstRecord - secondRecord;
 
-        REQUIRE(result.frameID      == 1);
+        REQUIRE(result.frameID      == 2);
         REQUIRE(result.frameTime    == ms(20));
         REQUIRE(result.workTime     == ms(10));
 
@@ -64,6 +64,16 @@ TEST_CASE("Process_MetricsRecord_operator") {
         REQUIRE(result.processTimes.size()      == 2);
         REQUIRE(result.processTimes[instance1]  == ms(6));
         REQUIRE(result.processTimes[instance2]  == ms(4));
+    }
+
+    SECTION("operator== and operator!=") {
+        MetricsRecord equalRecord = firstRecord;
+
+        REQUIRE(firstRecord.isEqual(equalRecord));
+        REQUIRE(equalRecord.isEqual(firstRecord));
+
+        REQUIRE_FALSE(firstRecord.isEqual(secondRecord));
+        REQUIRE_FALSE(secondRecord.isEqual(firstRecord));
     }
 }
 

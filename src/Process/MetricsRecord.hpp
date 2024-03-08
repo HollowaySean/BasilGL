@@ -48,6 +48,8 @@ struct MetricsRecord {
     MetricsRecord operator+(MetricsRecord addend);
     MetricsRecord operator-(MetricsRecord subtrahend);
     MetricsRecord operator/(int divisor);
+
+    bool isEqual(const MetricsRecord& comparison);
 };
 
 }  // namespace basil
