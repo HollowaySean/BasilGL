@@ -20,11 +20,7 @@ namespace basil {
 class MetricsReporter : public IProcess {
  public:
     /** @brief Create MetricsReporter object. */
-    explicit MetricsReporter(
-        std::optional<std::shared_ptr<ProcessController>> controller = std::nullopt);
-
-    /** @brief Set pointer to ProcessController to monitor. */
-    void setController(std::shared_ptr<ProcessController> controller);
+    MetricsReporter();
 
     /** @brief Main loop function for ProcessController. */
     void onLoop() override;
@@ -41,8 +37,6 @@ class MetricsReporter : public IProcess {
 
  private:
 #endif
-    std::shared_ptr<MetricsObserver> metrics;
-
     Logger& logger = Logger::get();
     LogLevel logLevel = LogLevel::INFO;
 

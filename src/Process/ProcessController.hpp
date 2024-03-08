@@ -4,7 +4,9 @@
 #include <functional>
 #include <memory>
 
+#include "IProcess.hpp"
 #include "ProcessEnums.hpp"
+#include "ProcessInstance.hpp"
 #include "ProcessSchedule.hpp"
 #include "MetricsObserver.hpp"
 #include "TimeSource.hpp"
@@ -22,7 +24,8 @@ using Timer = basil::TimeSource<FrameClock>;
 namespace basil {
 
 /** @brief Class which manages processes, keeps time, and records metrics. */
-class ProcessController {
+class ProcessController :
+    private std::enable_shared_from_this<ProcessController> {
  public:
     /** @brief Create new process controller. */
     ProcessController();
@@ -70,7 +73,7 @@ class ProcessController {
     unsigned int getFrameCap() { return frameCap; }
 
     /** @return Pointer to metrics observer. */
-    std::shared_ptr<MetricsObserver> getMetricsObserver() { return metrics; }
+    MetricsObserver& getMetricsObserver() { return metrics; }
 
 #ifndef TEST_BUILD
 
@@ -99,8 +102,7 @@ class ProcessController {
         = [](std::shared_ptr<IProcess> process) { process->onStop(); };
 
     ProcessSchedule schedule;
-
-    std::shared_ptr<MetricsObserver> metrics;
+    MetricsObserver metrics;
 
     ProcessControllerState currentState = ProcessControllerState::READY;
     unsigned int frameCap = 0;

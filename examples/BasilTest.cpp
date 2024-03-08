@@ -44,9 +44,9 @@ int main(int argc, char** argv) {
 
     controller.addProcess(std::move(windowView), ProcessPrivilege::HIGH);
 
-    auto metricsReporter = std::make_shared<MetricsReporter>(
-        std::make_shared<ProcessController>(controller));
+    auto metricsReporter = std::make_shared<MetricsReporter>();
     metricsReporter->setRegularity(30);
+
     controller.addProcess(metricsReporter);
 
     controller.setFrameCap(30);

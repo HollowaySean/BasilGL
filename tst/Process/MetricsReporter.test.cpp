@@ -12,12 +12,14 @@ using basil::MetricsObserver;
 using basil::ProcessInstance;
 
 TEST_CASE("Process_MetricsReporter_onLoop") {
-    auto observer = std::make_shared<MetricsObserver>();
+    auto controller = std::make_shared<ProcessController>();
+    MetricsObserver& observer = controller->getMetricsObserver();
+
     auto process = std::make_shared<TestProcess>();
     auto instance = std::make_shared<ProcessInstance>(process);
 
     MetricsReporter reporter = MetricsReporter();
-    reporter.metrics = observer;
+    reporter.onRegister(controller.get());
     reporter.regularity = 10;
 
     MetricsRecord record = MetricsRecord();
@@ -31,8 +33,8 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
 
     SECTION("Does not log on first frame") {
         record.frameID = 0;
-        observer->buffer.emplace(record);
-        observer->sum = record;
+        observer.buffer.emplace(record);
+        observer.sum = record;
 
         logger.clearTestInfo();
         reporter.onLoop();
@@ -41,8 +43,8 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
 
     SECTION("Does not log on non-multiple frame of regularity") {
         record.frameID = 11;
-        observer->buffer.emplace(record);
-        observer->sum = record;
+        observer.buffer.emplace(record);
+        observer.sum = record;
 
         logger.clearTestInfo();
         reporter.onLoop();
@@ -51,25 +53,11 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
 
     SECTION("Logs on multiple frame of regularity") {
         record.frameID = 10;
-        observer->buffer.emplace(record);
-        observer->sum = record;
+        observer.buffer.emplace(record);
+        observer.sum = record;
 
         logger.clearTestInfo();
         reporter.onLoop();
         REQUIRE_FALSE(logger.getLastOutput() == "");
-    }
-}
-
-TEST_CASE("Process_MetricsReporter_MetricsReporter") {
-    auto controller = std::make_shared<ProcessController>();
-
-    SECTION("Optionally sets ProcessController") {
-        MetricsReporter reporter = MetricsReporter(controller);
-        REQUIRE(reporter.metrics == controller->getMetricsObserver());
-    }
-
-    SECTION("Builds without ProcessController") {
-        MetricsReporter reporter = MetricsReporter();
-        REQUIRE(reporter.metrics == nullptr);
     }
 }

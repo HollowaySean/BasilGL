@@ -7,6 +7,17 @@
 using basil::IProcess;
 using basil::ProcessState;
 
+TEST_CASE("Process_IProcess_onRegister") {
+    SECTION("Saves pointer to controller") {
+        auto process = std::make_shared<TestProcess>();
+        ProcessController controller = ProcessController();
+
+        REQUIRE(process->controller == nullptr);
+        controller.addProcess(process);
+        REQUIRE(process->controller == &controller);
+    }
+}
+
 TEST_CASE("Process_IProcess_onStart") {
     SECTION("Runs overriden start method") {
         TestProcess process = TestProcess();

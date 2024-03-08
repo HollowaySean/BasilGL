@@ -47,8 +47,7 @@ TEST_CASE("Process_ProcessController_addProcess") {
 
 TEST_CASE("Process_ProcessController_run") {
     ProcessController controller = ProcessController();
-    std::shared_ptr<TestProcess> process
-        = std::make_shared<TestProcess>(&controller);
+    auto process = std::make_shared<TestProcess>();
 
     SECTION("Falls through if no processes") {
         REQUIRE(controller.getCurrentState()
