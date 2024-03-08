@@ -1,5 +1,5 @@
-#ifndef SRC_PROCESS_METRICSREPORTER_HPP_
-#define SRC_PROCESS_METRICSREPORTER_HPP_
+#ifndef SRC_UTILITY_METRICSREPORTER_HPP_
+#define SRC_UTILITY_METRICSREPORTER_HPP_
 
 #include <fmt/core.h>
 
@@ -7,10 +7,7 @@
 #include <string>
 
 #include <Basil/Logging.hpp>
-
-#include "IProcess.hpp"
-#include "MetricsObserver.hpp"
-#include "ProcessController.hpp"
+#include <Basil/Process.hpp>
 
 namespace basil {
 
@@ -61,4 +58,4 @@ class MetricsReporter : public IProcess,
 
 }  // namespace basil
 
-#endif  // SRC_PROCESS_METRICSREPORTER_HPP_
+#endif  // SRC_UTILITY_METRICSREPORTER_HPP_

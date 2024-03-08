@@ -1,6 +1,9 @@
+#include <Basil/App.hpp>
 #include <Basil/Process.hpp>
+#include <Basil/Utility.hpp>
 #include <Basil/Window.hpp>
 
+using basil::BasilApp;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
@@ -24,34 +27,32 @@ int main(int argc, char** argv) {
     auto fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
 
-    auto windowView = WindowView::Builder()
-        .withTitle("My window")
-        .withDimensions(500, 500)
-        .withTopPane(SplitPane::Builder()
-            .withFirstPane(GLShaderPane::Builder()
-                .fromShaderFile(fragmentPath)
+    auto basilApp = BasilApp::Builder()
+        .withWindow(WindowView::Builder()
+            .withTitle("My window")
+            .withDimensions(500, 500)
+            .withTopPane(SplitPane::Builder()
+                .withFirstPane(GLShaderPane::Builder()
+                    .fromShaderFile(fragmentPath)
+                    .build())
+                .withSecondPane(GLShaderPane::Builder()
+                    .fromShaderFile(fragmentPath)
+                    .build())
+                .withOrientation(PaneOrientation::VERTICAL)
+                .withGapWidth(5)
+                .withPaneExtentInPercent(66.6)
                 .build())
-            .withSecondPane(GLShaderPane::Builder()
-                .fromShaderFile(fragmentPath)
+            .build())
+        .withController(ProcessController::Builder()
+            .withFrameCap(30)
+            .withLateProcess(MetricsReporter::Builder()
+                .withLogLevel(LogLevel::INFO)
+                .withRegularity(30)
                 .build())
-            .withOrientation(PaneOrientation::VERTICAL)
-            .withGapWidth(5)
-            .withPaneExtentInPercent(66.6)
             .build())
         .build();
 
-    auto metricsReporter = MetricsReporter::Builder()
-        .withLogLevel(LogLevel::INFO)
-        .withRegularity(30)
-        .build();
-
-    auto controller = ProcessController::Builder()
-        .withFrameCap(30)
-        .withProcess(std::move(windowView), ProcessPrivilege::HIGH)
-        .withLateProcess(std::move(metricsReporter))
-        .build();
-
-    controller->run();
+    basilApp->run();
 
     return 0;
 }

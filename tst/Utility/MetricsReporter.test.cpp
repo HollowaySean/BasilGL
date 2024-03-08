@@ -1,8 +1,8 @@
 #include <catch.hpp>
 
-#include <Basil/Process.hpp>
+#include <Basil/Utility.hpp>
 
-#include "ProcessTestUtils.hpp"
+#include "Process/ProcessTestUtils.hpp"
 
 using basil::Logger;
 using basil::LogLevel;
