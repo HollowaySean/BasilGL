@@ -17,7 +17,8 @@ namespace basil {
 /** @brief Utility FrameProcess that prints frame rate to
  *  the command line.
 */
-class MetricsReporter : public IProcess {
+class MetricsReporter : public IProcess,
+                        public IBuildable<MetricsReporter> {
  public:
     /** @brief Create MetricsReporter object. */
     MetricsReporter();
@@ -32,6 +33,21 @@ class MetricsReporter : public IProcess {
     void setRegularity(unsigned int regularity) {
         this->regularity = regularity;
     }
+
+    /** @brief Set severity level for logging. */
+    void setLogLevel(LogLevel level) {
+        this->logLevel = level;
+    }
+
+    /** @brief Builder pattern for MetricsReporter. */
+    class Builder : public IBuilder<MetricsReporter> {
+     public:
+        /** @brief Set number of frames per print out. */
+        Builder& withRegularity(unsigned int regularity);
+
+        /** @brief Set severity level for logging*/
+        Builder& withLogLevel(LogLevel level);
+    };
 
 #ifndef TEST_BUILD
 

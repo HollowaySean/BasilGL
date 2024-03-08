@@ -42,4 +42,16 @@ void MetricsReporter::onLoop() {
     }
 }
 
+MetricsReporter::Builder&
+MetricsReporter::Builder::withRegularity(unsigned int regularity) {
+    impl->setRegularity(regularity);
+    return *this;
+}
+
+MetricsReporter::Builder&
+MetricsReporter::Builder::withLogLevel(LogLevel level) {
+    impl->setLogLevel(level);
+    return *this;
+}
+
 }  // namespace basil

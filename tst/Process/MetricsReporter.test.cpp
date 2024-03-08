@@ -61,3 +61,15 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
         REQUIRE_FALSE(logger.getLastOutput() == "");
     }
 }
+
+TEST_CASE("Process_MetricsReporter_Builder") {
+    SECTION("Builds MetricsReporter object") {
+        auto reporter = MetricsReporter::Builder()
+            .withLogLevel(LogLevel::DEBUG)
+            .withRegularity(25)
+            .build();
+
+        REQUIRE(reporter->regularity == 25);
+        REQUIRE(reporter->logLevel == LogLevel::DEBUG);
+    }
+}

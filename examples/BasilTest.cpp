@@ -5,8 +5,8 @@ using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
 using basil::GLShaderPane;
+using basil::LogLevel;
 using basil::MetricsReporter;
-using basil::PaneProps;
 using basil::PaneOrientation;
 using basil::ProcessController;
 using basil::ProcessPrivilege;
@@ -40,13 +40,15 @@ int main(int argc, char** argv) {
             .build())
         .build();
 
-    auto metricsReporter = std::make_shared<MetricsReporter>();
-    metricsReporter->setRegularity(30);
+    auto metricsReporter = MetricsReporter::Builder()
+        .withLogLevel(LogLevel::INFO)
+        .withRegularity(30)
+        .build();
 
     auto controller = ProcessController::Builder()
         .withFrameCap(30)
         .withProcess(std::move(windowView), ProcessPrivilege::HIGH)
-        .withLateProcess(metricsReporter)
+        .withLateProcess(std::move(metricsReporter))
         .build();
 
     controller->run();
