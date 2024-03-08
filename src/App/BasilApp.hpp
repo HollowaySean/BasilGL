@@ -9,6 +9,7 @@
 
 namespace basil {
 
+// TODO(sholloway): Documentation
 class BasilApp : public IBuildable<BasilApp> {
  public:
     void run();
@@ -30,7 +31,10 @@ class BasilApp : public IBuildable<BasilApp> {
         std::unique_ptr<BasilApp> build() override;
     };
 
+#ifndef TEST_BUILD
+
  private:
+#endif
     std::shared_ptr<ProcessController> processController;
     std::shared_ptr<WindowView> windowView;
 };
