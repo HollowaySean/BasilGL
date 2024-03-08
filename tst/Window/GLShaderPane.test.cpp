@@ -2,7 +2,7 @@
 
 #include <Basil/Window.hpp>
 
-#include "TestUtils.hpp"
+#include "GLTestUtils.hpp"
 
 using basil::BasilContextLock;
 using basil::GLVertexShader;

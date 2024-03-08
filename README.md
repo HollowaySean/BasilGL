@@ -15,13 +15,19 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
    - Ease of use for example setup
       - Specifically builders for public facing classes
    - Fill in gaps from P0
+      - ~~Revisit Frame directory to fix and simplify~~
       - GLTexture extension
-      - Better constructors for GL* classes
+      - ~~Better constructors for GL* classes~~
+      - ~~Thread-independent logging test utilities~~
+      - Turn thread-dependent variable into pattern
+      - Consolidate compile-time defaults and test directives
+   - Hot reload shader pane?
    - Data model for setting uniforms & textures?
    - One or two actual examples
 2. CI/CD and build system improvements
    - This phase is essentially the "v1.0" release, with user-friendly documentation and build systems
    - Wishlist:
+      - A real README
       - Multi platform support
       - Installation
       - Auto releases with tags, binaries, and Doxygen pages
@@ -30,6 +36,9 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
       - Streamlined dependency intake
       - Visual Studio support
       - Github issues & projects
+      - Package manager distribution
+      - Separable tests
+      - Complete VS Code support
 3. Output system
    - The ability to save screenshots and video
 4. Compute shader support

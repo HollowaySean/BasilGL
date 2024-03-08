@@ -2,16 +2,23 @@
 #define SRC_LOGGING_LOGGER_HPP_
 
 #include <iostream>
-#include <sstream>
 #include <map>
 #include <string>
+
+#ifdef TEST_BUILD
+#include <sstream>
+#include <thread>
+#include <unordered_map>
+#endif  // TEST_BUILD
 
 namespace basil {
 
 /**
  * @brief Severity level for log message.
 */
-enum LogLevel { DEBUG, INFO, WARN, ERROR };
+enum class LogLevel {
+    DEBUG, INFO, WARN, ERROR
+};
 
 /**
  * @brief Global logger using Singleton pattern.
@@ -23,13 +30,13 @@ class Logger {
      *  @param message  Message to log.
      *  @param level    Severity level, defaults to "DEBUG".
     */
-    void log(const std::string& message, LogLevel level = DEBUG);
+    void log(const std::string& message, LogLevel level = LogLevel::DEBUG);
 
     /**
      * @brief           Logs line break to output stream
      * @param level     Severity level, defaults to "DEBUG".
     */
-    void lineBreak(LogLevel level = DEBUG);
+    void lineBreak(LogLevel level = LogLevel::DEBUG);
 
     /** @return Get minimum severity level to output to ostream. */
     LogLevel getLevel() { return logLevel; }
@@ -44,43 +51,44 @@ class Logger {
     }
 
 #ifdef TEST_BUILD
-    std::string getLastOutput() {
-        return lastMessage;
-    }
 
-    LogLevel getLastLevel() {
-        return lastOutputLevel;
-    }
+    struct TestOutput {
+        TestOutput() : level(), message(""), didOutput(false) {}
 
-    bool didOutputLastMessage() {
-        return didOutput;
-    }
+        TestOutput(LogLevel level, std::string message, bool didOutput) :
+            level(level), message(message), didOutput(didOutput) {}
 
-    void clearTestInfo() {
-        lastOutputLevel = DEBUG;
-        lastMessage = "";
-        didOutput = false;
-    }
+        LogLevel level;
+        std::string message;
+        bool didOutput;
+    };
+
+    std::unordered_map<std::thread::id, TestOutput> lastOutputMap;
+
+    std::string getLastOutput();
+    LogLevel getLastLevel();
+    bool didOutputLastMessage();
+    void clearTestInfo();
 
  private:
+    TestOutput getLastOutputForThread();
+    void recordTestInfo(
+        LogLevel level, const std::string& message, bool didOutput);
+
     std::ostringstream stringStream;
     std::ostream& ostream = stringStream;
-
-    LogLevel lastOutputLevel = DEBUG;
-    std::string lastMessage = "";
-    bool didOutput = false;
 #else
 
  private:
     std::ostream& ostream = std::cout;
-#endif
+#endif  // TEST_BUILD
 
  private:
     #ifdef DEBUG_BUILD
-        LogLevel logLevel = DEBUG;
+        LogLevel logLevel = LogLevel::DEBUG;
     #else
-        LogLevel logLevel = INFO;
-    #endif
+        LogLevel logLevel = LogLevel::INFO;
+    #endif  // DEBUG_BUILD
 
     std::map<LogLevel, std::string> levelLabels = {
         {LogLevel::DEBUG,  "DEBUG"},

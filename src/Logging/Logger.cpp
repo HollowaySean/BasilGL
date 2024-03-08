@@ -8,16 +8,11 @@ void Logger::log(const std::string& message, LogLevel level) {
         ostream << "[" << label << "]: " << message << std::endl;
 
         #ifdef TEST_BUILD
-        didOutput = true;
+        recordTestInfo(level, message, true);
     } else {
-        didOutput = false;
+        recordTestInfo(level, message, false);
         #endif
     }
-
-    #ifdef TEST_BUILD
-    lastOutputLevel = level;
-    lastMessage = message;
-    #endif
 }
 
 void Logger::lineBreak(LogLevel level) {
@@ -25,16 +20,56 @@ void Logger::lineBreak(LogLevel level) {
         ostream << std::endl;
 
         #ifdef TEST_BUILD
-        didOutput = true;
+        recordTestInfo(level, "\n", true);
     } else {
-        didOutput = false;
+        recordTestInfo(level, "\n", false);
         #endif
     }
-
-    #ifdef TEST_BUILD
-    lastOutputLevel = level;
-    lastMessage = "\n";
-    #endif
 }
+
+#ifdef TEST_BUILD
+
+std::string Logger::getLastOutput() {
+    TestOutput lastOutput = getLastOutputForThread();
+    return lastOutput.message;
+}
+
+LogLevel Logger::getLastLevel() {
+    TestOutput lastOutput = getLastOutputForThread();
+    return lastOutput.level;
+}
+
+bool Logger::didOutputLastMessage() {
+    TestOutput lastOutput = getLastOutputForThread();
+    return lastOutput.didOutput;
+}
+
+void Logger::clearTestInfo() {
+    auto threadID = std::this_thread::get_id();
+    if (lastOutputMap.contains(threadID)) {
+        lastOutputMap.erase(threadID);
+    }
+}
+
+Logger::TestOutput Logger::getLastOutputForThread() {
+    std::thread::id threadID = std::this_thread::get_id();
+    if (lastOutputMap.contains(threadID)) {
+        return lastOutputMap[threadID];
+    } else {
+        return TestOutput();
+    }
+}
+
+void Logger::recordTestInfo(
+        LogLevel level, const std::string& message, bool didOutput) {
+    auto threadID = std::this_thread::get_id();
+    TestOutput output = TestOutput(level, message, didOutput);
+    if (lastOutputMap.contains(threadID)) {
+        lastOutputMap.erase(threadID);
+    }
+    lastOutputMap.emplace(threadID, output);
+}
+
+#endif  // TEST_BUILD
 
 }  // namespace basil

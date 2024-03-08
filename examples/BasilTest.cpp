@@ -1,8 +1,6 @@
-#include <Basil/Frame.hpp>
+#include <Basil/Process.hpp>
 #include <Basil/Window.hpp>
 
-using basil::FrameController;
-using basil::FrameMetrics;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
@@ -10,6 +8,8 @@ using basil::GLShaderPane;
 using basil::MetricsReporter;
 using basil::PaneProps;
 using basil::PaneOrientation;
+using basil::ProcessController;
+using basil::ProcessPrivilege;
 using basil::SplitPane;
 using basil::WindowView;
 
@@ -21,16 +21,7 @@ using basil::WindowView;
  * @return Success code
  */
 int main(int argc, char** argv) {
-    FrameController frameController = FrameController();
-
-    FrameMetrics *frameMetrics = &frameController.metrics;
-    frameMetrics->setBufferSize(20);
-
-    MetricsReporter reporter = MetricsReporter(
-        frameMetrics, frameMetrics->getBufferSize());
-    frameController.addProcess(&reporter,
-        FrameController::Privilege::NONE,
-        "MetricsReporter");
+    ProcessController controller = ProcessController();
 
     auto fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
@@ -51,12 +42,15 @@ int main(int argc, char** argv) {
             .build())
         .build();
 
-    frameController.addProcess(windowView.get(),
-        FrameController::Privilege::HIGH,
-        "WindowView");
+    controller.addProcess(std::move(windowView), ProcessPrivilege::HIGH);
 
-    frameController.setFrameCap(30);
-    frameController.run();
+    auto metricsReporter = std::make_shared<MetricsReporter>(
+        std::make_shared<ProcessController>(controller));
+    metricsReporter->setRegularity(30);
+    controller.addProcess(metricsReporter);
+
+    controller.setFrameCap(30);
+    controller.run();
 
     return 0;
 }

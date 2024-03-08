@@ -11,12 +11,11 @@
 namespace basil {
 
 /** @brief Enum to set SplitPane orientation. */
-enum PaneOrientation {
+enum class PaneOrientation {
     HORIZONTAL, VERTICAL
 };
 
-/** @class SplitPane
- *  @brief IPane implementation which displays two panes inside.
+/** @brief IPane implementation which displays two panes inside.
 */
 class SplitPane :   public IPane,
                     public IBuildable<SplitPane> {
@@ -97,7 +96,7 @@ class SplitPane :   public IPane,
 
     Logger& logger = Logger::get();
 
-    PaneOrientation orientation = HORIZONTAL;
+    PaneOrientation orientation = PaneOrientation::HORIZONTAL;
     std::shared_ptr<IPane> firstPane = nullptr;
     std::shared_ptr<IPane> secondPane = nullptr;
 

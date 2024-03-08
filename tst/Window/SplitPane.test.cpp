@@ -59,7 +59,7 @@ TEST_CASE("Window_SplitPane_onResize") {
     }
 
     SECTION("Maintains relative extent for horizontal layout") {
-        SplitPane splitPane = SplitPane(paneProps, HORIZONTAL);
+        SplitPane splitPane = SplitPane(paneProps, PaneOrientation::HORIZONTAL);
 
         TestPane firstPane = TestPane(paneProps);
         TestPane secondPane = TestPane(paneProps);
@@ -80,7 +80,7 @@ TEST_CASE("Window_SplitPane_onResize") {
     }
 
     SECTION("Maintains relative extent for vertical layout") {
-        SplitPane splitPane = SplitPane(paneProps, VERTICAL);
+        SplitPane splitPane = SplitPane(paneProps, PaneOrientation::VERTICAL);
 
         TestPane firstPane = TestPane(paneProps);
         TestPane secondPane = TestPane(paneProps);
@@ -366,11 +366,11 @@ TEST_CASE("Window_SplitPane_setGapWidth") {
 TEST_CASE("Window_SplitPane_setOrientation") {
     SECTION("Resizes to include gap") {
         SplitPane splitPane = SplitPane(
-            paneProps, HORIZONTAL);
+            paneProps, PaneOrientation::HORIZONTAL);
 
-        splitPane.setOrientation(VERTICAL);
+        splitPane.setOrientation(PaneOrientation::VERTICAL);
 
-        REQUIRE(splitPane.getOrientation() == VERTICAL);
+        REQUIRE(splitPane.getOrientation() == PaneOrientation::VERTICAL);
     }
 }
 
