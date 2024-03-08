@@ -6,6 +6,5 @@
 #include "Frame/FrameMetrics.hpp"
 #include "Frame/IFrameProcess.hpp"
 #include "Frame/ITimerSource.hpp"
-#include "Frame/MetricsReporter.hpp"
 
 #endif  // INCLUDE_BASIL_FRAME_HPP_

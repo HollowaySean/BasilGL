@@ -12,6 +12,9 @@ namespace basil {
 WindowView::WindowView(std::optional<WindowProps> windowProps) {
     this->windowProps = windowProps.value_or(WindowProps());
 
+    // Set process name for IProcess
+    IProcess::setProcessName("WindowView");
+
     // Create window
     glfwWindow = BasilContext::getGLFWWindow();
 
@@ -109,7 +112,7 @@ void WindowView::draw() {
 }
 
 void WindowView::closeWindow() {
-    currentState = State::REQUEST_STOP;
+    setCurrentState(ProcessState::REQUEST_STOP);
 
     glfwDestroyWindow(glfwWindow);
 

@@ -56,7 +56,7 @@ class TimeSource {
         if (timeSpan == duration::zero()) return 0.;
 
         auto timeInNanoseconds = std::chrono::nanoseconds(timeSpan);
-        double frequencyInHertz = 1'000'000'000 / timeInNanoseconds.count();
+        double frequencyInHertz = 1'000'000'000. / timeInNanoseconds.count();
 
         return frequencyInHertz;
     }

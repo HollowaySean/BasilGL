@@ -11,7 +11,7 @@
 
 #include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
-#include <Basil/Frame.hpp>
+#include <Basil/Process.hpp>
 
 #include "SplitPane.hpp"
 #include "GLShaderPane.hpp"
@@ -47,7 +47,7 @@ struct WindowProps {
  * @brief Outer window containing all UI elements and providing simple
  * public facade.
  */
-class WindowView :  public IFrameProcess,
+class WindowView :  public IProcess,
                     public IBuildable<WindowView>,
                     private IBasilContextDependency {
  public:
@@ -61,7 +61,7 @@ class WindowView :  public IFrameProcess,
     /** @brief Removes GLFW context and closes window. */
     void onStop() override;
 
-    /** @brief Main loop function for IFrameProcess parent class. */
+    /** @brief Main loop function for IProcess parent class. */
     void onLoop() override;
 
     /** @brief Sets top-level pane for window. */

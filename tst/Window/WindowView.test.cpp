@@ -11,9 +11,9 @@ using basil::Logger;
 using basil::LogLevel;
 using basil::IPane;
 using basil::PaneProps;
+using basil::ProcessState;
 using basil::WindowProps;
 using basil::WindowView;
-using basil::IFrameProcess;
 
 template<class T>
 using s_pt = std::shared_ptr<T>;
@@ -161,7 +161,7 @@ TEST_CASE("Window_WindowView_onLoop") {
         glfwSetWindowShouldClose(window.glfwWindow, GLFW_TRUE);
         window.onLoop();
 
-        REQUIRE(window.currentState == IFrameProcess::State::REQUEST_STOP);
+        REQUIRE(window.currentState == ProcessState::REQUEST_STOP);
 
         GLFWwindow* glfwContext = glfwGetCurrentContext();
         REQUIRE(glfwContext == nullptr);

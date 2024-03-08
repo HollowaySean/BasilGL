@@ -101,7 +101,7 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
         auto vertexShader =
             std::make_shared<GLVertexShader>(vertexPath);
         auto fragmentShader = std::make_shared<GLFragmentShader>(
-                std::filesystem::path(""));
+            std::string("uncompilable"));
 
         logger.clearTestInfo();
         GLShaderProgram shaderProgram =

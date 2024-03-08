@@ -69,6 +69,9 @@ class ProcessController {
     /** @brief Get maximum frame rate. */
     unsigned int getFrameCap() { return frameCap; }
 
+    /** @return Pointer to metrics observer. */
+    std::shared_ptr<MetricsObserver> getMetricsObserver() { return metrics; }
+
 #ifndef TEST_BUILD
 
  private:
@@ -96,7 +99,8 @@ class ProcessController {
         = [](std::shared_ptr<IProcess> process) { process->onStop(); };
 
     ProcessSchedule schedule;
-    MetricsObserver metrics;
+
+    std::shared_ptr<MetricsObserver> metrics;
 
     ProcessControllerState currentState = ProcessControllerState::READY;
     unsigned int frameCap = 0;

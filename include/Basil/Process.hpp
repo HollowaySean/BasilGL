@@ -4,6 +4,7 @@
 #include "Process/IProcess.hpp"
 #include "Process/MetricsObserver.hpp"
 #include "Process/MetricsRecord.hpp"
+#include "Process/MetricsReporter.hpp"
 #include "Process/ProcessController.hpp"
 #include "Process/ProcessEnums.hpp"
 #include "Process/ProcessInstance.hpp"
