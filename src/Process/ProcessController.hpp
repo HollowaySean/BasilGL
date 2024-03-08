@@ -24,8 +24,7 @@ using Timer = basil::TimeSource<FrameClock>;
 namespace basil {
 
 /** @brief Class which manages processes, keeps time, and records metrics. */
-class ProcessController :
-    private std::enable_shared_from_this<ProcessController> {
+class ProcessController : private IBuildable<ProcessController> {
  public:
     /** @brief Create new process controller. */
     ProcessController();
@@ -74,6 +73,25 @@ class ProcessController :
 
     /** @return Pointer to metrics observer. */
     MetricsObserver& getMetricsObserver() { return metrics; }
+
+    /** @brief Builder pattern for ProcessController. */
+    class Builder : public IBuilder<ProcessController> {
+     public:
+        /** @brief Set maximum frame rate. */
+        Builder& withFrameCap(unsigned int framesPerSecond);
+
+        /** @brief Set process to run in main loop. */
+        Builder& withProcess(std::shared_ptr<IProcess> process,
+            ProcessPrivilege privilege = ProcessPrivilege::NONE);
+
+        /** @brief Set process to run early. */
+        Builder& withEarlyProcess(std::shared_ptr<IProcess> process,
+            ProcessPrivilege privilege = ProcessPrivilege::NONE);
+
+        /** @brief Set process to run late. */
+        Builder& withLateProcess(std::shared_ptr<IProcess> process,
+            ProcessPrivilege privilege = ProcessPrivilege::NONE);
+    };
 
 #ifndef TEST_BUILD
 

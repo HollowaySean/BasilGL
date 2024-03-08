@@ -144,4 +144,31 @@ bool ProcessController::shouldContinueLoop() {
         currentState < ProcessControllerState::STOPPING;
 }
 
+ProcessController::Builder&
+ProcessController::Builder::withFrameCap(unsigned int framesPerSecond) {
+    impl->setFrameCap(framesPerSecond);
+    return *this;
+}
+
+ProcessController::Builder&
+ProcessController::Builder::withProcess(std::shared_ptr<IProcess> process,
+        ProcessPrivilege privilege) {
+    impl->addProcess(process, privilege);
+    return *this;
+}
+
+ProcessController::Builder&
+ProcessController::Builder::withEarlyProcess(std::shared_ptr<IProcess> process,
+        ProcessPrivilege privilege) {
+    impl->addEarlyProcess(process, privilege);
+    return *this;
+}
+
+ProcessController::Builder&
+ProcessController::Builder::withLateProcess(std::shared_ptr<IProcess> process,
+        ProcessPrivilege privilege) {
+    impl->addLateProcess(process, privilege);
+    return *this;
+}
+
 }  // namespace basil

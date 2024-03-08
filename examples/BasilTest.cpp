@@ -21,8 +21,6 @@ using basil::WindowView;
  * @return Success code
  */
 int main(int argc, char** argv) {
-    ProcessController controller = ProcessController();
-
     auto fragmentPath =
         std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
 
@@ -42,15 +40,16 @@ int main(int argc, char** argv) {
             .build())
         .build();
 
-    controller.addProcess(std::move(windowView), ProcessPrivilege::HIGH);
-
     auto metricsReporter = std::make_shared<MetricsReporter>();
     metricsReporter->setRegularity(30);
 
-    controller.addProcess(metricsReporter);
+    auto controller = ProcessController::Builder()
+        .withFrameCap(30)
+        .withProcess(std::move(windowView), ProcessPrivilege::HIGH)
+        .withLateProcess(metricsReporter)
+        .build();
 
-    controller.setFrameCap(30);
-    controller.run();
+    controller->run();
 
     return 0;
 }
