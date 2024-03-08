@@ -2,25 +2,38 @@
 
 namespace basil {
 
-// TODO(sholloway): Log messages
 void BasilApp::run() {
-    if (!processController) return;
+    if (!processController) {
+        logControllerMissing();
+        return;
+    }
 
     processController->run();
 }
 
 
 void BasilApp::stop() {
-    if (!processController) return;
+    if (!processController) {
+        logControllerMissing();
+        return;
+    }
 
     processController->stop();
 }
 
 
 void BasilApp::kill() {
-    if (!processController) return;
+    if (!processController) {
+        logControllerMissing();
+        return;
+    }
 
     processController->kill();
+}
+
+void BasilApp::logControllerMissing() {
+    logger.log("ProcessController not found for BasilApp.",
+        LogLevel::WARN);
 }
 
 BasilApp::Builder&
