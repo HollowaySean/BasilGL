@@ -88,6 +88,7 @@ void const GLShaderPane::draw() {
     }
 
     // Update texture(s)
+    // TODO(sholloway): Only update when requested to avoid unnecessary data transfer
     for (std::shared_ptr<IGLTexture> texture : textureList) {
         texture->update();
     }

@@ -10,6 +10,15 @@
 
 namespace basil {
 
+// TODO(sholloway): Plan for revision
+// 1. Create data source class
+//  - Fold TextureProps into data source?
+// 2. Getters and setters
+// 3. Change update methodology to not run every frame
+// 4. Add support for 1D & 3D textures
+// 5. Deduce types for texture props?
+// 6. Builder
+
 /** @brief Struct used to pass properties of texture to GLTexture. */
 struct GLTextureProps {
  public:
@@ -34,6 +43,7 @@ class IGLTexture : private IBasilContextConsumer {
  public:
     /** @brief Flushes data from source to texture. */
     virtual void update() const = 0;
+
     /** @return OpenGL-assigned ID of texture*/
     GLuint getID() { return textureId; }
 
@@ -43,7 +53,9 @@ class IGLTexture : private IBasilContextConsumer {
     /** @brief Destructor to tear down OpenGL assigned memory. */
     virtual ~IGLTexture();
 
+#ifndef TEST_BUILD
  protected:
+#endif
     explicit IGLTexture(GLTextureProps props): props(props) {}
 
     inline static GLenum nextTexture = GL_TEXTURE0;

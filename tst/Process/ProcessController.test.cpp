@@ -47,8 +47,7 @@ TEST_CASE("Process_ProcessController_addProcess") {
 
 TEST_CASE("Process_ProcessController_run") {
     ProcessController controller = ProcessController();
-    std::shared_ptr<TestProcess> process
-        = std::make_shared<TestProcess>(&controller);
+    auto process = std::make_shared<TestProcess>();
 
     SECTION("Falls through if no processes") {
         REQUIRE(controller.getCurrentState()
@@ -279,5 +278,33 @@ TEST_CASE("Process_ProcessController_shouldContinueLoop") {
         controller.currentState = ProcessControllerState::RUNNING;
 
         REQUIRE_FALSE(controller.shouldContinueLoop());
+    }
+}
+
+TEST_CASE("Process_ProcessController_Builder") {
+    SECTION("Builds ProcessController object") {
+        auto process1 = std::make_shared<TestProcess>();
+        auto process2 = std::make_shared<TestProcess>();
+        auto process3 = std::make_shared<TestProcess>();
+
+        auto controller = ProcessController::Builder()
+            .withFrameCap(25)
+            .withEarlyProcess(process1)
+            .withProcess(process2, ProcessPrivilege::LOW)
+            .withLateProcess(process3, ProcessPrivilege::HIGH)
+            .build();
+
+        REQUIRE(controller->getFrameCap() == 25);
+
+        REQUIRE(controller->schedule.early.back()->process == process1);
+        REQUIRE(controller->schedule.main.back()->process == process2);
+        REQUIRE(controller->schedule.late.back()->process == process3);
+
+        REQUIRE(controller->schedule.early.back()->privilegeLevel
+            == ProcessPrivilege::NONE);
+        REQUIRE(controller->schedule.main.back()->privilegeLevel
+            == ProcessPrivilege::LOW);
+        REQUIRE(controller->schedule.late.back()->privilegeLevel
+            == ProcessPrivilege::HIGH);
     }
 }

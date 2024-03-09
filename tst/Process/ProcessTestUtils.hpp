@@ -10,9 +10,6 @@ using basil::ProcessState;
 
 class TestProcess : public IProcess {
  public:
-    explicit TestProcess(ProcessController* controller = nullptr)
-        : controller(controller) {}
-
     bool didStart = false;
     bool didLoop = false;
     bool didStop = false;
@@ -23,8 +20,6 @@ class TestProcess : public IProcess {
 
     ProcessState stateAfterStart = ProcessState::READY;
     ProcessState stateAfterLoop = ProcessState::REQUEST_STOP;
-
-    ProcessController* controller;
 
     void onStart() override {
         IProcess::onStart();

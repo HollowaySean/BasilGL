@@ -2,25 +2,16 @@
 
 namespace basil {
 
-MetricsReporter::MetricsReporter(
-        std::optional<std::shared_ptr<ProcessController>> controller) {
+MetricsReporter::MetricsReporter() {
     // Set process name for IProcess
     IProcess::setProcessName("MetricsReporter");
-
-    if (controller.has_value()) {
-        setController(controller.value());
-    }
-}
-
-void MetricsReporter::setController(std::shared_ptr<ProcessController> controller) {
-    this->metrics = controller->getMetricsObserver();
 }
 
 void MetricsReporter::onLoop() {
-    if (!metrics) return;
+    if (controller == nullptr) return;
 
-    MetricsRecord record =
-        metrics->getCurrentMetrics();
+    MetricsObserver& metrics = controller->getMetricsObserver();
+    MetricsRecord record = metrics.getCurrentMetrics();
 
     if (record.frameID % regularity == 0
             && record.frameID > 0) {
@@ -49,6 +40,18 @@ void MetricsReporter::onLoop() {
                 logLevel);
         }
     }
+}
+
+MetricsReporter::Builder&
+MetricsReporter::Builder::withRegularity(unsigned int regularity) {
+    impl->setRegularity(regularity);
+    return *this;
+}
+
+MetricsReporter::Builder&
+MetricsReporter::Builder::withLogLevel(LogLevel level) {
+    impl->setLogLevel(level);
+    return *this;
 }
 
 }  // namespace basil

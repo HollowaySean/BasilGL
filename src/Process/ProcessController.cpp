@@ -3,10 +3,12 @@
 namespace basil {
 
 ProcessController::ProcessController()
-    : schedule(), metrics(std::make_shared<MetricsObserver>()) {}
+    : schedule(), metrics() {}
 
 void ProcessController::addProcessWithOrdinal(std::shared_ptr<IProcess> process,
         ProcessOrdinal ordinal, ProcessPrivilege privilege) {
+    process->onRegister(this);
+
     auto processInstance = std::make_shared<ProcessInstance>(process);
 
     processInstance->ordinal = ordinal;
@@ -70,7 +72,7 @@ void ProcessController::setFrameCap(unsigned int framesPerSecond) {
 void ProcessController::runProcessMethod(
         std::function<void(std::shared_ptr<IProcess>)> method) {
     auto frameStartTime = Timer::getTimestamp();
-    metrics->recordFrameStart(frameStartTime);
+    metrics.recordFrameStart(frameStartTime);
 
     for (auto instance = schedule.begin();
             instance != schedule.end();
@@ -81,19 +83,19 @@ void ProcessController::runProcessMethod(
             auto processStopTime = Timer::getTimestamp();
 
             auto processDuration = processStopTime - processStartTime;
-            metrics->recordProcessTime(*instance, processDuration);
+            metrics.recordProcessTime(*instance, processDuration);
         }
 
         interpretProcessState(*instance);
     }
 
     auto frameStopTime = Timer::getTimestamp();
-    metrics->recordWorkEnd(frameStopTime);
+    metrics.recordWorkEnd(frameStopTime);
 
     sleepForRestOfFrame(frameStartTime);
 
     auto wakeTime = Timer::getTimestamp();
-    metrics->recordFrameEnd(wakeTime);
+    metrics.recordFrameEnd(wakeTime);
 }
 
 void ProcessController::interpretProcessState(
@@ -140,6 +142,33 @@ bool ProcessController::shouldRunProcess(
 bool ProcessController::shouldContinueLoop() {
     return schedule.size() > 0 &&
         currentState < ProcessControllerState::STOPPING;
+}
+
+ProcessController::Builder&
+ProcessController::Builder::withFrameCap(unsigned int framesPerSecond) {
+    impl->setFrameCap(framesPerSecond);
+    return *this;
+}
+
+ProcessController::Builder&
+ProcessController::Builder::withProcess(std::shared_ptr<IProcess> process,
+        ProcessPrivilege privilege) {
+    impl->addProcess(process, privilege);
+    return *this;
+}
+
+ProcessController::Builder&
+ProcessController::Builder::withEarlyProcess(std::shared_ptr<IProcess> process,
+        ProcessPrivilege privilege) {
+    impl->addEarlyProcess(process, privilege);
+    return *this;
+}
+
+ProcessController::Builder&
+ProcessController::Builder::withLateProcess(std::shared_ptr<IProcess> process,
+        ProcessPrivilege privilege) {
+    impl->addLateProcess(process, privilege);
+    return *this;
 }
 
 }  // namespace basil

@@ -1,6 +1,7 @@
 #ifndef SRC_PROCESS_IPROCESS_HPP_
 #define SRC_PROCESS_IPROCESS_HPP_
 
+#include <memory>
 #include <optional>
 #include <string>
 
@@ -8,14 +9,24 @@
 
 namespace basil {
 
+class ProcessController;
+
 /** @brief Interface consumable by ProcessController.
  *  Requires defining 'onLoop' function to run during frame.
 */
 class IProcess {
  public:
+    /** @brief Create implementation object of interface. */
+    IProcess() : controller(nullptr) {}
+
     /** @return Current state of process. */
     ProcessState getCurrentState() const {
         return currentState;
+    }
+
+    /** @brief Function to run process is scheduled. */
+    virtual void onRegister(ProcessController* controller) {
+        this->controller = controller;
     }
 
     /** @brief Function to run before first frame. */
@@ -37,6 +48,9 @@ class IProcess {
         this->processName = processName;
     }
 
+    /** @return Pointer to controller that process is registered to. */
+    ProcessController* getController() { return controller; }
+
 #ifndef TEST_BUILD
 
  protected:
@@ -45,6 +59,9 @@ class IProcess {
     void setCurrentState(ProcessState newState) {
         currentState = newState;
     }
+
+    /** @brief Pointer to controller running process. */
+    ProcessController* controller;
 
 #ifndef TEST_BUILD
 

@@ -1,8 +1,8 @@
 #include <catch.hpp>
 
-#include <Basil/Process.hpp>
+#include <Basil/Utility.hpp>
 
-#include "ProcessTestUtils.hpp"
+#include "Process/ProcessTestUtils.hpp"
 
 using basil::Logger;
 using basil::LogLevel;
@@ -12,12 +12,14 @@ using basil::MetricsObserver;
 using basil::ProcessInstance;
 
 TEST_CASE("Process_MetricsReporter_onLoop") {
-    auto observer = std::make_shared<MetricsObserver>();
+    auto controller = std::make_shared<ProcessController>();
+    MetricsObserver& observer = controller->getMetricsObserver();
+
     auto process = std::make_shared<TestProcess>();
     auto instance = std::make_shared<ProcessInstance>(process);
 
     MetricsReporter reporter = MetricsReporter();
-    reporter.metrics = observer;
+    reporter.onRegister(controller.get());
     reporter.regularity = 10;
 
     MetricsRecord record = MetricsRecord();
@@ -31,8 +33,8 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
 
     SECTION("Does not log on first frame") {
         record.frameID = 0;
-        observer->buffer.emplace(record);
-        observer->sum = record;
+        observer.buffer.emplace(record);
+        observer.sum = record;
 
         logger.clearTestInfo();
         reporter.onLoop();
@@ -41,8 +43,8 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
 
     SECTION("Does not log on non-multiple frame of regularity") {
         record.frameID = 11;
-        observer->buffer.emplace(record);
-        observer->sum = record;
+        observer.buffer.emplace(record);
+        observer.sum = record;
 
         logger.clearTestInfo();
         reporter.onLoop();
@@ -51,8 +53,8 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
 
     SECTION("Logs on multiple frame of regularity") {
         record.frameID = 10;
-        observer->buffer.emplace(record);
-        observer->sum = record;
+        observer.buffer.emplace(record);
+        observer.sum = record;
 
         logger.clearTestInfo();
         reporter.onLoop();
@@ -60,16 +62,14 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
     }
 }
 
-TEST_CASE("Process_MetricsReporter_MetricsReporter") {
-    auto controller = std::make_shared<ProcessController>();
+TEST_CASE("Process_MetricsReporter_Builder") {
+    SECTION("Builds MetricsReporter object") {
+        auto reporter = MetricsReporter::Builder()
+            .withLogLevel(LogLevel::DEBUG)
+            .withRegularity(25)
+            .build();
 
-    SECTION("Optionally sets ProcessController") {
-        MetricsReporter reporter = MetricsReporter(controller);
-        REQUIRE(reporter.metrics == controller->getMetricsObserver());
-    }
-
-    SECTION("Builds without ProcessController") {
-        MetricsReporter reporter = MetricsReporter();
-        REQUIRE(reporter.metrics == nullptr);
+        REQUIRE(reporter->regularity == 25);
+        REQUIRE(reporter->logLevel == LogLevel::DEBUG);
     }
 }

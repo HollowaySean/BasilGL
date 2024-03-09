@@ -12,7 +12,7 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
 1. First "usable" build, with a couple examples
    - Support for a pared down clone of "shadertoy"
       - Including various default inputs
-   - Ease of use for example setup
+   - ~~Ease of use for example setup~~
       - Specifically builders for public facing classes
    - Fill in gaps from P0
       - ~~Revisit Frame directory to fix and simplify~~

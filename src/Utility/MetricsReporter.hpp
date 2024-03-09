@@ -1,5 +1,5 @@
-#ifndef SRC_PROCESS_METRICSREPORTER_HPP_
-#define SRC_PROCESS_METRICSREPORTER_HPP_
+#ifndef SRC_UTILITY_METRICSREPORTER_HPP_
+#define SRC_UTILITY_METRICSREPORTER_HPP_
 
 #include <fmt/core.h>
 
@@ -7,24 +7,18 @@
 #include <string>
 
 #include <Basil/Logging.hpp>
-
-#include "IProcess.hpp"
-#include "MetricsObserver.hpp"
-#include "ProcessController.hpp"
+#include <Basil/Process.hpp>
 
 namespace basil {
 
 /** @brief Utility FrameProcess that prints frame rate to
  *  the command line.
 */
-class MetricsReporter : public IProcess {
+class MetricsReporter : public IProcess,
+                        public IBuildable<MetricsReporter> {
  public:
     /** @brief Create MetricsReporter object. */
-    explicit MetricsReporter(
-        std::optional<std::shared_ptr<ProcessController>> controller = std::nullopt);
-
-    /** @brief Set pointer to ProcessController to monitor. */
-    void setController(std::shared_ptr<ProcessController> controller);
+    MetricsReporter();
 
     /** @brief Main loop function for ProcessController. */
     void onLoop() override;
@@ -37,12 +31,25 @@ class MetricsReporter : public IProcess {
         this->regularity = regularity;
     }
 
+    /** @brief Set severity level for logging. */
+    void setLogLevel(LogLevel level) {
+        this->logLevel = level;
+    }
+
+    /** @brief Builder pattern for MetricsReporter. */
+    class Builder : public IBuilder<MetricsReporter> {
+     public:
+        /** @brief Set number of frames per print out. */
+        Builder& withRegularity(unsigned int regularity);
+
+        /** @brief Set severity level for logging*/
+        Builder& withLogLevel(LogLevel level);
+    };
+
 #ifndef TEST_BUILD
 
  private:
 #endif
-    std::shared_ptr<MetricsObserver> metrics;
-
     Logger& logger = Logger::get();
     LogLevel logLevel = LogLevel::INFO;
 
@@ -51,4 +58,4 @@ class MetricsReporter : public IProcess {
 
 }  // namespace basil
 
-#endif  // SRC_PROCESS_METRICSREPORTER_HPP_
+#endif  // SRC_UTILITY_METRICSREPORTER_HPP_
