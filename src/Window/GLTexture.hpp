@@ -9,6 +9,7 @@
 
 #include <Basil/Context.hpp>
 #include <Basil/Data.hpp>
+#include <Basil/Logging.hpp>
 
 namespace basil {
 
@@ -39,8 +40,7 @@ class IGLTexture {
     GLenum getEnum() const { return textureEnum; }
 
     /** @brief Flushes data from source to texture. */
-    // TODO(sholloway): Null check data source
-    void update();
+    virtual void update() = 0;
 
     /** @brief Sets name of variable in shader. */
     void setName(const std::string& name) { this->name = name; }
@@ -52,11 +52,14 @@ class IGLTexture {
 
  protected:
 #endif
+    Logger& logger = Logger::get();
+
+    void initializeTexture();
     virtual void updateGLTexImage() = 0;
-    virtual GLenum getTextureType() = 0;
 
     inline static GLenum nextTexture = GL_TEXTURE0;
 
+    GLenum textureType;
     GLenum textureEnum;
     GLuint textureId;
     std::string name;
@@ -74,6 +77,9 @@ class GLTexture : public IGLTexture,
     /** @brief Destructor to tear down OpenGL assigned memory. */
     ~GLTexture();
 
+    /** @brief Flushes data from source to texture. */
+    void update() override;
+
     /** @brief Sets source of texture. */
     void setSource(ITextureSource<N> source);
 
@@ -82,8 +88,6 @@ class GLTexture : public IGLTexture,
  private:
 #endif
     void updateGLTexImage() override;
-    // TODO(sholloway): Prevent virtual call in constructor
-    GLenum getTextureType() override;
 
     std::shared_ptr<ITextureSource<N>> source;
 };

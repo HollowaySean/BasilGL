@@ -7,42 +7,50 @@ template class GLTexture<2>;
 template class GLTexture<3>;
 
 template<>
-GLenum GLTexture<1>::getTextureType() {
-    return GL_TEXTURE_1D;
+GLTexture<1>::GLTexture() {
+    textureType = GL_TEXTURE_1D;
+    initializeTexture();
 }
 
 template<>
-GLenum GLTexture<2>::getTextureType() {
-    return GL_TEXTURE_2D;
+GLTexture<2>::GLTexture() {
+    textureType = GL_TEXTURE_2D;
+    initializeTexture();
 }
 
 template<>
-GLenum GLTexture<3>::getTextureType() {
-    return GL_TEXTURE_3D;
+GLTexture<3>::GLTexture() {
+    textureType = GL_TEXTURE_3D;
+    initializeTexture();
+}
+
+void IGLTexture::initializeTexture() {
+    glGenTextures(1, &textureId);
+    glActiveTexture(textureEnum);
+    glBindTexture(textureType, textureId);
+
+    // TODO(sholloway): Allow for setting & modifying
+    glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 }
 
 template<int N>
-GLTexture<N>::GLTexture() {
-    glGenTextures(1, &textureId);
-    glActiveTexture(textureEnum);
-    glBindTexture(getTextureType(), textureId);
+void GLTexture<N>::update() {
+    if (!source) {
+        logger.log("Unable to update, texture source not found.", LogLevel::WARN);
+        return;
+    }
 
-    // TODO(sholloway): Allow for setting & modifying
-    glTexParameteri(getTextureType(), GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(getTextureType(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(getTextureType(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(getTextureType(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-}
-
-void IGLTexture::update() {
     glActiveTexture(textureEnum);
     updateGLTexImage();
-    glBindTexture(getTextureType(), textureId);
+    glBindTexture(textureType, textureId);
 }
 
 template<>
 void GLTexture<1>::updateGLTexImage() {
-    glTexImage1D(getTextureType(),
+    glTexImage1D(textureType,
                  0,
                  source->format.internalFormat,
                  source->dimension[0],
@@ -54,7 +62,7 @@ void GLTexture<1>::updateGLTexImage() {
 
 template<>
 void GLTexture<2>::updateGLTexImage() {
-    glTexImage2D(getTextureType(),
+    glTexImage2D(textureType,
                  0,
                  source->format.internalFormat,
                  source->dimension[0],
@@ -67,7 +75,7 @@ void GLTexture<2>::updateGLTexImage() {
 
 template<>
 void GLTexture<3>::updateGLTexImage() {
-    glTexImage3D(getTextureType(),
+    glTexImage3D(textureType,
                  0,
                  source->format.internalFormat,
                  source->dimension[0],
