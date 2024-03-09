@@ -2,43 +2,85 @@
 
 namespace basil {
 
-template class GLTexture<float>;
-template class GLTexture<int>;
-template class GLTexture<unsigned int>;
+template class GLTexture<1>;
+template class GLTexture<2>;
+template class GLTexture<3>;
 
-template<class T>
-GLTexture<T>::GLTexture(std::span<T> source,
-                        GLTextureProps props):
-        source(source), textureEnum(nextTexture++), IGLTexture(props) {
+template<>
+GLenum GLTexture<1>::getTextureType() {
+    return GL_TEXTURE_1D;
+}
+
+template<>
+GLenum GLTexture<2>::getTextureType() {
+    return GL_TEXTURE_2D;
+}
+
+template<>
+GLenum GLTexture<3>::getTextureType() {
+    return GL_TEXTURE_3D;
+}
+
+template<int N>
+GLTexture<N>::GLTexture() {
     glGenTextures(1, &textureId);
     glActiveTexture(textureEnum);
-    glBindTexture(GL_TEXTURE_2D, textureId);
+    glBindTexture(getTextureType(), textureId);
 
     // TODO(sholloway): Allow for setting & modifying
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    float borderColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+    glTexParameteri(getTextureType(), GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(getTextureType(), GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(getTextureType(), GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(getTextureType(), GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 }
 
-template<class T>
-void GLTexture<T>::update() const {
+void IGLTexture::update() {
     glActiveTexture(textureEnum);
-    glTexImage2D(GL_TEXTURE_2D,
-                 0,
-                 props.internalFormat,
-                 props.width,
-                 props.height,
-                 0,
-                 props.format,
-                 props.dataType,
-                 source.data());
-    glBindTexture(GL_TEXTURE_2D, textureId);
+    updateGLTexImage();
+    glBindTexture(getTextureType(), textureId);
 }
 
-IGLTexture::~IGLTexture() {
+template<>
+void GLTexture<1>::updateGLTexImage() {
+    glTexImage1D(getTextureType(),
+                 0,
+                 source->format.internalFormat,
+                 source->dimension[0],
+                 0,
+                 source->format.format,
+                 source->format.type,
+                 source->data());
+}
+
+template<>
+void GLTexture<2>::updateGLTexImage() {
+    glTexImage2D(getTextureType(),
+                 0,
+                 source->format.internalFormat,
+                 source->dimension[0],
+                 source->dimension[1],
+                 0,
+                 source->format.format,
+                 source->format.type,
+                 source->data());
+}
+
+template<>
+void GLTexture<3>::updateGLTexImage() {
+    glTexImage3D(getTextureType(),
+                 0,
+                 source->format.internalFormat,
+                 source->dimension[0],
+                 source->dimension[1],
+                 source->dimension[2],
+                 0,
+                 source->format.format,
+                 source->format.type,
+                 source->data());
+}
+
+template<int N>
+GLTexture<N>::~GLTexture() {
     GLuint textureArray[] = { textureId };
     glDeleteTextures(1, textureArray);
 }

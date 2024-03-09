@@ -56,7 +56,7 @@ void GLShaderProgram::setFragmentShader(
 
 void GLShaderProgram::addTexture(std::shared_ptr<IGLTexture> texture) {
     GLuint location =
-        glGetUniformLocation(ID, texture->props.name);
+        glGetUniformLocation(ID, texture->getName().c_str());
     glUniform1f(location, 0);
 }
 

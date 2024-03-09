@@ -9,8 +9,7 @@ using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
 using basil::IGLTexture;
-using basil::GLTexture;
-using basil::GLTextureProps;
+using basil::GLTexture2D;
 using basil::GLShaderPane;
 using basil::PaneProps;
 using basil::IPane;
@@ -64,16 +63,7 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
 
     SECTION("Sets up OpenGL objects if new shader program provided") {
             BASIL_LOCK_TEST
-        GLTextureProps textureProps = {
-            .name = "textureName",
-            .width = 10,
-            .height = 20,
-            .format = GL_RED,
-            .internalFormat = GL_R32F,
-            .dataType = GL_FLOAT
-        };
-        std::vector<float> data = { 1.0 };
-        auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
+        auto texture = std::make_shared<GLTexture2D>();
 
         std::shared_ptr<GLShaderProgram> program =
             GLShaderProgram::Builder()
@@ -125,16 +115,7 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
 }
 
 TEST_CASE("Window_GLShaderPane_addTexture") { BASIL_LOCK_TEST
-    GLTextureProps textureProps = {
-        .name = "textureName",
-        .width = 10,
-        .height = 20,
-        .format = GL_RED,
-        .internalFormat = GL_R32F,
-        .dataType = GL_FLOAT
-    };
-    std::vector<float> data = { 1.0 };
-    auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
+    auto texture = std::make_shared<GLTexture2D>();
 
     GLShaderPane pane = GLShaderPane();
 
@@ -164,16 +145,7 @@ TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
     GLShaderPane pane = GLShaderPane(
         paneProps, shaderProgram);
 
-    GLTextureProps textureProps = {
-        .name = "textureName",
-        .width = 10,
-        .height = 20,
-        .format = GL_RED,
-        .internalFormat = GL_R32F,
-        .dataType = GL_FLOAT
-    };
-    std::vector<float> data = { 1.0 };
-    auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
+    auto texture = std::make_shared<GLTexture2D>();
 
     pane.addTexture(texture);
     pane.draw();
@@ -252,16 +224,7 @@ TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
         s_p<GLShaderProgram> shaderProgram =
             std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
-        GLTextureProps textureProps = {
-            .name = "textureName",
-            .width = 10,
-            .height = 20,
-            .format = GL_RED,
-            .internalFormat = GL_R32F,
-            .dataType = GL_FLOAT
-        };
-        std::vector<float> data = { 1.0 };
-        auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
+        auto texture = std::make_shared<GLTexture2D>();
 
         auto pane = GLShaderPane::Builder()
             .withShaderProgram(shaderProgram)

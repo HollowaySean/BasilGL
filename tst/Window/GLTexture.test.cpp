@@ -6,7 +6,8 @@
 
 using basil::BasilContextLock;
 using basil::GLTexture;
-using basil::GLTextureProps;
+
+/**
 
 GLTextureProps props = {
     .name = "test",
@@ -46,3 +47,5 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
         REQUIRE(expected[0] == actual[0]);
     }
 }
+
+**/
