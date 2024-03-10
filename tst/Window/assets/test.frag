@@ -21,6 +21,8 @@ uniform ivec4   myUniformInt4;
 uniform uvec4   myUniformUnsignedInt4;
 uniform vec4    myUniformFloat4;
 
+uniform sampler2D testTex;
+
 out vec4 FragColor;
 
 void main()
@@ -37,5 +39,8 @@ void main()
         * myUniformFloat4;
 
     vec2 st = vec2(gl_FragCoord.x * myUniformInt, gl_FragCoord.y / 480);
-    gl_FragColor = vec4(st.x, st.y, testVal + testVal2.x + testVal3.y + testVal4.z, 1.0);
+    vec4 outColor = vec4(st.x, st.y, testVal + testVal2.x + testVal3.y + testVal4.z, 1.0);
+    vec4 texColor = texture(testTex, gl_FragCoord.xy) * vec4(1.0, 1.0, 1.0, 1.0);
+
+    gl_FragColor = mix(texColor, outColor, 0.5);
 }

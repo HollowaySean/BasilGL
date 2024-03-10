@@ -26,16 +26,25 @@ struct TextureFormat {
     static constexpr GLenum getFormat();
 };
 
-template<> constexpr GLenum TextureFormat::getType<float>()  { return GL_FLOAT;         }
-template<> constexpr GLenum TextureFormat::getType<int>()    { return GL_INT;           }
-template<> constexpr GLenum TextureFormat::getType<u_int>()  { return GL_UNSIGNED_INT;  }
-template<> constexpr GLenum TextureFormat::getType<char>()   { return GL_BYTE;          }
-template<> constexpr GLenum TextureFormat::getType<u_char>() { return GL_UNSIGNED_BYTE; }
+template<> constexpr GLenum
+    TextureFormat::getType<float>()  { return GL_FLOAT;         }
+template<> constexpr GLenum
+    TextureFormat::getType<int>()    { return GL_INT;           }
+template<> constexpr GLenum
+    TextureFormat::getType<u_int>()  { return GL_UNSIGNED_INT;  }
+template<> constexpr GLenum
+    TextureFormat::getType<char>()   { return GL_BYTE;          }
+template<> constexpr GLenum
+    TextureFormat::getType<u_char>() { return GL_UNSIGNED_BYTE; }
 
-template<> constexpr GLenum TextureFormat::getFormat<1>()    { return GL_RED;   }
-template<> constexpr GLenum TextureFormat::getFormat<2>()    { return GL_RG;    }
-template<> constexpr GLenum TextureFormat::getFormat<3>()    { return GL_RGB;   }
-template<> constexpr GLenum TextureFormat::getFormat<4>()    { return GL_RGBA;  }
+template<> constexpr GLenum
+    TextureFormat::getFormat<1>()    { return GL_RED;   }
+template<> constexpr GLenum
+    TextureFormat::getFormat<2>()    { return GL_RG;    }
+template<> constexpr GLenum
+    TextureFormat::getFormat<3>()    { return GL_RGB;   }
+template<> constexpr GLenum
+    TextureFormat::getFormat<4>()    { return GL_RGBA;  }
 
 
 template <int N>

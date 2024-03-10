@@ -10,6 +10,7 @@ using basil::LogLevel;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
+using basil::GLTexture2D;
 
 bool    testBool[4]  =  { true, false, true, true };
 int     testInt[4]   =  { -10, 0, 10, 55 };
@@ -128,6 +129,29 @@ TEST_CASE("Window_GLShaderProgram_use") { BASIL_LOCK_TEST
         glGetIntegerv(GL_CURRENT_PROGRAM, &currentID);
 
         REQUIRE(currentID == shaderProgram.getID());
+    }
+}
+
+TEST_CASE("Window_GLShaderProgram_addTexture") { BASIL_LOCK_TEST
+    auto vertexShader =
+        std::make_shared<GLVertexShader>(vertexPath);
+    auto fragmentShader =
+        std::make_shared<GLFragmentShader>(fragmentPath);
+    auto program =
+        GLShaderProgram(vertexShader, fragmentShader);
+
+    auto texture = std::make_shared<GLTexture2D>();
+    texture->setName("testTex");
+
+    SECTION("Sets correct uniform location") {
+        program.addTexture(texture);
+
+        GLint location = glGetUniformLocation(program.getID(), "testTex");
+
+        GLint result;
+        glGetUniformiv(program.getID(), location, &result);
+
+        REQUIRE(result == texture->getUniformLocation());
     }
 }
 

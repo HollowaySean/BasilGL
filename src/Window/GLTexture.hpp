@@ -40,6 +40,9 @@ class IGLTexture {
     /** @return OpenGL-assigend Enum for texture. */
     GLenum getEnum() const { return textureEnum; }
 
+    /** @return Value to pass into shader program setUniform. */
+    GLint getUniformLocation() { return textureEnum - GL_TEXTURE0; }
+
     /** @brief Flushes data from source to texture. */
     virtual void update() = 0;
 

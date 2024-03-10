@@ -3,6 +3,8 @@
 #include <Basil/App.hpp>
 
 using basil::BasilApp;
+using basil::Logger;
+using basil::LogLevel;
 using basil::ProcessController;
 using basil::ProcessControllerState;
 using basil::WindowView;
@@ -10,42 +12,72 @@ using basil::WindowView;
 TEST_CASE("App_BasilApp_run") {
     auto controller = std::make_shared<ProcessController>();
     auto app = BasilApp();
-    app.setController(controller);
 
     SECTION("Calls run on controller") {
+        app.setController(controller);
+
         REQUIRE(controller->getCurrentState() ==
             ProcessControllerState::READY);
         app.run();
         REQUIRE(controller->getCurrentState() ==
             ProcessControllerState::STOPPED);
     }
+
+    SECTION("Logs error if controller is missing") {
+        Logger& logger = Logger::get();
+        app.run();
+
+        REQUIRE(logger.getLastOutput()
+            == "ProcessController not found for BasilApp.");
+        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
+    }
 }
 
 TEST_CASE("App_BasilApp_stop") {
     auto controller = std::make_shared<ProcessController>();
     auto app = BasilApp();
-    app.setController(controller);
 
     SECTION("Calls stop on controller") {
+        app.setController(controller);
+
         REQUIRE(controller->getCurrentState() ==
             ProcessControllerState::READY);
         app.stop();
         REQUIRE(controller->getCurrentState() ==
             ProcessControllerState::STOPPING);
     }
+
+    SECTION("Logs error if controller is missing") {
+        Logger& logger = Logger::get();
+        app.stop();
+
+        REQUIRE(logger.getLastOutput()
+            == "ProcessController not found for BasilApp.");
+        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
+    }
 }
 
 TEST_CASE("App_BasilApp_kill") {
     auto controller = std::make_shared<ProcessController>();
     auto app = BasilApp();
-    app.setController(controller);
 
     SECTION("Calls kill on controller") {
+        app.setController(controller);
+
         REQUIRE(controller->getCurrentState() ==
             ProcessControllerState::READY);
         app.kill();
         REQUIRE(controller->getCurrentState() ==
             ProcessControllerState::KILLED);
+    }
+
+    SECTION("Logs error if controller is missing") {
+        Logger& logger = Logger::get();
+        app.kill();
+
+        REQUIRE(logger.getLastOutput()
+            == "ProcessController not found for BasilApp.");
+        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
     }
 }
 

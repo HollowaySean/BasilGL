@@ -18,26 +18,32 @@ using basil::SpanTextureSource;
 TEST_CASE("Window_GLTexture_GLTexture") { BASIL_LOCK_TEST
     SECTION("Initializes 1D texture") {
         GLTexture1D texture = GLTexture1D();
+        texture.setName("test");
 
         REQUIRE(texture.getID() > 0);
         REQUIRE(texture.getEnum() >= GL_TEXTURE0);
         REQUIRE(texture.textureType == GL_TEXTURE_1D);
+        REQUIRE(texture.getName() == "test");
     }
 
     SECTION("Initializes 2D texture") {
         GLTexture2D texture = GLTexture2D();
+        texture.setName("test");
 
         REQUIRE(texture.getID() > 0);
         REQUIRE(texture.getEnum() >= GL_TEXTURE0);
         REQUIRE(texture.textureType == GL_TEXTURE_2D);
+        REQUIRE(texture.getName() == "test");
     }
 
     SECTION("Initializes 3D texture") {
         GLTexture3D texture = GLTexture3D();
+        texture.setName("test");
 
         REQUIRE(texture.getID() > 0);
         REQUIRE(texture.getEnum() >= GL_TEXTURE0);
         REQUIRE(texture.textureType == GL_TEXTURE_3D);
+        REQUIRE(texture.getName() == "test");
     }
 }
 

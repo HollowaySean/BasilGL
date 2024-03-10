@@ -35,7 +35,8 @@ void IGLTexture::initializeTexture() {
 template<int N>
 void GLTexture<N>::update() {
     if (!source) {
-        logger.log("Unable to update, texture source not found.", LogLevel::WARN);
+        logger.log("Unable to update, texture source not found.",
+            LogLevel::WARN);
         return;
     }
 
