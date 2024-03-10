@@ -55,8 +55,8 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
     }
 
     SECTION("Creates OpenGL 1D texture object") {
-        auto source = std::make_shared<SpanTextureSource<int, 1, 1>>(data);
-        source->setSource(data);
+        std::shared_ptr<SpanTextureSource<int, 1, 1>> source
+            = std::make_shared<SpanTextureSource<int, 1, 1>>(data);
 
         GLTexture1D texture = GLTexture1D();
         source->setWidth(8);
@@ -73,7 +73,8 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
     }
 
     SECTION("Creates OpenGL 2D texture object") {
-        auto source = std::make_shared<SpanTextureSource<int, 2, 1>>(data);
+        std::shared_ptr<SpanTextureSource<int, 2, 1>> source
+            = std::make_shared<SpanTextureSource<int, 2, 1>>();
         source->setSource(data);
 
         GLTexture2D texture = GLTexture2D();
@@ -92,7 +93,8 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
     }
 
     SECTION("Creates OpenGL 3D texture object") {
-        auto source = std::make_shared<SpanTextureSource<int, 3, 1>>(data);
+        std::shared_ptr<SpanTextureSource<int, 3, 1>> source
+            = std::make_shared<SpanTextureSource<int, 3, 1>>(data);
         source->setSource(data);
 
         GLTexture3D texture = GLTexture3D();

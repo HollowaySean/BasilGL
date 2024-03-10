@@ -12,7 +12,9 @@ class SpanTextureSource : public ITextureSource<dimension> {
     static_assert(channels > 0 && channels <= 4);
 
  public:
-    SpanTextureSource() = delete;
+    SpanTextureSource() {
+        this->format = TextureFormat::getTextureFormat<T, channels>();
+    }
 
     explicit SpanTextureSource(std::span<T> source) : source(source) {
         this->format = TextureFormat::getTextureFormat<T, channels>();
@@ -22,11 +24,11 @@ class SpanTextureSource : public ITextureSource<dimension> {
         return source.data();
     }
 
-    void setSource(std::span<T> source) {
+    void setSource(const std::span<T>& source) {
         this->source = source;
     }
 
-    std::span<T> getSource() { return source; }
+    std::span<T>& getSource() { return source; }
 
 #ifndef TEST_BUILD
 

@@ -8,7 +8,8 @@ using basil::SpanTextureSource;
 
 TEST_CASE("Data_SpanTextureSource_SpanTextureSource") {
     std::vector<float> data = { 1., 2., 3., 4. };
-    auto source = SpanTextureSource<float, 1, 4>(data);
+    auto source = SpanTextureSource<float, 1, 4>();
+    source.setSource(data);
 
     SECTION("Points to contained span") {
         for (int i = 0; i < data.size(); i++) {
