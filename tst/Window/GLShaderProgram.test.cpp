@@ -141,10 +141,9 @@ TEST_CASE("Window_GLShaderProgram_addTexture") { BASIL_LOCK_TEST
         GLShaderProgram(vertexShader, fragmentShader);
 
     auto texture = std::make_shared<GLTexture2D>();
-    texture->setName("testTex");
 
     SECTION("Sets correct uniform location") {
-        program.addTexture(texture);
+        program.addTexture("testTex", texture);
 
         GLint location = glGetUniformLocation(program.getID(), "testTex");
 

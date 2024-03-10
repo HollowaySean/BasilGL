@@ -46,12 +46,6 @@ class IGLTexture {
     /** @brief Flushes data from source to texture. */
     virtual void update() = 0;
 
-    /** @brief Sets name of variable in shader. */
-    void setName(const std::string& name) { this->name = name; }
-
-    /** @return Name of variable in shader. */
-    std::string getName() const { return name; }
-
 #ifndef TEST_BUILD
 
  protected:

@@ -48,8 +48,13 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
     void setFragmentShader(
       std::shared_ptr<GLFragmentShader> fragmentShader);
 
-    /** @brief Adds reference to texture in shader. */
-    void addTexture(std::shared_ptr<IGLTexture> texture);
+    /** @brief Adds reference to texture in shader.
+     *
+     * @param name    Name of texture within shader.
+     * @param texture Pointer to IGLTexture object
+     */
+    void addTexture(const std::string& name,
+      std::shared_ptr<IGLTexture> texture);
 
     /**
      * @brief Sets a 1D boolean uniform in shader program.
