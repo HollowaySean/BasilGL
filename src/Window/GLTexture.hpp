@@ -8,8 +8,9 @@
 #include <variant>
 
 #include <Basil/Context.hpp>
-#include <Basil/Data.hpp>
 #include <Basil/Logging.hpp>
+
+#include "Data/ITextureSource.hpp"
 
 namespace basil {
 
@@ -81,7 +82,9 @@ class GLTexture : public IGLTexture,
     void update() override;
 
     /** @brief Sets source of texture. */
-    void setSource(ITextureSource<N> source);
+    void setSource(std::shared_ptr<ITextureSource<N>> setSource) {
+        source = setSource;
+    }
 
 #ifndef TEST_BUILD
 

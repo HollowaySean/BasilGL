@@ -29,11 +29,7 @@ void IGLTexture::initializeTexture() {
     glActiveTexture(textureEnum);
     glBindTexture(textureType, textureId);
 
-    // TODO(sholloway): Allow for setting & modifying
-    glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    GLenum error = glGetError();
 }
 
 template<int N>
@@ -53,7 +49,7 @@ void GLTexture<1>::updateGLTexImage() {
     glTexImage1D(textureType,
                  0,
                  source->format.internalFormat,
-                 source->dimension[0],
+                 source->getWidth(),
                  0,
                  source->format.format,
                  source->format.type,
@@ -65,8 +61,8 @@ void GLTexture<2>::updateGLTexImage() {
     glTexImage2D(textureType,
                  0,
                  source->format.internalFormat,
-                 source->dimension[0],
-                 source->dimension[1],
+                 source->getWidth(),
+                 source->getHeight(),
                  0,
                  source->format.format,
                  source->format.type,
@@ -78,9 +74,9 @@ void GLTexture<3>::updateGLTexImage() {
     glTexImage3D(textureType,
                  0,
                  source->format.internalFormat,
-                 source->dimension[0],
-                 source->dimension[1],
-                 source->dimension[2],
+                 source->getWidth(),
+                 source->getHeight(),
+                 source->getDepth(),
                  0,
                  source->format.format,
                  source->format.type,
