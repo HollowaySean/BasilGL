@@ -56,6 +56,18 @@ else()
     set(FMT_LIBRARIES fmt::fmt)
 endif()
 
+## stb library
+set(STB_SUBMODULE_DIR "${CMAKE_SOURCE_DIR}/extern/stb")
+
+if(NOT EXISTS "${STB_SUBMODULE_DIR}/CMakeLists.txt")
+    find_package(Git REQUIRED)
+    execute_process(COMMAND ${GIT_EXECUTABLE}
+        submodule update --init --recursive -- extern/stb
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMAND_ERROR_IS_FATAL ANY)
+endif()
+set(FMT_INCLUDE_DIRS "${FMT_SUBMODULE_DIR}")
+
 ## GLEW
 find_package(GLEW QUIET CONFIG)
 if(${GLEW_FOUND})

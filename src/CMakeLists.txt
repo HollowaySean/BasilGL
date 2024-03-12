@@ -47,5 +47,6 @@ target_include_directories(${LIB_TARGET_NAME}
         "${SRC_DIR}"
     PRIVATE
         "${FMT_INCLUDE_DIRS}"
+        "${STB_INCLUDE_DIRS}"
         "${GLEW_INCLUDE_DIRS}"
         "${GLFW_INCLUDE_DIRS}")
