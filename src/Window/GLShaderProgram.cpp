@@ -54,6 +54,8 @@ void GLShaderProgram::setFragmentShader(
     updateShaders();
 }
 
+// TODO(sholloway): Should texture own name?
+// TODO(sholloway): Need to "use" program before setting uniforms
 void GLShaderProgram::addTexture(const std::string& name,
         std::shared_ptr<IGLTexture> texture) {
     GLint location =

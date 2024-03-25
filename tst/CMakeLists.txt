@@ -24,6 +24,7 @@ target_include_directories(${TEST_TARGET_NAME} PRIVATE
     ${GLEW_INCLUDE_DIRS}
     ${GLFW_INCLUDE_DIRS}
     ${CATCH2_INCLUDE_DIRS}
+    ${STB_INCLUDE_DIRS}
     ${FMT_INCLUDE_DIRS})
 
 target_link_libraries(${TEST_TARGET_NAME} PRIVATE

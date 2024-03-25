@@ -1,13 +1,16 @@
 #include <Basil/App.hpp>
+#include <Basil/Data.hpp>
 #include <Basil/Process.hpp>
 #include <Basil/Utility.hpp>
 #include <Basil/Window.hpp>
 
 using basil::BasilApp;
+using basil::FileTextureSource;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
 using basil::GLShaderPane;
+using basil::GLTexture2D;
 using basil::LogLevel;
 using basil::MetricsReporter;
 using basil::PaneOrientation;
@@ -24,23 +27,28 @@ using basil::WindowView;
  * @return Success code
  */
 int main(int argc, char** argv) {
+    auto texturePath =
+        std::filesystem::path(SOURCE_DIR) / "../examples/assets/test-image.jpg";
+    auto textureSource = std::make_shared<FileTextureSource>(texturePath);
+
+    auto texture = std::make_shared<GLTexture2D>();
+    texture->setSource(textureSource);
+
+
     auto fragmentPath =
-        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
+        std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
+    auto program = GLShaderProgram::Builder()
+        .withFragmentShaderFromFile(fragmentPath)
+        .withDefaultVertexShader()
+        .build();
+    program->addTexture("testTexture", texture);
 
     auto basilApp = BasilApp::Builder()
         .withWindow(WindowView::Builder()
             .withTitle("My window")
             .withDimensions(500, 500)
-            .withTopPane(SplitPane::Builder()
-                .withFirstPane(GLShaderPane::Builder()
-                    .fromShaderFile(fragmentPath)
-                    .build())
-                .withSecondPane(GLShaderPane::Builder()
-                    .fromShaderFile(fragmentPath)
-                    .build())
-                .withOrientation(PaneOrientation::VERTICAL)
-                .withGapWidth(5)
-                .withPaneExtentInPercent(66.6)
+            .withTopPane(GLShaderPane::Builder()
+                .withShaderProgram(std::move(program))
                 .build())
             .build())
         .withController(ProcessController::Builder()

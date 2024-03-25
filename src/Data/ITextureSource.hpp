@@ -3,6 +3,8 @@
 
 #include <GL/glew.h>
 
+#include <array>
+
 namespace basil {
 
 struct TextureFormat {

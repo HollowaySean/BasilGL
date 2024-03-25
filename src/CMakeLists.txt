@@ -23,9 +23,11 @@ set(BASIL_LIBRARIES
     "${GLFW_LIBRARIES}"
     PARENT_SCOPE)
 
+# TODO(sholloway): Figure out STB import
 set(BASIL_INCLUDE_DIRS
     "${INCLUDE_DIR}"
     "${SRC_DIR}"
+    "${STB_INCLUDE_DIRS}"
     PARENT_SCOPE)
 
 ## Preprocessor directives
