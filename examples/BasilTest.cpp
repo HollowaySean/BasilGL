@@ -36,15 +36,6 @@ int main(int argc, char** argv) {
     texture->setSource(textureSource);
     texture->update();
 
-    std::vector<float> values(500*500*4, 1.);
-    auto spanSource = std::make_shared<SpanTextureSource<float, 2, 4>>(values);
-    spanSource->setWidth(500);
-    spanSource->setHeight(500);
-
-    auto spanTexture = std::make_shared<GLTexture2D>();
-    spanTexture->setSource(spanSource);
-    spanTexture->update();
-
     auto fragmentPath =
         std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
     auto program = GLShaderProgram::Builder()
@@ -57,7 +48,7 @@ int main(int argc, char** argv) {
     auto basilApp = BasilApp::Builder()
         .withWindow(WindowView::Builder()
             .withTitle("My window")
-            .withDimensions(500, 500)
+            .withDimensions(683, 1024)
             .withTopPane(GLShaderPane::Builder()
                 .withShaderProgram(std::move(program))
                 .build())

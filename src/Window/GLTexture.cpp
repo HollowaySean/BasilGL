@@ -66,25 +66,15 @@ void GLTexture<1>::updateGLTexImage() {
 
 template<>
 void GLTexture<2>::updateGLTexImage() {
-    // glTexImage2D(textureType,
-    //              0,
-    //              source->format.internalFormat,
-    //              source->getWidth(),
-    //              source->getHeight(),
-    //              0,
-    //              source->format.format,
-    //              source->format.type,
-    //              source->data());
-    glTexImage2D(
-        IGLTexture::textureType,
-        0,
-        GL_RGB,
-        source->getWidth(),
-        source->getHeight(),
-        0,
-        GL_RGB,
-        GL_UNSIGNED_BYTE,
-        source->data());
+    glTexImage2D(textureType,
+                 0,
+                 source->format.internalFormat,
+                 source->getWidth(),
+                 source->getHeight(),
+                 0,
+                 source->format.format,
+                 source->format.type,
+                 source->data());
 }
 
 template<>

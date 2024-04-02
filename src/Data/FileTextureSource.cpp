@@ -7,7 +7,8 @@ namespace basil {
 
 FileTextureSource::FileTextureSource(std::filesystem::path filePath) {
     int width, height, channels;
-    imageData = stbi_load(filePath.c_str(), &width, &height, &channels, 0);
+    // TODO(sholloway): Figure out channels
+    imageData = stbi_load(filePath.c_str(), &width, &height, &channels, 4);
 
     setWidth(width);
     setHeight(height);
@@ -15,7 +16,7 @@ FileTextureSource::FileTextureSource(std::filesystem::path filePath) {
 }
 
 const void* FileTextureSource::data() {
-    return imageData;
+    return reinterpret_cast<const void*>(imageData);
 }
 
 }  // namespace basil

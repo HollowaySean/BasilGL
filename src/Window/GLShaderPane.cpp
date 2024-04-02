@@ -28,10 +28,10 @@ void GLShaderPane::createVertexObjects() {
     // Copy vertices of unit quad into buffer
     float vertices[] = {
          // Position              // UV coordinates
-         1.0f,  1.0f,  0.0f,      1.0f,  1.0f,
-         1.0f, -1.0f,  0.0f,      1.0f,  0.0f,
-        -1.0f, -1.0f,  0.0f,      0.0f,  0.0f,
-        -1.0f,  1.0f,  0.0f,      0.0f,  1.0f
+         1.0f,  1.0f,  0.0f,      1.0f,  0.0f,
+         1.0f, -1.0f,  0.0f,      1.0f,  1.0f,
+        -1.0f, -1.0f,  0.0f,      0.0f,  1.0f,
+        -1.0f,  1.0f,  0.0f,      0.0f,  0.0f
     };
     glGenBuffers(1, &vertexBufferID);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
