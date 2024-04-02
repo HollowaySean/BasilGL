@@ -16,6 +16,7 @@ using basil::MetricsReporter;
 using basil::PaneOrientation;
 using basil::ProcessController;
 using basil::ProcessPrivilege;
+using basil::SpanTextureSource;
 using basil::SplitPane;
 using basil::WindowView;
 
@@ -33,7 +34,16 @@ int main(int argc, char** argv) {
 
     auto texture = std::make_shared<GLTexture2D>();
     texture->setSource(textureSource);
+    texture->update();
 
+    std::vector<float> values(500*500*4, 1.);
+    auto spanSource = std::make_shared<SpanTextureSource<float, 2, 4>>(values);
+    spanSource->setWidth(500);
+    spanSource->setHeight(500);
+
+    auto spanTexture = std::make_shared<GLTexture2D>();
+    spanTexture->setSource(spanSource);
+    spanTexture->update();
 
     auto fragmentPath =
         std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
@@ -41,6 +51,7 @@ int main(int argc, char** argv) {
         .withFragmentShaderFromFile(fragmentPath)
         .withDefaultVertexShader()
         .build();
+    program->use();
     program->addTexture("testTexture", texture);
 
     auto basilApp = BasilApp::Builder()

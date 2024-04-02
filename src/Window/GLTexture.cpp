@@ -30,11 +30,12 @@ void IGLTexture::initializeTexture() {
     glBindTexture(textureType, textureId);
 
     // TODO(sholloway): Figure out better way to handle this
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    // TODO(sholloway): Either use or remove
     GLenum error = glGetError();
 }
 
@@ -65,15 +66,25 @@ void GLTexture<1>::updateGLTexImage() {
 
 template<>
 void GLTexture<2>::updateGLTexImage() {
-    glTexImage2D(textureType,
-                 0,
-                 source->format.internalFormat,
-                 source->getWidth(),
-                 source->getHeight(),
-                 0,
-                 source->format.format,
-                 source->format.type,
-                 source->data());
+    // glTexImage2D(textureType,
+    //              0,
+    //              source->format.internalFormat,
+    //              source->getWidth(),
+    //              source->getHeight(),
+    //              0,
+    //              source->format.format,
+    //              source->format.type,
+    //              source->data());
+    glTexImage2D(
+        IGLTexture::textureType,
+        0,
+        GL_RGB,
+        source->getWidth(),
+        source->getHeight(),
+        0,
+        GL_RGB,
+        GL_UNSIGNED_BYTE,
+        source->data());
 }
 
 template<>
