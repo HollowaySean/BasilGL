@@ -45,6 +45,9 @@ int main(int argc, char** argv) {
     program->use();
     program->addTexture("testTexture", texture);
 
+    // TODO(sholloway): Support for late builders,
+    //      disallow empty objects which require content
+
     auto basilApp = BasilApp::Builder()
         .withWindow(WindowView::Builder()
             .withTitle("My window")
