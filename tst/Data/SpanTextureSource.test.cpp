@@ -26,3 +26,12 @@ TEST_CASE("Data_SpanTextureSource_SpanTextureSource") {
         REQUIRE(source.format.internalFormat == GL_RGBA);
     }
 }
+
+TEST_CASE("Data_SpanTextureSource_Builder") {
+    SECTION("Builds from span") {
+        std::vector<float> data = { 1., 2., 3., 4. };
+        auto source = SpanTextureSource<float>(data);
+
+        REQUIRE(data.data() == source.data());
+    }
+}

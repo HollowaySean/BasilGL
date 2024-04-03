@@ -5,12 +5,14 @@
 
 #include <memory>
 #include <string>
-#include <variant>
 
+#include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
 #include <Basil/Logging.hpp>
 
 #include "Data/ITextureSource.hpp"
+#include "Data/FileTextureSource.hpp"
+#include "Data/SpanTextureSource.hpp"
 
 namespace basil {
 
@@ -61,6 +63,7 @@ class IGLTexture {
  */
 template<int N>
 class GLTexture : public IGLTexture,
+                  public IBuildable<GLTexture<N>>,
                   private IBasilContextConsumer {
     static_assert(N > 0 && N <= 3);
 
@@ -78,6 +81,22 @@ class GLTexture : public IGLTexture,
     void setSource(std::shared_ptr<ITextureSource<N>> setSource) {
         source = setSource;
     }
+
+    class Builder : public IBuilder<GLTexture<N>> {
+     public:
+        /** @brief Builds from existing ITextureSource. */
+        Builder& withSource(std::shared_ptr<ITextureSource<N>> source);
+
+        /** @brief Builds from image file. */
+        Builder& fromFile(std::filesystem::path filePath);
+
+        /** @brief Builds from std::span collection. */
+        template<class T, int channels = 4>
+        Builder& fromSpan(std::span<T> span) {
+            auto source = std::make_shared<SpanTextureSource<T, N, channels>>(span);
+            return withSource(source);
+        }
+    };
 
 #ifndef TEST_BUILD
 

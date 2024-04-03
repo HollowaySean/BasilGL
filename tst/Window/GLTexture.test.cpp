@@ -113,3 +113,25 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
         // TODO(sholloway): Complete tests after fixing
     }
 }
+
+TEST_CASE("Window_GLTexture_Builder") {
+    SECTION("Builds from file path") {
+        auto path = std::filesystem::path(TEST_DIR) / "Data/assets/test-img.jpg";
+
+        auto texture = GLTexture2D::Builder()
+            .fromFile(path)
+            .build();
+
+        REQUIRE(texture->source->data() != nullptr);
+    }
+
+    SECTION("Builds from span") {
+        auto source = std::vector<int>(16, 5);
+
+        auto texture = GLTexture1D::Builder()
+            .fromSpan(std::span(source))
+            .build();
+
+        REQUIRE(texture->source->data() == source.data());
+    }
+}

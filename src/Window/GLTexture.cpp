@@ -30,10 +30,10 @@ void IGLTexture::initializeTexture() {
     glBindTexture(textureType, textureId);
 
     // TODO(sholloway): Figure out better way to handle this
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     // TODO(sholloway): Either use or remove
     GLenum error = glGetError();
@@ -95,6 +95,20 @@ template<int N>
 GLTexture<N>::~GLTexture() {
     GLuint textureArray[] = { textureId };
     glDeleteTextures(1, textureArray);
+}
+
+template<int N>
+GLTexture<N>::Builder&
+GLTexture<N>::Builder::withSource(std::shared_ptr<ITextureSource<N>> source) {
+    this->impl->setSource(source);
+    return (*this);
+}
+
+template<>
+GLTexture<2>::Builder&
+GLTexture<2>::Builder::fromFile(std::filesystem::path filePath) {
+    auto source = std::make_shared<FileTextureSource>(filePath);
+    return withSource(source);
 }
 
 }  // namespace basil
