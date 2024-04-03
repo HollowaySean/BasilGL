@@ -14,17 +14,8 @@
 
 namespace basil {
 
-// TODO(sholloway): Plan for revision
-// 1. Create data source class
-//  - Fold TextureProps into data source?
-// 2. Getters and setters
-// 3. Change update methodology to not run every frame
-// 4. Add support for 1D & 3D textures
-// 5. Deduce types for texture props?
-// 6. Builder
-
 /**
- * @brief       Generic interface for template class.
+ * @brief       Interface for texture template class.
  */
 class IGLTexture {
  public:
@@ -63,6 +54,11 @@ class IGLTexture {
     std::string name;
 };
 
+/**
+ * @brief Implementation class of IGLTexture template.
+ *
+ * @tparam N Dimensionality of texture. Can be 1D, 2D, or 3D.
+ */
 template<int N>
 class GLTexture : public IGLTexture,
                   private IBasilContextConsumer {
