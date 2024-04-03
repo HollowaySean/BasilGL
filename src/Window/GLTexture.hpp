@@ -39,6 +39,9 @@ class IGLTexture {
     /** @brief Flushes data from source to texture. */
     virtual void update() = 0;
 
+    /** @brief Calls glGetTexParameter with set values. */
+    void setTextureParameter(GLenum parameterName, GLenum value);
+
 #ifndef TEST_BUILD
 
  protected:

@@ -24,19 +24,20 @@ GLTexture<3>::GLTexture() {
     initializeTexture();
 }
 
+void IGLTexture::setTextureParameter(GLenum parameterName, GLenum value) {
+    glTexParameteri(textureType, parameterName, value);
+}
+
 void IGLTexture::initializeTexture() {
     glGenTextures(1, &textureId);
     glActiveTexture(textureEnum);
     glBindTexture(textureType, textureId);
 
-    // TODO(sholloway): Figure out better way to handle this
-    glTexParameteri(textureType, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(textureType, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    glTexParameteri(textureType, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(textureType, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // TODO(sholloway): Either use or remove
-    GLenum error = glGetError();
+    // Set default texture parameters
+    setTextureParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    setTextureParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    setTextureParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    setTextureParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 template<int N>
