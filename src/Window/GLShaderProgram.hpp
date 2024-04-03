@@ -149,6 +149,29 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
         /** @brief Add no-op vertex shader. */
         Builder& withDefaultVertexShader();
 
+        /** @brief Add texture to program. */
+        Builder& withTexture(const std::string& name,
+          std::shared_ptr<IGLTexture> texture);
+
+        /** @brief Set 1D uniform value. */
+        template<class T>
+        Builder& withUniform(const std::string& name, T value);
+
+        /** @brief Set 2D uniform value. */
+        template<class T>
+        Builder& withUniformVector(const std::string& name,
+          T value1, T value2);
+
+        /** @brief Set 3D uniform value. */
+        template<class T>
+        Builder& withUniformVector(const std::string& name,
+          T value1, T value2, T value3);
+
+
+        /** @brief Set 4D uniform value. */
+        template<class T>
+        Builder& withUniformVector(const std::string& name,
+          T value1, T value2, T value3, T value4);
         // TODO(sholloway): withUniform, withTexture
     };
 

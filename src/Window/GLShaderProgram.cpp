@@ -249,4 +249,42 @@ GLShaderProgram::Builder::withDefaultVertexShader() {
     return (*this);
 }
 
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withTexture(const std::string& name,
+        std::shared_ptr<IGLTexture> texture) {
+    impl->addTexture(name, texture);
+    return (*this);
+}
+
+template<class T>
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withUniform(const std::string& name, T value) {
+    impl->setUniform(name, value);
+    return (*this);
+}
+
+template<class T>
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withUniformVector(const std::string& name,
+        T value1, T value2) {
+    impl->setUniformVector(name, value1, value2);
+    return (*this);
+}
+
+template<class T>
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withUniformVector(const std::string& name,
+        T value1, T value2, T value3) {
+    impl->setUniformVector(name, value1, value2, value3);
+    return (*this);
+}
+
+template<class T>
+GLShaderProgram::Builder&
+GLShaderProgram::Builder::withUniformVector(const std::string& name,
+        T value1, T value2, T value3, T value4) {
+    impl->setUniformVector(name, value1, value2, value3, value4);
+    return (*this);
+}
+
 }  // namespace basil

@@ -43,15 +43,12 @@ int main(int argc, char** argv) {
     program->addTexture("testTexture", texture);
     program->setUniform("testValue", static_cast<float>(0.5));
 
-    // TODO(sholloway): Support for late builders,
-    //      disallow empty objects which require content?
-
     auto basilApp = BasilApp::Builder()
         .withWindow(WindowView::Builder()
             .withTitle("My window")
             .withDimensions(683, 1024)
             .withTopPane(GLShaderPane::Builder()
-                .withShaderProgram(std::move(program))
+                .withShaderProgram(program)
                 .build())
             .build())
         .withController(ProcessController::Builder()
