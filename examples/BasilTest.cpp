@@ -30,25 +30,23 @@ using basil::WindowView;
 int main(int argc, char** argv) {
     auto texturePath =
         std::filesystem::path(SOURCE_DIR) / "../examples/assets/test-image.jpg";
-    auto texture = GLTexture2D::Builder()
-        .fromFile(texturePath)
-        .build();
-
     auto fragmentPath =
         std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
-    auto program = GLShaderProgram::Builder()
-        .withFragmentShaderFromFile(fragmentPath)
-        .withDefaultVertexShader()
-        .build();
-    program->addTexture("testTexture", texture);
-    program->setUniform("testValue", static_cast<float>(0.5));
+    float testValue = 0.9;
 
     auto basilApp = BasilApp::Builder()
         .withWindow(WindowView::Builder()
             .withTitle("My window")
             .withDimensions(683, 1024)
             .withTopPane(GLShaderPane::Builder()
-                .withShaderProgram(program)
+                .withShaderProgram(GLShaderProgram::Builder()
+                    .withFragmentShaderFromFile(fragmentPath)
+                    .withDefaultVertexShader()
+                    .withUniform("testValue", testValue)
+                    .withTexture("testTexture", GLTexture2D::Builder()
+                        .fromFile(texturePath)
+                        .build())
+                    .build())
                 .build())
             .build())
         .withController(ProcessController::Builder()

@@ -5,9 +5,10 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
-#include "GLShader.hpp"
 #include "GLTexture.hpp"
+#include "GLShader.hpp"
 
 #include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
@@ -160,19 +161,26 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
         /** @brief Set 2D uniform value. */
         template<class T>
         Builder& withUniformVector(const std::string& name,
-          T value1, T value2);
+            T value1, T value2) {
+          this->impl->setUniformVector(name, value1, value2);
+          return (*this);
+        }
 
         /** @brief Set 3D uniform value. */
         template<class T>
         Builder& withUniformVector(const std::string& name,
-          T value1, T value2, T value3);
-
+            T value1, T value2, T value3) {
+          this->impl->setUniformVector(name, value1, value2, value3);
+          return (*this);
+        }
 
         /** @brief Set 4D uniform value. */
         template<class T>
         Builder& withUniformVector(const std::string& name,
-          T value1, T value2, T value3, T value4);
-        // TODO(sholloway): withUniform, withTexture
+            T value1, T value2, T value3, T value4) {
+          this->impl->setUniformVector(name, value1, value2, value3, value4);
+          return (*this);
+        }
     };
 
 #ifndef TEST_BUILD
@@ -190,6 +198,8 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
 
     std::shared_ptr<GLVertexShader> vertexShader = nullptr;
     std::shared_ptr<GLFragmentShader> fragmentShader = nullptr;
+
+    std::vector<std::shared_ptr<IGLTexture>> textures;
 };
 
 }  // namespace basil

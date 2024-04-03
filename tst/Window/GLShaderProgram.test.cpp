@@ -295,4 +295,35 @@ TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
         REQUIRE_FALSE(program->vertexShader == nullptr);
         REQUIRE_FALSE(program->getID() == 0);
     }
+
+    SECTION("Sets uniforms") {
+        auto program = GLShaderProgram::Builder()
+            .withDefaultVertexShader()
+            .withFragmentShaderFromFile(fragmentPath)
+            .withUniform("myUniformBool", testBool[0])
+            .withUniform("myUniformInt", testInt[0])
+            .withUniform("myUniformUnsignedInt", testUint[0])
+            .withUniform("myUniformFloat", testFloat[0])
+            .build();
+
+
+        REQUIRE(glGetUniformLocation(program->getID(), "myUniformBool") >= 0);
+        REQUIRE(glGetUniformLocation(program->getID(), "myUniformInt") >= 0);
+        REQUIRE(glGetUniformLocation(program->getID(), "myUniformUnsignedInt") >= 0);
+        REQUIRE(glGetUniformLocation(program->getID(), "myUniformFloat") >= 0);
+    }
+
+    SECTION("Adds texture") {
+        std::vector<float> span = { 0.0, 1.0, 2.0, 3.0 };
+        auto program = GLShaderProgram::Builder()
+            .withDefaultVertexShader()
+            .withFragmentShaderFromFile(fragmentPath)
+            .withTexture("testTex", GLTexture2D::Builder()
+                .fromSpan(std::span(span))
+                .build())
+            .build();
+
+
+        REQUIRE(glGetUniformLocation(program->getID(), "testTex") >= 0);
+    }
 }

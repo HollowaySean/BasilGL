@@ -54,14 +54,15 @@ void GLShaderProgram::setFragmentShader(
     updateShaders();
 }
 
-// TODO(sholloway): Should texture own name?
-// TODO(sholloway): Need to "use" program before setting uniforms
 void GLShaderProgram::addTexture(const std::string& name,
         std::shared_ptr<IGLTexture> texture) {
     use();
     GLint location =
         glGetUniformLocation(ID, name.c_str());
     glUniform1i(location, texture->getUniformLocation());
+
+    // Add texture to vector to prevent it from falling out of scope
+    textures.push_back(texture);
 }
 
 void GLShaderProgram::setUniform(const std::string& name, bool value) {
@@ -256,34 +257,31 @@ GLShaderProgram::Builder::withTexture(const std::string& name,
     return (*this);
 }
 
-template<class T>
+template<>
 GLShaderProgram::Builder&
-GLShaderProgram::Builder::withUniform(const std::string& name, T value) {
+GLShaderProgram::Builder::withUniform(const std::string& name, bool value) {
     impl->setUniform(name, value);
     return (*this);
 }
 
-template<class T>
+template<>
 GLShaderProgram::Builder&
-GLShaderProgram::Builder::withUniformVector(const std::string& name,
-        T value1, T value2) {
-    impl->setUniformVector(name, value1, value2);
+GLShaderProgram::Builder::withUniform(const std::string& name, int value) {
+    impl->setUniform(name, value);
     return (*this);
 }
 
-template<class T>
+template<>
 GLShaderProgram::Builder&
-GLShaderProgram::Builder::withUniformVector(const std::string& name,
-        T value1, T value2, T value3) {
-    impl->setUniformVector(name, value1, value2, value3);
+GLShaderProgram::Builder::withUniform(const std::string& name, uint value) {
+    impl->setUniform(name, value);
     return (*this);
 }
 
-template<class T>
+template<>
 GLShaderProgram::Builder&
-GLShaderProgram::Builder::withUniformVector(const std::string& name,
-        T value1, T value2, T value3, T value4) {
-    impl->setUniformVector(name, value1, value2, value3, value4);
+GLShaderProgram::Builder::withUniform(const std::string& name, float value) {
+    impl->setUniform(name, value);
     return (*this);
 }
 
