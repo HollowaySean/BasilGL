@@ -23,9 +23,11 @@ set(BASIL_LIBRARIES
     "${GLFW_LIBRARIES}"
     PARENT_SCOPE)
 
+# TODO(sholloway): Figure out STB import
 set(BASIL_INCLUDE_DIRS
     "${INCLUDE_DIR}"
     "${SRC_DIR}"
+    "${STB_INCLUDE_DIRS}"
     PARENT_SCOPE)
 
 ## Preprocessor directives
@@ -47,5 +49,6 @@ target_include_directories(${LIB_TARGET_NAME}
         "${SRC_DIR}"
     PRIVATE
         "${FMT_INCLUDE_DIRS}"
+        "${STB_INCLUDE_DIRS}"
         "${GLEW_INCLUDE_DIRS}"
         "${GLFW_INCLUDE_DIRS}")

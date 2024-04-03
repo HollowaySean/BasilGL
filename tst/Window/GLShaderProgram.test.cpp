@@ -10,6 +10,7 @@ using basil::LogLevel;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
+using basil::GLTexture2D;
 
 bool    testBool[4]  =  { true, false, true, true };
 int     testInt[4]   =  { -10, 0, 10, 55 };
@@ -128,6 +129,28 @@ TEST_CASE("Window_GLShaderProgram_use") { BASIL_LOCK_TEST
         glGetIntegerv(GL_CURRENT_PROGRAM, &currentID);
 
         REQUIRE(currentID == shaderProgram.getID());
+    }
+}
+
+TEST_CASE("Window_GLShaderProgram_addTexture") { BASIL_LOCK_TEST
+    auto vertexShader =
+        std::make_shared<GLVertexShader>(vertexPath);
+    auto fragmentShader =
+        std::make_shared<GLFragmentShader>(fragmentPath);
+    auto program =
+        GLShaderProgram(vertexShader, fragmentShader);
+
+    auto texture = std::make_shared<GLTexture2D>();
+
+    SECTION("Sets correct uniform location") {
+        program.addTexture("testTex", texture);
+
+        GLint location = glGetUniformLocation(program.getID(), "testTex");
+
+        GLint result;
+        glGetUniformiv(program.getID(), location, &result);
+
+        REQUIRE(result == texture->getUniformLocation());
     }
 }
 
@@ -271,5 +294,36 @@ TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
         REQUIRE_FALSE(program->fragmentShader == nullptr);
         REQUIRE_FALSE(program->vertexShader == nullptr);
         REQUIRE_FALSE(program->getID() == 0);
+    }
+
+    SECTION("Sets uniforms") {
+        auto program = GLShaderProgram::Builder()
+            .withDefaultVertexShader()
+            .withFragmentShaderFromFile(fragmentPath)
+            .withUniform("myUniformBool", testBool[0])
+            .withUniform("myUniformInt", testInt[0])
+            .withUniform("myUniformUnsignedInt", testUint[0])
+            .withUniform("myUniformFloat", testFloat[0])
+            .build();
+
+
+        REQUIRE(glGetUniformLocation(program->getID(), "myUniformBool") >= 0);
+        REQUIRE(glGetUniformLocation(program->getID(), "myUniformInt") >= 0);
+        REQUIRE(glGetUniformLocation(program->getID(), "myUniformUnsignedInt") >= 0);
+        REQUIRE(glGetUniformLocation(program->getID(), "myUniformFloat") >= 0);
+    }
+
+    SECTION("Adds texture") {
+        std::vector<float> span = { 0.0, 1.0, 2.0, 3.0 };
+        auto program = GLShaderProgram::Builder()
+            .withDefaultVertexShader()
+            .withFragmentShaderFromFile(fragmentPath)
+            .withTexture("testTex", GLTexture2D::Builder()
+                .fromSpan(std::span(span))
+                .build())
+            .build();
+
+
+        REQUIRE(glGetUniformLocation(program->getID(), "testTex") >= 0);
     }
 }

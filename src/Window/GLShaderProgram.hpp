@@ -5,9 +5,10 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
-#include "GLShader.hpp"
 #include "GLTexture.hpp"
+#include "GLShader.hpp"
 
 #include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
@@ -48,8 +49,13 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
     void setFragmentShader(
       std::shared_ptr<GLFragmentShader> fragmentShader);
 
-    /** @brief Adds reference to texture in shader. */
-    void addTexture(std::shared_ptr<IGLTexture> texture);
+    /** @brief Adds reference to texture in shader.
+     *
+     * @param name    Name of texture within shader.
+     * @param texture Pointer to IGLTexture object
+     */
+    void addTexture(const std::string& name,
+      std::shared_ptr<IGLTexture> texture);
 
     /**
      * @brief Sets a 1D boolean uniform in shader program.
@@ -143,6 +149,38 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
 
         /** @brief Add no-op vertex shader. */
         Builder& withDefaultVertexShader();
+
+        /** @brief Add texture to program. */
+        Builder& withTexture(const std::string& name,
+          std::shared_ptr<IGLTexture> texture);
+
+        /** @brief Set 1D uniform value. */
+        template<class T>
+        Builder& withUniform(const std::string& name, T value);
+
+        /** @brief Set 2D uniform value. */
+        template<class T>
+        Builder& withUniformVector(const std::string& name,
+            T value1, T value2) {
+          this->impl->setUniformVector(name, value1, value2);
+          return (*this);
+        }
+
+        /** @brief Set 3D uniform value. */
+        template<class T>
+        Builder& withUniformVector(const std::string& name,
+            T value1, T value2, T value3) {
+          this->impl->setUniformVector(name, value1, value2, value3);
+          return (*this);
+        }
+
+        /** @brief Set 4D uniform value. */
+        template<class T>
+        Builder& withUniformVector(const std::string& name,
+            T value1, T value2, T value3, T value4) {
+          this->impl->setUniformVector(name, value1, value2, value3, value4);
+          return (*this);
+        }
     };
 
 #ifndef TEST_BUILD
@@ -160,6 +198,8 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
 
     std::shared_ptr<GLVertexShader> vertexShader = nullptr;
     std::shared_ptr<GLFragmentShader> fragmentShader = nullptr;
+
+    std::vector<std::shared_ptr<IGLTexture>> textures;
 };
 
 }  // namespace basil

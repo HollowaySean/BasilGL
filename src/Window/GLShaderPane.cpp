@@ -18,20 +18,6 @@ void GLShaderPane::setShaderProgram(
     } else {
         this->shaderProgram = shaderProgram;
     }
-
-    for (std::shared_ptr<IGLTexture> texture : textureList) {
-        this->shaderProgram->addTexture(texture);
-    }
-}
-
-void GLShaderPane::addTexture(std::shared_ptr<IGLTexture> newTexture) {
-    // Add texture to list
-    textureList.push_back(newTexture);
-
-    // Assign texture to shader
-    if (shaderProgram) {
-        this->shaderProgram->addTexture(newTexture);
-    }
 }
 
 void GLShaderPane::createVertexObjects() {
@@ -42,10 +28,10 @@ void GLShaderPane::createVertexObjects() {
     // Copy vertices of unit quad into buffer
     float vertices[] = {
          // Position              // UV coordinates
-         1.0f,  1.0f,  0.0f,      1.0f,  1.0f,
-         1.0f, -1.0f,  0.0f,      1.0f,  0.0f,
-        -1.0f, -1.0f,  0.0f,      0.0f,  0.0f,
-        -1.0f,  1.0f,  0.0f,      0.0f,  1.0f
+         1.0f,  1.0f,  0.0f,      1.0f,  0.0f,
+         1.0f, -1.0f,  0.0f,      1.0f,  1.0f,
+        -1.0f, -1.0f,  0.0f,      0.0f,  1.0f,
+        -1.0f,  1.0f,  0.0f,      0.0f,  0.0f
     };
     glGenBuffers(1, &vertexBufferID);
     glBindBuffer(GL_ARRAY_BUFFER, vertexBufferID);
@@ -85,12 +71,6 @@ void const GLShaderPane::draw() {
     // Use shader
     if (shaderProgram) {
         shaderProgram->use();
-    }
-
-    // Update texture(s)
-    // TODO(sholloway): Only update when requested to avoid unnecessary data transfer
-    for (std::shared_ptr<IGLTexture> texture : textureList) {
-        texture->update();
     }
 
     // Render quad of triangles
@@ -143,13 +123,6 @@ GLShaderPane::Builder&
 GLShaderPane::Builder::withShaderProgram(
         std::shared_ptr<GLShaderProgram> shaderProgram) {
     impl->setShaderProgram(shaderProgram);
-    return (*this);
-}
-
-GLShaderPane::Builder&
-GLShaderPane::Builder::withTexture(
-        std::shared_ptr<IGLTexture> texture) {
-    impl->addTexture(texture);
     return (*this);
 }
 

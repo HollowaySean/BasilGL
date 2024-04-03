@@ -9,7 +9,6 @@
 #include <utility>
 #include <vector>
 
-#include "GLTexture.hpp"
 #include "GLShaderProgram.hpp"
 #include "IPane.hpp"
 
@@ -45,9 +44,6 @@ class GLShaderPane :  public IPane,
     /** @brief Set shader program in use. */
     void setShaderProgram(std::shared_ptr<GLShaderProgram> shaderProgram);
 
-    /** @param newTexture Texture to pass to shader in each draw call. */
-    void addTexture(std::shared_ptr<IGLTexture> newTexture);
-
     /** @brief Draws to screen using shader and texture(s). */
     void const draw() override;
 
@@ -68,10 +64,6 @@ class GLShaderPane :  public IPane,
         /** @brief Creates pane from GLShaderProgram object. */
         Builder& withShaderProgram(
           std::shared_ptr<GLShaderProgram> shaderProgram);
-
-        /** @brief Uses texture in shader program. */
-        Builder& withTexture(
-            std::shared_ptr<IGLTexture> texture);
     };
 
 #ifndef TEST_BUILD
@@ -85,7 +77,6 @@ class GLShaderPane :  public IPane,
     GLuint vertexAttributeID = 0;
     GLuint vertexBufferID = 0;
     GLuint elementBufferID = 0;
-    std::vector<std::shared_ptr<IGLTexture>> textureList;
     std::shared_ptr<GLShaderProgram> shaderProgram = nullptr;
 };
 

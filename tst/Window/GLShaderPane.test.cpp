@@ -8,9 +8,6 @@ using basil::BasilContextLock;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
-using basil::IGLTexture;
-using basil::GLTexture;
-using basil::GLTextureProps;
 using basil::GLShaderPane;
 using basil::PaneProps;
 using basil::IPane;
@@ -64,17 +61,6 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
 
     SECTION("Sets up OpenGL objects if new shader program provided") {
             BASIL_LOCK_TEST
-        GLTextureProps textureProps = {
-            .name = "textureName",
-            .width = 10,
-            .height = 20,
-            .format = GL_RED,
-            .internalFormat = GL_R32F,
-            .dataType = GL_FLOAT
-        };
-        std::vector<float> data = { 1.0 };
-        auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
-
         std::shared_ptr<GLShaderProgram> program =
             GLShaderProgram::Builder()
                 .withFragmentShaderFromFile(fragmentPath)
@@ -82,7 +68,6 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
                 .build();
 
         GLShaderPane pane = GLShaderPane();
-        pane.addTexture(texture);
         pane.setShaderProgram(program);
 
         REQUIRE(pane.shaderProgram == program);
@@ -124,28 +109,6 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
     }
 }
 
-TEST_CASE("Window_GLShaderPane_addTexture") { BASIL_LOCK_TEST
-    GLTextureProps textureProps = {
-        .name = "textureName",
-        .width = 10,
-        .height = 20,
-        .format = GL_RED,
-        .internalFormat = GL_R32F,
-        .dataType = GL_FLOAT
-    };
-    std::vector<float> data = { 1.0 };
-    auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
-
-    GLShaderPane pane = GLShaderPane();
-
-    SECTION("Adds texture to list") {
-        pane.addTexture(texture);
-
-        auto actual = pane.textureList.back();
-        REQUIRE(actual == texture);
-    }
-}
-
 TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
     s_p<GLVertexShader> vertexShader =
         std::make_shared<GLVertexShader>(vertexPath);
@@ -163,19 +126,6 @@ TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
 
     GLShaderPane pane = GLShaderPane(
         paneProps, shaderProgram);
-
-    GLTextureProps textureProps = {
-        .name = "textureName",
-        .width = 10,
-        .height = 20,
-        .format = GL_RED,
-        .internalFormat = GL_R32F,
-        .dataType = GL_FLOAT
-    };
-    std::vector<float> data = { 1.0 };
-    auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
-
-    pane.addTexture(texture);
     pane.draw();
 
     SECTION("Sets viewport size and position") {
@@ -192,13 +142,6 @@ TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
         glGetIntegerv(GL_CURRENT_PROGRAM, &ID);
 
         REQUIRE(pane.shaderProgram->getID() == ID);
-    }
-
-    SECTION("Binds textures in textureList") {
-        GLint ID;
-        glGetIntegerv(GL_TEXTURE_BINDING_2D, &ID);
-
-        REQUIRE(texture->getID() == ID);
     }
 
     SECTION("Binds the vertex array") {
@@ -252,23 +195,10 @@ TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
         s_p<GLShaderProgram> shaderProgram =
             std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
-        GLTextureProps textureProps = {
-            .name = "textureName",
-            .width = 10,
-            .height = 20,
-            .format = GL_RED,
-            .internalFormat = GL_R32F,
-            .dataType = GL_FLOAT
-        };
-        std::vector<float> data = { 1.0 };
-        auto texture = std::make_shared<GLTexture<float>>(data, textureProps);
-
         auto pane = GLShaderPane::Builder()
             .withShaderProgram(shaderProgram)
-            .withTexture(texture)
             .build();
 
         REQUIRE(pane->shaderProgram == shaderProgram);
-        REQUIRE(pane->textureList.back() == texture);
     }
 }

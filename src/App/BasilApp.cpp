@@ -50,7 +50,7 @@ BasilApp::Builder::withWindow(
     return *this;
 }
 
-std::unique_ptr<BasilApp>
+std::shared_ptr<BasilApp>
 BasilApp::Builder::build() {
     // TODO(sholloway): Check if already added
     if (impl->processController && impl->windowView) {

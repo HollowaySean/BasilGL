@@ -3,91 +3,116 @@
 
 #include <GL/glew.h>
 
-#include <span>
+#include <memory>
 #include <string>
 
+#include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
+#include <Basil/Logging.hpp>
+
+#include "Data/ITextureSource.hpp"
+#include "Data/FileTextureSource.hpp"
+#include "Data/SpanTextureSource.hpp"
 
 namespace basil {
 
-// TODO(sholloway): Plan for revision
-// 1. Create data source class
-//  - Fold TextureProps into data source?
-// 2. Getters and setters
-// 3. Change update methodology to not run every frame
-// 4. Add support for 1D & 3D textures
-// 5. Deduce types for texture props?
-// 6. Builder
-
-/** @brief Struct used to pass properties of texture to GLTexture. */
-struct GLTextureProps {
- public:
-    /** @brief Variable name used in shader code. */
-    const char* name;
-    /** @brief Width of texture. */
-    GLsizei width;
-    /** @brief Height of texture. */
-    GLsizei height;
-    /** @brief Format of texture data, i.e. GL_RED */
-    GLenum format;
-    /** @brief Numerical format of data, i.e. GL_R32F */
-    GLenum internalFormat;
-    /** @brief Numerical type of input data, i.e. GL_FLOAT */
-    GLenum dataType;
-};
-
 /**
- * @brief       Generic interface for template class.
+ * @brief       Interface for texture template class.
  */
-class IGLTexture : private IBasilContextConsumer {
+class IGLTexture {
  public:
-    /** @brief Flushes data from source to texture. */
-    virtual void update() const = 0;
-
-    /** @return OpenGL-assigned ID of texture*/
-    GLuint getID() { return textureId; }
-
-    /** @brief Struct containing texture properties. */
-    GLTextureProps props;
+    /** @brief Assign texture memory in OpenGL. */
+    IGLTexture() : textureEnum(nextTexture++) {}
 
     /** @brief Destructor to tear down OpenGL assigned memory. */
-    virtual ~IGLTexture();
+    ~IGLTexture() = default;
+
+    /** @return OpenGL-assigned ID of texture. */
+    GLuint getID() const { return textureId; }
+
+    /** @return OpenGL-assigend Enum for texture. */
+    GLenum getEnum() const { return textureEnum; }
+
+    /** @return Value to pass into shader program setUniform. */
+    GLint getUniformLocation() { return textureEnum - GL_TEXTURE0; }
+
+    /** @brief Flushes data from source to texture. */
+    virtual void update() = 0;
+
+    /** @brief Calls glGetTexParameter with set values. */
+    void setTextureParameter(GLenum parameterName, GLenum value);
 
 #ifndef TEST_BUILD
+
  protected:
 #endif
-    explicit IGLTexture(GLTextureProps props): props(props) {}
+    Logger& logger = Logger::get();
+
+    void initializeTexture();
+    virtual void updateGLTexImage() = 0;
 
     inline static GLenum nextTexture = GL_TEXTURE0;
 
+    GLenum textureType;
+    GLenum textureEnum;
     GLuint textureId;
 };
 
 /**
- * @brief       Wrapper class for managing OpenGL textures.
- * @tparam T    Data type of texture data source.
+ * @brief Implementation class of IGLTexture template.
+ *
+ * @tparam N Dimensionality of texture. Can be 1D, 2D, or 3D.
  */
-template<class T>
-class GLTexture : public IGLTexture {
- public:
-    /**
-     * @brief           Construct a new GLTexture object and
-     *                  initialize OpenGL texture.
-     * @param source    Vector containing texture data.
-     * @param props     GLTextureProps structure.
-     */
-    explicit GLTexture(std::span<T> source,
-                       GLTextureProps props);
+template<int N>
+class GLTexture : public IGLTexture,
+                  public IBuildable<GLTexture<N>>,
+                  private IBasilContextConsumer {
+    static_assert(N > 0 && N <= 3);
 
-    /** @brief Flush data from source to texture.*/
-    void update() const override;
+ public:
+    /** @brief Assign texture memory in OpenGL. */
+    GLTexture();
+
+    /** @brief Destructor to tear down OpenGL assigned memory. */
+    ~GLTexture();
+
+    /** @brief Flushes data from source to texture. */
+    void update() override;
+
+    /** @brief Sets source of texture. */
+    void setSource(std::shared_ptr<ITextureSource<N>> setSource) {
+        source = setSource;
+        update();
+    }
+
+    class Builder : public IBuilder<GLTexture<N>> {
+     public:
+        /** @brief Builds from existing ITextureSource. */
+        Builder& withSource(std::shared_ptr<ITextureSource<N>> source);
+
+        /** @brief Builds from image file. */
+        Builder& fromFile(std::filesystem::path filePath);
+
+        /** @brief Builds from std::span collection. */
+        template<class T, int channels = 4>
+        Builder& fromSpan(std::span<T> span) {
+            auto source = std::make_shared<SpanTextureSource<T, N, channels>>(span);
+            return withSource(source);
+        }
+    };
 
 #ifndef TEST_BUILD
+
  private:
 #endif
-    GLenum textureEnum;
-    std::span<T> source;
+    void updateGLTexImage() override;
+
+    std::shared_ptr<ITextureSource<N>> source;
 };
+
+using GLTexture1D = GLTexture<1>;
+using GLTexture2D = GLTexture<2>;
+using GLTexture3D = GLTexture<3>;
 
 }  // namespace basil
 

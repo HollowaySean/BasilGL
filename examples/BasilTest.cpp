@@ -1,18 +1,22 @@
 #include <Basil/App.hpp>
+#include <Basil/Data.hpp>
 #include <Basil/Process.hpp>
 #include <Basil/Utility.hpp>
 #include <Basil/Window.hpp>
 
 using basil::BasilApp;
+using basil::FileTextureSource;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
 using basil::GLShaderPane;
+using basil::GLTexture2D;
 using basil::LogLevel;
 using basil::MetricsReporter;
 using basil::PaneOrientation;
 using basil::ProcessController;
 using basil::ProcessPrivilege;
+using basil::SpanTextureSource;
 using basil::SplitPane;
 using basil::WindowView;
 
@@ -24,23 +28,25 @@ using basil::WindowView;
  * @return Success code
  */
 int main(int argc, char** argv) {
+    auto texturePath =
+        std::filesystem::path(SOURCE_DIR) / "../examples/assets/test-image.jpg";
     auto fragmentPath =
-        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag";
+        std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
+    float testValue = 0.9;
 
     auto basilApp = BasilApp::Builder()
         .withWindow(WindowView::Builder()
             .withTitle("My window")
-            .withDimensions(500, 500)
-            .withTopPane(SplitPane::Builder()
-                .withFirstPane(GLShaderPane::Builder()
-                    .fromShaderFile(fragmentPath)
+            .withDimensions(683, 1024)
+            .withTopPane(GLShaderPane::Builder()
+                .withShaderProgram(GLShaderProgram::Builder()
+                    .withFragmentShaderFromFile(fragmentPath)
+                    .withDefaultVertexShader()
+                    .withUniform("testValue", testValue)
+                    .withTexture("testTexture", GLTexture2D::Builder()
+                        .fromFile(texturePath)
+                        .build())
                     .build())
-                .withSecondPane(GLShaderPane::Builder()
-                    .fromShaderFile(fragmentPath)
-                    .build())
-                .withOrientation(PaneOrientation::VERTICAL)
-                .withGapWidth(5)
-                .withPaneExtentInPercent(66.6)
                 .build())
             .build())
         .withController(ProcessController::Builder()
