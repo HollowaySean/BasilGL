@@ -53,7 +53,6 @@ class IGLTexture {
     GLenum textureType;
     GLenum textureEnum;
     GLuint textureId;
-    std::string name;
 };
 
 /**
@@ -80,6 +79,7 @@ class GLTexture : public IGLTexture,
     /** @brief Sets source of texture. */
     void setSource(std::shared_ptr<ITextureSource<N>> setSource) {
         source = setSource;
+        update();
     }
 
     class Builder : public IBuilder<GLTexture<N>> {

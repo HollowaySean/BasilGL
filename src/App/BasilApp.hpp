@@ -47,7 +47,7 @@ class BasilApp : public IBuildable<BasilApp> {
         Builder& withWindow(std::shared_ptr<WindowView> window);
 
         /** @brief Override of base builder method */
-        std::unique_ptr<BasilApp> build() override;
+        std::shared_ptr<BasilApp> build() override;
     };
 
 #ifndef TEST_BUILD

@@ -148,6 +148,8 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
 
         /** @brief Add no-op vertex shader. */
         Builder& withDefaultVertexShader();
+
+        // TODO(sholloway): withUniform, withTexture
     };
 
 #ifndef TEST_BUILD

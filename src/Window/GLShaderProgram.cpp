@@ -58,27 +58,32 @@ void GLShaderProgram::setFragmentShader(
 // TODO(sholloway): Need to "use" program before setting uniforms
 void GLShaderProgram::addTexture(const std::string& name,
         std::shared_ptr<IGLTexture> texture) {
+    use();
     GLint location =
         glGetUniformLocation(ID, name.c_str());
     glUniform1i(location, texture->getUniformLocation());
 }
 
 void GLShaderProgram::setUniform(const std::string& name, bool value) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform1i(location, static_cast<int>(value));
 }
 
 void GLShaderProgram::setUniform(const std::string& name, int value) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform1i(location, value);
 }
 
 void GLShaderProgram::setUniform(const std::string& name, uint value) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform1ui(location, value);
 }
 
 void GLShaderProgram::setUniform(const std::string& name, float value) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform1f(location, value);
 }
@@ -86,6 +91,7 @@ void GLShaderProgram::setUniform(const std::string& name, float value) {
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         bool value1, bool value2) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform2i(location, static_cast<int>(value1), static_cast<int>(value2));
 }
@@ -93,6 +99,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         bool value1, bool value2, bool value3) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform3i(location, static_cast<int>(value1),
         static_cast<int>(value2), static_cast<int>(value3));
@@ -101,6 +108,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         bool value1, bool value2, bool value3, bool value4) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform4i(location,
         static_cast<int>(value1), static_cast<int>(value2),
@@ -110,6 +118,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         int value1, int value2) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform2i(location, value1, value2);
 }
@@ -117,6 +126,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         int value1, int value2, int value3) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform3i(location, value1, value2, value3);
 }
@@ -124,6 +134,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         int value1, int value2, int value3, int value4) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform4i(location, value1, value2, value3, value4);
 }
@@ -131,6 +142,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         uint value1, uint value2) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform2ui(location, value1, value2);
 }
@@ -138,6 +150,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         uint value1, uint value2, uint value3) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform3ui(location, value1, value2, value3);
 }
@@ -145,6 +158,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         uint value1, uint value2, uint value3, uint value4) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform4ui(location, value1, value2, value3, value4);
 }
@@ -152,6 +166,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         float value1, float value2) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform2f(location, value1, value2);
 }
@@ -159,6 +174,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         float value1, float value2, float value3) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform3f(location, value1, value2, value3);
 }
@@ -166,6 +182,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         float value1, float value2, float value3, float value4) {
+    use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform4f(location, value1, value2, value3, value4);
 }

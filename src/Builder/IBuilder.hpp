@@ -14,7 +14,7 @@ class IBuilder {
     IBuilder() : impl(new T()) {}
 
     /** @returns Unique_ptr to implemented object. */
-    virtual std::unique_ptr<T> build() {
+    virtual std::shared_ptr<T> build() {
         return std::move(impl);
     }
 

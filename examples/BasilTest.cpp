@@ -30,11 +30,9 @@ using basil::WindowView;
 int main(int argc, char** argv) {
     auto texturePath =
         std::filesystem::path(SOURCE_DIR) / "../examples/assets/test-image.jpg";
-    auto textureSource = std::make_shared<FileTextureSource>(texturePath);
-
-    auto texture = std::make_shared<GLTexture2D>();
-    texture->setSource(textureSource);
-    texture->update();
+    auto texture = GLTexture2D::Builder()
+        .fromFile(texturePath)
+        .build();
 
     auto fragmentPath =
         std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
@@ -42,11 +40,11 @@ int main(int argc, char** argv) {
         .withFragmentShaderFromFile(fragmentPath)
         .withDefaultVertexShader()
         .build();
-    program->use();
     program->addTexture("testTexture", texture);
+    program->setUniform("testValue", static_cast<float>(0.5));
 
     // TODO(sholloway): Support for late builders,
-    //      disallow empty objects which require content
+    //      disallow empty objects which require content?
 
     auto basilApp = BasilApp::Builder()
         .withWindow(WindowView::Builder()
