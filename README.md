@@ -13,10 +13,10 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
    - Support for a pared down clone of "shadertoy"
       - Including various default inputs
    - ~~Ease of use for example setup~~
-      - Specifically builders for public facing classes
+      - ~~Specifically builders for public facing classes~~
    - Fill in gaps from P0
       - ~~Revisit Frame directory to fix and simplify~~
-      - GLTexture extension
+      - ~~GLTexture extension~~
       - ~~Better constructors for GL* classes~~
       - ~~Thread-independent logging test utilities~~
       - Turn thread-dependent variable into pattern
@@ -42,8 +42,4 @@ Installation, build, and usage instructions will be fleshed out in upcoming rele
 3. Output system
    - The ability to save screenshots and video
 4. Compute shader support
-5. Builders
-   - This phase completes a sort of "v1.1", of the features I really want to be sure to get in
-6. Emscripten support
-7. Metaprogramming system
-   - These later phases are conditional on if I can figure out how to implement them, and are sort of stretch goals
+5. Emscripten support
