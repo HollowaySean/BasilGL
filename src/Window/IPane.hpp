@@ -4,6 +4,7 @@
 namespace basil {
 
 /** @brief Struct containing pane size & offset. */
+// TODO(sholloway): Remove hard coded values
 struct PaneProps {
     int width = 100;
     int height = 100;

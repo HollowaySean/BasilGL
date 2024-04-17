@@ -5,19 +5,12 @@
 #include <Basil/Window.hpp>
 
 using basil::BasilApp;
-using basil::FileTextureSource;
-using basil::GLVertexShader;
-using basil::GLFragmentShader;
-using basil::GLShaderProgram;
 using basil::GLShaderPane;
+using basil::GLShaderProgram;
 using basil::GLTexture2D;
 using basil::LogLevel;
 using basil::MetricsReporter;
-using basil::PaneOrientation;
 using basil::ProcessController;
-using basil::ProcessPrivilege;
-using basil::SpanTextureSource;
-using basil::SplitPane;
 using basil::WindowView;
 
 /**
@@ -29,7 +22,7 @@ using basil::WindowView;
  */
 int main(int argc, char** argv) {
     auto texturePath =
-        std::filesystem::path(SOURCE_DIR) / "../examples/assets/test-image.jpg";
+        std::filesystem::path(EXAMPLE_DIR) / "assets/test-image.jpg";
     auto fragmentPath =
         std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
     float testValue = 0.9;

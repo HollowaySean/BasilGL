@@ -13,6 +13,5 @@ target_include_directories(${EXEC_TARGET_NAME} PRIVATE ${BASIL_INCLUDE_DIRS})
 ## Pass in compiler definitions
 target_compile_definitions(
     ${EXEC_TARGET_NAME} PRIVATE
-    SOURCE_DIR="${CMAKE_SOURCE_DIR}/src/"
     EXAMPLE_DIR="${EXAMPLE_DIR}"
 )
