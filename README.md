@@ -30,15 +30,15 @@ I have made the following pointed assumptions about my future self, around which
 
 More than once since starting my foray into software development, a project of mine has attracted a much larger viewing audience than I could have expected. This always starts out as a great ego boost, until some well meaning person with ten times my experience and wisdom dives into the repository and discovers a pile of highly fragrant spaghetti code.
 
-For this project, I want to the code to:
+For this project, I want the code to:
 * Display an understanding of the features and use cases of C++11 through C++20 standards.
 * Be clean, readable, self-documenting, and materially documented.
-* Be at "second pass performant", code that has at least been profiled & examined once for efficiency of memory and speed.
+* Be at least "second pass performant", code that has at least been profiled & examined once for efficiency of memory and speed.
 * Provide clear and sensible instruction for a new user to install & use the library in various common C++ workflows.
 
 #### 3. All the Infrastructure I've Ever Wanted
 
-I was either born with, or raised into, the terrible affliction of absolutely loving process and automation. Since this is a personal project, nobody can talk me out of both including and inforcing all the bells and whistles I could ever want.
+I was either born with, or raised into, the terrible affliction of absolutely loving process and automation. Since this is a personal project, nobody can talk me out of both including and enforcing all the bells and whistles I could ever want.
 
 Major features include:
 * Exhaustive testing, including unit tests with 100% line coverage enforced and render tests to check for regression.
