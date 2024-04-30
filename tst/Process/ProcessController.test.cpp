@@ -45,6 +45,59 @@ TEST_CASE("Process_ProcessController_addProcess") {
     }
 }
 
+TEST_CASE("Process_ProcessController_hasProcess") {
+    ProcessController controller = ProcessController();
+    std::shared_ptr<IProcess> processOne = std::make_shared<TestProcess>();
+    processOne->setProcessName("processOne");
+    std::shared_ptr<IProcess> processTwo = std::make_shared<TestProcess>();
+    processTwo->setProcessName("processTwo");
+
+    auto instance = controller.addProcess(processOne);
+
+    SECTION("Returns true for process in schedule") {
+        REQUIRE(controller.hasProcess(processOne));
+        REQUIRE(controller.hasProcess(instance->processName));
+        REQUIRE(controller.hasProcess(instance->getID()));
+    }
+
+    SECTION("Returns false for process not in schedule") {
+        REQUIRE_FALSE(controller.hasProcess(processTwo));
+        REQUIRE_FALSE(controller.hasProcess("processTwo"));
+        REQUIRE_FALSE(controller.hasProcess(instance->getID() + 1));
+    }
+}
+
+TEST_CASE("Process_ProcessController_getProcess") {
+    ProcessController controller = ProcessController();
+    std::shared_ptr<IProcess> processOne = std::make_shared<TestProcess>();
+    processOne->setProcessName("processOne");
+    std::shared_ptr<IProcess> processTwo = std::make_shared<TestProcess>();
+    processTwo->setProcessName("processTwo");
+
+    auto instanceOne = controller.addProcess(processOne);
+    auto instanceTwo = controller.addProcess(processTwo);
+
+    SECTION("Returns process instance with name") {
+        auto result = controller.getProcess("processTwo");
+        REQUIRE(result.value() == instanceTwo);
+    }
+
+    SECTION("Returns empty optional for missing process") {
+        auto result = controller.getProcess("processThree");
+        REQUIRE_FALSE(result.has_value());
+    }
+
+    SECTION("Returns process instance with ID") {
+        auto result = controller.getProcess(instanceTwo->getID());
+        REQUIRE(result.value() == instanceTwo);
+    }
+
+    SECTION("Returns empty optional for missing ID") {
+        auto result = controller.getProcess(instanceOne->getID() + 1000);
+        REQUIRE_FALSE(result.has_value());
+    }
+}
+
 TEST_CASE("Process_ProcessController_run") {
     ProcessController controller = ProcessController();
     auto process = std::make_shared<TestProcess>();
