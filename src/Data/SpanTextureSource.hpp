@@ -18,7 +18,8 @@ namespace basil {
  */
 template<typename T, int dimension = 2, int channels = 4>
 class SpanTextureSource : public ITextureSource<dimension>,
-                          public IBuildable<SpanTextureSource<T, dimension, channels>> {
+                          public IBuildable<
+                            SpanTextureSource<T, dimension, channels>> {
     static_assert(channels > 0 && channels <= 4);
 
  public:
