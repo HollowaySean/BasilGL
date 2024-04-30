@@ -1,6 +1,7 @@
 #ifndef TST_WINDOW_GLTESTUTILS_HPP_
 #define TST_WINDOW_GLTESTUTILS_HPP_
 
+#include <filesystem>
 #include <string>
 
 #include <catch.hpp>
@@ -10,15 +11,7 @@
 using basil::BasilContextLock;
 
 // Preprocessor definition to lock test
-#define BASIL_LOCK_TEST auto lock = BasilTestUtils::lockBasilTestContext();
-
-class BasilTestUtils {
- public:
-    static BasilContextLock lockBasilTestContext() {
-        std::string testName = Catch::getResultCapture().getCurrentTestName();
-        return BasilContextLock(testName);
-    }
-};
+#define BASIL_LOCK_TEST auto lock = BasilContextLock();
 
 // Commonly used definitions
 inline std::filesystem::path vertexPath =

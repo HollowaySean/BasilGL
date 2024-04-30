@@ -2,15 +2,14 @@
 
 #include <Basil/Context.hpp>
 
+#include "Window/GLTestUtils.hpp"
+
 using basil::BasilContextLock;
 using basil::BasilContext;
 using basil::Logger;
 using basil::LogLevel;
 
-TEST_CASE("Context_BasilContext_logGLFWError") {
-    auto lock = BasilContextLock(std::hash<std::string>{}(
-        Catch::getResultCapture().getCurrentTestName()));
-
+TEST_CASE("Context_BasilContext_logGLFWError") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
 
     SECTION("Logs info on success") {
@@ -29,10 +28,7 @@ TEST_CASE("Context_BasilContext_logGLFWError") {
     }
 }
 
-TEST_CASE("Context_BasilContext_logGLFWWindowError") {
-    auto lock = BasilContextLock(std::hash<std::string>{}(
-        Catch::getResultCapture().getCurrentTestName()));
-
+TEST_CASE("Context_BasilContext_logGLFWWindowError") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
 
     SECTION("Logs info on success") {
@@ -60,10 +56,7 @@ TEST_CASE("Context_BasilContext_logGLFWWindowError") {
     }
 }
 
-TEST_CASE("Context_BasilContext_logGLEWError") {
-    auto lock = BasilContextLock(std::hash<std::string>{}(
-        Catch::getResultCapture().getCurrentTestName()));
-
+TEST_CASE("Context_BasilContext_logGLEWError") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
 
     SECTION("Logs info on success") {
@@ -79,81 +72,5 @@ TEST_CASE("Context_BasilContext_logGLEWError") {
         BasilContext::logGLEWError(!GLEW_OK);
 
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
-    }
-}
-
-TEST_CASE("Context_BasilContext_lock") {
-    SECTION("Sets lock ID and status") {
-        u_int64_t lockID = 5;
-
-        // Spin in case of other tests using lock
-        BasilContext::spinIfLocked(lockID);
-
-        BasilContext::lock(lockID);
-
-        REQUIRE(BasilContext::lockID == lockID);
-        REQUIRE(BasilContext::isLocked);
-
-        BasilContext::unlock(lockID);
-    }
-}
-
-TEST_CASE("Context_BasilContext_unlock") {
-    SECTION("Does nothing if locked by another process") {
-        u_int64_t lockID = 6;
-        u_int64_t secondID = 7;
-
-        // Spin in case of other tests using lock
-        BasilContext::spinIfLocked(lockID);
-
-        BasilContext::lock(lockID);
-
-        REQUIRE(BasilContext::lockID == lockID);
-        REQUIRE(BasilContext::isLocked);
-
-        BasilContext::unlock(secondID);
-
-        REQUIRE(BasilContext::lockID == lockID);
-        REQUIRE(BasilContext::isLocked);
-    }
-
-    SECTION("Removes lock if set by same process") {
-        u_int64_t lockID = 8;
-
-        // Spin in case of other tests using lock
-        BasilContext::spinIfLocked(lockID);
-
-        BasilContext::lock(lockID);
-
-        REQUIRE(BasilContext::lockID == lockID);
-        REQUIRE(BasilContext::isLocked);
-
-        BasilContext::unlock(lockID);
-
-        REQUIRE(BasilContext::lockID == 0);
-        REQUIRE_FALSE(BasilContext::isLocked);
-    }
-}
-
-TEST_CASE("Context_BasilContext_spinIfLocked") {
-    SECTION("Spins if locked by another process") {
-        u_int64_t lockID = 9;
-        u_int64_t secondID = 10;
-
-        // Spin in case of other tests using lock
-        BasilContext::spinIfLocked(lockID);
-
-        BasilContext::lock(lockID);
-
-        REQUIRE(BasilContext::lockID == lockID);
-        REQUIRE(BasilContext::isLocked);
-
-        auto start = std::chrono::system_clock::now();
-        BasilContext::spinIfLocked(secondID);
-        auto end = std::chrono::system_clock::now();
-        auto duration =
-            std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-
-        REQUIRE(duration.count() >= BasilContext::spinTimeInMS);
     }
 }
