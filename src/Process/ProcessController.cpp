@@ -66,21 +66,21 @@ void ProcessController::kill() {
 
 void ProcessController::setFrameCap(unsigned int framesPerSecond) {
     frameCap = framesPerSecond;
-    frameTime = Timer::frequencyToPeriod(framesPerSecond);
+    frameTime = FrameTimer::frequencyToPeriod(framesPerSecond);
 }
 
 void ProcessController::runProcessMethod(
         std::function<void(std::shared_ptr<IProcess>)> method) {
-    auto frameStartTime = Timer::getTimestamp();
+    auto frameStartTime = FrameTimer::getTimestamp();
     metrics.recordFrameStart(frameStartTime);
 
     for (auto instance = schedule.begin();
             instance != schedule.end();
             instance = schedule.next()) {
         if (shouldRunProcess(*instance)) {
-            auto processStartTime = Timer::getTimestamp();
+            auto processStartTime = FrameTimer::getTimestamp();
             method((*instance)->process);
-            auto processStopTime = Timer::getTimestamp();
+            auto processStopTime = FrameTimer::getTimestamp();
 
             auto processDuration = processStopTime - processStartTime;
             metrics.recordProcessTime(*instance, processDuration);
@@ -89,12 +89,12 @@ void ProcessController::runProcessMethod(
         interpretProcessState(*instance);
     }
 
-    auto frameStopTime = Timer::getTimestamp();
+    auto frameStopTime = FrameTimer::getTimestamp();
     metrics.recordWorkEnd(frameStopTime);
 
     sleepForRestOfFrame(frameStartTime);
 
-    auto wakeTime = Timer::getTimestamp();
+    auto wakeTime = FrameTimer::getTimestamp();
     metrics.recordFrameEnd(wakeTime);
 }
 
@@ -126,7 +126,7 @@ void ProcessController::interpretProcessState(
 void ProcessController::sleepForRestOfFrame(
         FrameClock::time_point frameStartTime) {
     auto frameWakeTime = frameStartTime + frameTime;
-    Timer::waitUntilTime(frameWakeTime);
+    FrameTimer::waitUntilTime(frameWakeTime);
 }
 
 bool ProcessController::shouldRunProcess(

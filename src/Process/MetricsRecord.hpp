@@ -1,22 +1,11 @@
 #ifndef SRC_PROCESS_METRICSRECORD_HPP_
 #define SRC_PROCESS_METRICSRECORD_HPP_
 
-#include <chrono>
 #include <map>
 #include <memory>
 
+#include "FrameClock.hpp"
 #include "ProcessInstance.hpp"
-#include "TimeSource.hpp"
-
-// Include stubbed clock source for test build
-// TODO(sholloway): Consolidate definitions like these
-#ifdef TEST_BUILD
-#include "Process/ChronoTestUtils.hpp"
-using FrameClock = TestClock;
-#else
-using FrameClock = std::chrono::steady_clock;
-#endif
-using Timer = basil::TimeSource<FrameClock>;
 
 namespace basil {
 

@@ -4,22 +4,12 @@
 #include <functional>
 #include <memory>
 
+#include "FrameClock.hpp"
 #include "IProcess.hpp"
 #include "ProcessEnums.hpp"
 #include "ProcessInstance.hpp"
 #include "ProcessSchedule.hpp"
 #include "MetricsObserver.hpp"
-#include "TimeSource.hpp"
-
-// Include stubbed clock source for test build
-// TODO(sholloway): Consolidate definitions like these
-#ifdef TEST_BUILD
-#include "Process/ChronoTestUtils.hpp"
-using FrameClock = TestClock;
-#else
-using FrameClock = std::chrono::steady_clock;
-#endif
-using Timer = basil::TimeSource<FrameClock>;
 
 namespace basil {
 

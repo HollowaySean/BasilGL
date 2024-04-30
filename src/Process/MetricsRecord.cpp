@@ -70,11 +70,11 @@ bool MetricsRecord::isEqual(const MetricsRecord& comparison) {
 }
 
 double MetricsRecord::getFrameRate() {
-    return Timer::periodToFrequency(frameTime);
+    return FrameTimer::periodToFrequency(frameTime);
 }
 
 double MetricsRecord::getUncappedFrameRate() {
-    return Timer::periodToFrequency(workTime);
+    return FrameTimer::periodToFrequency(workTime);
 }
 
 }  // namespace basil
