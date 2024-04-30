@@ -13,6 +13,7 @@
 #include <Basil/Context.hpp>
 #include <Basil/Process.hpp>
 
+#include "Definitions.hpp"
 #include "SplitPane.hpp"
 #include "GLShaderPane.hpp"
 
@@ -24,14 +25,14 @@ namespace basil {
 struct WindowProps {
  public:
     #ifndef TEST_BUILD
-    inline static const int DEFAULT_WIDTH = 1080;
-    inline static const int DEFAULT_HEIGHT = 920;
+    inline static const int DEFAULT_WIDTH = BASIL_DEFAULT_WINDOW_WIDTH;
+    inline static const int DEFAULT_HEIGHT = BASIL_DEFAULT_WINDOW_HEIGHT;
     #else
-    inline static const int DEFAULT_WIDTH = 2;
-    inline static const int DEFAULT_HEIGHT = 1;
+    inline static const int DEFAULT_WIDTH = BASIL_DEFAULT_WINDOW_WIDTH_TEST;
+    inline static const int DEFAULT_HEIGHT = BASIL_DEFAULT_WINDOW_HEIGHT_TEST;
     #endif
 
-    inline static const std::string DEFAULT_TITLE = "Basil";
+    inline static const std::string DEFAULT_TITLE = BASIL_DEFAULT_WINDOW_TITLE;
 
     /** @brief Title to display in OS window banner.  */
     std::string title = DEFAULT_TITLE;

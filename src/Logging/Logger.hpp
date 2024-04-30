@@ -11,6 +11,8 @@
 #include <unordered_map>
 #endif  // TEST_BUILD
 
+#include "Definitions.hpp"
+
 namespace basil {
 
 /**
@@ -84,11 +86,7 @@ class Logger {
 #endif  // TEST_BUILD
 
  private:
-    #ifdef DEBUG_BUILD
-        LogLevel logLevel = LogLevel::DEBUG;
-    #else
-        LogLevel logLevel = LogLevel::INFO;
-    #endif  // DEBUG_BUILD
+    LogLevel logLevel = BASIL_DEFAULT_LOGGING_LEVEL;
 
     std::map<LogLevel, std::string> levelLabels = {
         {LogLevel::DEBUG,  "DEBUG"},
