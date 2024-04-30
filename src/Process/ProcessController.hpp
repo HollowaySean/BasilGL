@@ -19,29 +19,54 @@ class ProcessController : private IBuildable<ProcessController> {
     /** @brief Create new process controller. */
     ProcessController();
 
-    /** @brief Add process to main schedule.
-     *  @param process      Pointer to IProcess to add
-     *  @param privilege    Optional privilege level for process
+    /** @brief   Add process to main schedule.
+     *  @param   process      Pointer to IProcess to add
+     *  @param   privilege    Optional privilege level for process
+     *  @returns ProcessInstance wrapper
     */
-    void addProcess(
+    std::shared_ptr<ProcessInstance> addProcess(
         std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege = std::nullopt);
 
     /** @brief Add process to early schedule.
      *  @param process      Pointer to IProcess to add
      *  @param privilege    Optional privilege level for process
+     *  @returns ProcessInstance wrapper
     */
-    void addEarlyProcess(
+    std::shared_ptr<ProcessInstance> addEarlyProcess(
         std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege = std::nullopt);
 
     /** @brief Add process to late schedule.
      *  @param process      Pointer to IProcess to add
      *  @param privilege    Optional privilege level for process
+     *  @returns ProcessInstance wrapper
     */
-    void addLateProcess(
+    std::shared_ptr<ProcessInstance> addLateProcess(
         std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege = std::nullopt);
+
+    /** @param process      Pointer to IProcess to check for
+     *  @returns Boolean indicating if process exists in schedule */
+    bool hasProcess(std::shared_ptr<IProcess> process);
+
+    /** @param processName  Name of process instance to check for
+     *  @returns Boolean indicating if process exists in schedule */
+    bool hasProcess(const std::string_view& processName);
+
+    /** @param processID    UID of process instance to check for
+     *  @returns Boolean indicating if process exists in schedule */
+    bool hasProcess(unsigned int processID);
+
+    /** @param processName  Name of process instance to check for
+     *  @returns Pointer to first process instance with name */
+    std::optional<std::shared_ptr<ProcessInstance>>
+    getProcess(const std::string_view& processName);
+
+    /** @param processID    UID of process instance to check for
+     *  @returns Pointer to process instance with UID */
+    std::optional<std::shared_ptr<ProcessInstance>>
+    getProcess(unsigned int processID);
 
     /** @brief Starts running processes. */
     void run();
@@ -89,7 +114,8 @@ class ProcessController : private IBuildable<ProcessController> {
 #endif
     void sleepForRestOfFrame(FrameClock::time_point frameStartTime);
 
-    void addProcessWithOrdinal(std::shared_ptr<IProcess> process,
+    std::shared_ptr<ProcessInstance>
+    addProcessWithOrdinal(std::shared_ptr<IProcess> process,
         ProcessOrdinal ordinal,
         ProcessPrivilege privilege);
     void runProcessMethod(

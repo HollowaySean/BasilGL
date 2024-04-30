@@ -5,7 +5,8 @@ namespace basil {
 ProcessController::ProcessController()
     : schedule(), metrics() {}
 
-void ProcessController::addProcessWithOrdinal(std::shared_ptr<IProcess> process,
+std::shared_ptr<ProcessInstance>
+ProcessController::addProcessWithOrdinal(std::shared_ptr<IProcess> process,
         ProcessOrdinal ordinal, ProcessPrivilege privilege) {
     process->onRegister(this);
 
@@ -15,27 +16,93 @@ void ProcessController::addProcessWithOrdinal(std::shared_ptr<IProcess> process,
     processInstance->privilegeLevel = privilege;
 
     schedule.addProcess(processInstance);
+    return processInstance;
 }
 
-void ProcessController::addProcess(std::shared_ptr<IProcess> process,
+std::shared_ptr<ProcessInstance>
+ProcessController::addProcess(std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege) {
-    addProcessWithOrdinal(process,
+    return addProcessWithOrdinal(process,
         ProcessOrdinal::MAIN,
         privilege.value_or(ProcessPrivilege::NONE));
 }
 
-void ProcessController::addEarlyProcess(std::shared_ptr<IProcess> process,
+std::shared_ptr<ProcessInstance>
+ProcessController::addEarlyProcess(std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege) {
-    addProcessWithOrdinal(process,
+    return addProcessWithOrdinal(process,
         ProcessOrdinal::EARLY,
         privilege.value_or(ProcessPrivilege::NONE));
 }
 
-void ProcessController::addLateProcess(std::shared_ptr<IProcess> process,
+std::shared_ptr<ProcessInstance>
+ProcessController::addLateProcess(std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege) {
-    addProcessWithOrdinal(process,
+    return addProcessWithOrdinal(process,
         ProcessOrdinal::LATE,
         privilege.value_or(ProcessPrivilege::NONE));
+}
+
+bool ProcessController::hasProcess(std::shared_ptr<IProcess> process) {
+    for (auto instance = schedule.begin();
+            instance != schedule.end();
+            instance = schedule.next()) {
+        if ((*instance)->process == process) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ProcessController::hasProcess(const std::string_view& processName) {
+    for (auto instance = schedule.begin();
+            instance != schedule.end();
+            instance = schedule.next()) {
+        if ((*instance)->processName == processName) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool ProcessController::hasProcess(unsigned int processID) {
+    for (auto instance = schedule.begin();
+            instance != schedule.end();
+            instance = schedule.next()) {
+        if ((*instance)->getID() == processID) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+std::optional<std::shared_ptr<ProcessInstance>>
+ProcessController::getProcess(const std::string_view& processName) {
+    for (auto instance = schedule.begin();
+            instance != schedule.end();
+            instance = schedule.next()) {
+        if ((*instance)->processName == processName) {
+            return std::optional(*instance);
+        }
+    }
+
+    return std::nullopt;
+}
+
+std::optional<std::shared_ptr<ProcessInstance>>
+ProcessController::getProcess(unsigned int processID) {
+    for (auto instance = schedule.begin();
+            instance != schedule.end();
+            instance = schedule.next()) {
+        if ((*instance)->getID() == processID) {
+            return std::optional(*instance);
+        }
+    }
+
+    return std::nullopt;
 }
 
 void ProcessController::run() {
