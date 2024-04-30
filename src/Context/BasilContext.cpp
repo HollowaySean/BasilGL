@@ -26,8 +26,8 @@ void BasilContext::initializeGLFWContext() {
     hasInitialized &= errorCode;
 
     // Create non-visible window and attach context
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, BASIL_GLFW_VERSION_MAJOR);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, BASIL_GLFW_VERSION_MINOR);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GLFW_MAJOR_VERSION);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, GLFW_MINOR_VERSION);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     glfwWindowHint(GLFW_VISIBLE, false);

@@ -6,6 +6,7 @@
 
 #include <memory>
 
+#include "Definitions.hpp"
 #include <Basil/Logging.hpp>
 
 namespace basil {
@@ -42,10 +43,12 @@ class BasilContext {
  private:
 #endif
 
-    inline static const int BASIL_GLFW_VERSION_MAJOR = 4;
-    inline static const int BASIL_GLFW_VERSION_MINOR = 5;
-    inline static const char* WINDOW_TITLE =
-        "Uninitialized BasilGL Window";
+    inline static const int GLFW_MAJOR_VERSION
+        = BASIL_GLFW_VERSION_MAJOR;
+    inline static const int GLFW_MINOR_VERSION
+        = BASIL_GLFW_VERSION_MINOR;
+    inline static const char* WINDOW_TITLE
+        = BASIL_GLFW_UNINITIALIZED_WINDOW_TITLE;
 
     inline static bool hasInitialized = false;
 

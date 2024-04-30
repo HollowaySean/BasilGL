@@ -6,6 +6,7 @@
 
 #include <Basil/Builder.hpp>
 
+#include "Definitions.hpp"
 #include "IProcess.hpp"
 #include "ProcessEnums.hpp"
 
@@ -53,11 +54,12 @@ struct ProcessInstance {
     unsigned int processID;
 
     inline static const ProcessOrdinal DEFAULT_ORDINAL
-        = ProcessOrdinal::MAIN;
+        = BASIL_DEFAULT_PROCESS_ORDINAL;
     inline static const ProcessPrivilege DEFAULT_PRIVILEGE
-        = ProcessPrivilege::NONE;
+        = BASIL_DEFAULT_PROCESS_PRIVILEGE;
     inline static const std::string DEFAULT_NAME
-        = "process";
+        = BASIL_DEFAULT_PROCESS_NAME;
+
     inline static unsigned int NEXT_ID = 0;
 };
 

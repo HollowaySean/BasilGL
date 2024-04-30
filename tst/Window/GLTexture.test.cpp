@@ -116,7 +116,8 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
 
 TEST_CASE("Window_GLTexture_Builder") {
     SECTION("Builds from file path") {
-        auto path = std::filesystem::path(TEST_DIR) / "Data/assets/test-img.jpg";
+        auto path = std::filesystem::path(TEST_DIR)
+            / "Data/assets/test-img.jpg";
 
         auto texture = GLTexture2D::Builder()
             .fromFile(path)

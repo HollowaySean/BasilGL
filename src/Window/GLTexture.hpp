@@ -96,7 +96,8 @@ class GLTexture : public IGLTexture,
         /** @brief Builds from std::span collection. */
         template<class T, int channels = 4>
         Builder& fromSpan(std::span<T> span) {
-            auto source = std::make_shared<SpanTextureSource<T, N, channels>>(span);
+            auto source = std::make_shared<
+                SpanTextureSource<T, N, channels>>(span);
             return withSource(source);
         }
     };

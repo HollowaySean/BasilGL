@@ -307,10 +307,14 @@ TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
             .build();
 
 
-        REQUIRE(glGetUniformLocation(program->getID(), "myUniformBool") >= 0);
-        REQUIRE(glGetUniformLocation(program->getID(), "myUniformInt") >= 0);
-        REQUIRE(glGetUniformLocation(program->getID(), "myUniformUnsignedInt") >= 0);
-        REQUIRE(glGetUniformLocation(program->getID(), "myUniformFloat") >= 0);
+        REQUIRE(glGetUniformLocation(program->getID(),
+            "myUniformBool") >= 0);
+        REQUIRE(glGetUniformLocation(program->getID(),
+            "myUniformInt") >= 0);
+        REQUIRE(glGetUniformLocation(program->getID(),
+            "myUniformUnsignedInt") >= 0);
+        REQUIRE(glGetUniformLocation(program->getID(),
+            "myUniformFloat") >= 0);
     }
 
     SECTION("Adds texture") {

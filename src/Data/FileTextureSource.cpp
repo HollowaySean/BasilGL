@@ -10,7 +10,8 @@ namespace basil {
 
 FileTextureSource::FileTextureSource(std::filesystem::path filePath) {
     if (!std::filesystem::exists(filePath)) {
-        logger.log("File not found at path: " + filePath.string(), LogLevel::ERROR);
+        logger.log("File not found at path: "
+            + filePath.string(), LogLevel::ERROR);
         return;
     }
 
