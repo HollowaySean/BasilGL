@@ -12,13 +12,18 @@ namespace basil {
 class BasilContextLock {
  public:
     /** @brief Locks BasilContext global object. */
-    BasilContextLock();
+    BasilContextLock() {
+      lockMutex.lock();
+    }
 
     /** @brief Unlock and terminate context. */
-    ~BasilContextLock();
+    ~BasilContextLock() {
+      lockMutex.unlock();
+      BasilContext::terminate();
+    }
 
  private:
-    static std::mutex lockMutex;
+    static inline std::mutex lockMutex = std::mutex();
 };
 
 }  // namespace basil
