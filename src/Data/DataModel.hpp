@@ -13,6 +13,8 @@ class DataModel {
     /** @brief Union type of inputs to setUniform in GLShaderProgram */
     using GLUniformType = std::variant<bool, float, int, unsigned int>;
 
+    // TODO(sholloway): Add support for vectors
+    // TODO(sholloway): Add support for textures
     /** @brief Struct which contains value and name of OpenGL uniform */
     struct GLUniform {
      public:
