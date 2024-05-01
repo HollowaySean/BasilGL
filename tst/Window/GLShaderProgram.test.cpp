@@ -5,6 +5,7 @@
 #include "GLTestUtils.hpp"
 
 using basil::BasilContextLock;
+using basil::DataModel;
 using basil::Logger;
 using basil::LogLevel;
 using basil::GLVertexShader;
@@ -246,6 +247,52 @@ TEST_CASE("Window_GLShaderProgram_setUniformVector") { BASIL_LOCK_TEST
             "myUniformUnsignedInt4", testUint);
         verifyUniforms<float, 4>(shaderProgram,
             "myUniformFloat4", testFloat);
+    }
+}
+
+TEST_CASE("Window_GLShaderProgram_applyDataModel") { BASIL_LOCK_TEST
+    SECTION("Sets uniforms from model") {
+        auto vertexShader =
+            std::make_shared<GLVertexShader>(vertexPath);
+        auto fragmentShader =
+            std::make_shared<GLFragmentShader>(fragmentPath);
+
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
+        shaderProgram.use();
+
+        auto dataModel = DataModel();
+        dataModel.setUniformValue(true, "myUniformBool");
+        dataModel.setUniformValue(1.5f, "myUniformFloat");
+        dataModel.setUniformValue(-15, "myUniformInt");
+        dataModel.setUniformValue(
+            static_cast<unsigned int>(2), "myUniformUnsignedInt");
+
+        shaderProgram.applyDataModel(dataModel);
+
+        GLint location =
+            glGetUniformLocation(shaderProgram.getID(), "myUniformBool");
+        bool result_bool;
+        getUniform<1>(shaderProgram.getID(), location, &result_bool);
+        CHECK(result_bool);
+
+        location =
+            glGetUniformLocation(shaderProgram.getID(), "myUniformFloat");
+        float result_float;
+        getUniform<1>(shaderProgram.getID(), location, &result_float);
+        CHECK(result_float == 1.5f);
+
+        location =
+            glGetUniformLocation(shaderProgram.getID(), "myUniformInt");
+        int result_int;
+        getUniform<1>(shaderProgram.getID(), location, &result_int);
+        CHECK(result_int == -15);
+
+        location =
+            glGetUniformLocation(shaderProgram.getID(), "myUniformUnsignedInt");
+        unsigned int result_uint;
+        getUniform<1>(shaderProgram.getID(), location, &result_uint);
+        CHECK(result_uint == 2);
     }
 }
 

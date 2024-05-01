@@ -188,6 +188,17 @@ void GLShaderProgram::setUniformVector(const std::string& name,
     glUniform4f(location, value1, value2, value3, value4);
 }
 
+void GLShaderProgram::applyDataModel(const DataModel& dataModel) {
+    auto uniforms = dataModel.getUniforms();
+
+    for (auto uniform : uniforms) {
+        const std::string& name = uniform.name;
+
+        std::visit([&](const auto& value){ setUniform(name, value); },
+            uniform.value);
+    }
+}
+
 void GLShaderProgram::destroyShaderProgram() {
     glDeleteProgram(ID);
     ID = 0;

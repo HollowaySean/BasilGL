@@ -12,6 +12,7 @@
 
 #include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
+#include <Basil/Data.hpp>
 
 namespace basil {
 
@@ -120,6 +121,9 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
     template<class T>
     void setUniformVector(const std::string& name,
       T value1, T value2, T value3, T value4);
+
+    /** @brief Updates shaders and textures from DataModel object. */
+    void applyDataModel(const DataModel& dataModel);
 
     class Builder : public IBuilder<GLShaderProgram> {
      public:
