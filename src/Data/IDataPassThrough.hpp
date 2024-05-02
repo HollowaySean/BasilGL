@@ -11,7 +11,7 @@ namespace basil {
 class IDataPassThrough : public IDataSubscriber,
                          public IDataPublisher {
  private:
-    void receiveData(const DataModel& dataModel) override {
+    void receiveData(const IDataModel& dataModel) override {
         publishData(dataModel);
     }
 };

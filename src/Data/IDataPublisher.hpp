@@ -10,7 +10,7 @@ namespace basil {
 
 class IDataPublisher {
  public:
-    void publishData(const DataModel& dataModel) {
+    void publishData(const IDataModel& dataModel) {
         for (auto subscriber : subscribers) {
             subscriber->receiveData(dataModel);
         }

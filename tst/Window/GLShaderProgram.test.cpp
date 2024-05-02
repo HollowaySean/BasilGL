@@ -5,7 +5,7 @@
 #include "GLTestUtils.hpp"
 
 using basil::BasilContextLock;
-using basil::DataModel;
+using basil::ShaderUniformModel;
 using basil::Logger;
 using basil::LogLevel;
 using basil::GLVertexShader;
@@ -261,7 +261,7 @@ TEST_CASE("Window_GLShaderProgram_applyDataModel") { BASIL_LOCK_TEST
             GLShaderProgram(vertexShader, fragmentShader);
         shaderProgram.use();
 
-        auto dataModel = DataModel();
+        auto dataModel = ShaderUniformModel();
         dataModel.setUniformValue(true, "myUniformBool");
         dataModel.setUniformValue(1.5f, "myUniformFloat");
         dataModel.setUniformValue(-15, "myUniformInt");

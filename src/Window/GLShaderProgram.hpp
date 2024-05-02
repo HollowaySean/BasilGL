@@ -122,8 +122,8 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
     void setUniformVector(const std::string& name,
       T value1, T value2, T value3, T value4);
 
-    /** @brief Updates shaders and textures from DataModel object. */
-    void applyDataModel(const DataModel& dataModel);
+    /** @brief Updates shaders and textures from ShaderUniformModel object. */
+    void applyDataModel(const ShaderUniformModel& dataModel);
 
     class Builder : public IBuilder<GLShaderProgram> {
      public:

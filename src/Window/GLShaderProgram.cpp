@@ -188,7 +188,7 @@ void GLShaderProgram::setUniformVector(const std::string& name,
     glUniform4f(location, value1, value2, value3, value4);
 }
 
-void GLShaderProgram::applyDataModel(const DataModel& dataModel) {
+void GLShaderProgram::applyDataModel(const ShaderUniformModel& dataModel) {
     auto uniforms = dataModel.getUniforms();
 
     for (auto uniform : uniforms) {

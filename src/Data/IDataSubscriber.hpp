@@ -1,14 +1,14 @@
 #ifndef SRC_DATA_IDATASUBSCRIBER_HPP_
 #define SRC_DATA_IDATASUBSCRIBER_HPP_
 
-#include "DataModel.hpp"
+#include "IDataModel.hpp"
 
 namespace basil {
 
 class IDataSubscriber {
  private:
     friend class IDataPublisher;
-    virtual void receiveData(const DataModel& dataModel) = 0;
+    virtual void receiveData(const IDataModel& dataModel) = 0;
 };
 
 }

@@ -1,15 +1,16 @@
-#ifndef SRC_DATA_DATAMODEL_HPP_
-#define SRC_DATA_DATAMODEL_HPP_
+#ifndef SRC_DATA_SHADERUNIFORMMODEL_HPP_
+#define SRC_DATA_SHADERUNIFORMMODEL_HPP_
 
 #include <optional>
 #include <string>
 #include <variant>
 #include <vector>
 
+#include "IDataModel.hpp"
+
 namespace basil {
 
-// TODO(sholloway): Should this implement an interface?
-class DataModel {
+class ShaderUniformModel : public IDataModel {
  public:
     /** @brief Union type of inputs to setUniform in GLShaderProgram */
     using GLUniformType = std::variant<bool, float, int, unsigned int>;
@@ -44,4 +45,4 @@ class DataModel {
 
 }  // namespace basil
 
-#endif  // SRC_DATA_DATAMODEL_HPP_
+#endif  // SRC_DATA_SHADERUNIFORMMODEL_HPP_
