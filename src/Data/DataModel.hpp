@@ -8,6 +8,7 @@
 
 namespace basil {
 
+// TODO(sholloway): Should this implement an interface?
 class DataModel {
  public:
     /** @brief Union type of inputs to setUniform in GLShaderProgram */
@@ -25,6 +26,7 @@ class DataModel {
         std::string name;
     };
 
+    // TODO(sholloway): Return a UID, which will then be mapped?
     /** @brief Add uniform to model, with uniformName as identifier */
     void setUniformValue(
         GLUniformType value, const std::string& uniformName);
