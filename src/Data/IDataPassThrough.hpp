@@ -8,10 +8,11 @@
 
 namespace basil {
 
-class IDataPassThrough : public IDataSubscriber,
-                         public IDataPublisher {
+template<class T>
+class IDataPassThrough : public IDataSubscriber<T>,
+                         public IDataPublisher<T> {
  private:
-    void receiveData(const IDataModel& dataModel) override {
+    void receiveData(const T& dataModel) override {
         publishData(dataModel);
     }
 };

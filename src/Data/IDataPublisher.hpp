@@ -10,18 +10,43 @@
 
 namespace basil {
 
-// TODO(sholloway): Add revisioning system
+// TODO(sholloway): Add revisioning system?
+// TODO(sholloway): Documentation for this and other PubSub classes
+template <class T>
+requires std::is_base_of_v<IDataModel, T>
 class IDataPublisher {
  public:
-    void publishData(const IDataModel& dataModel);
+    void publishData(const T& dataModel) {
+        for (auto pair : subscriptions) {
+            auto [ subscriber, subscription] = pair;
+
+            if (subscription.acceptsModel(dataModel.getID())) {
+                subscriber->receiveData(dataModel);
+            }
+        }
+    }
 
     void subscribe(
-        std::shared_ptr<IDataSubscriber> subscriber,
-        unsigned int modelID = 0);
+            std::shared_ptr<IDataSubscriber<T>> subscriber,
+            unsigned int modelID = 0) {
+        if (subscriptions.contains(subscriber)) {
+            subscriptions.at(subscriber).addModel(modelID);
+        } else {
+            subscriptions.emplace(subscriber, Subscription(modelID));
+        }
+    }
 
     void unsubscribe(
-        std::shared_ptr<IDataSubscriber> subscriber,
-        unsigned int modelID = 0);
+            std::shared_ptr<IDataSubscriber<T>> subscriber,
+            unsigned int modelID = 0) {
+        if (!subscriptions.contains(subscriber)) { return; }
+
+        if (modelID == 0) {
+            subscriptions.erase(subscriber);
+        } else {
+            subscriptions.at(subscriber).removeModel(modelID);
+        }
+    }
 
 #ifndef TEST_BUILD
 
@@ -53,7 +78,7 @@ class IDataPublisher {
     };
 
     std::unordered_map<
-        std::shared_ptr<IDataSubscriber>, Subscription> subscriptions;
+        std::shared_ptr<IDataSubscriber<T>>, Subscription> subscriptions;
 };
 
 }  // namespace basil

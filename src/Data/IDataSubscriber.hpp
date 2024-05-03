@@ -5,12 +5,16 @@
 
 namespace basil {
 
+template <class T>
+requires std::is_base_of_v<IDataModel, T>
 class IDataSubscriber {
  private:
+    virtual void receiveData(const T& dataModel) = 0;
+
+    template <class U>
     friend class IDataPublisher;
-    virtual void receiveData(const IDataModel& dataModel) = 0;
 };
 
-}
+}  // namespace basil
 
 #endif  // SRC_DATA_IDATASUBSCRIBER_HPP_

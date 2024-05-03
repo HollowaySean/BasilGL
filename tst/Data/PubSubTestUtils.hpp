@@ -7,18 +7,18 @@
 
 namespace basil {
 
-class TestPublisher : public IDataPublisher {};
+class TestDataModel : public IDataModel {};
 
-class TestSubscriber : public IDataSubscriber {
+class TestPublisher : public IDataPublisher<TestDataModel> {};
+
+class TestSubscriber : public IDataSubscriber<TestDataModel> {
  public:
-    void receiveData(const IDataModel& dataModel) override {
+    void receiveData(const TestDataModel& dataModel) override {
         hasReceivedData = true;
     }
 
     bool hasReceivedData = false;
 };
-
-class TestDataModel : public IDataModel {};
 
 }  // namespace basil
 
