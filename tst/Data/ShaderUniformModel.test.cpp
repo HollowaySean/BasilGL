@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include <Basil/Data.hpp>
+#include "Data/ShaderUniformModel.hpp"
 
 using basil::ShaderUniformModel;
 

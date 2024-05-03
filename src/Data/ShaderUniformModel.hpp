@@ -30,7 +30,8 @@ class ShaderUniformModel : public IDataModel {
     // TODO(sholloway): Return a UID, which will then be mapped?
     /** @brief Add uniform to model, with uniformName as identifier */
     void setUniformValue(
-        GLUniformType value, const std::string& uniformName);
+        GLUniformType value,
+        const std::string& uniformName);
 
     /** @brief Gets value of uniform with identifier, if found */
     std::optional<GLUniformType> getUniformValue(

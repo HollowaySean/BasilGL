@@ -5,6 +5,14 @@ namespace basil {
 
 class IDataModel {
  public:
+    unsigned int getID() const { return ID; }
+
+ protected:
+    IDataModel() : ID(nextID++) {}
+
+ private:
+    const unsigned int ID;
+    static inline unsigned int nextID = 1;
 };
 
 }  // namespace basil
