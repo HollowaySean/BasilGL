@@ -1,14 +1,16 @@
 #version 450 core
 
-layout(location = 0) out vec4 FragColor;
+out vec4 FragColor;
 
-in vec2 TexCoord;
+uniform float patternSize = 50.;
 
-uniform float testValue;
-
-uniform sampler2D testTexture;
+uniform vec4 highColor = vec4(0.5, 0.0, 0.5, 1.0);
+uniform vec4 lowColor = vec4(0.0, 0.0, 0.0, 0.0);
 
 void main()
 {
-    FragColor = vec4(texture(testTexture, TexCoord / testValue).xyz, 1.0);
+    vec2 coord = floor(gl_FragCoord.xy / patternSize);
+    float mask = mod(coord.x + mod(coord.y, 2.0), 2.0);
+
+    FragColor = mask * highColor;
 }

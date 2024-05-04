@@ -53,7 +53,7 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
         GLShaderPane pane = GLShaderPane();
         pane.setShaderProgram(nullptr);
 
-        REQUIRE(pane.shaderProgram == nullptr);
+        REQUIRE(pane.currentShaderProgram == nullptr);
         REQUIRE(pane.vertexAttributeID == 0);
         REQUIRE(pane.vertexBufferID == 0);
         REQUIRE(pane.elementBufferID == 0);
@@ -70,7 +70,7 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
         GLShaderPane pane = GLShaderPane();
         pane.setShaderProgram(program);
 
-        REQUIRE(pane.shaderProgram == program);
+        REQUIRE(pane.currentShaderProgram == program);
         REQUIRE_FALSE(pane.vertexAttributeID == 0);
         REQUIRE_FALSE(pane.vertexBufferID == 0);
         REQUIRE_FALSE(pane.elementBufferID == 0);
@@ -90,7 +90,7 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
 
         GLShaderPane pane = GLShaderPane();
         pane.setShaderProgram(program);
-        REQUIRE(pane.shaderProgram == program);
+        REQUIRE(pane.currentShaderProgram == program);
 
         REQUIRE_FALSE(pane.vertexAttributeID == 0);
         REQUIRE_FALSE(pane.vertexBufferID == 0);
@@ -101,7 +101,7 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
         int EBO = pane.elementBufferID;
 
         pane.setShaderProgram(anotherProgram);
-        REQUIRE(pane.shaderProgram == anotherProgram);
+        REQUIRE(pane.currentShaderProgram == anotherProgram);
 
         REQUIRE(pane.vertexAttributeID == VAO);
         REQUIRE(pane.vertexBufferID == VBO);
@@ -158,7 +158,7 @@ TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
         GLint ID;
         glGetIntegerv(GL_CURRENT_PROGRAM, &ID);
 
-        REQUIRE(pane.shaderProgram->getID() == ID);
+        REQUIRE(pane.currentShaderProgram->getID() == ID);
     }
 
     SECTION("Binds the vertex array") {
@@ -178,8 +178,8 @@ TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
             .fromShader(fragmentShader)
             .build();
 
-        REQUIRE_FALSE(pane->shaderProgram == nullptr);
-        REQUIRE(pane->shaderProgram->fragmentShader == fragmentShader);
+        REQUIRE_FALSE(pane->currentShaderProgram == nullptr);
+        REQUIRE(pane->currentShaderProgram->fragmentShader == fragmentShader);
     }
 
     SECTION("Builds from shader file path") {
@@ -187,9 +187,9 @@ TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
             .fromShaderFile(fragmentPath)
             .build();
 
-        REQUIRE_FALSE(pane->shaderProgram == nullptr);
-        REQUIRE_FALSE(pane->shaderProgram->fragmentShader == nullptr);
-        REQUIRE_FALSE(pane->shaderProgram->vertexShader == nullptr);
+        REQUIRE_FALSE(pane->currentShaderProgram == nullptr);
+        REQUIRE_FALSE(pane->currentShaderProgram->fragmentShader == nullptr);
+        REQUIRE_FALSE(pane->currentShaderProgram->vertexShader == nullptr);
     }
 
     SECTION("Builds from shader code") {
@@ -197,10 +197,10 @@ TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
             .fromShaderCode(validShaderCode)
             .build();
 
-        REQUIRE_FALSE(pane->shaderProgram == nullptr);
-        REQUIRE_FALSE(pane->shaderProgram->fragmentShader == nullptr);
-        REQUIRE_FALSE(pane->shaderProgram->vertexShader == nullptr);
-        REQUIRE(pane->shaderProgram->
+        REQUIRE_FALSE(pane->currentShaderProgram == nullptr);
+        REQUIRE_FALSE(pane->currentShaderProgram->fragmentShader == nullptr);
+        REQUIRE_FALSE(pane->currentShaderProgram->vertexShader == nullptr);
+        REQUIRE(pane->currentShaderProgram->
             fragmentShader->rawShaderCode == validShaderCode);
     }
 
@@ -216,6 +216,6 @@ TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
             .withShaderProgram(shaderProgram)
             .build();
 
-        REQUIRE(pane->shaderProgram == shaderProgram);
+        REQUIRE(pane->currentShaderProgram == shaderProgram);
     }
 }

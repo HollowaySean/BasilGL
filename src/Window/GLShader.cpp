@@ -11,13 +11,24 @@ using filepath = std::filesystem::path;
 namespace basil {
 
 const char* GLShader::noOpVertexCode =
-    "#version 330 core\n"
+    "#version 450 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec2 aTexCoord;\n"
     "out vec2 TexCoord;\n"
     "void main() {\n"
     "gl_Position = vec4(aPos, 1.0);\n"
     "TexCoord = aTexCoord; }\0";
+
+const char* GLShader::debugFragmentCode =
+    "version 450 core\n"
+    "out vec4 FragColor;\n"
+    "uniform float patternSize = 50.;\n"
+    "uniform vec4 highColor = vec4(0.5, 0.0, 0.5, 1.0);\n"
+    "uniform vec4 lowColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
+    "void main() {\n"
+    "vec2 coord = floor(gl_FragCoord.xy / patternSize);\n"
+    "float mask = mod(coord.x + mod(coord.y, 2.0), 2.0);\n"
+    "FragColor = mask * highColor; }\0";
 
 GLVertexShader::GLVertexShader(filepath path)
     : GLShader::GLShader(path, ShaderType::VERTEX) {}
@@ -44,6 +55,11 @@ GLFragmentShader::GLFragmentShader(filepath path)
 
 GLFragmentShader::GLFragmentShader(const std::string &shaderCode)
     : GLShader::GLShader(shaderCode, ShaderType::FRAGMENT) {}
+
+GLFragmentShader GLFragmentShader::debugShader() {
+    return GLFragmentShader(
+        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag");
+}
 
 void GLFragmentShader::setShader(filepath path) {
     setShaderWithType(path, ShaderType::FRAGMENT);
@@ -82,6 +98,7 @@ void GLShader::setShaderWithType(
 void GLShader::getShaderFromString(const std::string &shaderCode) {
     this->rawShaderCode = shaderCode;
     this->shaderCode = rawShaderCode.c_str();
+    hasCompiled = true;
 }
 
 void GLShader::getShaderFromFile(
@@ -98,10 +115,12 @@ void GLShader::getShaderFromFile(
         shaderCode = rawShaderCode.c_str();
 
         logger.log("Shader file read successfully.", LogLevel::INFO);
+        hasCompiled = true;
     }
     catch(std::ifstream::failure& error) {
         logger.log("Unable to read shader file.", LogLevel::ERROR);
         logger.log(strerror(errno), LogLevel::ERROR);
+        hasCompiled = false;
     }
 }
 
@@ -130,8 +149,10 @@ void GLShader::compileShader(ShaderType type) {
         logger.log("Unable to compile " + typeString + " shader.",
             LogLevel::ERROR);
         logger.log(infoLog, LogLevel::ERROR);
+        hasCompiled = false;
     } else {
         logger.log("Shader compiled successfully.", LogLevel::INFO);
+        hasCompiled &= true;
     }
 }
 

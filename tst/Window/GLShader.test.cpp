@@ -31,6 +31,7 @@ TEST_CASE("Window_GLShader_getShaderFromFile") { BASIL_LOCK_TEST
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() ==
             "Shader file read successfully.");
+        REQUIRE(shader.hasCompiledSuccessfully());
     }
 
     SECTION("Prints error for missing file") {
@@ -38,6 +39,7 @@ TEST_CASE("Window_GLShader_getShaderFromFile") { BASIL_LOCK_TEST
 
         REQUIRE(shader.rawShaderCode == "");
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
+        REQUIRE_FALSE(shader.hasCompiledSuccessfully());
     }
 }
 
@@ -47,17 +49,21 @@ TEST_CASE("Window_GLShader_compileShader") { BASIL_LOCK_TEST
 
     SECTION("Compiles valid shader code successfully") {
         shader.shaderCode = validShaderCode;
+        shader.hasCompiled = true;
         shader.compileShader(GLShader::ShaderType::FRAGMENT);
 
         REQUIRE(logger.getLastOutput() ==
             "Shader compiled successfully.");
+        REQUIRE(shader.hasCompiledSuccessfully());
     }
 
     SECTION("Fails to compile invalid shader code") {
         shader.shaderCode = "fdsjkalfbrejwkl";
+        shader.hasCompiled = true;
         shader.compileShader(GLShader::ShaderType::FRAGMENT);
 
         REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
+        REQUIRE_FALSE(shader.hasCompiledSuccessfully());
     }
 }
 
@@ -75,6 +81,7 @@ TEST_CASE("Window_GLVertexShader_GLVertexShader") { BASIL_LOCK_TEST
         REQUIRE(logger.getLastOutput() == successMessage);
 
         REQUIRE_FALSE(shader.getID() == 0);
+        REQUIRE(shader.hasCompiledSuccessfully());
     }
 }
 
@@ -92,6 +99,7 @@ TEST_CASE("Window_GLVertexShader_noOpShader") { BASIL_LOCK_TEST
         REQUIRE(logger.getLastOutput() == successMessage);
 
         REQUIRE_FALSE(shader.getID() == 0);
+        REQUIRE(shader.hasCompiledSuccessfully());
     }
 }
 
@@ -103,6 +111,7 @@ TEST_CASE("Window_GLVertexShader_setShader") { BASIL_LOCK_TEST
 
         shader.setShader(vertexPath);
         REQUIRE_FALSE(shader.getID() == 0);
+        REQUIRE(shader.hasCompiledSuccessfully());
     }
 
     SECTION("Compiles vertex shader from code") {
@@ -110,6 +119,7 @@ TEST_CASE("Window_GLVertexShader_setShader") { BASIL_LOCK_TEST
 
         shader.setShader(std::string(validShaderCode));
         REQUIRE_FALSE(shader.getID() == 0);
+        REQUIRE(shader.hasCompiledSuccessfully());
     }
 }
 
@@ -121,6 +131,7 @@ TEST_CASE("Window_GLFragmentShader_setShader") { BASIL_LOCK_TEST
 
         shader.setShader(fragmentPath);
         REQUIRE_FALSE(shader.getID() == 0);
+        REQUIRE(shader.hasCompiledSuccessfully());
     }
 
     SECTION("Compiles vertex shader from code") {
@@ -128,6 +139,7 @@ TEST_CASE("Window_GLFragmentShader_setShader") { BASIL_LOCK_TEST
 
         shader.setShader(std::string(validShaderCode));
         REQUIRE_FALSE(shader.getID() == 0);
+        REQUIRE(shader.hasCompiledSuccessfully());
     }
 }
 
@@ -145,6 +157,7 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") { BASIL_LOCK_TEST
         REQUIRE(logger.getLastOutput() == successMessage);
 
         REQUIRE_FALSE(shader.getID() == 0);
+        REQUIRE(shader.hasCompiledSuccessfully());
     }
 
     SECTION("Compiles fragment shader from string") {
@@ -164,5 +177,24 @@ TEST_CASE("Window_GLFragmentShader_GLFragmentShader") { BASIL_LOCK_TEST
         REQUIRE(logger.getLastOutput() == successMessage);
 
         REQUIRE_FALSE(shader.getID() == 0);
+        REQUIRE(shader.hasCompiledSuccessfully());
+    }
+}
+
+TEST_CASE("Window_GLFragmentShader_debugShader") { BASIL_LOCK_TEST
+    Logger& logger = Logger::get();
+    logger.setLevel(LogLevel::DEBUG);
+
+    std::string successMessage =
+        "Shader compiled successfully.";
+
+    SECTION("Compiles vertex shader successfully") {
+        GLFragmentShader shader = GLFragmentShader::debugShader();
+
+        REQUIRE(logger.getLastLevel() == LogLevel::INFO);
+        REQUIRE(logger.getLastOutput() == successMessage);
+
+        REQUIRE_FALSE(shader.getID() == 0);
+        REQUIRE(shader.hasCompiledSuccessfully());
     }
 }

@@ -24,6 +24,9 @@ class GLShader : private IBasilContextConsumer {
     /** @brief Sets shader code from string, and compiles. */
     virtual void setShader(const std::string& shaderCode) = 0;
 
+    /** @returns Boolean indicating if code has compiled. */
+    bool hasCompiledSuccessfully() { return hasCompiled; }
+
     /** @brief Destructor, tears down OpenGL shader code. */
     ~GLShader();
 
@@ -45,12 +48,15 @@ class GLShader : private IBasilContextConsumer {
     GLuint ID = 0;
 
     static const char* noOpVertexCode;
+    static const char* debugFragmentCode;
 
 #ifndef TEST_BUILD
 
  private:
 #endif
     Logger& logger = Logger::get();
+
+    bool hasCompiled = false;
 
     std::string rawShaderCode;
     const char* shaderCode;
@@ -87,6 +93,9 @@ class GLFragmentShader : public GLShader {
  public:
     /** @brief Default constructor. Does not compile shader. */
     GLFragmentShader() = default;
+
+    /** @brief Debug pattern fragment shader. */
+    static GLFragmentShader debugShader();
 
     /** @brief Create fragment shader from file at path. */
     explicit GLFragmentShader(std::filesystem::path path);

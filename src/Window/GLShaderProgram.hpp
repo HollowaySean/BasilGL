@@ -45,9 +45,19 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     void setVertexShader(
       std::shared_ptr<GLVertexShader> vertexShader);
 
+    /** @returns GLVertexShader object. */
+    std::shared_ptr<GLVertexShader> getVertexShader() {
+      return vertexShader;
+    }
+
     /** @brief Set GLFragmentShader object. */
     void setFragmentShader(
       std::shared_ptr<GLFragmentShader> fragmentShader);
+
+    /** @returns GLFragmentShader object. */
+    std::shared_ptr<GLFragmentShader> getFragmentShader() {
+      return fragmentShader;
+    }
 
     /** @brief Adds reference to texture in shader.
      *
