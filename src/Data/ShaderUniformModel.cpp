@@ -74,5 +74,18 @@ ShaderUniformModel::getTexture(unsigned int textureID) const {
     return std::nullopt;
 }
 
+ShaderUniformModel::Builder&
+ShaderUniformModel::Builder::withUniform(
+        GLUniformType value, const std::string& name) {
+    this->impl->addUniformValue(value, name);
+    return (*this);
+}
+
+ShaderUniformModel::Builder&
+ShaderUniformModel::Builder::withTexture(
+        std::shared_ptr<IGLTexture> texture, const std::string& name) {
+    this->impl->addTexture(texture, name);
+    return (*this);
+}
 
 }  // namespace basil

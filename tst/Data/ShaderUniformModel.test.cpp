@@ -7,7 +7,9 @@
 #include "Window/GLTexture.hpp"
 
 using basil::GLUniformType;
+using basil::IGLTexture;
 using basil::GLTexture1D;
+using basil::GLTexture2D;
 using basil::ShaderUniformModel;
 using basil::SpanTextureSource;
 
@@ -91,7 +93,6 @@ TEST_CASE("Data_ShaderUniformModel_addTexture") {
     }
 }
 
-
 TEST_CASE("Data_ShaderUniformModel_getTexture") {
     auto dataModel = ShaderUniformModel();
 
@@ -103,5 +104,23 @@ TEST_CASE("Data_ShaderUniformModel_getTexture") {
     SECTION("Returns nullopts if not found") {
         auto result = dataModel.getTexture(-1);
         CHECK_FALSE(result.has_value());
+    }
+}
+
+TEST_CASE("Data_ShaderUniformModel_Builder") {
+    std::shared_ptr<IGLTexture> texture = std::make_shared<GLTexture1D>();
+    auto model = ShaderUniformModel::Builder()
+        .withTexture(texture, "myTexture")
+        .withUniform(1.5f, "myFloat")
+        .build();
+
+    SECTION("Builds with textures and uniforms") {
+        CHECK(model->getTexture("myTexture").has_value());
+        CHECK(model->getTexture("myTexture").value().texture
+            == texture);
+
+        CHECK(model->getUniform("myFloat").has_value());
+        CHECK(model->getUniform("myFloat").value().value
+            == GLUniformType(1.5f));
     }
 }

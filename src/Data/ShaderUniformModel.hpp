@@ -9,6 +9,8 @@
 #include <variant>
 #include <vector>
 
+#include <Basil/Builder.hpp>
+
 #include "IDataModel.hpp"
 #include "GLUniform.hpp"
 #include "GLTextureUniform.hpp"
@@ -17,7 +19,8 @@ namespace basil {
 
 /** @brief Implementation of IDataModel to maintain
  *  uniforms for GLShaderProgram objects. */
-class ShaderUniformModel : public IDataModel {
+class ShaderUniformModel : public IDataModel,
+                           public IBuildable<ShaderUniformModel> {
  public:
     /** @brief Add uniform to model
      *  @param value        Value of uniform
@@ -62,6 +65,18 @@ class ShaderUniformModel : public IDataModel {
     /** @returns Reference to map containing all textures in model */
     const std::map<unsigned int, GLTextureUniform>& getTextures()
         const { return textures; }
+
+    /** @brief Builder pattern for ShaderUniformModel */
+    class Builder : public IBuilder<ShaderUniformModel> {
+     public:
+        /** @brief Adds uniform to model */
+        Builder& withUniform(
+            GLUniformType value, const std::string& name);
+
+        /** @brief Adds texture to model */
+        Builder& withTexture(
+            std::shared_ptr<IGLTexture> texture, const std::string& name);
+    };
 
  private:
     std::map<unsigned int, GLUniform> uniforms;
