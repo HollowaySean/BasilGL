@@ -13,13 +13,15 @@ using GLUniformScalar = std::variant<bool, float, int, uint>;
 
 /** @brief Supported vector types for OpenGL uniforms */
 using GLUniformVector = std::variant<
-        std::vector<bool>, std::vector<float>, std::vector<int>, std::vector<uint>
+        std::vector<bool>, std::vector<float>,
+        std::vector<int>,  std::vector<uint>
     >;
 
 /** @brief Union of supported types for OpenGL uniforms */
 using GLUniformType = std::variant<
         bool, float, int, uint,
-        std::vector<bool>, std::vector<float>, std::vector<int>, std::vector<uint>
+        std::vector<bool>, std::vector<float>,
+        std::vector<int>,  std::vector<uint>
     >;
 
 /** @brief Struct which contains value and name of OpenGL uniform */

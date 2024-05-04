@@ -251,7 +251,8 @@ TEST_CASE("Window_GLShaderProgram_setUniformVector") { BASIL_LOCK_TEST
 }
 
 template<class T>
-void verifyDataModelScalar(GLShaderProgram* program, ShaderUniformModel* dataModel,
+void verifyDataModelScalar(
+        GLShaderProgram* program, ShaderUniformModel* dataModel,
         const std::string& name, T value) {
     dataModel->addUniformValue(value, name);
     program->receiveData(*dataModel);
@@ -264,7 +265,8 @@ void verifyDataModelScalar(GLShaderProgram* program, ShaderUniformModel* dataMod
 }
 
 template<class T, int N>
-void verifyDataModelVector(GLShaderProgram* program, ShaderUniformModel* dataModel,
+void verifyDataModelVector(
+        GLShaderProgram* program, ShaderUniformModel* dataModel,
         const std::string& name, T values[N]) {
     std::vector<T> input = std::vector<T>();
     for (int i = 0; i < N; i++) {
@@ -399,7 +401,8 @@ TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
             .withUniform("myUniformInt", testInt[0])
             .withUniform("myUniformUnsignedInt", testUint[0])
             .withUniform("myUniformFloat", testFloat[0])
-            .withUniformVector("myUniformBool2", std::vector({ testBool[0], testBool[1] }))
+            .withUniformVector("myUniformBool2",
+                std::vector({ testBool[0], testBool[1] }))
             .build();
 
 

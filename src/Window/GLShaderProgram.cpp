@@ -193,19 +193,23 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 }
 
 template<class T>
-void GLShaderProgram::setUniformVector(const std::string& name, std::vector<T> values) {
+void GLShaderProgram::setUniformVector(
+        const std::string& name, std::vector<T> values) {
     switch (values.size()) {
         case 1:
             setUniform<T>(name, values[0]);
             break;
         case 2:
-            setUniformVector<T>(name, values[0], values[1]);
+            setUniformVector<T>(
+                name, values[0], values[1]);
             break;
         case 3:
-            setUniformVector<T>(name, values[0], values[1], values[2]);
+            setUniformVector<T>(
+                name, values[0], values[1], values[2]);
             break;
         default:
-            setUniformVector<T>(name, values[0], values[1], values[2], values[3]);
+            setUniformVector<T>(
+                name, values[0], values[1], values[2], values[3]);
     }
 }
 
@@ -215,7 +219,9 @@ void GLShaderProgram::receiveData(const ShaderUniformModel& dataModel) {
         auto uniform = pair.second;
         const std::string& name = uniform.name;
 
-        std::visit([&](const auto& value){ visitUniform(name, value); }, uniform.value);
+        std::visit([&](const auto& value){
+                visitUniform(name, value);
+            }, uniform.value);
     }
 
     auto modelTextures = dataModel.getTextures();
@@ -225,11 +231,13 @@ void GLShaderProgram::receiveData(const ShaderUniformModel& dataModel) {
     }
 }
 
-void GLShaderProgram::visitUniform(const std::string& name, GLUniformScalar value) {
+void GLShaderProgram::visitUniform(
+        const std::string& name, GLUniformScalar value) {
     std::visit([&](const auto& value){ setUniform(name, value); }, value);
 }
 
-void GLShaderProgram::visitUniform(const std::string& name, GLUniformVector value) {
+void GLShaderProgram::visitUniform(
+        const std::string& name, GLUniformVector value) {
     std::visit([&](const auto& value){ setUniformVector(name, value); }, value);
 }
 
