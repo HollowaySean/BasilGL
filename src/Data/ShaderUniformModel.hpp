@@ -13,18 +13,25 @@
 
 namespace basil {
 
+// TODO(sholloway): Add support for vectors
+// TODO(sholloway): Add support for textures
+
+/** @brief Implementation of IDataModel to maintain
+ *  uniforms for GLShaderProgram objects. */
 class ShaderUniformModel : public IDataModel {
  public:
-    // TODO(sholloway): Add support for vectors
-    // TODO(sholloway): Add support for textures
-
-    // TODO(sholloway): Update documentation
-    /** @brief Add uniform to model, with uniformName as identifier */
+    /** @brief Add uniform to model
+     *  @param value        Value of uniform
+     *  @param uniformName  Name to use in shader
+     *  @returns            UID for string-less lookup */
     unsigned int addUniformValue(
         GLUniformType value,
         const std::string& uniformName);
 
-    /** @brief Add uniform to model, with uniformName as identifier */
+    /** @brief Updates uniform in model
+     *  @param uniformID    ID of uniform to set
+     *  @param value        New value
+     *  @returns            Whether uniform with ID was found. */
     bool setUniformValue(
         unsigned int uniformID,
         GLUniformType value);
@@ -33,11 +40,11 @@ class ShaderUniformModel : public IDataModel {
     std::optional<GLUniform> getUniform(
         const std::string& uniformName);
 
-    /** @brief Gets value of uniform with identifier, if found */
+    /** @brief Gets value of uniform with ID, if found */
     std::optional<GLUniform> getUniform(
         unsigned int uniformID);
 
-    /** @returns std::vector containing all uniforms in model */
+    /** @returns Reference to map containing all uniforms in model */
     const std::map<unsigned int, GLUniform>& getUniforms()
         const { return uniforms; }
 

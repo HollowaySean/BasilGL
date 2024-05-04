@@ -5,6 +5,8 @@
 
 namespace basil {
 
+/** @brief  Interface for receiver of PubSub data model
+ *  @tparam IDataModel implementation which is received */
 template <class T>
 requires std::is_base_of_v<IDataModel, T>
 class IDataSubscriber {

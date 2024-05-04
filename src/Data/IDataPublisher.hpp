@@ -13,10 +13,14 @@ namespace basil {
 // TODO(sholloway): Add revisioning system?
 // TODO(sholloway): Subscriber owns model subscriptions?
 // TODO(sholloway): Documentation for this and other PubSub classes
+
+/** @brief  Interface for publisher of PubSub data model
+ *  @tparam IDataModel implementation which is sent */
 template <class T>
 requires std::is_base_of_v<IDataModel, T>
 class IDataPublisher {
  public:
+    /** @brief Send data model to subscribers */
     virtual void publishData(const T& dataModel) {
         for (auto pair : subscriptions) {
             auto [ subscriber, subscription] = pair;
@@ -27,6 +31,11 @@ class IDataPublisher {
         }
     }
 
+    /** @brief Add subscriber
+     *  @param subscriber   New IDataSubscriber
+     *  @param modelID      ID of model to receive
+     *  If modelID is 0, all models are subscribed to.
+     */
     void subscribe(
             std::shared_ptr<IDataSubscriber<T>> subscriber,
             unsigned int modelID = 0) {
@@ -37,6 +46,12 @@ class IDataPublisher {
         }
     }
 
+
+    /** @brief Remove model or subscriber
+     *  @param subscriber   IDataSubscriber to remove
+     *  @param modelID      ID of model to receive
+     *  If modelID is 0, all models are unsubscribed from.
+     */
     void unsubscribe(
             std::shared_ptr<IDataSubscriber<T>> subscriber,
             unsigned int modelID = 0) {

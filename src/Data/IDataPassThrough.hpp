@@ -8,6 +8,8 @@
 
 namespace basil {
 
+/** @brief Interface which acts as publisher,
+ *  and passes received IDataModel on to subscribers. */
 template<class T>
 class IDataPassThrough : public IDataSubscriber<T>,
                          public IDataPublisher<T> {
