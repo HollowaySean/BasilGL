@@ -1,47 +1,49 @@
 #ifndef SRC_DATA_SHADERUNIFORMMODEL_HPP_
 #define SRC_DATA_SHADERUNIFORMMODEL_HPP_
 
+#include <map>
 #include <optional>
 #include <string>
+#include <utility>
 #include <variant>
 #include <vector>
 
 #include "IDataModel.hpp"
+#include "GLUniform.hpp"
 
 namespace basil {
 
 class ShaderUniformModel : public IDataModel {
  public:
-    /** @brief Union type of inputs to setUniform in GLShaderProgram */
-    using GLUniformType = std::variant<bool, float, int, unsigned int>;
-
     // TODO(sholloway): Add support for vectors
     // TODO(sholloway): Add support for textures
-    /** @brief Struct which contains value and name of OpenGL uniform */
-    struct GLUniform {
-     public:
-        GLUniform(GLUniformType value, const std::string& name)
-            : value(value), name(name) {}
 
-        GLUniformType value;
-        std::string name;
-    };
-
-    // TODO(sholloway): Return a UID, which will then be mapped?
+    // TODO(sholloway): Update documentation
     /** @brief Add uniform to model, with uniformName as identifier */
-    void setUniformValue(
+    unsigned int addUniformValue(
         GLUniformType value,
         const std::string& uniformName);
 
+    /** @brief Add uniform to model, with uniformName as identifier */
+    bool setUniformValue(
+        unsigned int uniformID,
+        GLUniformType value);
+
     /** @brief Gets value of uniform with identifier, if found */
-    std::optional<GLUniformType> getUniformValue(
+    std::optional<GLUniform> getUniform(
         const std::string& uniformName);
 
+    /** @brief Gets value of uniform with identifier, if found */
+    std::optional<GLUniform> getUniform(
+        unsigned int uniformID);
+
     /** @returns std::vector containing all uniforms in model */
-    const std::vector<GLUniform>& getUniforms() const { return uniforms; }
+    const std::map<unsigned int, GLUniform>& getUniforms()
+        const { return uniforms; }
 
  private:
-    std::vector<GLUniform> uniforms = std::vector<GLUniform>();
+    std::map<unsigned int, GLUniform> uniforms;
+    static inline unsigned int nextID = 0;
 };
 
 }  // namespace basil

@@ -262,10 +262,10 @@ TEST_CASE("Window_GLShaderProgram_applyDataModel") { BASIL_LOCK_TEST
         shaderProgram.use();
 
         auto dataModel = ShaderUniformModel();
-        dataModel.setUniformValue(true, "myUniformBool");
-        dataModel.setUniformValue(1.5f, "myUniformFloat");
-        dataModel.setUniformValue(-15, "myUniformInt");
-        dataModel.setUniformValue(
+        dataModel.addUniformValue(true, "myUniformBool");
+        dataModel.addUniformValue(1.5f, "myUniformFloat");
+        dataModel.addUniformValue(-15, "myUniformInt");
+        dataModel.addUniformValue(
             static_cast<unsigned int>(2), "myUniformUnsignedInt");
 
         shaderProgram.receiveData(dataModel);

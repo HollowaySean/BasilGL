@@ -191,7 +191,8 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 void GLShaderProgram::receiveData(const ShaderUniformModel& dataModel) {
     auto uniforms = dataModel.getUniforms();
 
-    for (auto uniform : uniforms) {
+    for (auto pair : uniforms) {
+        auto uniform = pair.second;
         const std::string& name = uniform.name;
 
         std::visit([&](const auto& value){ setUniform(name, value); },
