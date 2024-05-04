@@ -1,13 +1,14 @@
 #ifndef SRC_WINDOW_IPANE_HPP_
 #define SRC_WINDOW_IPANE_HPP_
 
+#include <Basil/Data.hpp>
+
 namespace basil {
 
 /** @brief Struct containing pane size & offset. */
-// TODO(sholloway): Remove hard coded values
 struct PaneProps {
-    int width = 100;
-    int height = 100;
+    int width = 0;
+    int height = 0;
     int xOffset = 0;
     int yOffset = 0;
 };
@@ -15,7 +16,7 @@ struct PaneProps {
 /** @brief Interface consumable by WindowView, describing
  *  a single section of the top-level window.
  */
-class IPane {
+class IPane : public IDataPassThrough<ShaderUniformModel> {
  public:
     /** @param paneProps Struct containing pane size & offset. */
     explicit IPane(PaneProps paneProps): paneProps(paneProps) {}

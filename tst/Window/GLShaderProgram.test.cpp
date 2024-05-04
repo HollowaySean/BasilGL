@@ -5,12 +5,14 @@
 #include "GLTestUtils.hpp"
 
 using basil::BasilContextLock;
+using basil::IGLTexture;
 using basil::Logger;
 using basil::LogLevel;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
 using basil::GLTexture2D;
+using basil::ShaderUniformModel;
 
 bool    testBool[4]  =  { true, false, true, true };
 int     testInt[4]   =  { -10, 0, 10, 55 };
@@ -249,6 +251,120 @@ TEST_CASE("Window_GLShaderProgram_setUniformVector") { BASIL_LOCK_TEST
     }
 }
 
+template<class T>
+void verifyDataModelScalar(
+        GLShaderProgram* program, ShaderUniformModel* dataModel,
+        const std::string& name, T value) {
+    dataModel->addUniformValue(value, name);
+    program->receiveData(*dataModel);
+
+    GLint location =
+        glGetUniformLocation(program->getID(), name.c_str());
+    T result;
+    getUniform<1>(program->getID(), location, &result);
+    CHECK(result == value);
+}
+
+template<class T, int N>
+void verifyDataModelVector(
+        GLShaderProgram* program, ShaderUniformModel* dataModel,
+        const std::string& name, T values[N]) {
+    std::vector<T> input = std::vector<T>();
+    for (int i = 0; i < N; i++) {
+        input.push_back(values[i]);
+    }
+
+    dataModel->addUniformValue(input, name);
+    program->receiveData(*dataModel);
+
+    GLint location =
+        glGetUniformLocation(program->getID(), name.c_str());
+    T result[N];
+    getUniform<N>(program->getID(), location, result);
+
+    for (int i = 0; i < N; i++) {
+        CHECK(result[i] == values[i]);
+    }
+}
+
+TEST_CASE("Window_GLShaderProgram_receiveData") { BASIL_LOCK_TEST
+    SECTION("Sets uniforms from model") {
+        auto vertexShader =
+            std::make_shared<GLVertexShader>(vertexPath);
+        auto fragmentShader =
+            std::make_shared<GLFragmentShader>(fragmentPath);
+
+        auto texture = std::make_shared<GLTexture2D>();
+
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
+        shaderProgram.use();
+
+        auto dataModel = ShaderUniformModel();
+
+        verifyDataModelScalar(&shaderProgram, &dataModel,
+            "myUniformBool", true);
+        verifyDataModelScalar(&shaderProgram, &dataModel,
+            "myUniformFloat", 1.5f);
+        verifyDataModelScalar(&shaderProgram, &dataModel,
+            "myUniformInt", -15);
+        verifyDataModelScalar(&shaderProgram, &dataModel,
+            "myUniformUnsignedInt", static_cast<uint>(2));
+
+        verifyDataModelVector<bool,  1>(&shaderProgram, &dataModel,
+            "myUniformBool", testBool);
+        verifyDataModelVector<int,   1>(&shaderProgram, &dataModel,
+            "myUniformInt",  testInt);
+        verifyDataModelVector<uint,  1>(&shaderProgram, &dataModel,
+            "myUniformUnsignedInt", testUint);
+        verifyDataModelVector<float, 1>(&shaderProgram, &dataModel,
+            "myUniformFloat", testFloat);
+
+        verifyDataModelVector<bool,  2>(&shaderProgram, &dataModel,
+            "myUniformBool2", testBool);
+        verifyDataModelVector<int,   2>(&shaderProgram, &dataModel,
+            "myUniformInt2",  testInt);
+        verifyDataModelVector<uint,  2>(&shaderProgram, &dataModel,
+            "myUniformUnsignedInt2", testUint);
+        verifyDataModelVector<float, 2>(&shaderProgram, &dataModel,
+            "myUniformFloat2", testFloat);
+
+        verifyDataModelVector<bool,  3>(&shaderProgram, &dataModel,
+            "myUniformBool3", testBool);
+        verifyDataModelVector<int,   3>(&shaderProgram, &dataModel,
+            "myUniformInt3",  testInt);
+        verifyDataModelVector<uint,  3>(&shaderProgram, &dataModel,
+            "myUniformUnsignedInt3", testUint);
+        verifyDataModelVector<float, 3>(&shaderProgram, &dataModel,
+            "myUniformFloat3", testFloat);
+
+        verifyDataModelVector<bool,  4>(&shaderProgram, &dataModel,
+            "myUniformBool4", testBool);
+        verifyDataModelVector<int,   4>(&shaderProgram, &dataModel,
+            "myUniformInt4",  testInt);
+        verifyDataModelVector<uint,  4>(&shaderProgram, &dataModel,
+            "myUniformUnsignedInt4", testUint);
+        verifyDataModelVector<float, 4>(&shaderProgram, &dataModel,
+            "myUniformFloat4", testFloat);
+    }
+
+    SECTION("Sets textures from model") {
+        auto vertexShader =
+            std::make_shared<GLVertexShader>(vertexPath);
+        auto fragmentShader =
+            std::make_shared<GLFragmentShader>(fragmentPath);
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
+
+        auto model = ShaderUniformModel();
+        std::shared_ptr<IGLTexture> texture = std::make_shared<GLTexture2D>();
+        model.addTexture(texture, "myTexture");
+
+        shaderProgram.receiveData(model);
+        CHECK(shaderProgram.textures.at(0) == texture);
+    }
+}
+
 TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
     SECTION("Builds shaders from objects") {
         auto vertexShader =
@@ -304,6 +420,8 @@ TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
             .withUniform("myUniformInt", testInt[0])
             .withUniform("myUniformUnsignedInt", testUint[0])
             .withUniform("myUniformFloat", testFloat[0])
+            .withUniformVector("myUniformBool2",
+                std::vector({ testBool[0], testBool[1] }))
             .build();
 
 

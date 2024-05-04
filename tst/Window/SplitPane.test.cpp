@@ -102,7 +102,8 @@ TEST_CASE("Window_SplitPane_onResize") {
 }
 
 TEST_CASE("Window_SplitPane_setFirstPane") {
-    s_pt<TestPane> childPane = std::make_shared<TestPane>(paneProps);
+    auto childPane = std::make_shared<TestPane>(paneProps);
+    auto secondChild = std::make_shared<TestPane>(paneProps);
 
     SECTION("Sets props of child pane for horizontal orientation") {
         SplitPane splitPane = SplitPane(
@@ -138,10 +139,22 @@ TEST_CASE("Window_SplitPane_setFirstPane") {
             "First pane has same address as second. Pane not set.");
         REQUIRE(logger.getLastLevel() == LogLevel::WARN);
     }
+
+    SECTION("Subscribes & unsubscribes IDataSubscribers") {
+        auto splitPane = SplitPane();
+
+        splitPane.setFirstPane(childPane);
+        CHECK(splitPane.subscriptions.contains(childPane));
+
+        splitPane.setFirstPane(secondChild);
+        CHECK(splitPane.subscriptions.contains(secondChild));
+        CHECK_FALSE(splitPane.subscriptions.contains(childPane));
+    }
 }
 
 TEST_CASE("Window_SplitPane_setSecondPane") {
-    s_pt<TestPane> childPane = std::make_shared<TestPane>(paneProps);
+    auto childPane = std::make_shared<TestPane>(paneProps);
+    auto secondChild = std::make_shared<TestPane>(paneProps);
 
     SECTION("Sets props of child pane for horizontal orientation") {
         s_pt<SplitPane> splitPane = std::make_shared<SplitPane>(
@@ -178,6 +191,17 @@ TEST_CASE("Window_SplitPane_setSecondPane") {
         REQUIRE(logger.getLastOutput() ==
             "Second pane has same address as first. Pane not set.");
         REQUIRE(logger.getLastLevel() == LogLevel::WARN);
+    }
+
+    SECTION("Subscribes & unsubscribes IDataSubscribers") {
+        auto splitPane = SplitPane();
+
+        splitPane.setSecondPane(childPane);
+        CHECK(splitPane.subscriptions.contains(childPane));
+
+        splitPane.setSecondPane(secondChild);
+        CHECK(splitPane.subscriptions.contains(secondChild));
+        CHECK_FALSE(splitPane.subscriptions.contains(childPane));
     }
 }
 

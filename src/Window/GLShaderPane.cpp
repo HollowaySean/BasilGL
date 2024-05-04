@@ -16,8 +16,11 @@ void GLShaderPane::setShaderProgram(
         this->shaderProgram = shaderProgram;
         setup();
     } else {
+        this->IDataPublisher::unsubscribe(this->shaderProgram);
         this->shaderProgram = shaderProgram;
     }
+
+    this->IDataPublisher::subscribe(shaderProgram);
 }
 
 void GLShaderPane::createVertexObjects() {

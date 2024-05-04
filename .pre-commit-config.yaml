@@ -19,4 +19,4 @@ repos:
       "--suppress=unusedFunction"]
   - id: cpplint
     args: ["--exclude=extern",
-    "--filter=-build/c++11"]
+    "--filter=-build/c++11,-readability/check"]

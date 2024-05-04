@@ -65,25 +65,29 @@ void GLShaderProgram::addTexture(const std::string& name,
     textures.push_back(texture);
 }
 
-void GLShaderProgram::setUniform(const std::string& name, bool value) {
+template<>
+void GLShaderProgram::setUniform<bool>(const std::string& name, bool value) {
     use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform1i(location, static_cast<int>(value));
 }
 
-void GLShaderProgram::setUniform(const std::string& name, int value) {
+template<>
+void GLShaderProgram::setUniform<int>(const std::string& name, int value) {
     use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform1i(location, value);
 }
 
-void GLShaderProgram::setUniform(const std::string& name, uint value) {
+template<>
+void GLShaderProgram::setUniform<uint>(const std::string& name, uint value) {
     use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform1ui(location, value);
 }
 
-void GLShaderProgram::setUniform(const std::string& name, float value) {
+template<>
+void GLShaderProgram::setUniform<float>(const std::string& name, float value) {
     use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform1f(location, value);
@@ -186,6 +190,55 @@ void GLShaderProgram::setUniformVector(const std::string& name,
     use();
     GLint location = glGetUniformLocation(ID, name.c_str());
     glUniform4f(location, value1, value2, value3, value4);
+}
+
+template<class T>
+void GLShaderProgram::setUniformVector(
+        const std::string& name, std::vector<T> values) {
+    switch (values.size()) {
+        case 1:
+            setUniform<T>(name, values[0]);
+            break;
+        case 2:
+            setUniformVector<T>(
+                name, values[0], values[1]);
+            break;
+        case 3:
+            setUniformVector<T>(
+                name, values[0], values[1], values[2]);
+            break;
+        default:
+            setUniformVector<T>(
+                name, values[0], values[1], values[2], values[3]);
+    }
+}
+
+void GLShaderProgram::receiveData(const ShaderUniformModel& dataModel) {
+    auto uniforms = dataModel.getUniforms();
+    for (auto pair : uniforms) {
+        auto uniform = pair.second;
+        const std::string& name = uniform.name;
+
+        std::visit([&](const auto& value){
+                visitUniform(name, value);
+            }, uniform.value);
+    }
+
+    auto modelTextures = dataModel.getTextures();
+    for (auto pair : modelTextures) {
+        auto texture = pair.second;
+        addTexture(texture.name, texture.texture);
+    }
+}
+
+void GLShaderProgram::visitUniform(
+        const std::string& name, GLUniformScalar value) {
+    std::visit([&](const auto& value){ setUniform(name, value); }, value);
+}
+
+void GLShaderProgram::visitUniform(
+        const std::string& name, GLUniformVector value) {
+    std::visit([&](const auto& value){ setUniformVector(name, value); }, value);
 }
 
 void GLShaderProgram::destroyShaderProgram() {

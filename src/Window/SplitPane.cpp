@@ -76,6 +76,10 @@ void SplitPane::updateSize() {
 }
 
 void SplitPane::setFirstPane(std::shared_ptr<IPane> pane) {
+    if (firstPane) {
+        this->IDataPublisher::unsubscribe(firstPane);
+    }
+
     if (pane == secondPane) {
         logger.log("First pane has same address as second. Pane not set.",
             LogLevel::WARN);
@@ -84,9 +88,14 @@ void SplitPane::setFirstPane(std::shared_ptr<IPane> pane) {
     }
 
     updateSize();
+    this->IDataPublisher::subscribe(pane);
 }
 
 void SplitPane::setSecondPane(std::shared_ptr<IPane> pane) {
+    if (secondPane) {
+        IDataPublisher::unsubscribe(secondPane);
+    }
+
     if (pane == firstPane) {
         logger.log("Second pane has same address as first. Pane not set.",
             LogLevel::WARN);
@@ -95,6 +104,7 @@ void SplitPane::setSecondPane(std::shared_ptr<IPane> pane) {
     }
 
     updateSize();
+    IDataPublisher::subscribe(pane);
 }
 
 float SplitPane::getFirstPaneSizeAsPercentage() {
