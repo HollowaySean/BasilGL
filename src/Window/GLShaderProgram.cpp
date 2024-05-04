@@ -13,9 +13,11 @@ GLShaderProgram::GLShaderProgram(
 }
 
 void GLShaderProgram::compile() {
-    ID = glCreateProgram();
-    glAttachShader(ID, vertexShader->getID());
-    glAttachShader(ID, fragmentShader->getID());
+    if (!ID) {
+        ID = glCreateProgram();
+        glAttachShader(ID, vertexShader->getID());
+        glAttachShader(ID, fragmentShader->getID());
+    }
     glLinkProgram(ID);
 
     int success;
@@ -31,8 +33,6 @@ void GLShaderProgram::compile() {
 }
 
 void GLShaderProgram::updateShaders() {
-    destroyShaderProgram();
-
     if (vertexShader && fragmentShader) {
         compile();
     }
@@ -43,14 +43,22 @@ void GLShaderProgram::use() {
 }
 
 void GLShaderProgram::setVertexShader(
-        std::shared_ptr<GLVertexShader> vertexShader) {
-    this->vertexShader = vertexShader;
+        std::shared_ptr<GLVertexShader> setVertexShader) {
+    if (vertexShader) {
+        glDetachShader(ID, vertexShader->getID());
+    }
+
+    vertexShader = setVertexShader;
     updateShaders();
 }
 
 void GLShaderProgram::setFragmentShader(
-        std::shared_ptr<GLFragmentShader> fragmentShader) {
-    this->fragmentShader = fragmentShader;
+        std::shared_ptr<GLFragmentShader> setFragmentShader) {
+    if (fragmentShader) {
+        glDetachShader(ID, fragmentShader->getID());
+    }
+
+    fragmentShader = setFragmentShader;
     updateShaders();
 }
 

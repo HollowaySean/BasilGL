@@ -158,6 +158,7 @@ void GLShader::compileShader(ShaderType type) {
 
 void GLShader::destroyShader() {
     glDeleteShader(ID);
+    hasCompiled = false;
 }
 
 GLShader::~GLShader() {

@@ -3,6 +3,7 @@
 namespace basil {
 
 HotReloadShaderPane::HotReloadShaderPane() {
+    setupGLBuffers();
     currentShaderProgram = std::make_shared<GLShaderProgram>();
     currentShaderProgram->setVertexShader(defaultVert);
 }
