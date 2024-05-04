@@ -13,7 +13,6 @@
 
 namespace basil {
 
-// TODO(sholloway): Add support for vectors
 // TODO(sholloway): Add support for textures
 
 /** @brief Implementation of IDataModel to maintain

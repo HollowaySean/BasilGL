@@ -1,13 +1,26 @@
 #ifndef SRC_DATA_GLUNIFORM_HPP_
 #define SRC_DATA_GLUNIFORM_HPP_
 
+#include <span>
 #include <string>
 #include <variant>
+#include <vector>
 
 namespace basil {
 
-/** @brief Union type of inputs to setUniform in GLShaderProgram */
-using GLUniformType = std::variant<bool, float, int, unsigned int>;
+/** @brief Supported scalar types for OpenGL uniforms */
+using GLUniformScalar = std::variant<bool, float, int, uint>;
+
+/** @brief Supported vector types for OpenGL uniforms */
+using GLUniformVector = std::variant<
+        std::vector<bool>, std::vector<float>, std::vector<int>, std::vector<uint>
+    >;
+
+/** @brief Union of supported types for OpenGL uniforms */
+using GLUniformType = std::variant<
+        bool, float, int, uint,
+        std::vector<bool>, std::vector<float>, std::vector<int>, std::vector<uint>
+    >;
 
 /** @brief Struct which contains value and name of OpenGL uniform */
 struct GLUniform {

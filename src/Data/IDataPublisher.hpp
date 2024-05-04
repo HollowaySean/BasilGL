@@ -10,10 +10,6 @@
 
 namespace basil {
 
-// TODO(sholloway): Add revisioning system?
-// TODO(sholloway): Subscriber owns model subscriptions?
-// TODO(sholloway): Documentation for this and other PubSub classes
-
 /** @brief  Interface for publisher of PubSub data model
  *  @tparam IDataModel implementation which is sent */
 template <class T>

@@ -24,12 +24,10 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     /** @brief Construct a new GLShaderProgram object. */
     GLShaderProgram() = default;
 
-    /**
-     * @brief Construct a new GLShaderProgram object.
+    /** @brief Construct a new GLShaderProgram object.
      *
      * @param vertexShader    Shared_ptr to GLVertexShader object.
-     * @param fragmentShader  Shared_ptr to GLFragmentShader object.
-     */
+     * @param fragmentShader  Shared_ptr to GLFragmentShader object. */
     GLShaderProgram(
       std::shared_ptr<GLVertexShader> vertexShader,
       std::shared_ptr<GLFragmentShader> fragmentShader);
@@ -53,77 +51,50 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
 
     /** @brief Adds reference to texture in shader.
      *
-     * @param name    Name of texture within shader.
-     * @param texture Pointer to IGLTexture object
-     */
+     *  @param name    Name of texture within shader.
+     *  @param texture Pointer to IGLTexture object */
     void addTexture(const std::string& name,
       std::shared_ptr<IGLTexture> texture);
 
-    /**
-     * @brief Sets a 1D boolean uniform in shader program.
+    /** @brief Sets a 1D uniform in shader program.
      *
-     * @param name   Name of uniform within shader.
-     * @param value  Value of uniform.
-     */
-    void setUniform(const std::string& name, bool value);
+     *  @param name   Name of uniform within shader.
+     *  @param value  Value of uniform. */
+    template<class T>
+    void setUniform(const std::string& name, T value);
 
-    /**
-     * @brief Sets a 1D integer uniform in shader program.
+    /** @brief Sets a 2D uniform in shader program.
      *
-     * @param name   Name of uniform within shader.
-     * @param value  Value of uniform.
-     */
-    void setUniform(const std::string& name, int value);
-
-    /**
-     * @brief Sets a 1D unsigned int uniform in shader program.
-     *
-     * @param name   Name of uniform within shader.
-     * @param value  Value of uniform.
-     */
-    void setUniform(const std::string& name, uint value);
-
-    /**
-     * @brief Sets a 1D float uniform in shader program.
-     *
-     * @param name   Name of uniform within shader.
-     * @param value  Value of uniform.
-     */
-    void setUniform(const std::string& name, float value);
-
-    /**
-     * @brief Sets a 2D uniform in shader program.
-     *
-     * @param name   Name of uniform within shader.
-     * @param value  Value of uniform.
-     */
+     *  @param name   Name of uniform within shader.
+     *  @param value  Value of uniform. */
     template<class T>
     void setUniformVector(const std::string& name,
       T value1, T value2);
 
-    /**
-     * @brief Sets a 3D uniform in shader program.
+    /** @brief Sets a 3D uniform in shader program.
      *
-     * @param name   Name of uniform within shader.
-     * @param value  Value of uniform.
-     */
-
+     *  @param name   Name of uniform within shader.
+     *  @param value  Value of uniform. */
     template<class T>
     void setUniformVector(const std::string& name,
       T value1, T value2, T value3);
 
-    /**
-     * @brief Sets a 4D uniform in shader program.
+    /** @brief Sets a 4D uniform in shader program.
      *
-     * @param name   Name of uniform within shader.
-     * @param value  Value of uniform.
-     */
-
+     *  @param name   Name of uniform within shader.
+     *  @param value  Value of uniform. */
     template<class T>
     void setUniformVector(const std::string& name,
       T value1, T value2, T value3, T value4);
 
-    /** @brief Updates shaders and textures from ShaderUniformModel object. 
+    /** @brief Sets a uniform of 1-4 dimensions in shader program.
+     *
+     *  @param name   Name of uniform within shader.
+     *  @param value  Vector of values. */
+    template<class T>
+    void setUniformVector(const std::string& name, std::vector<T> values);
+
+    /** @brief Updates shaders and textures from ShaderUniformModel object.
      *  Overridden method from IDataSubscriber base class. */
     void receiveData(const ShaderUniformModel& dataModel) override;
 
@@ -187,6 +158,14 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
           this->impl->setUniformVector(name, value1, value2, value3, value4);
           return (*this);
         }
+
+        /** @brief Set 1D-4D uniform value. */
+        template<class T>
+        Builder& withUniformVector(const std::string& name,
+            std::vector<T> values) {
+          this->impl->setUniformVector(name, values);
+          return (*this);
+        }
     };
 
 #ifndef TEST_BUILD
@@ -199,6 +178,9 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     void updateShaders();
 
     void destroyShaderProgram();
+
+    void visitUniform(const std::string& name, GLUniformScalar value);
+    void visitUniform(const std::string& name, GLUniformVector value);
 
     GLuint ID = 0;
 
