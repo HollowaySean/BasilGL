@@ -13,7 +13,7 @@ class IDataPassThrough : public IDataSubscriber<T>,
                          public IDataPublisher<T> {
  private:
     void receiveData(const T& dataModel) override {
-        publishData(dataModel);
+        this->IDataPublisher<T>::publishData(dataModel);
     }
 };
 

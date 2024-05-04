@@ -49,6 +49,7 @@ struct WindowProps {
  * public facade.
  */
 class WindowView :  public IProcess,
+                    public IDataPublisher<ShaderUniformModel>,
                     public IBuildable<WindowView>,
                     private IBasilContextDependency {
  public:

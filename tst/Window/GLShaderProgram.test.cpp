@@ -268,7 +268,7 @@ TEST_CASE("Window_GLShaderProgram_applyDataModel") { BASIL_LOCK_TEST
         dataModel.setUniformValue(
             static_cast<unsigned int>(2), "myUniformUnsignedInt");
 
-        shaderProgram.applyDataModel(dataModel);
+        shaderProgram.receiveData(dataModel);
 
         GLint location =
             glGetUniformLocation(shaderProgram.getID(), "myUniformBool");

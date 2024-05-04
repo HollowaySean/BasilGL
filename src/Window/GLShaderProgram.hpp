@@ -17,7 +17,8 @@
 namespace basil {
 
 /** @brief Container class for compiled and linked shader program. */
-class GLShaderProgram : public IBuildable<GLShaderProgram>,
+class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
+                        public IBuildable<GLShaderProgram>,
                         private IBasilContextConsumer {
  public:
     /** @brief Construct a new GLShaderProgram object. */
@@ -122,8 +123,9 @@ class GLShaderProgram : public IBuildable<GLShaderProgram>,
     void setUniformVector(const std::string& name,
       T value1, T value2, T value3, T value4);
 
-    /** @brief Updates shaders and textures from ShaderUniformModel object. */
-    void applyDataModel(const ShaderUniformModel& dataModel);
+    /** @brief Updates shaders and textures from ShaderUniformModel object. 
+     *  Overridden method from IDataSubscriber base class. */
+    void receiveData(const ShaderUniformModel& dataModel) override;
 
     class Builder : public IBuilder<GLShaderProgram> {
      public:

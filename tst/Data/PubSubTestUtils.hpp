@@ -9,7 +9,15 @@ namespace basil {
 
 class TestDataModel : public IDataModel {};
 
-class TestPublisher : public IDataPublisher<TestDataModel> {};
+class TestPublisher : public IDataPublisher<TestDataModel> {
+ public:
+    void publishData(const TestDataModel& dataModel) override {
+        hasPublishedData = true;
+        IDataPublisher::publishData(dataModel);
+    }
+
+    bool hasPublishedData = false;
+};
 
 class TestSubscriber : public IDataSubscriber<TestDataModel> {
  public:

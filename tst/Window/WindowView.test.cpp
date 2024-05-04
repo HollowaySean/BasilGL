@@ -193,6 +193,22 @@ TEST_CASE("Window_WindowView_onStop") {
     }
 }
 
+TEST_CASE("Window_WindowView_setTopPane") {
+    auto window = WindowView();
+    auto props = window.getTopPaneProps();
+    auto pane = std::make_shared<TestPane>(props);
+    auto anotherPane = std::make_shared<TestPane>(props);
+
+    SECTION("Subscribes/unsubscribes data subscribers") {
+        window.setTopPane(pane);
+        CHECK(window.subscriptions.contains(pane));
+
+        window.setTopPane(anotherPane);
+        CHECK(window.subscriptions.contains(anotherPane));
+        CHECK_FALSE(window.subscriptions.contains(pane));
+    }
+}
+
 TEST_CASE("Window_WindowView_onResize") {
     SECTION("Calls resize function on top pane") {
         WindowView window = WindowView();

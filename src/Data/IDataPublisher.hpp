@@ -11,12 +11,13 @@
 namespace basil {
 
 // TODO(sholloway): Add revisioning system?
+// TODO(sholloway): Subscriber owns model subscriptions?
 // TODO(sholloway): Documentation for this and other PubSub classes
 template <class T>
 requires std::is_base_of_v<IDataModel, T>
 class IDataPublisher {
  public:
-    void publishData(const T& dataModel) {
+    virtual void publishData(const T& dataModel) {
         for (auto pair : subscriptions) {
             auto [ subscriber, subscription] = pair;
 

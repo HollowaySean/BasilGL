@@ -1,6 +1,8 @@
 #ifndef SRC_WINDOW_IPANE_HPP_
 #define SRC_WINDOW_IPANE_HPP_
 
+#include <Basil/Data.hpp>
+
 namespace basil {
 
 /** @brief Struct containing pane size & offset. */
@@ -14,7 +16,7 @@ struct PaneProps {
 /** @brief Interface consumable by WindowView, describing
  *  a single section of the top-level window.
  */
-class IPane {
+class IPane : public IDataPassThrough<ShaderUniformModel> {
  public:
     /** @param paneProps Struct containing pane size & offset. */
     explicit IPane(PaneProps paneProps): paneProps(paneProps) {}

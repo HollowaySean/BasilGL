@@ -107,6 +107,23 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
         REQUIRE(pane.vertexBufferID == VBO);
         REQUIRE(pane.elementBufferID == EBO);
     }
+
+    SECTION("Subscribes/unsubscribes data subscribers") { BASIL_LOCK_TEST
+        auto pane = GLShaderPane();
+        auto program =
+            GLShaderProgram::Builder()
+                .withFragmentShaderFromFile(fragmentPath)
+                .withDefaultVertexShader()
+                .build();
+        auto anotherProgram = std::make_shared<GLShaderProgram>(*program);
+
+        pane.setShaderProgram(program);
+        CHECK(pane.subscriptions.contains(program));
+
+        pane.setShaderProgram(anotherProgram);
+        CHECK(pane.subscriptions.contains(anotherProgram));
+        CHECK_FALSE(pane.subscriptions.contains(program));
+    }
 }
 
 TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
