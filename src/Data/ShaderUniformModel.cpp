@@ -67,7 +67,7 @@ ShaderUniformModel::getTexture(const std::string& textureName) const {
 
 std::optional<GLTextureUniform>
 ShaderUniformModel::getTexture(unsigned int textureID) const {
-    if (uniforms.contains(textureID)) {
+    if (textures.contains(textureID)) {
         return std::optional(textures.at(textureID));
     }
 

@@ -5,13 +5,14 @@
 #include "GLTestUtils.hpp"
 
 using basil::BasilContextLock;
-using basil::ShaderUniformModel;
+using basil::IGLTexture;
 using basil::Logger;
 using basil::LogLevel;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
 using basil::GLTexture2D;
+using basil::ShaderUniformModel;
 
 bool    testBool[4]  =  { true, false, true, true };
 int     testInt[4]   =  { -10, 0, 10, 55 };
@@ -286,12 +287,14 @@ void verifyDataModelVector(
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_applyDataModel") { BASIL_LOCK_TEST
+TEST_CASE("Window_GLShaderProgram_receiveData") { BASIL_LOCK_TEST
     SECTION("Sets uniforms from model") {
         auto vertexShader =
             std::make_shared<GLVertexShader>(vertexPath);
         auto fragmentShader =
             std::make_shared<GLFragmentShader>(fragmentPath);
+
+        auto texture = std::make_shared<GLTexture2D>();
 
         GLShaderProgram shaderProgram =
             GLShaderProgram(vertexShader, fragmentShader);
@@ -343,6 +346,22 @@ TEST_CASE("Window_GLShaderProgram_applyDataModel") { BASIL_LOCK_TEST
             "myUniformUnsignedInt4", testUint);
         verifyDataModelVector<float, 4>(&shaderProgram, &dataModel,
             "myUniformFloat4", testFloat);
+    }
+
+    SECTION("Sets textures from model") {
+        auto vertexShader =
+            std::make_shared<GLVertexShader>(vertexPath);
+        auto fragmentShader =
+            std::make_shared<GLFragmentShader>(fragmentPath);
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
+
+        auto model = ShaderUniformModel();
+        std::shared_ptr<IGLTexture> texture = std::make_shared<GLTexture2D>();
+        model.addTexture(texture, "myTexture");
+
+        shaderProgram.receiveData(model);
+        CHECK(shaderProgram.textures.at(0) == texture);
     }
 }
 

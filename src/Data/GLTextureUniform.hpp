@@ -23,7 +23,7 @@ struct GLTextureUniform {
     std::shared_ptr<IGLTexture> texture;
 
     /** @brief Name used in OpenGL shader program */
-    const std::string& name;
+    std::string name;
 
     /** @returns UID of uniform, assigned by ShaderUniformModel */
     unsigned int getID() { return uniformID; }

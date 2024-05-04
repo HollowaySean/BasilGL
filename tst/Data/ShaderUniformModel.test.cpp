@@ -2,9 +2,14 @@
 
 #include "Data/GLUniform.hpp"
 #include "Data/ShaderUniformModel.hpp"
+#include "Data/SpanTextureSource.hpp"
+
+#include "Window/GLTexture.hpp"
 
 using basil::GLUniformType;
+using basil::GLTexture1D;
 using basil::ShaderUniformModel;
+using basil::SpanTextureSource;
 
 TEST_CASE("Data_ShaderUniformModel_addUniformValue") {
     auto dataModel = ShaderUniformModel();
@@ -59,11 +64,44 @@ TEST_CASE("Data_ShaderUniformModel_setUniformValue") {
     }
 }
 
-TEST_CASE("Data_ShaderUniformModel_getUniformValue") {
+TEST_CASE("Data_ShaderUniformModel_getUniform") {
     auto dataModel = ShaderUniformModel();
 
     SECTION("Returns nullopts if not found") {
         CHECK_FALSE(dataModel.getUniform("missing").has_value());
         CHECK_FALSE(dataModel.getUniform(-1).has_value());
+    }
+}
+
+TEST_CASE("Data_ShaderUniformModel_addTexture") {
+    std::vector<float> values = { 1, 2, 3, 4 };
+    auto texture = GLTexture1D::Builder()
+        .fromSpan<float>(values)
+        .build();
+
+    auto dataModel = ShaderUniformModel();
+    int ID = dataModel.addTexture(texture, "texture1");
+
+    SECTION("Updates texture list") {
+        auto resultFromName = dataModel.getTexture("texture1");
+        CHECK(resultFromName.value().texture == texture);
+
+        auto resultFromID = dataModel.getTexture(ID);
+        CHECK(resultFromID.value().texture == texture);
+    }
+}
+
+
+TEST_CASE("Data_ShaderUniformModel_getTexture") {
+    auto dataModel = ShaderUniformModel();
+
+    SECTION("Returns nullopts if not found") {
+        auto result = dataModel.getTexture("missing");
+        CHECK_FALSE(result.has_value());
+    }
+
+    SECTION("Returns nullopts if not found") {
+        auto result = dataModel.getTexture(-1);
+        CHECK_FALSE(result.has_value());
     }
 }
