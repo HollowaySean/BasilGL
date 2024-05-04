@@ -2,6 +2,7 @@
 #define SRC_DATA_SHADERUNIFORMMODEL_HPP_
 
 #include <map>
+#include <memory>
 #include <optional>
 #include <string>
 #include <utility>
@@ -10,10 +11,9 @@
 
 #include "IDataModel.hpp"
 #include "GLUniform.hpp"
+#include "GLTextureUniform.hpp"
 
 namespace basil {
-
-// TODO(sholloway): Add support for textures
 
 /** @brief Implementation of IDataModel to maintain
  *  uniforms for GLShaderProgram objects. */
@@ -37,18 +37,35 @@ class ShaderUniformModel : public IDataModel {
 
     /** @brief Gets value of uniform with identifier, if found */
     std::optional<GLUniform> getUniform(
-        const std::string& uniformName);
+        const std::string& uniformName) const;
 
     /** @brief Gets value of uniform with ID, if found */
     std::optional<GLUniform> getUniform(
-        unsigned int uniformID);
+        unsigned int uniformID) const;
 
     /** @returns Reference to map containing all uniforms in model */
     const std::map<unsigned int, GLUniform>& getUniforms()
         const { return uniforms; }
 
+    /** @brief Add texture object to model */
+    unsigned int addTexture(std::shared_ptr<IGLTexture> texture,
+        const std::string& name);
+
+    /** @brief Gets value of texture with identifier, if found */
+    std::optional<GLTextureUniform> getTexture(
+        const std::string& textureName) const;
+
+    /** @brief Gets value of texture with ID, if found */
+    std::optional<GLTextureUniform> getTexture(
+        unsigned int textureID) const;
+
+    /** @returns Reference to map containing all textures in model */
+    const std::map<unsigned int, GLTextureUniform>& getTextures()
+        const { return textures; }
+
  private:
     std::map<unsigned int, GLUniform> uniforms;
+    std::map<unsigned int, GLTextureUniform> textures;
     static inline unsigned int nextID = 0;
 };
 

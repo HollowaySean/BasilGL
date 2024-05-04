@@ -20,7 +20,7 @@ bool ShaderUniformModel::setUniformValue(
 }
 
 std::optional<GLUniform>
-ShaderUniformModel::getUniform(const std::string& uniformName) {
+ShaderUniformModel::getUniform(const std::string& uniformName) const {
     auto result = std::find_if(
         uniforms.begin(), uniforms.end(),
         [uniformName](const auto& uniform) {
@@ -35,12 +35,44 @@ ShaderUniformModel::getUniform(const std::string& uniformName) {
 }
 
 std::optional<GLUniform>
-ShaderUniformModel::getUniform(unsigned int uniformID) {
+ShaderUniformModel::getUniform(unsigned int uniformID) const {
     if (uniforms.contains(uniformID)) {
         return std::optional(uniforms.at(uniformID));
     }
 
     return std::nullopt;
 }
+
+unsigned int ShaderUniformModel::addTexture(
+        std::shared_ptr<IGLTexture> texture, const std::string& name) {
+    textures.emplace(nextID, GLTextureUniform { texture, name, nextID });
+
+    return nextID++;
+}
+
+std::optional<GLTextureUniform>
+ShaderUniformModel::getTexture(const std::string& textureName) const {
+    auto result = std::find_if(
+        textures.begin(), textures.end(),
+        [textureName](const auto& texture) {
+            return texture.second.name == textureName;
+        });
+
+    if (result != textures.end()) {
+        return std::optional(result->second);
+    }
+
+    return std::nullopt;
+}
+
+std::optional<GLTextureUniform>
+ShaderUniformModel::getTexture(unsigned int textureID) const {
+    if (uniforms.contains(textureID)) {
+        return std::optional(textures.at(textureID));
+    }
+
+    return std::nullopt;
+}
+
 
 }  // namespace basil

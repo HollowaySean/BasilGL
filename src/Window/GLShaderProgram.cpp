@@ -211,12 +211,17 @@ void GLShaderProgram::setUniformVector(const std::string& name, std::vector<T> v
 
 void GLShaderProgram::receiveData(const ShaderUniformModel& dataModel) {
     auto uniforms = dataModel.getUniforms();
-
     for (auto pair : uniforms) {
         auto uniform = pair.second;
         const std::string& name = uniform.name;
 
         std::visit([&](const auto& value){ visitUniform(name, value); }, uniform.value);
+    }
+
+    auto modelTextures = dataModel.getTextures();
+    for (auto pair : modelTextures) {
+        auto texture = pair.second;
+        addTexture(texture.name, texture.texture);
     }
 }
 

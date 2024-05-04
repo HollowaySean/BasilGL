@@ -40,7 +40,7 @@ struct GLUniform {
     unsigned int getID() { return uniformID; }
 
  private:
-    unsigned int uniformID;
+    const unsigned int uniformID;
 };
 
 }  // namespace basil
