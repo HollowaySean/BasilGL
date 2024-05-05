@@ -48,7 +48,7 @@ TEST_CASE("Window_GLShader_compileShader") { BASIL_LOCK_TEST
     TestShader shader = TestShader();
 
     SECTION("Compiles valid shader code successfully") {
-        shader.shaderCode = validShaderCode;
+        shader.rawShaderCode = validShaderCode;
         shader.hasCompiled = true;
         shader.compileShader(GLShader::ShaderType::FRAGMENT);
 
@@ -58,7 +58,7 @@ TEST_CASE("Window_GLShader_compileShader") { BASIL_LOCK_TEST
     }
 
     SECTION("Fails to compile invalid shader code") {
-        shader.shaderCode = "fdsjkalfbrejwkl";
+        shader.rawShaderCode = "fdsjkalfbrejwkl";
         shader.hasCompiled = true;
         shader.compileShader(GLShader::ShaderType::FRAGMENT);
 
@@ -93,13 +93,13 @@ TEST_CASE("Window_GLVertexShader_noOpShader") { BASIL_LOCK_TEST
         "Shader compiled successfully.";
 
     SECTION("Compiles vertex shader successfully") {
-        GLVertexShader shader = GLVertexShader::noOpShader();
+        auto shader = GLVertexShader::noOpShader();
 
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
 
-        REQUIRE_FALSE(shader.getID() == 0);
-        REQUIRE(shader.hasCompiledSuccessfully());
+        REQUIRE_FALSE(shader->getID() == 0);
+        REQUIRE(shader->hasCompiledSuccessfully());
     }
 }
 
@@ -189,12 +189,12 @@ TEST_CASE("Window_GLFragmentShader_debugShader") { BASIL_LOCK_TEST
         "Shader compiled successfully.";
 
     SECTION("Compiles vertex shader successfully") {
-        GLFragmentShader shader = GLFragmentShader::debugShader();
+        auto shader = GLFragmentShader::debugShader();
 
         REQUIRE(logger.getLastLevel() == LogLevel::INFO);
         REQUIRE(logger.getLastOutput() == successMessage);
 
-        REQUIRE_FALSE(shader.getID() == 0);
-        REQUIRE(shader.hasCompiledSuccessfully());
+        REQUIRE_FALSE(shader->getID() == 0);
+        REQUIRE(shader->hasCompiledSuccessfully());
     }
 }

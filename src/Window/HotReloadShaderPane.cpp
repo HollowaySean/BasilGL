@@ -4,13 +4,14 @@ namespace basil {
 
 HotReloadShaderPane::HotReloadShaderPane() {
     setupGLBuffers();
+
     currentShaderProgram = std::make_shared<GLShaderProgram>();
     currentShaderProgram->setVertexShader(defaultVert);
 }
 
 HotReloadShaderPane::HotReloadShaderPane(PaneProps paneProps,
         std::filesystem::path shaderFilePath) : HotReloadShaderPane() {
-    setFilePath(filePath);
+    setFilePath(shaderFilePath);
 }
 
 void HotReloadShaderPane::setFilePath(std::filesystem::path shaderFilePath) {

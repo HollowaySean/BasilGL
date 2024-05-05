@@ -388,7 +388,7 @@ TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
         REQUIRE(program->fragmentShader == nullptr);
         REQUIRE_FALSE(program->vertexShader == nullptr);
         REQUIRE(program->vertexShader->rawShaderCode
-            == basil::GLShader::noOpVertexCode);
+            == basil::GLShader::NO_OP_VERTEX_CODE);
         REQUIRE(program->getID() == 0);
     }
 

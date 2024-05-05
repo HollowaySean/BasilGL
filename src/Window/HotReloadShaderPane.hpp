@@ -3,8 +3,18 @@
 
 #include <memory>
 #include <filesystem>
+#include <utility>
 
 #include "GLShaderPane.hpp"
+
+// TODO(sholloway):
+//  - Fix tests
+//  - Remove logger testing?
+//  - Fill in OpenGL logger coverage
+//  - Test coverage
+//  - Documentation
+//  - Re-implement PubSub for this class
+//  - Standardize function name for builder
 
 namespace basil {
 
@@ -34,10 +44,10 @@ class HotReloadShaderPane : public GLShaderPane,
     std::filesystem::file_time_type timestamp
         = std::filesystem::file_time_type::min();
 
-    std::shared_ptr<GLFragmentShader> defaultFrag =
-        std::make_shared<GLFragmentShader>(GLFragmentShader::debugShader());
-    std::shared_ptr<GLVertexShader> defaultVert =
-        std::make_shared<GLVertexShader>(GLVertexShader::noOpShader());
+    std::shared_ptr<GLFragmentShader> defaultFrag
+        = GLFragmentShader::debugShader();
+    std::shared_ptr<GLVertexShader> defaultVert
+        = GLVertexShader::noOpShader();
 };
 
 }  // namespace basil

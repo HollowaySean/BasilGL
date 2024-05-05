@@ -3,6 +3,8 @@
 #include <errno.h>
 #include <string.h>
 
+#include <fmt/core.h>
+
 #include <fstream>
 #include <iostream>
 
@@ -10,35 +12,14 @@ using filepath = std::filesystem::path;
 
 namespace basil {
 
-const char* GLShader::noOpVertexCode =
-    "#version 450 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec2 aTexCoord;\n"
-    "out vec2 TexCoord;\n"
-    "void main() {\n"
-    "gl_Position = vec4(aPos, 1.0);\n"
-    "TexCoord = aTexCoord; }\0";
-
-const char* GLShader::debugFragmentCode =
-    "version 450 core\n"
-    "out vec4 FragColor;\n"
-    "uniform float patternSize = 50.;\n"
-    "uniform vec4 highColor = vec4(0.5, 0.0, 0.5, 1.0);\n"
-    "uniform vec4 lowColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
-    "void main() {\n"
-    "vec2 coord = floor(gl_FragCoord.xy / patternSize);\n"
-    "float mask = mod(coord.x + mod(coord.y, 2.0), 2.0);\n"
-    "FragColor = mask * highColor; }\0";
-
 GLVertexShader::GLVertexShader(filepath path)
     : GLShader::GLShader(path, ShaderType::VERTEX) {}
 
 GLVertexShader::GLVertexShader(const std::string &shaderCode)
     : GLShader::GLShader(shaderCode, ShaderType::VERTEX) {}
 
-GLVertexShader GLVertexShader::noOpShader() {
-    return GLVertexShader(
-        std::string(GLShader::noOpVertexCode));
+std::shared_ptr<GLVertexShader> GLVertexShader::noOpShader() {
+    return std::make_shared<GLVertexShader>(NO_OP_VERTEX_CODE);
 }
 
 void GLVertexShader::setShader(filepath path) {
@@ -56,9 +37,8 @@ GLFragmentShader::GLFragmentShader(filepath path)
 GLFragmentShader::GLFragmentShader(const std::string &shaderCode)
     : GLShader::GLShader(shaderCode, ShaderType::FRAGMENT) {}
 
-GLFragmentShader GLFragmentShader::debugShader() {
-    return GLFragmentShader(
-        std::filesystem::path(SOURCE_DIR) / "Window/shaders/default.frag");
+std::shared_ptr<GLFragmentShader> GLFragmentShader::debugShader() {
+    return std::make_shared<GLFragmentShader>(DEBUG_FRAGMENT_CODE);
 }
 
 void GLFragmentShader::setShader(filepath path) {
@@ -97,7 +77,6 @@ void GLShader::setShaderWithType(
 
 void GLShader::getShaderFromString(const std::string &shaderCode) {
     this->rawShaderCode = shaderCode;
-    this->shaderCode = rawShaderCode.c_str();
     hasCompiled = true;
 }
 
@@ -112,7 +91,6 @@ void GLShader::getShaderFromFile(
         shaderStream << shaderFile.rdbuf();
         shaderFile.close();
         rawShaderCode = shaderStream.str();
-        shaderCode = rawShaderCode.c_str();
 
         logger.log("Shader file read successfully.", LogLevel::INFO);
         hasCompiled = true;
@@ -139,25 +117,32 @@ void GLShader::compileShader(ShaderType type) {
     }
 
     GLint success;
-    glShaderSource(ID, 1, &shaderCode, NULL);
+    const char* rawShaderCode_cstr = rawShaderCode.c_str();
+    glShaderSource(ID, 1, &rawShaderCode_cstr, NULL);
     glCompileShader(ID);
     glGetShaderiv(ID, GL_COMPILE_STATUS, &success);
 
     if (!success) {
         char infoLog[512];
         glGetShaderInfoLog(ID, 512, NULL, infoLog);
-        logger.log("Unable to compile " + typeString + " shader.",
-            LogLevel::ERROR);
+        logger.log(
+            fmt::format("Unable to compile {} shader with ID {}.",
+                typeString, ID), LogLevel::ERROR);
         logger.log(infoLog, LogLevel::ERROR);
         hasCompiled = false;
     } else {
-        logger.log("Shader compiled successfully.", LogLevel::INFO);
+        logger.log(
+            fmt::format("Shader compiled successfully with ID {}.", ID),
+            LogLevel::INFO);
         hasCompiled &= true;
     }
 }
 
 void GLShader::destroyShader() {
     glDeleteShader(ID);
+    logger.log(fmt::format("Shader deleted with ID {}.", ID), LogLevel::DEBUG);
+
+    ID = 0;
     hasCompiled = false;
 }
 

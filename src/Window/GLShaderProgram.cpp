@@ -1,5 +1,7 @@
 #include "GLShaderProgram.hpp"
 
+#include <fmt/core.h>
+
 #include <typeinfo>
 
 namespace basil {
@@ -24,11 +26,15 @@ void GLShaderProgram::compile() {
     glGetProgramiv(ID, GL_LINK_STATUS, &success);
     if (!success) {
         char infoLog[512];
+        // TODO(sholloway): Add preamble to error log
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
 
         logger.log(infoLog, LogLevel::ERROR);
     } else {
-        logger.log("Shader program compiled successfully.", LogLevel::INFO);
+        logger.log(
+            fmt::format(
+                "Shader program compiled successfully with ID {}.",
+                ID), LogLevel::INFO);
     }
 }
 
@@ -46,6 +52,7 @@ void GLShaderProgram::setVertexShader(
         std::shared_ptr<GLVertexShader> setVertexShader) {
     if (vertexShader) {
         glDetachShader(ID, vertexShader->getID());
+        glAttachShader(ID, setVertexShader->getID());
     }
 
     vertexShader = setVertexShader;
@@ -56,6 +63,7 @@ void GLShaderProgram::setFragmentShader(
         std::shared_ptr<GLFragmentShader> setFragmentShader) {
     if (fragmentShader) {
         glDetachShader(ID, fragmentShader->getID());
+        glAttachShader(ID, setFragmentShader->getID());
     }
 
     fragmentShader = setFragmentShader;
@@ -251,6 +259,10 @@ void GLShaderProgram::visitUniform(
 
 void GLShaderProgram::destroyShaderProgram() {
     glDeleteProgram(ID);
+
+    logger.log(fmt::format(
+        "Shader program deleted with ID {}.", ID),
+        LogLevel::DEBUG);
     ID = 0;
 }
 
@@ -306,8 +318,7 @@ GLShaderProgram::Builder::withVertexShaderFromCode(
 
 GLShaderProgram::Builder&
 GLShaderProgram::Builder::withDefaultVertexShader() {
-    impl->setVertexShader(
-        std::make_shared<GLVertexShader>(GLVertexShader::noOpShader()));
+    impl->setVertexShader(GLVertexShader::noOpShader());
     return (*this);
 }
 

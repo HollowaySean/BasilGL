@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <filesystem>
+#include <memory>
 #include <string>
 
 #include <Basil/Context.hpp>
@@ -47,8 +48,25 @@ class GLShader : private IBasilContextConsumer {
 
     GLuint ID = 0;
 
-    static const char* noOpVertexCode;
-    static const char* debugFragmentCode;
+    static inline const std::string NO_OP_VERTEX_CODE =
+        "#version 450 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 1) in vec2 aTexCoord;\n"
+        "out vec2 TexCoord;\n"
+        "void main() {\n"
+        "gl_Position = vec4(aPos, 1.0);\n"
+        "TexCoord = aTexCoord; }";
+
+    static inline const std::string DEBUG_FRAGMENT_CODE =
+        "#version 450 core\n"
+        "out vec4 FragColor;\n"
+        "uniform float patternSize = 50.;\n"
+        "uniform vec4 highColor = vec4(0.5, 0.0, 0.5, 1.0);\n"
+        "uniform vec4 lowColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
+        "void main() {\n"
+        "vec2 coord = floor(gl_FragCoord.xy / patternSize);\n"
+        "float mask = mod(coord.x + mod(coord.y, 2.0), 2.0);\n"
+        "FragColor = mask * highColor; }";
 
 #ifndef TEST_BUILD
 
@@ -59,7 +77,6 @@ class GLShader : private IBasilContextConsumer {
     bool hasCompiled = false;
 
     std::string rawShaderCode;
-    const char* shaderCode;
 
     void getShaderFromFile(std::filesystem::path path);
     void getShaderFromString(const std::string &shaderCode);
@@ -73,7 +90,7 @@ class GLVertexShader : public GLShader {
     GLVertexShader() = default;
 
     /** @brief Pass-through vertex shader. */
-    static GLVertexShader noOpShader();
+    static std::shared_ptr<GLVertexShader> noOpShader();
 
     /** @brief Create vertex shader from file at path. */
     explicit GLVertexShader(std::filesystem::path path);
@@ -95,7 +112,7 @@ class GLFragmentShader : public GLShader {
     GLFragmentShader() = default;
 
     /** @brief Debug pattern fragment shader. */
-    static GLFragmentShader debugShader();
+    static std::shared_ptr<GLFragmentShader> debugShader();
 
     /** @brief Create fragment shader from file at path. */
     explicit GLFragmentShader(std::filesystem::path path);
