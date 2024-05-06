@@ -50,12 +50,9 @@ TEST_CASE("Window_HotReloadShaderPane_Builder") { BASIL_LOCK_TEST
     SECTION("Builds from file path") {
         auto pane = HotReloadShaderPane::Builder()
             .fromFilePath(fragmentPath)
-            .withPaneProps(testPaneProps)
             .build();
 
         CHECK(pane->currentShaderProgram->fragmentShader
             != pane->defaultFrag);
-        CHECK(pane->paneProps.width == 20);
-        CHECK(pane->paneProps.height == 10);
     }
 }

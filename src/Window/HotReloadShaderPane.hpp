@@ -7,25 +7,26 @@
 
 #include "GLShaderPane.hpp"
 
-// TODO(sholloway):
-//  - Documentation
-//  - Standardize function name for builder
-
 namespace basil {
 
+/** @brief Pane which automatically reloads modified fragment shaders. */
 class HotReloadShaderPane : public GLShaderPane,
                             public IBuildable<HotReloadShaderPane> {
  public:
+    /** @brief Initialize from file path. */
     HotReloadShaderPane(
         PaneProps paneProps, std::filesystem::path shaderFilePath);
 
+    /** @brief Set path of shader file. */
     void setFilePath(std::filesystem::path shaderFilePath);
 
+    /** @brief Check for file update and draw to screen. */
     void const draw() override;
 
+    /** @brief Builder pattern for HotReloadShaderPane. */
     class Builder : public IBuilder<HotReloadShaderPane> {
      public:
-        Builder& withPaneProps(PaneProps paneProps);
+        /** @brief Build with fragment shader at given file path. */
         Builder& fromFilePath(std::filesystem::path shaderFilePath);
     };
 
