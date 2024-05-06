@@ -21,7 +21,7 @@ inline std::filesystem::path vertexPath =
 inline std::filesystem::path fragmentPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
 inline std::filesystem::path badFragmentPath =
-    std::filesystem::path(TEST_DIR) / "Window/assets/invalid.frag";
+    std::filesystem::path(TEST_DIR) / "Window/assets/invalid-frag";
 inline std::filesystem::path validPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/valid-file.txt";
 inline std::filesystem::path invalidPath =
