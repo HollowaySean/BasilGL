@@ -92,12 +92,18 @@ void GLShader::getShaderFromFile(
         shaderFile.close();
         rawShaderCode = shaderStream.str();
 
-        logger.log("Shader file read successfully.", LogLevel::INFO);
+        logger.log(
+            fmt::format(LOGGER_READ_SUCCESS),
+            LogLevel::DEBUG);
         hasCompiled = true;
     }
     catch(std::ifstream::failure& error) {
-        logger.log("Unable to read shader file.", LogLevel::ERROR);
-        logger.log(strerror(errno), LogLevel::ERROR);
+        logger.log(
+            fmt::format(LOGGER_READ_FAILURE, path.string()),
+            LogLevel::ERROR);
+        logger.log(
+            strerror(errno),
+            LogLevel::ERROR);
         hasCompiled = false;
     }
 }
@@ -126,13 +132,13 @@ void GLShader::compileShader(ShaderType type) {
         char infoLog[512];
         glGetShaderInfoLog(ID, 512, NULL, infoLog);
         logger.log(
-            fmt::format("Unable to compile {} shader with ID {}.",
-                typeString, ID), LogLevel::ERROR);
+            fmt::format(LOGGER_COMPILE_FAILURE, ID, typeString),
+            LogLevel::ERROR);
         logger.log(infoLog, LogLevel::ERROR);
         hasCompiled = false;
     } else {
         logger.log(
-            fmt::format("Shader compiled successfully with ID {}.", ID),
+            fmt::format(LOGGER_COMPILE_SUCCESS, ID, typeString),
             LogLevel::INFO);
         hasCompiled &= true;
     }
@@ -140,7 +146,7 @@ void GLShader::compileShader(ShaderType type) {
 
 void GLShader::destroyShader() {
     glDeleteShader(ID);
-    logger.log(fmt::format("Shader deleted with ID {}.", ID), LogLevel::DEBUG);
+    logger.log(fmt::format(LOGGER_DESTROY, ID), LogLevel::DEBUG);
 
     ID = 0;
     hasCompiled = false;

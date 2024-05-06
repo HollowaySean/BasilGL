@@ -44,10 +44,10 @@ class HotReloadShaderPane : public GLShaderPane,
     std::filesystem::file_time_type timestamp
         = std::filesystem::file_time_type::min();
 
-    std::shared_ptr<GLFragmentShader> defaultFrag
-        = GLFragmentShader::debugShader();
     std::shared_ptr<GLVertexShader> defaultVert
         = GLVertexShader::noOpShader();
+    std::shared_ptr<GLFragmentShader> defaultFrag
+        = GLFragmentShader::debugShader();
 };
 
 }  // namespace basil

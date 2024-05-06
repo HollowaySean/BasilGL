@@ -5,7 +5,7 @@ namespace basil {
 void Logger::log(const std::string& message, LogLevel level) {
     if (level >= logLevel) {
         std::string label = levelLabels[level];
-        ostream << "[" << label << "]: " << message << std::endl;
+        ostream << label << message << std::endl;
 
         #ifdef TEST_BUILD
         recordTestInfo(level, message, true);
