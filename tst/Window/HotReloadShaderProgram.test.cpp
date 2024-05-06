@@ -9,21 +9,21 @@ using basil::PaneProps;
 
 TEST_CASE("Window_HotReloadShaderPane_HotReloadShaderPane") { BASIL_LOCK_TEST
     SECTION("Loads shader from file if compilable") {
-        auto pane = HotReloadShaderPane(paneProps, fragmentPath);
+        auto pane = HotReloadShaderPane(testPaneProps, fragmentPath);
 
         CHECK(pane.currentShaderProgram->fragmentShader
              != pane.defaultFrag);
     }
 
     SECTION("Loads debug shader if file can not be compiled") {
-        auto pane = HotReloadShaderPane(paneProps, badFragmentPath);
+        auto pane = HotReloadShaderPane(testPaneProps, badFragmentPath);
 
         CHECK(pane.currentShaderProgram->fragmentShader
              == pane.defaultFrag);
     }
 
     SECTION("Loads debug shader if file is not found") {
-        auto pane = HotReloadShaderPane(paneProps, invalidPath);
+        auto pane = HotReloadShaderPane(testPaneProps, invalidPath);
 
         CHECK(pane.currentShaderProgram->fragmentShader
              == pane.defaultFrag);
@@ -31,7 +31,7 @@ TEST_CASE("Window_HotReloadShaderPane_HotReloadShaderPane") { BASIL_LOCK_TEST
 }
 
 TEST_CASE("Window_HotReloadShaderPane_draw") { BASIL_LOCK_TEST
-    auto pane = HotReloadShaderPane(paneProps, invalidPath);
+    auto pane = HotReloadShaderPane(testPaneProps, invalidPath);
 
     SECTION("Updates the shader if modified") {
         CHECK(pane.currentShaderProgram->getFragmentShader()
@@ -50,7 +50,7 @@ TEST_CASE("Window_HotReloadShaderPane_Builder") { BASIL_LOCK_TEST
     SECTION("Builds from file path") {
         auto pane = HotReloadShaderPane::Builder()
             .fromFilePath(fragmentPath)
-            .withPaneProps(paneProps)
+            .withPaneProps(testPaneProps)
             .build();
 
         CHECK(pane->currentShaderProgram->fragmentShader

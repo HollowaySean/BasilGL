@@ -43,7 +43,7 @@ TEST_CASE("Window_SplitPane_SplitPane") {
 
 TEST_CASE("Window_SplitPane_onResize") {
     SECTION("Sets props of pane") {
-        SplitPane splitPane = SplitPane(paneProps);
+        SplitPane splitPane = SplitPane(testPaneProps);
 
         splitPane.onResize(10, 5);
 
@@ -54,10 +54,11 @@ TEST_CASE("Window_SplitPane_onResize") {
     }
 
     SECTION("Maintains relative extent for horizontal layout") {
-        SplitPane splitPane = SplitPane(paneProps, PaneOrientation::HORIZONTAL);
+        SplitPane splitPane = SplitPane(testPaneProps,
+            PaneOrientation::HORIZONTAL);
 
-        TestPane firstPane = TestPane(paneProps);
-        TestPane secondPane = TestPane(paneProps);
+        TestPane firstPane = TestPane(testPaneProps);
+        TestPane secondPane = TestPane(testPaneProps);
 
         splitPane.resizeToPixelValue(5);
 
@@ -75,10 +76,11 @@ TEST_CASE("Window_SplitPane_onResize") {
     }
 
     SECTION("Maintains relative extent for vertical layout") {
-        SplitPane splitPane = SplitPane(paneProps, PaneOrientation::VERTICAL);
+        SplitPane splitPane = SplitPane(testPaneProps,
+            PaneOrientation::VERTICAL);
 
-        TestPane firstPane = TestPane(paneProps);
-        TestPane secondPane = TestPane(paneProps);
+        TestPane firstPane = TestPane(testPaneProps);
+        TestPane secondPane = TestPane(testPaneProps);
 
         splitPane.resizeToPixelValue(2);
 
@@ -97,27 +99,27 @@ TEST_CASE("Window_SplitPane_onResize") {
 }
 
 TEST_CASE("Window_SplitPane_setFirstPane") {
-    auto childPane = std::make_shared<TestPane>(paneProps);
-    auto secondChild = std::make_shared<TestPane>(paneProps);
+    auto childPane = std::make_shared<TestPane>(testPaneProps);
+    auto secondChild = std::make_shared<TestPane>(testPaneProps);
 
     SECTION("Sets props of child pane for horizontal orientation") {
         SplitPane splitPane = SplitPane(
-            paneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, PaneOrientation::HORIZONTAL);
         splitPane.setFirstPane(childPane);
 
-        REQUIRE(childPane->paneProps.height == paneProps.height);
-        REQUIRE(childPane->paneProps.width == paneProps.width / 2);
+        REQUIRE(childPane->paneProps.height == testPaneProps.height);
+        REQUIRE(childPane->paneProps.width == testPaneProps.width / 2);
         REQUIRE(childPane->paneProps.xOffset == 5);
         REQUIRE(childPane->paneProps.yOffset == 2);
     }
 
     SECTION("Sets props of child pane for vertical orientation") {
         s_pt<SplitPane> splitPane = std::make_shared<SplitPane>(
-            paneProps, PaneOrientation::VERTICAL);
+            testPaneProps, PaneOrientation::VERTICAL);
         splitPane->setFirstPane(childPane);
 
-        REQUIRE(childPane->paneProps.height == paneProps.height / 2);
-        REQUIRE(childPane->paneProps.width == paneProps.width);
+        REQUIRE(childPane->paneProps.height == testPaneProps.height / 2);
+        REQUIRE(childPane->paneProps.width == testPaneProps.width);
         REQUIRE(childPane->paneProps.xOffset == 5);
         REQUIRE(childPane->paneProps.yOffset == 2);
     }
@@ -148,31 +150,31 @@ TEST_CASE("Window_SplitPane_setFirstPane") {
 }
 
 TEST_CASE("Window_SplitPane_setSecondPane") {
-    auto childPane = std::make_shared<TestPane>(paneProps);
-    auto secondChild = std::make_shared<TestPane>(paneProps);
+    auto childPane = std::make_shared<TestPane>(testPaneProps);
+    auto secondChild = std::make_shared<TestPane>(testPaneProps);
 
     SECTION("Sets props of child pane for horizontal orientation") {
         s_pt<SplitPane> splitPane = std::make_shared<SplitPane>(
-            paneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, PaneOrientation::HORIZONTAL);
         splitPane->setSecondPane(childPane);
 
-        REQUIRE(childPane->paneProps.height == paneProps.height);
-        REQUIRE(childPane->paneProps.width == paneProps.width / 2);
+        REQUIRE(childPane->paneProps.height == testPaneProps.height);
+        REQUIRE(childPane->paneProps.width == testPaneProps.width / 2);
         REQUIRE(childPane->paneProps.xOffset ==
-            paneProps.xOffset + paneProps.width / 2);
-        REQUIRE(childPane->paneProps.yOffset == paneProps.yOffset);
+            testPaneProps.xOffset + testPaneProps.width / 2);
+        REQUIRE(childPane->paneProps.yOffset == testPaneProps.yOffset);
     }
 
     SECTION("Sets props of child pane for vertical orientation") {
         s_pt<SplitPane> splitPane = std::make_shared<SplitPane>(
-            paneProps, PaneOrientation::VERTICAL);
+            testPaneProps, PaneOrientation::VERTICAL);
         splitPane->setSecondPane(childPane);
 
-        REQUIRE(childPane->paneProps.height == paneProps.height / 2);
-        REQUIRE(childPane->paneProps.width == paneProps.width);
-        REQUIRE(childPane->paneProps.xOffset == paneProps.xOffset);
+        REQUIRE(childPane->paneProps.height == testPaneProps.height / 2);
+        REQUIRE(childPane->paneProps.width == testPaneProps.width);
+        REQUIRE(childPane->paneProps.xOffset == testPaneProps.xOffset);
         REQUIRE(childPane->paneProps.yOffset ==
-            paneProps.yOffset + paneProps.height / 2);
+            testPaneProps.yOffset + testPaneProps.height / 2);
     }
 
     SECTION("Logs warning if duplicate pane") {
@@ -201,12 +203,12 @@ TEST_CASE("Window_SplitPane_setSecondPane") {
 }
 
 TEST_CASE("Window_SplitPane_draw") {
-    s_pt<TestPane> firstPane = std::make_shared<TestPane>(paneProps);
-    s_pt<TestPane> secondPane = std::make_shared<TestPane>(paneProps);
+    s_pt<TestPane> firstPane = std::make_shared<TestPane>(testPaneProps);
+    s_pt<TestPane> secondPane = std::make_shared<TestPane>(testPaneProps);
 
     SECTION("Calls draw on child panes") {
         SplitPane splitPane = SplitPane(
-            paneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, PaneOrientation::HORIZONTAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -222,12 +224,12 @@ TEST_CASE("Window_SplitPane_draw") {
 }
 
 TEST_CASE("Window_SplitPane_resizeToPixelValue") {
-    s_pt<TestPane> firstPane = std::make_shared<TestPane>(paneProps);
-    s_pt<TestPane> secondPane = std::make_shared<TestPane>(paneProps);
+    s_pt<TestPane> firstPane = std::make_shared<TestPane>(testPaneProps);
+    s_pt<TestPane> secondPane = std::make_shared<TestPane>(testPaneProps);
 
     SECTION("Updates sizes of child panes for horizontal orientation") {
         SplitPane splitPane = SplitPane(
-            paneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, PaneOrientation::HORIZONTAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -250,7 +252,7 @@ TEST_CASE("Window_SplitPane_resizeToPixelValue") {
 
     SECTION("Updates sizes of child panes for vertical orientation") {
         SplitPane splitPane = SplitPane(
-            paneProps, PaneOrientation::VERTICAL);
+            testPaneProps, PaneOrientation::VERTICAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -273,12 +275,12 @@ TEST_CASE("Window_SplitPane_resizeToPixelValue") {
 }
 
 TEST_CASE("Window_SplitPane_resizeToPercentage") {
-    s_pt<TestPane> firstPane = std::make_shared<TestPane>(paneProps);
-    s_pt<TestPane> secondPane = std::make_shared<TestPane>(paneProps);
+    s_pt<TestPane> firstPane = std::make_shared<TestPane>(testPaneProps);
+    s_pt<TestPane> secondPane = std::make_shared<TestPane>(testPaneProps);
 
     SECTION("Updates sizes of child panes for horizontal orientation") {
         SplitPane splitPane = SplitPane(
-            paneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, PaneOrientation::HORIZONTAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -301,7 +303,7 @@ TEST_CASE("Window_SplitPane_resizeToPercentage") {
 
     SECTION("Updates sizes of child panes for vertical orientation") {
         SplitPane splitPane = SplitPane(
-            paneProps, PaneOrientation::VERTICAL);
+            testPaneProps, PaneOrientation::VERTICAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -324,7 +326,7 @@ TEST_CASE("Window_SplitPane_resizeToPercentage") {
 
     SECTION("Clamps value if extent out of bounds") {
         SplitPane splitPane = SplitPane(
-            paneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, PaneOrientation::HORIZONTAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -333,17 +335,17 @@ TEST_CASE("Window_SplitPane_resizeToPercentage") {
         REQUIRE(firstPane->paneProps.width == 0);
 
         splitPane.resizeToPercentage(120.f);
-        REQUIRE(firstPane->paneProps.width == paneProps.width);
+        REQUIRE(firstPane->paneProps.width == testPaneProps.width);
     }
 }
 
 TEST_CASE("Window_SplitPane_setGapWidth") {
-    s_pt<TestPane> firstPane = std::make_shared<TestPane>(paneProps);
-    s_pt<TestPane> secondPane = std::make_shared<TestPane>(paneProps);
+    s_pt<TestPane> firstPane = std::make_shared<TestPane>(testPaneProps);
+    s_pt<TestPane> secondPane = std::make_shared<TestPane>(testPaneProps);
 
     SECTION("Resizes to include gap, for horizontal orientation") {
         SplitPane splitPane = SplitPane(
-            paneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, PaneOrientation::HORIZONTAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -363,7 +365,7 @@ TEST_CASE("Window_SplitPane_setGapWidth") {
 
     SECTION("Resizes to include gap, for vertical orientation") {
         SplitPane splitPane = SplitPane(
-            paneProps, PaneOrientation::VERTICAL);
+            testPaneProps, PaneOrientation::VERTICAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -385,7 +387,7 @@ TEST_CASE("Window_SplitPane_setGapWidth") {
 TEST_CASE("Window_SplitPane_setOrientation") {
     SECTION("Resizes to include gap") {
         SplitPane splitPane = SplitPane(
-            paneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, PaneOrientation::HORIZONTAL);
 
         splitPane.setOrientation(PaneOrientation::VERTICAL);
 
@@ -394,8 +396,8 @@ TEST_CASE("Window_SplitPane_setOrientation") {
 }
 
 TEST_CASE("Window_SplitPane_Builder") {
-    s_pt<TestPane> firstPane = std::make_shared<TestPane>(paneProps);
-    s_pt<TestPane> secondPane = std::make_shared<TestPane>(paneProps);
+    s_pt<TestPane> firstPane = std::make_shared<TestPane>(testPaneProps);
+    s_pt<TestPane> secondPane = std::make_shared<TestPane>(testPaneProps);
 
     SECTION("Builds SplitPane object") {
         auto splitPane = SplitPane::Builder()
