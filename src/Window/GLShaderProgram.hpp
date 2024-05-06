@@ -1,6 +1,7 @@
 #ifndef SRC_WINDOW_GLSHADERPROGRAM_HPP_
 #define SRC_WINDOW_GLSHADERPROGRAM_HPP_
 
+#include <fmt/core.h>
 #include <GL/glew.h>
 
 #include <memory>
@@ -45,9 +46,22 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     void setVertexShader(
       std::shared_ptr<GLVertexShader> vertexShader);
 
+    /** @returns GLVertexShader object. */
+    std::shared_ptr<GLVertexShader> getVertexShader() {
+      return vertexShader;
+    }
+
     /** @brief Set GLFragmentShader object. */
     void setFragmentShader(
       std::shared_ptr<GLFragmentShader> fragmentShader);
+
+    /** @returns GLFragmentShader object. */
+    std::shared_ptr<GLFragmentShader> getFragmentShader() {
+      return fragmentShader;
+    }
+
+    /** @returns Boolean indicating linking success. */
+    bool hasLinkedSuccessfully() { return hasLinked; }
 
     /** @brief Adds reference to texture in shader.
      *
@@ -175,9 +189,13 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     Logger& logger = Logger::get();
 
     void compile();
-    void updateShaders();
+
+    void attachShader(GLint shaderID);
+    void detachShader(GLint shaderID);
 
     void destroyShaderProgram();
+
+    GLint getUniformLocation(const std::string& name);
 
     void visitUniform(const std::string& name, GLUniformScalar value);
     void visitUniform(const std::string& name, GLUniformVector value);
@@ -187,7 +205,27 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     std::shared_ptr<GLVertexShader> vertexShader = nullptr;
     std::shared_ptr<GLFragmentShader> fragmentShader = nullptr;
 
+    bool hasLinked = false;
+
     std::vector<std::shared_ptr<IGLTexture>> textures;
+
+    static inline constexpr std::string_view LOGGER_LINK_SUCCESS =
+      "Shader Program (ID{:02}) - Program linked successfully.";
+    static inline constexpr std::string_view LOGGER_LINK_FAILURE =
+      "Shader Program (ID{:02}) - Failed to link program. "
+      "See OpenGL info log:";
+
+    static inline constexpr std::string_view LOGGER_ATTACH =
+      "Shader Program (ID{:02}) - Attaching shader (ID{:02}).";
+    static inline constexpr std::string_view LOGGER_DETACH =
+      "Shader Program (ID{:02}) - Detaching shader (ID{:02}).";
+
+    static inline constexpr std::string_view LOGGER_DELETE =
+      "Shader Program (ID{:02}) - Program deleted.";
+
+    static inline constexpr std::string_view LOGGER_UNIFORM_FAILURE =
+      "Shader Program (ID{:02}) - Could not get location for uniform "
+      "with name \"{}\".";
 };
 
 }  // namespace basil

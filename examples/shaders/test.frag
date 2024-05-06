@@ -1,14 +1,10 @@
 #version 450 core
 
-layout(location = 0) out vec4 FragColor;
-
-in vec2 TexCoord;
+out vec4 FragColor;
 
 uniform float testValue;
 
-uniform sampler2D testTexture;
-
 void main()
 {
-    FragColor = vec4(texture(testTexture, TexCoord / testValue).xyz, 1.0);
+    FragColor = vec4(0.8, 0.5, 0.0, 1.0);
 }

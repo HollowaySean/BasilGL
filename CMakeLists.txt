@@ -22,6 +22,12 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 
 
+# Debug build preprocessor options
+if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
+    add_compile_definitions(DEBUG_BUILD)
+endif()
+
+
 ## Find dependencies
 
 ## OpenGL
@@ -176,11 +182,6 @@ enable_testing()
 
 ## Test subdirectory
 add_subdirectory("${CMAKE_SOURCE_DIR}/tst")
-
-# Debug build preprocessor options
-if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
-    add_compile_definitions(DEBUG_BUILD)
-endif()
 
 ## Doxygen setup
 # Only build documentation in Release build

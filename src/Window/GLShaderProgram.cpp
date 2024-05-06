@@ -1,7 +1,5 @@
 #include "GLShaderProgram.hpp"
 
-#include <typeinfo>
-
 namespace basil {
 
 GLShaderProgram::GLShaderProgram(
@@ -9,32 +7,40 @@ GLShaderProgram::GLShaderProgram(
     std::shared_ptr<GLFragmentShader> fragmentShader):
         vertexShader(vertexShader),
         fragmentShader(fragmentShader) {
-    this->updateShaders();
+    this->compile();
 }
 
 void GLShaderProgram::compile() {
-    ID = glCreateProgram();
-    glAttachShader(ID, vertexShader->getID());
-    glAttachShader(ID, fragmentShader->getID());
-    glLinkProgram(ID);
+    if (!vertexShader || !fragmentShader) return;
 
+    if (!ID) {
+        ID = glCreateProgram();
+        attachShader(vertexShader->getID());
+        attachShader(fragmentShader->getID());
+    }
+
+    glLinkProgram(ID);
     int success;
     glGetProgramiv(ID, GL_LINK_STATUS, &success);
+
     if (!success) {
         char infoLog[512];
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
 
-        logger.log(infoLog, LogLevel::ERROR);
+        logger.log(
+            fmt::format(LOGGER_LINK_FAILURE, ID),
+            LogLevel::ERROR);
+        logger.log(
+            infoLog,
+            LogLevel::ERROR);
+
+        hasLinked = false;
     } else {
-        logger.log("Shader program compiled successfully.", LogLevel::INFO);
-    }
-}
+        logger.log(
+            fmt::format(LOGGER_LINK_SUCCESS, ID),
+            LogLevel::INFO);
 
-void GLShaderProgram::updateShaders() {
-    destroyShaderProgram();
-
-    if (vertexShader && fragmentShader) {
-        compile();
+        hasLinked = true;
     }
 }
 
@@ -43,79 +49,125 @@ void GLShaderProgram::use() {
 }
 
 void GLShaderProgram::setVertexShader(
-        std::shared_ptr<GLVertexShader> vertexShader) {
-    this->vertexShader = vertexShader;
-    updateShaders();
+        std::shared_ptr<GLVertexShader> setVertexShader) {
+    if (!setVertexShader) return;
+
+    if (vertexShader) {
+        detachShader(vertexShader->getID());
+        attachShader(setVertexShader->getID());
+    }
+
+    vertexShader = setVertexShader;
+    compile();
 }
 
 void GLShaderProgram::setFragmentShader(
-        std::shared_ptr<GLFragmentShader> fragmentShader) {
-    this->fragmentShader = fragmentShader;
-    updateShaders();
+        std::shared_ptr<GLFragmentShader> setFragmentShader) {
+    if (!setFragmentShader) return;
+
+    if (fragmentShader) {
+        detachShader(fragmentShader->getID());
+        attachShader(setFragmentShader->getID());
+    }
+
+    fragmentShader = setFragmentShader;
+    compile();
+}
+
+void GLShaderProgram::attachShader(GLint shaderID) {
+    glAttachShader(ID, shaderID);
+    logger.log(
+        fmt::format(LOGGER_ATTACH, ID, shaderID),
+        LogLevel::DEBUG);
+}
+
+void GLShaderProgram::detachShader(GLint shaderID) {
+    glDetachShader(ID, shaderID);
+    logger.log(
+        fmt::format(LOGGER_DETACH, ID, shaderID),
+        LogLevel::DEBUG);
 }
 
 void GLShaderProgram::addTexture(const std::string& name,
         std::shared_ptr<IGLTexture> texture) {
-    use();
-    GLint location =
-        glGetUniformLocation(ID, name.c_str());
-    glUniform1i(location, texture->getUniformLocation());
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform1i(ID, location, texture->getUniformLocation());
 
     // Add texture to vector to prevent it from falling out of scope
     textures.push_back(texture);
 }
 
+GLint GLShaderProgram::getUniformLocation(const std::string& name) {
+    GLint location = glGetUniformLocation(ID, name.c_str());
+    if (location == -1) {
+        logger.log(
+            fmt::format(LOGGER_UNIFORM_FAILURE, ID, name),
+            LogLevel::DEBUG);
+    }
+    return location;
+}
+
 template<>
 void GLShaderProgram::setUniform<bool>(const std::string& name, bool value) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform1i(location, static_cast<int>(value));
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform1i(ID, location, static_cast<int>(value));
 }
 
 template<>
 void GLShaderProgram::setUniform<int>(const std::string& name, int value) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform1i(location, value);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform1i(ID, location, value);
 }
 
 template<>
 void GLShaderProgram::setUniform<uint>(const std::string& name, uint value) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform1ui(location, value);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform1ui(ID, location, value);
 }
 
 template<>
 void GLShaderProgram::setUniform<float>(const std::string& name, float value) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform1f(location, value);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform1f(ID, location, value);
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         bool value1, bool value2) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform2i(location, static_cast<int>(value1), static_cast<int>(value2));
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform2i(ID, location,
+        static_cast<int>(value1), static_cast<int>(value2));
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         bool value1, bool value2, bool value3) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform3i(location, static_cast<int>(value1),
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform3i(ID, location, static_cast<int>(value1),
         static_cast<int>(value2), static_cast<int>(value3));
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         bool value1, bool value2, bool value3, bool value4) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform4i(location,
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform4i(ID, location,
         static_cast<int>(value1), static_cast<int>(value2),
         static_cast<int>(value3), static_cast<int>(value4));
 }
@@ -123,73 +175,82 @@ void GLShaderProgram::setUniformVector(const std::string& name,
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         int value1, int value2) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform2i(location, value1, value2);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform2i(ID, location, value1, value2);
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         int value1, int value2, int value3) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform3i(location, value1, value2, value3);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform3i(ID, location, value1, value2, value3);
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         int value1, int value2, int value3, int value4) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform4i(location, value1, value2, value3, value4);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform4i(ID, location, value1, value2, value3, value4);
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         uint value1, uint value2) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform2ui(location, value1, value2);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform2ui(ID, location, value1, value2);
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         uint value1, uint value2, uint value3) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform3ui(location, value1, value2, value3);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform3ui(ID, location, value1, value2, value3);
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         uint value1, uint value2, uint value3, uint value4) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform4ui(location, value1, value2, value3, value4);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform4ui(ID, location, value1, value2, value3, value4);
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         float value1, float value2) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform2f(location, value1, value2);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform2f(ID, location, value1, value2);
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         float value1, float value2, float value3) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform3f(location, value1, value2, value3);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform3f(ID, location, value1, value2, value3);
 }
 
 template<>
 void GLShaderProgram::setUniformVector(const std::string& name,
         float value1, float value2, float value3, float value4) {
-    use();
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    glUniform4f(location, value1, value2, value3, value4);
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    glProgramUniform4f(ID, location, value1, value2, value3, value4);
 }
 
 template<class T>
@@ -243,6 +304,10 @@ void GLShaderProgram::visitUniform(
 
 void GLShaderProgram::destroyShaderProgram() {
     glDeleteProgram(ID);
+
+    logger.log(
+        fmt::format(LOGGER_DELETE, ID),
+        LogLevel::DEBUG);
     ID = 0;
 }
 
@@ -298,8 +363,7 @@ GLShaderProgram::Builder::withVertexShaderFromCode(
 
 GLShaderProgram::Builder&
 GLShaderProgram::Builder::withDefaultVertexShader() {
-    impl->setVertexShader(
-        std::make_shared<GLVertexShader>(GLVertexShader::noOpShader()));
+    impl->setVertexShader(GLVertexShader::noOpShader());
     return (*this);
 }
 

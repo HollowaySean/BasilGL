@@ -3,6 +3,8 @@
 #include <errno.h>
 #include <string.h>
 
+#include <fmt/core.h>
+
 #include <fstream>
 #include <iostream>
 
@@ -10,24 +12,14 @@ using filepath = std::filesystem::path;
 
 namespace basil {
 
-const char* GLShader::noOpVertexCode =
-    "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec2 aTexCoord;\n"
-    "out vec2 TexCoord;\n"
-    "void main() {\n"
-    "gl_Position = vec4(aPos, 1.0);\n"
-    "TexCoord = aTexCoord; }\0";
-
 GLVertexShader::GLVertexShader(filepath path)
     : GLShader::GLShader(path, ShaderType::VERTEX) {}
 
 GLVertexShader::GLVertexShader(const std::string &shaderCode)
     : GLShader::GLShader(shaderCode, ShaderType::VERTEX) {}
 
-GLVertexShader GLVertexShader::noOpShader() {
-    return GLVertexShader(
-        std::string(GLShader::noOpVertexCode));
+std::shared_ptr<GLVertexShader> GLVertexShader::noOpShader() {
+    return std::make_shared<GLVertexShader>(NO_OP_VERTEX_CODE);
 }
 
 void GLVertexShader::setShader(filepath path) {
@@ -44,6 +36,10 @@ GLFragmentShader::GLFragmentShader(filepath path)
 
 GLFragmentShader::GLFragmentShader(const std::string &shaderCode)
     : GLShader::GLShader(shaderCode, ShaderType::FRAGMENT) {}
+
+std::shared_ptr<GLFragmentShader> GLFragmentShader::debugShader() {
+    return std::make_shared<GLFragmentShader>(DEBUG_FRAGMENT_CODE);
+}
 
 void GLFragmentShader::setShader(filepath path) {
     setShaderWithType(path, ShaderType::FRAGMENT);
@@ -81,7 +77,7 @@ void GLShader::setShaderWithType(
 
 void GLShader::getShaderFromString(const std::string &shaderCode) {
     this->rawShaderCode = shaderCode;
-    this->shaderCode = rawShaderCode.c_str();
+    hasCompiled = true;
 }
 
 void GLShader::getShaderFromFile(
@@ -95,13 +91,20 @@ void GLShader::getShaderFromFile(
         shaderStream << shaderFile.rdbuf();
         shaderFile.close();
         rawShaderCode = shaderStream.str();
-        shaderCode = rawShaderCode.c_str();
 
-        logger.log("Shader file read successfully.", LogLevel::INFO);
+        logger.log(
+            fmt::format(LOGGER_READ_SUCCESS),
+            LogLevel::DEBUG);
+        hasCompiled = true;
     }
     catch(std::ifstream::failure& error) {
-        logger.log("Unable to read shader file.", LogLevel::ERROR);
-        logger.log(strerror(errno), LogLevel::ERROR);
+        logger.log(
+            fmt::format(LOGGER_READ_FAILURE, path.string()),
+            LogLevel::ERROR);
+        logger.log(
+            strerror(errno),
+            LogLevel::ERROR);
+        hasCompiled = false;
     }
 }
 
@@ -120,23 +123,33 @@ void GLShader::compileShader(ShaderType type) {
     }
 
     GLint success;
-    glShaderSource(ID, 1, &shaderCode, NULL);
+    const char* rawShaderCode_cstr = rawShaderCode.c_str();
+    glShaderSource(ID, 1, &rawShaderCode_cstr, NULL);
     glCompileShader(ID);
     glGetShaderiv(ID, GL_COMPILE_STATUS, &success);
 
     if (!success) {
         char infoLog[512];
         glGetShaderInfoLog(ID, 512, NULL, infoLog);
-        logger.log("Unable to compile " + typeString + " shader.",
+        logger.log(
+            fmt::format(LOGGER_COMPILE_FAILURE, ID, typeString),
             LogLevel::ERROR);
         logger.log(infoLog, LogLevel::ERROR);
+        hasCompiled = false;
     } else {
-        logger.log("Shader compiled successfully.", LogLevel::INFO);
+        logger.log(
+            fmt::format(LOGGER_COMPILE_SUCCESS, ID, typeString),
+            LogLevel::INFO);
+        hasCompiled &= true;
     }
 }
 
 void GLShader::destroyShader() {
     glDeleteShader(ID);
+    logger.log(fmt::format(LOGGER_DESTROY, ID), LogLevel::DEBUG);
+
+    ID = 0;
+    hasCompiled = false;
 }
 
 GLShader::~GLShader() {

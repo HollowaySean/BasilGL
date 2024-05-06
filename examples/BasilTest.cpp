@@ -6,8 +6,10 @@
 
 using basil::BasilApp;
 using basil::GLShaderPane;
+using basil::HotReloadShaderPane;
 using basil::GLShaderProgram;
 using basil::GLTexture2D;
+using basil::GLTexture3D;
 using basil::LogLevel;
 using basil::MetricsReporter;
 using basil::ProcessController;
@@ -21,33 +23,25 @@ using basil::WindowView;
  * @return Success code
  */
 int main(int argc, char** argv) {
-    auto texturePath =
-        std::filesystem::path(EXAMPLE_DIR) / "assets/test-image.jpg";
     auto fragmentPath =
         std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
-    float testValue = 0.9;
+
+    auto window = WindowView::Builder()
+            .withTitle("My window")
+            .withDimensions(400, 400)
+            .withTopPane(HotReloadShaderPane::Builder()
+                .fromFilePath(fragmentPath)
+                .build())
+            .build();
+
+    auto dataModel = basil::ShaderUniformModel();
+    dataModel.addUniformValue(0.5f, "testValue");
+    window->publishData(dataModel);
 
     auto basilApp = BasilApp::Builder()
-        .withWindow(WindowView::Builder()
-            .withTitle("My window")
-            .withDimensions(683, 1024)
-            .withTopPane(GLShaderPane::Builder()
-                .withShaderProgram(GLShaderProgram::Builder()
-                    .withFragmentShaderFromFile(fragmentPath)
-                    .withDefaultVertexShader()
-                    .withUniform("testValue", testValue)
-                    .withTexture("testTexture", GLTexture2D::Builder()
-                        .fromFile(texturePath)
-                        .build())
-                    .build())
-                .build())
-            .build())
+        .withWindow(window)
         .withController(ProcessController::Builder()
             .withFrameCap(30)
-            .withLateProcess(MetricsReporter::Builder()
-                .withLogLevel(LogLevel::INFO)
-                .withRegularity(30)
-                .build())
             .build())
         .build();
 

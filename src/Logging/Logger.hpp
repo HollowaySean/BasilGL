@@ -89,10 +89,10 @@ class Logger {
     LogLevel logLevel = BASIL_DEFAULT_LOGGING_LEVEL;
 
     std::map<LogLevel, std::string> levelLabels = {
-        {LogLevel::DEBUG,  "DEBUG"},
-        {LogLevel::INFO,   "INFO"},
-        {LogLevel::WARN,   "WARN"},
-        {LogLevel::ERROR,  "ERROR"}
+        {LogLevel::DEBUG,  "[DEBUG]: "},
+        {LogLevel::INFO,   "[INFO]:  "},
+        {LogLevel::WARN,   "[WARN]:  "},
+        {LogLevel::ERROR,  "[ERROR]: "}
     };
 
     // Inaccessable methods to enforce Singleton

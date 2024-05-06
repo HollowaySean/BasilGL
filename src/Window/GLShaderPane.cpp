@@ -2,7 +2,7 @@
 
 namespace basil {
 
-void GLShaderPane::setup() {
+void GLShaderPane::setupGLBuffers() {
     // Set up OpenGL
     createVertexObjects();
     createElementBuffer();
@@ -12,15 +12,15 @@ void GLShaderPane::setShaderProgram(
         std::shared_ptr<GLShaderProgram> shaderProgram) {
     if (!shaderProgram) return;
 
-    if (!this->shaderProgram) {
-        this->shaderProgram = shaderProgram;
-        setup();
+    if (!this->currentShaderProgram) {
+        this->currentShaderProgram = shaderProgram;
+        setupGLBuffers();
     } else {
-        this->IDataPublisher::unsubscribe(this->shaderProgram);
-        this->shaderProgram = shaderProgram;
+        this->IDataPublisher::unsubscribe(this->currentShaderProgram);
+        this->currentShaderProgram = shaderProgram;
     }
 
-    this->IDataPublisher::subscribe(shaderProgram);
+    this->IDataPublisher::subscribe(this->currentShaderProgram);
 }
 
 void GLShaderPane::createVertexObjects() {
@@ -72,8 +72,8 @@ void const GLShaderPane::draw() {
         paneProps.height);
 
     // Use shader
-    if (shaderProgram) {
-        shaderProgram->use();
+    if (currentShaderProgram) {
+        currentShaderProgram->use();
     }
 
     // Render quad of triangles

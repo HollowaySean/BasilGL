@@ -49,6 +49,7 @@ void WindowView::onStart() {
 }
 
 void WindowView::onStop() {
+    // TODO(sholloway): This should be in ProcessController or similar
     logger.log("Stopping loop", LogLevel::INFO);
 }
 

@@ -29,11 +29,10 @@ class GLShaderPane :  public IPane,
      * @param shaderProgram GLShaderProgram object to render
     */
     GLShaderPane(PaneProps paneProps,
-      std::shared_ptr<GLShaderProgram> shaderProgram)
-        : shaderProgram(shaderProgram),
-          IPane(paneProps) {
-            setup();
-          }
+        std::shared_ptr<GLShaderProgram> shaderProgram)
+          : IPane(paneProps) {
+      setShaderProgram(shaderProgram);
+    }
 
     /** @brief Creates blank GLShaderPane. */
     GLShaderPane() = default;
@@ -68,16 +67,16 @@ class GLShaderPane :  public IPane,
 
 #ifndef TEST_BUILD
 
- private:
+ protected:
 #endif
-    void setup();
+    void setupGLBuffers();
     void createVertexObjects();
     void createElementBuffer();
 
     GLuint vertexAttributeID = 0;
     GLuint vertexBufferID = 0;
     GLuint elementBufferID = 0;
-    std::shared_ptr<GLShaderProgram> shaderProgram = nullptr;
+    std::shared_ptr<GLShaderProgram> currentShaderProgram = nullptr;
 };
 
 }  // namespace basil
