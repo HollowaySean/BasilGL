@@ -27,15 +27,15 @@ void verifyUniforms(GLShaderProgram shaderProgram,
             shaderProgram.setUniform(name, values[0]);
             break;
         case 2:
-            shaderProgram.setUniformVector(name,
+            shaderProgram.setUniform(name,
                 values[0], values[1]);
             break;
         case 3:
-            shaderProgram.setUniformVector(name,
+            shaderProgram.setUniform(name,
                 values[0], values[1], values[2]);
             break;
         case 4:
-            shaderProgram.setUniformVector(name,
+            shaderProgram.setUniform(name,
                 values[0], values[1], values[2], values[3]);
             break;
     }
@@ -202,6 +202,27 @@ TEST_CASE("Window_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
         CHECK(shaderProgram.getID() == initialID);
         CHECK(shaderProgram.hasLinkedSuccessfully());
         CHECK(shaderProgram.getVertexShader() == secondVertexShader);
+    }
+
+    SECTION("Re-applies cached uniforms") {
+        GLShaderProgram shaderProgram =
+            GLShaderProgram(vertexShader, fragmentShader);
+        shaderProgram.setUniform("myUniformInt", 128);
+
+        GLint location = glGetUniformLocation(
+            shaderProgram.getID(), "myUniformInt");
+        GLint initial;
+        glGetUniformiv(shaderProgram.getID(), location, &initial);
+        CHECK(initial == 128);
+
+        shaderProgram.setFragmentShader(secondFragmentShader);
+        CHECK(shaderProgram.getFragmentShader() == secondFragmentShader);
+
+        location = glGetUniformLocation(
+            shaderProgram.getID(), "myUniformInt");
+        GLint result;
+        glGetUniformiv(shaderProgram.getID(), location, &result);
+        CHECK(result == 128);
     }
 }
 

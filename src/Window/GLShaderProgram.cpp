@@ -39,8 +39,10 @@ void GLShaderProgram::compile() {
         logger.log(
             fmt::format(LOGGER_LINK_SUCCESS, ID),
             LogLevel::INFO);
-
         hasLinked = true;
+
+        // Restore any previously-applied uniforms
+        applyChachedUniforms();
     }
 }
 
@@ -88,17 +90,6 @@ void GLShaderProgram::detachShader(GLint shaderID) {
         LogLevel::DEBUG);
 }
 
-void GLShaderProgram::addTexture(const std::string& name,
-        std::shared_ptr<IGLTexture> texture) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
-    glProgramUniform1i(ID, location, texture->getUniformLocation());
-
-    // Add texture to vector to prevent it from falling out of scope
-    textures.push_back(texture);
-}
-
 GLint GLShaderProgram::getUniformLocation(const std::string& name) {
     GLint location = glGetUniformLocation(ID, name.c_str());
     if (location == -1) {
@@ -110,167 +101,127 @@ GLint GLShaderProgram::getUniformLocation(const std::string& name) {
 }
 
 template<>
-void GLShaderProgram::setUniform<bool>(const std::string& name, bool value) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
+void GLShaderProgram::setUniformAt<bool>(GLint location, bool value) {
     glProgramUniform1i(ID, location, static_cast<int>(value));
 }
 
 template<>
-void GLShaderProgram::setUniform<int>(const std::string& name, int value) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
+void GLShaderProgram::setUniformAt<int>(GLint location, int value) {
     glProgramUniform1i(ID, location, value);
 }
 
 template<>
-void GLShaderProgram::setUniform<uint>(const std::string& name, uint value) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
+void GLShaderProgram::setUniformAt<uint>(GLint location, uint value) {
     glProgramUniform1ui(ID, location, value);
 }
 
 template<>
-void GLShaderProgram::setUniform<float>(const std::string& name, float value) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
+void GLShaderProgram::setUniformAt<float>(GLint location, float value) {
     glProgramUniform1f(ID, location, value);
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         bool value1, bool value2) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform2i(ID, location,
         static_cast<int>(value1), static_cast<int>(value2));
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         bool value1, bool value2, bool value3) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform3i(ID, location, static_cast<int>(value1),
         static_cast<int>(value2), static_cast<int>(value3));
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         bool value1, bool value2, bool value3, bool value4) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform4i(ID, location,
         static_cast<int>(value1), static_cast<int>(value2),
         static_cast<int>(value3), static_cast<int>(value4));
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         int value1, int value2) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform2i(ID, location, value1, value2);
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         int value1, int value2, int value3) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform3i(ID, location, value1, value2, value3);
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         int value1, int value2, int value3, int value4) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform4i(ID, location, value1, value2, value3, value4);
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         uint value1, uint value2) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform2ui(ID, location, value1, value2);
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         uint value1, uint value2, uint value3) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform3ui(ID, location, value1, value2, value3);
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         uint value1, uint value2, uint value3, uint value4) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform4ui(ID, location, value1, value2, value3, value4);
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         float value1, float value2) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform2f(ID, location, value1, value2);
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         float value1, float value2, float value3) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform3f(ID, location, value1, value2, value3);
 }
 
 template<>
-void GLShaderProgram::setUniformVector(const std::string& name,
+void GLShaderProgram::setUniformAt(GLint location,
         float value1, float value2, float value3, float value4) {
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
     glProgramUniform4f(ID, location, value1, value2, value3, value4);
 }
 
-template<class T>
-void GLShaderProgram::setUniformVector(
-        const std::string& name, std::vector<T> values) {
-    switch (values.size()) {
-        case 1:
-            setUniform<T>(name, values[0]);
-            break;
-        case 2:
-            setUniformVector<T>(
-                name, values[0], values[1]);
-            break;
-        case 3:
-            setUniformVector<T>(
-                name, values[0], values[1], values[2]);
-            break;
-        default:
-            setUniformVector<T>(
-                name, values[0], values[1], values[2], values[3]);
+void GLShaderProgram::addTexture(const std::string& name,
+        std::shared_ptr<IGLTexture> texture) {
+    int textureLocation = texture->getUniformLocation();
+    cacheUniform(name, std::vector({ textureLocation }));
+
+    GLint location = getUniformLocation(name);
+    if (location == -1) return;
+
+    setUniformAt(location, textureLocation);
+
+    // Add texture to vector to prevent it from falling out of scope
+    textures.push_back(texture);
+}
+
+void GLShaderProgram::cacheUniform(
+        const std::string& name, GLUniformVector values) {
+    if (uniformCache.contains(name)) {
+        uniformCache.at(name) = values;
+    } else {
+        uniformCache.emplace(name, values);
+    }
+}
+
+void GLShaderProgram::applyChachedUniforms() {
+    for (auto uniformRecord : uniformCache) {
+        visitUniform(uniformRecord.first, uniformRecord.second);
     }
 }
 
