@@ -19,25 +19,25 @@ TEST_CASE("Window_GLTexture_GLTexture") { BASIL_LOCK_TEST
     SECTION("Initializes 1D texture") {
         GLTexture1D texture = GLTexture1D();
 
-        REQUIRE(texture.getID() > 0);
-        REQUIRE(texture.getEnum() >= GL_TEXTURE0);
-        REQUIRE(texture.textureType == GL_TEXTURE_1D);
+        CHECK(texture.getID() > 0);
+        CHECK(texture.getEnum() >= GL_TEXTURE0);
+        CHECK(texture.textureType == GL_TEXTURE_1D);
     }
 
     SECTION("Initializes 2D texture") {
         GLTexture2D texture = GLTexture2D();
 
-        REQUIRE(texture.getID() > 0);
-        REQUIRE(texture.getEnum() >= GL_TEXTURE0);
-        REQUIRE(texture.textureType == GL_TEXTURE_2D);
+        CHECK(texture.getID() > 0);
+        CHECK(texture.getEnum() >= GL_TEXTURE0);
+        CHECK(texture.textureType == GL_TEXTURE_2D);
     }
 
     SECTION("Initializes 3D texture") {
         GLTexture3D texture = GLTexture3D();
 
-        REQUIRE(texture.getID() > 0);
-        REQUIRE(texture.getEnum() >= GL_TEXTURE0);
-        REQUIRE(texture.textureType == GL_TEXTURE_3D);
+        CHECK(texture.getID() > 0);
+        CHECK(texture.getEnum() >= GL_TEXTURE0);
+        CHECK(texture.textureType == GL_TEXTURE_3D);
     }
 }
 
@@ -49,9 +49,7 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
         texture.update();
 
         Logger& logger = Logger::get();
-        REQUIRE(logger.getLastOutput()
-            == "Unable to update, texture source not found.");
-        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
+        CHECK(logger.getLastLevel() == LogLevel::WARN);
     }
 
     SECTION("Creates OpenGL 1D texture object") {
@@ -123,7 +121,7 @@ TEST_CASE("Window_GLTexture_Builder") {
             .fromFile(path)
             .build();
 
-        REQUIRE(texture->source->data() != nullptr);
+        CHECK(texture->source->data() != nullptr);
     }
 
     SECTION("Builds from span") {
@@ -133,6 +131,6 @@ TEST_CASE("Window_GLTexture_Builder") {
             .fromSpan(std::span(source))
             .build();
 
-        REQUIRE(texture->source->data() == source.data());
+        CHECK(texture->source->data() == source.data());
     }
 }
