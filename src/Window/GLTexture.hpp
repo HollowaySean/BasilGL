@@ -1,10 +1,12 @@
 #ifndef SRC_WINDOW_GLTEXTURE_HPP_
 #define SRC_WINDOW_GLTEXTURE_HPP_
 
+#include <fmt/core.h>
 #include <GL/glew.h>
 
 #include <memory>
 #include <string>
+#include <unordered_map>
 
 #include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
@@ -56,6 +58,18 @@ class IGLTexture {
     GLenum textureType;
     GLenum textureEnum;
     GLuint textureId;
+
+    static inline constexpr std::string_view LOGGER_SOURCE_MISSING =
+        "Texture (ID{:02}) - Unable to update, data source not found.";
+    static inline constexpr std::string_view LOGGER_TEXTURE_CREATED =
+        "Texture (ID{:02}) - Created {} texture with offset {}.";
+
+    static inline const std::unordered_map<GLenum, std::string_view>
+        NAME_LOOKUP = {
+            {GL_TEXTURE_1D, "1D"},
+            {GL_TEXTURE_2D, "2D"},
+            {GL_TEXTURE_3D, "3D"}
+        };
 };
 
 /**
@@ -100,6 +114,9 @@ class GLTexture : public IGLTexture,
                 SpanTextureSource<T, N, channels>>(span);
             return withSource(source);
         }
+
+        /** @brief Sets texture parameters. */
+        Builder& withParameter(GLenum parameterName, GLenum value);
     };
 
 #ifndef TEST_BUILD

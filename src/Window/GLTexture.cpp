@@ -33,6 +33,13 @@ void IGLTexture::initializeTexture() {
     glActiveTexture(textureEnum);
     glBindTexture(textureType, textureId);
 
+    logger.log(
+        fmt::format(LOGGER_TEXTURE_CREATED,
+            textureId,
+            NAME_LOOKUP.at(textureType),
+            static_cast<int>(textureEnum - GL_TEXTURE0)),
+        LogLevel::DEBUG);
+
     // Set default texture parameters
     setTextureParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     setTextureParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
@@ -43,7 +50,8 @@ void IGLTexture::initializeTexture() {
 template<int N>
 void GLTexture<N>::update() {
     if (!source) {
-        logger.log("Unable to update, texture source not found.",
+        logger.log(
+            fmt::format(LOGGER_SOURCE_MISSING, textureId),
             LogLevel::WARN);
         return;
     }
@@ -110,6 +118,13 @@ GLTexture<2>::Builder&
 GLTexture<2>::Builder::fromFile(std::filesystem::path filePath) {
     auto source = std::make_shared<FileTextureSource>(filePath);
     return withSource(source);
+}
+
+template<int N>
+GLTexture<N>::Builder&
+GLTexture<N>::Builder::withParameter(GLenum parameterName, GLenum value) {
+    this->impl->setTextureParameter(parameterName, value);
+    return (*this);
 }
 
 }  // namespace basil

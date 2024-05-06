@@ -9,6 +9,7 @@ using basil::GLShaderPane;
 using basil::HotReloadShaderPane;
 using basil::GLShaderProgram;
 using basil::GLTexture2D;
+using basil::GLTexture3D;
 using basil::LogLevel;
 using basil::MetricsReporter;
 using basil::ProcessController;
