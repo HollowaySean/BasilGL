@@ -60,6 +60,9 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
       return fragmentShader;
     }
 
+    /** @returns Boolean indicating linking success. */
+    bool hasLinkedSuccessfully() { return hasLinked; }
+
     /** @brief Adds reference to texture in shader.
      *
      *  @param name    Name of texture within shader.
@@ -201,6 +204,8 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
 
     std::shared_ptr<GLVertexShader> vertexShader = nullptr;
     std::shared_ptr<GLFragmentShader> fragmentShader = nullptr;
+
+    bool hasLinked = false;
 
     std::vector<std::shared_ptr<IGLTexture>> textures;
 

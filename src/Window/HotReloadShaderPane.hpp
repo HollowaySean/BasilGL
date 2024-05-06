@@ -13,7 +13,7 @@
 //  - Fill in OpenGL logger coverage
 //  - Test coverage
 //  - Documentation
-//  - Re-implement PubSub for this class
+//  - Caching for PubSub and refresh for this class
 //  - Standardize function name for builder
 
 namespace basil {

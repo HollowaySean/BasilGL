@@ -29,14 +29,18 @@ void GLShaderProgram::compile() {
 
         logger.log(
             fmt::format(LOGGER_LINK_FAILURE, ID),
-            LogLevel::INFO);
+            LogLevel::ERROR);
         logger.log(
             infoLog,
             LogLevel::ERROR);
+
+        hasLinked = false;
     } else {
         logger.log(
             fmt::format(LOGGER_LINK_SUCCESS, ID),
             LogLevel::INFO);
+
+        hasLinked = true;
     }
 }
 
@@ -46,6 +50,8 @@ void GLShaderProgram::use() {
 
 void GLShaderProgram::setVertexShader(
         std::shared_ptr<GLVertexShader> setVertexShader) {
+    if (!setVertexShader) return;
+
     if (vertexShader) {
         detachShader(vertexShader->getID());
         attachShader(setVertexShader->getID());
@@ -57,6 +63,8 @@ void GLShaderProgram::setVertexShader(
 
 void GLShaderProgram::setFragmentShader(
         std::shared_ptr<GLFragmentShader> setFragmentShader) {
+    if (!setFragmentShader) return;
+
     if (fragmentShader) {
         detachShader(fragmentShader->getID());
         attachShader(setFragmentShader->getID());

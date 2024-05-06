@@ -47,7 +47,7 @@ void verifyUniforms(GLShaderProgram shaderProgram,
     getUniform<N>(shaderProgram.getID(), location, setValue);
 
     for (int i = 0; i < N; i++) {
-        REQUIRE(setValue[i] == values[i]);
+        CHECK(setValue[i] == values[i]);
     }
 }
 
@@ -78,13 +78,11 @@ template<unsigned int N> void getUniform(
 TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
 
-    std::string successMessage =
-        "Shader program compiled successfully.";
-
     SECTION("Does not compile for default contruction") {
         GLShaderProgram program = GLShaderProgram();
 
-        CHECK(logger.getLastOutput() != successMessage);
+        CHECK(program.getID() == 0);
+        CHECK_FALSE(program.hasLinkedSuccessfully());
     }
 
     SECTION("Compiles shader program.") {
@@ -97,7 +95,8 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
             GLShaderProgram(vertexShader, fragmentShader);
 
         CHECK(logger.getLastLevel() == LogLevel::INFO);
-        REQUIRE(logger.getLastOutput() == successMessage);
+        CHECK_FALSE(shaderProgram.getID() == 0);
+        CHECK(shaderProgram.hasLinkedSuccessfully());
     }
 
     SECTION("Logs error for failed compilation.") {
@@ -110,8 +109,9 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
         GLShaderProgram shaderProgram =
             GLShaderProgram(vertexShader, fragmentShader);
 
-        // Test is flaky
-        CHECK_NOFAIL(logger.getLastLevel() == LogLevel::ERROR);
+        CHECK_FALSE(shaderProgram.hasLinkedSuccessfully());
+        CHECK_FALSE(shaderProgram.getID() == 0);
+        CHECK(logger.getLastLevel() == LogLevel::ERROR);
     }
 }
 
@@ -130,7 +130,7 @@ TEST_CASE("Window_GLShaderProgram_use") { BASIL_LOCK_TEST
         GLint currentID;
         glGetIntegerv(GL_CURRENT_PROGRAM, &currentID);
 
-        REQUIRE(currentID == shaderProgram.getID());
+        CHECK(currentID == shaderProgram.getID());
     }
 }
 
@@ -152,7 +152,7 @@ TEST_CASE("Window_GLShaderProgram_addTexture") { BASIL_LOCK_TEST
         GLint result;
         glGetUniformiv(program.getID(), location, &result);
 
-        REQUIRE(result == texture->getUniformLocation());
+        CHECK(result == texture->getUniformLocation());
     }
 }
 
@@ -167,25 +167,32 @@ TEST_CASE("Window_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
 
     SECTION("Only compiles when both shaders are present") {
         GLShaderProgram shaderProgram = GLShaderProgram();
-        REQUIRE(shaderProgram.getID() == 0);
+        CHECK(shaderProgram.getID() == 0);
+        CHECK_FALSE(shaderProgram.hasLinkedSuccessfully());
 
         shaderProgram.setFragmentShader(fragmentShader);
-        REQUIRE(shaderProgram.getID() == 0);
+        CHECK(shaderProgram.getID() == 0);
+        CHECK_FALSE(shaderProgram.hasLinkedSuccessfully());
 
         shaderProgram.setVertexShader(vertexShader);
-        REQUIRE_FALSE(shaderProgram.getID() == 0);
+        CHECK_FALSE(shaderProgram.getID() == 0);
+        CHECK(shaderProgram.hasLinkedSuccessfully());
     }
 
-    SECTION("Re-compiles when shader is replaced") {
+    SECTION("Re-compiles when shader is replaced, if not null") {
         GLShaderProgram shaderProgram =
             GLShaderProgram(vertexShader, fragmentShader);
-        REQUIRE_FALSE(shaderProgram.getID() == 0);
+        GLint initialID = shaderProgram.getID();
+        CHECK(initialID != 0);
+        CHECK(shaderProgram.hasLinkedSuccessfully());
 
         shaderProgram.setFragmentShader(nullptr);
-        REQUIRE(shaderProgram.getID() == 0);
+        CHECK(shaderProgram.getID() == initialID);
+        CHECK(shaderProgram.hasLinkedSuccessfully());
 
         shaderProgram.setFragmentShader(secondFragmentShader);
-        REQUIRE_FALSE(shaderProgram.getID() == 0);
+        CHECK(shaderProgram.getID() == initialID);
+        CHECK(shaderProgram.hasLinkedSuccessfully());
     }
 }
 
@@ -358,7 +365,7 @@ TEST_CASE("Window_GLShaderProgram_receiveData") { BASIL_LOCK_TEST
 
         auto model = ShaderUniformModel();
         std::shared_ptr<IGLTexture> texture = std::make_shared<GLTexture2D>();
-        model.addTexture(texture, "myTexture");
+        model.addTexture(texture, "testTex");
 
         shaderProgram.receiveData(model);
         CHECK(shaderProgram.textures.at(0) == texture);
@@ -377,19 +384,19 @@ TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
             .withVertexShader(vertexShader)
             .build();
 
-        REQUIRE(program->fragmentShader == fragmentShader);
-        REQUIRE(program->vertexShader == vertexShader);
-        REQUIRE_FALSE(program->getID() == 0);
+        CHECK(program->fragmentShader == fragmentShader);
+        CHECK(program->vertexShader == vertexShader);
+        CHECK_FALSE(program->getID() == 0);
 
         program = GLShaderProgram::Builder()
             .withDefaultVertexShader()
             .build();
 
-        REQUIRE(program->fragmentShader == nullptr);
-        REQUIRE_FALSE(program->vertexShader == nullptr);
-        REQUIRE(program->vertexShader->rawShaderCode
+        CHECK(program->fragmentShader == nullptr);
+        CHECK_FALSE(program->vertexShader == nullptr);
+        CHECK(program->vertexShader->rawShaderCode
             == basil::GLShader::NO_OP_VERTEX_CODE);
-        REQUIRE(program->getID() == 0);
+        CHECK(program->getID() == 0);
     }
 
     SECTION("Builds shaders from file") {
@@ -398,18 +405,18 @@ TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
             .withVertexShaderFromFile(vertexPath)
             .build();
 
-        REQUIRE_FALSE(program->fragmentShader == nullptr);
-        REQUIRE_FALSE(program->vertexShader == nullptr);
-        REQUIRE_FALSE(program->getID() == 0);
+        CHECK_FALSE(program->fragmentShader == nullptr);
+        CHECK_FALSE(program->vertexShader == nullptr);
+        CHECK_FALSE(program->getID() == 0);
 
         program = GLShaderProgram::Builder()
             .withFragmentShaderFromCode(program->fragmentShader->rawShaderCode)
             .withVertexShaderFromCode(program->vertexShader->rawShaderCode)
             .build();
 
-        REQUIRE_FALSE(program->fragmentShader == nullptr);
-        REQUIRE_FALSE(program->vertexShader == nullptr);
-        REQUIRE_FALSE(program->getID() == 0);
+        CHECK_FALSE(program->fragmentShader == nullptr);
+        CHECK_FALSE(program->vertexShader == nullptr);
+        CHECK_FALSE(program->getID() == 0);
     }
 
     SECTION("Sets uniforms") {
@@ -425,13 +432,13 @@ TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
             .build();
 
 
-        REQUIRE(glGetUniformLocation(program->getID(),
+        CHECK(glGetUniformLocation(program->getID(),
             "myUniformBool") >= 0);
-        REQUIRE(glGetUniformLocation(program->getID(),
+        CHECK(glGetUniformLocation(program->getID(),
             "myUniformInt") >= 0);
-        REQUIRE(glGetUniformLocation(program->getID(),
+        CHECK(glGetUniformLocation(program->getID(),
             "myUniformUnsignedInt") >= 0);
-        REQUIRE(glGetUniformLocation(program->getID(),
+        CHECK(glGetUniformLocation(program->getID(),
             "myUniformFloat") >= 0);
     }
 
@@ -446,6 +453,6 @@ TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
             .build();
 
 
-        REQUIRE(glGetUniformLocation(program->getID(), "testTex") >= 0);
+        CHECK(glGetUniformLocation(program->getID(), "testTex") >= 0);
     }
 }
