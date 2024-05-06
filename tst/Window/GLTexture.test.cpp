@@ -67,7 +67,10 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
         glGetTexImage(GL_TEXTURE_1D, 0, source->format.format,
             source->format.type, result);
 
-        // TODO(sholloway): Complete tests after fixing
+        for (int i = 0; i < 8; i++) {
+            // TODO(sholloway): Fix broken tests
+            // CHECK(result[i] == data.at(i));
+        }
     }
 
     SECTION("Creates OpenGL 2D texture object") {
@@ -87,7 +90,10 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
         glGetTexImage(GL_TEXTURE_2D, 0, source->format.format,
             source->format.type, result);
 
-        // TODO(sholloway): Complete tests after fixing
+        for (int i = 0; i < 8; i++) {
+            // TODO(sholloway): Fix broken tests
+            // CHECK(result[i] == data.at(i));
+        }
     }
 
     SECTION("Creates OpenGL 3D texture object") {
@@ -108,7 +114,10 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
         glGetTexImage(GL_TEXTURE_3D, 0, source->format.format,
             source->format.type, result);
 
-        // TODO(sholloway): Complete tests after fixing
+        for (int i = 0; i < 8; i++) {
+            // TODO(sholloway): Fix broken tests
+            // CHECK(result[i] == data.at(i));
+        }
     }
 }
 
@@ -132,5 +141,18 @@ TEST_CASE("Window_GLTexture_Builder") {
             .build();
 
         CHECK(texture->source->data() == source.data());
+    }
+
+    SECTION("Sets texture parameters") {
+        auto source = std::vector<int>(16, 5);
+
+        auto texture = GLTexture2D::Builder()
+            .fromSpan(std::span(source))
+            .withParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE)
+            .build();
+
+        GLint result;
+        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, &result);
+        CHECK(result == GL_CLAMP_TO_EDGE);
     }
 }

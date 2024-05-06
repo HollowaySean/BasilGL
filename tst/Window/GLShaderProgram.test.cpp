@@ -159,6 +159,8 @@ TEST_CASE("Window_GLShaderProgram_addTexture") { BASIL_LOCK_TEST
 TEST_CASE("Window_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
     auto vertexShader =
         std::make_shared<GLVertexShader>(vertexPath);
+    auto secondVertexShader =
+        std::make_shared<GLVertexShader>(vertexPath);
     auto fragmentShader =
         std::make_shared<GLFragmentShader>(fragmentPath);
     auto secondFragmentShader =
@@ -189,10 +191,37 @@ TEST_CASE("Window_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
         shaderProgram.setFragmentShader(nullptr);
         CHECK(shaderProgram.getID() == initialID);
         CHECK(shaderProgram.hasLinkedSuccessfully());
+        CHECK(shaderProgram.getFragmentShader() == fragmentShader);
 
         shaderProgram.setFragmentShader(secondFragmentShader);
         CHECK(shaderProgram.getID() == initialID);
         CHECK(shaderProgram.hasLinkedSuccessfully());
+        CHECK(shaderProgram.getFragmentShader() == secondFragmentShader);
+
+        shaderProgram.setVertexShader(secondVertexShader);
+        CHECK(shaderProgram.getID() == initialID);
+        CHECK(shaderProgram.hasLinkedSuccessfully());
+        CHECK(shaderProgram.getVertexShader() == secondVertexShader);
+    }
+}
+
+TEST_CASE("Window_GLShaderProgram_getUniformLocation") { BASIL_LOCK_TEST
+    auto program = GLShaderProgram::Builder()
+        .withFragmentShaderFromFile(fragmentPath)
+        .withDefaultVertexShader()
+        .build();
+
+    SECTION("Returns location of existing uniform") {
+        GLint location = program->getUniformLocation("myUniformBool");
+        CHECK(location >= 0);
+    }
+
+    SECTION("Returns -1 and logs missing uniform") {
+        Logger& logger = Logger::get();
+
+        GLint location = program->getUniformLocation("missingUniform");
+        CHECK(location == -1);
+        CHECK(logger.getLastLevel() == LogLevel::DEBUG);
     }
 }
 

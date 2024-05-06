@@ -58,4 +58,10 @@ HotReloadShaderPane::Builder::fromFilePath(
     return (*this);
 }
 
+HotReloadShaderPane::Builder&
+HotReloadShaderPane::Builder::withPaneProps(PaneProps paneProps) {
+    this->impl->setPaneProps(paneProps);
+    return (*this);
+}
+
 }  // namespace basil

@@ -1,5 +1,7 @@
 #include <catch.hpp>
 
+#include "GLTestUtils.hpp"
+
 #include <Basil/Window.hpp>
 
 using basil::PaneProps;
@@ -13,13 +15,6 @@ using basil::LogLevel;
 
 template<class T>
 using s_pt = std::shared_ptr<T>;
-
-PaneProps paneProps = {
-    .width = 20,
-    .height = 10,
-    .xOffset = 5,
-    .yOffset = 2
-};
 
 class TestPane : public IPane {
  public:

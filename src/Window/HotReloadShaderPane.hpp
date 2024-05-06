@@ -8,12 +8,7 @@
 #include "GLShaderPane.hpp"
 
 // TODO(sholloway):
-//  - Fix tests
-//  - Remove logger testing?
-//  - Fill in OpenGL logger coverage
-//  - Test coverage
 //  - Documentation
-//  - Caching for PubSub and refresh for this class
 //  - Standardize function name for builder
 
 namespace basil {
@@ -30,10 +25,14 @@ class HotReloadShaderPane : public GLShaderPane,
 
     class Builder : public IBuilder<HotReloadShaderPane> {
      public:
+        Builder& withPaneProps(PaneProps paneProps);
         Builder& fromFilePath(std::filesystem::path shaderFilePath);
     };
 
+#ifndef TEST_BUILD
+
  private:
+#endif
     void updateShader();
     void useDefaultShader();
 
