@@ -30,7 +30,9 @@ function(install_dependency
         endif()
 
         # Add CMake subdirectory
-        add_subdirectory("${SUBMODULE_DIR}")
+        if(EXISTS "${SUBMODULE_DIR}/CMakeLists.txt")
+            add_subdirectory("${SUBMODULE_DIR}")
+        endif()
 
         # Export variables
         set("${DEP_VARIABLE_NAME}_INCLUDE_DIRS"
@@ -50,6 +52,9 @@ find_package(OpenGL REQUIRED)
 
 # {FMT} library
 install_dependency("FMT" "fmt" "fmt" "fmt::fmt" "fmt::fmt" "include")
+
+# STB library
+install_dependency("STB" "STB" "stb" "" "" "")
 
 # GLEW
 install_dependency("GLEW" "GLEW" "glew" "GLEW::GLEW" "libglew_static" "include")
