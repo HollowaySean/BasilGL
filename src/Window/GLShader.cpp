@@ -96,8 +96,7 @@ void GLShader::getShaderFromFile(
             fmt::format(LOGGER_READ_SUCCESS),
             LogLevel::DEBUG);
         hasCompiled = true;
-    }
-    catch(std::ifstream::failure& error) {
+    } catch(std::ifstream::failure& error) {
         logger.log(
             fmt::format(LOGGER_READ_FAILURE, path.string()),
             LogLevel::ERROR);
