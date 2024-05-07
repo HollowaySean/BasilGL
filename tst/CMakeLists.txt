@@ -1,8 +1,10 @@
 ## Set variables
 set(TEST_TARGET_NAME Basil_test)
-set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
-set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
-set(TST_DIR "${CMAKE_SOURCE_DIR}/tst")
+
+include(Catch)
+include(CTest)
+enable_testing()
+
 
 ## Search for source files
 file(GLOB_RECURSE SOURCE_LIST CONFIGURE_DEPENDS
@@ -19,21 +21,13 @@ add_executable(${TEST_TARGET_NAME}
 target_include_directories(${TEST_TARGET_NAME} PRIVATE
     ${SRC_DIR}
     ${TST_DIR}
-    ${BASIL_INCLUDE_DIRS}
-    ${OPENGL_INCLUDE_DIRS}
-    ${GLEW_INCLUDE_DIRS}
-    ${GLFW_INCLUDE_DIRS}
-    ${CATCH2_INCLUDE_DIRS}
-    ${STB_INCLUDE_DIRS}
-    ${FMT_INCLUDE_DIRS})
+    ${BASIL_DEPENDENCY_INCLUDE_DIRS}
+    ${BASIL_TEST_DEPENDENCY_INCLUDE_DIRS})
 
 target_link_libraries(${TEST_TARGET_NAME} PRIVATE
     ${BASIL_LIBRARIES}
-    ${OPENGL_LIBRARIES}
-    ${GLEW_LIBRARIES}
-    ${GLFW_LIBRARIES}
-    ${CATCH2_LIBRARIES}
-    ${FMT_LIBRARIES})
+    ${BASIL_DEPENDENCY_LIBRARIES}
+    ${BASIL_TEST_DEPENDENCY_LIBRARIES})
 
 catch_discover_tests(${TEST_TARGET_NAME})
 
@@ -54,7 +48,7 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
         include(CodeCoverage)
         append_coverage_compiler_flags_to_target(${TEST_TARGET_NAME})
 
-        message("Running coverage for test: ${TEST_TARGET_NAME}")
+        message("Setting up coverage for ${TEST_TARGET_NAME}")
         set(PROJECT_COVERAGE_NAME Basil_coverage)
         setup_target_for_coverage_gcovr_html(
             NAME ${PROJECT_COVERAGE_NAME}
