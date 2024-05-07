@@ -82,18 +82,18 @@ class GLShader : private IBasilContextConsumer {
     void getShaderFromString(const std::string &shaderCode);
     void compileShader(ShaderType type);
 
-    static inline constexpr std::string_view LOGGER_READ_FAILURE =
+    LOGGER_FORMAT LOG_READ_FAILURE =
         "Unable to read shader file at path {} "
         "See error message:";
-    static inline constexpr std::string_view LOGGER_READ_SUCCESS =
+    LOGGER_FORMAT LOG_READ_SUCCESS =
         "Shader file read successfully.";
 
-    static inline constexpr std::string_view LOGGER_COMPILE_FAILURE =
+    LOGGER_FORMAT LOG_COMPILE_FAILURE =
         "Shader (ID{:02}) - Unable to compile {} shader. "
         "See OpenGL info log:";
-    static inline constexpr std::string_view LOGGER_COMPILE_SUCCESS =
+    LOGGER_FORMAT LOG_COMPILE_SUCCESS =
         "Shader (ID{:02}) - Compiled {} shader successfully.";
-    static inline constexpr std::string_view LOGGER_DESTROY =
+    LOGGER_FORMAT LOG_DESTROY =
         "Shader (ID{:02}) - Shader deleted.";
 };
 

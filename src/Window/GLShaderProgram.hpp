@@ -282,21 +282,21 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
 
     std::vector<std::shared_ptr<IGLTexture>> textures;
 
-    static inline constexpr std::string_view LOGGER_LINK_SUCCESS =
+    LOGGER_FORMAT LOG_LINK_SUCCESS =
         "Shader Program (ID{:02}) - Program linked successfully.";
-    static inline constexpr std::string_view LOGGER_LINK_FAILURE =
+    LOGGER_FORMAT LOG_LINK_FAILURE =
         "Shader Program (ID{:02}) - Failed to link program. "
         "See OpenGL info log:";
 
-    static inline constexpr std::string_view LOGGER_ATTACH =
+    LOGGER_FORMAT LOG_ATTACH =
         "Shader Program (ID{:02}) - Attaching shader (ID{:02}).";
-    static inline constexpr std::string_view LOGGER_DETACH =
+    LOGGER_FORMAT LOG_DETACH =
         "Shader Program (ID{:02}) - Detaching shader (ID{:02}).";
 
-    static inline constexpr std::string_view LOGGER_DELETE =
+    LOGGER_FORMAT LOG_DELETE =
         "Shader Program (ID{:02}) - Program deleted.";
 
-    static inline constexpr std::string_view LOGGER_UNIFORM_FAILURE =
+    LOGGER_FORMAT LOG_UNIFORM_FAILURE =
         "Shader Program (ID{:02}) - Could not get location for uniform "
         "with name \"{}\".";
 };

@@ -99,23 +99,23 @@ class FileDataLoader {
         return model;
     }
 
-    static inline constexpr std::string_view LOGGER_FILE_MISSING =
+    LOGGER_FORMAT LOG_FILE_MISSING =
         "File not found at path: {0}";
-    static inline constexpr std::string_view LOGGER_READ_SUCCESS =
+    LOGGER_FORMAT LOG_READ_SUCCESS =
         "Successfully parsed JSON file.";
-    static inline constexpr std::string_view LOGGER_READ_FAILURE =
+    LOGGER_FORMAT LOG_READ_FAILURE =
         "Could not read file {0}\n"
         "\t See error description: ";
-    static inline constexpr std::string_view LOGGER_PARSE_FAILURE =
+    LOGGER_FORMAT LOG_PARSE_FAILURE =
         "Could not parse JSON at bit {1} in file {0}\n"
         "\t See error description: ";
-    static inline constexpr std::string_view LOGGER_UNIFORMS_MISSING =
+    LOGGER_FORMAT LOG_UNIFORMS_MISSING =
         "No field with key \"uniforms\" found in file {0}";
-    static inline constexpr std::string_view LOGGER_VECTOR_ADDED =
+    LOGGER_FORMAT LOG_VECTOR_ADDED =
         "Adding vector {0} with name \"{1}\" and value \"{2}\"";
-    static inline constexpr std::string_view LOGGER_SCALAR_ADDED =
+    LOGGER_FORMAT LOG_SCALAR_ADDED =
         "Adding scalar {0} with name \"{1}\" and value \"{2}\"";
-    static inline constexpr std::string_view LOGGER_TYPE_ERROR =
+    LOGGER_FORMAT LOG_TYPE_ERROR =
         "Could not parse value \"{2}\" at key \"{1}\" as {0}";
 };
 

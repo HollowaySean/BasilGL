@@ -145,7 +145,9 @@ void GLShader::compileShader(ShaderType type) {
 
 void GLShader::destroyShader() {
     glDeleteShader(ID);
-    logger.log(fmt::format(LOGGER_DESTROY, ID), LogLevel::DEBUG);
+    logger.log(
+        fmt::format(LOGGER_DESTROY, ID),
+        LogLevel::DEBUG);
 
     ID = 0;
     hasCompiled = false;
