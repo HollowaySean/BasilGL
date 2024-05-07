@@ -21,8 +21,7 @@ using json = nlohmann::json;
 
 namespace basil {
 
-// TODO(sholloway): Documentation
-// TODO(sholloway): Test coverage
+/** @brief Static class which loads ShaderUniformModel from JSON file */
 class FileDataLoader {
  public:
     /** @brief Generates a ShaderUniformModel object from JSON file
@@ -53,6 +52,8 @@ class FileDataLoader {
 
  private:
 #endif
+    FileDataLoader() = delete;
+
     static inline Logger& logger = Logger::get();
 
     template<class T>
