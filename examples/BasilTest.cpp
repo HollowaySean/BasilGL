@@ -4,17 +4,6 @@
 #include <Basil/Utility.hpp>
 #include <Basil/Window.hpp>
 
-using basil::BasilApp;
-using basil::GLShaderPane;
-using basil::HotReloadShaderPane;
-using basil::GLShaderProgram;
-using basil::GLTexture2D;
-using basil::GLTexture3D;
-using basil::LogLevel;
-using basil::MetricsReporter;
-using basil::ProcessController;
-using basil::WindowView;
-
 /**
  * @brief Entry point function.
  *
@@ -25,23 +14,25 @@ using basil::WindowView;
 int main(int argc, char** argv) {
     auto fragmentPath =
         std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
+    auto jsonPath =
+        std::filesystem::path(EXAMPLE_DIR) / "assets/test.json";
 
-    auto window = WindowView::Builder()
+    auto window = basil::WindowView::Builder()
             .withTitle("My window")
             .withDimensions(400, 400)
-            .withTopPane(HotReloadShaderPane::Builder()
+            .withTopPane(basil::HotReloadShaderPane::Builder()
                 .fromFilePath(fragmentPath)
                 .build())
             .build();
 
-    auto dataModel = basil::ShaderUniformModel();
-    dataModel.addUniformValue(0.5f, "testValue");
-    window->publishData(dataModel);
-
-    auto basilApp = BasilApp::Builder()
+    auto basilApp = basil::BasilApp::Builder()
         .withWindow(window)
-        .withController(ProcessController::Builder()
+        .withController(basil::ProcessController::Builder()
             .withFrameCap(30)
+            .withEarlyProcess(basil::UniformJSONFileWatcher::Builder()
+                .withFilePath(jsonPath)
+                .withPublisher(window)
+                .build())
             .build())
         .build();
 

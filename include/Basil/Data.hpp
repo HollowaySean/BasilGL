@@ -1,6 +1,7 @@
 #ifndef INCLUDE_BASIL_DATA_HPP_
 #define INCLUDE_BASIL_DATA_HPP_
 
+#include "Data/FileDataLoader.hpp"
 #include "Data/FileTextureSource.hpp"
 #include "Data/GLUniform.hpp"
 #include "Data/IDataModel.hpp"

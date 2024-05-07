@@ -59,9 +59,9 @@ class IGLTexture {
     GLenum textureEnum;
     GLuint textureId;
 
-    static inline constexpr std::string_view LOGGER_SOURCE_MISSING =
+    LOGGER_FORMAT LOG_SOURCE_MISSING =
         "Texture (ID{:02}) - Unable to update, data source not found.";
-    static inline constexpr std::string_view LOGGER_TEXTURE_CREATED =
+    LOGGER_FORMAT LOG_TEXTURE_CREATED =
         "Texture (ID{:02}) - Created {} texture with offset {}.";
 
     static inline const std::unordered_map<GLenum, std::string_view>

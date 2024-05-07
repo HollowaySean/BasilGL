@@ -1,0 +1,94 @@
+#include <catch.hpp>
+
+#include "Data/FileDataLoader.hpp"
+
+using basil::FileDataLoader;
+using basil::Logger;
+using basil::LogLevel;
+
+using GLU = basil::GLUniformType;
+
+TEST_CASE("Data_FileDataLoader_modelFromJSON") {
+    Logger& logger = Logger::get();
+    auto basePath = std::filesystem::path(TEST_DIR) / "Data/assets";
+
+    SECTION("Fails if file does not exist") {
+        auto filePath = basePath / "missing.json";
+
+        auto result = FileDataLoader::modelFromJSON(filePath);
+        CHECK_FALSE(result.has_value());
+        CHECK(logger.getLastLevel() == LogLevel::ERROR);
+    }
+
+    SECTION("Fails if file can not be parsed") {
+        auto filePath = basePath / "malformed.txt";
+
+        auto result = FileDataLoader::modelFromJSON(filePath);
+        CHECK_FALSE(result.has_value());
+        CHECK(logger.getLastLevel() == LogLevel::ERROR);
+    }
+
+    SECTION("Fails quietly if file does not contain uniforms list") {
+        auto filePath = basePath / "missing-uniforms.json";
+
+        auto result = FileDataLoader::modelFromJSON(filePath);
+        CHECK_FALSE(result.has_value());
+        CHECK(logger.getLastLevel() == LogLevel::WARN);
+    }
+
+    SECTION("Succeeds for properly formatted JSON") {
+        auto filePath = basePath / "correct.json";
+
+        auto result = FileDataLoader::modelFromJSON(filePath);
+        REQUIRE(result.has_value());
+
+        auto model = result.value();
+        CHECK(model.getUniform("test1").value().value
+            == GLU(0.8f));
+        CHECK(model.getUniform("test2").value().value
+            == GLU(std::vector<float>({ 0.0f, 456.789f })));
+        CHECK(model.getUniform("test3").value().value
+            == GLU(true));
+        CHECK(model.getUniform("test4").value().value
+            == GLU(std::vector<bool>({ false, true })));
+        CHECK(model.getUniform("test5").value().value
+            == GLU((unsigned int)(9)));
+        CHECK(model.getUniform("test6").value().value
+            == GLU(std::vector<uint>({ 10 })));
+
+        CHECK_FALSE(model.getUniform("test7").has_value());
+    }
+}
+
+TEST_CASE("Data_FileDataLoader_TypeMap") {
+    SECTION("Returns correct type keys") {
+        CHECK(FileDataLoader::TypeMap<float>::key == "float");
+        CHECK(FileDataLoader::TypeMap<int>::key == "int");
+        CHECK(FileDataLoader::TypeMap<unsigned int>::key == "unsigned int");
+        CHECK(FileDataLoader::TypeMap<bool>::key == "bool");
+    }
+
+    SECTION("Correctly interprets types") {
+        nlohmann::json json = nlohmann::json::parse(R"(
+            {
+                "float" : 1.5,
+                "int" : -5,
+                "unsigned int" : 10,
+                "bool" : true
+            }
+        )");
+
+        CHECK(FileDataLoader::TypeMap<float>::isCorrectType(
+            json["float"]));
+        CHECK(FileDataLoader::TypeMap<float>::isCorrectType(
+            json["int"]));
+        CHECK(FileDataLoader::TypeMap<int>::isCorrectType(
+            json["int"]));
+        CHECK(FileDataLoader::TypeMap<int>::isCorrectType(
+            json["unsigned int"]));
+        CHECK(FileDataLoader::TypeMap<unsigned int>::isCorrectType(
+            json["unsigned int"]));
+        CHECK(FileDataLoader::TypeMap<bool>::isCorrectType(
+            json["bool"]));
+    }
+}

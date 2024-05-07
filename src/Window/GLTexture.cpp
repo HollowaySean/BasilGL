@@ -34,7 +34,7 @@ void IGLTexture::initializeTexture() {
     glBindTexture(textureType, textureId);
 
     logger.log(
-        fmt::format(LOGGER_TEXTURE_CREATED,
+        fmt::format(LOG_TEXTURE_CREATED,
             textureId,
             NAME_LOOKUP.at(textureType),
             static_cast<int>(textureEnum - GL_TEXTURE0)),
@@ -51,7 +51,7 @@ template<int N>
 void GLTexture<N>::update() {
     if (!source) {
         logger.log(
-            fmt::format(LOGGER_SOURCE_MISSING, textureId),
+            fmt::format(LOG_SOURCE_MISSING, textureId),
             LogLevel::WARN);
         return;
     }

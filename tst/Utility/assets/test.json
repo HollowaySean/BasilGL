@@ -1,0 +1,7 @@
+{
+    "uniforms" : {
+        "float" : {
+            "testValue" : 0.5
+        }
+    }
+}

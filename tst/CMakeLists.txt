@@ -1,11 +1,6 @@
 ## Set variables
 set(TEST_TARGET_NAME Basil_test)
 
-include(Catch)
-include(CTest)
-enable_testing()
-
-
 ## Search for source files
 file(GLOB_RECURSE SOURCE_LIST CONFIGURE_DEPENDS
     "${SRC_DIR}/*.cpp")

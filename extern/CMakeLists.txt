@@ -56,11 +56,13 @@ install_dependency("FMT" "fmt" "fmt" "fmt::fmt" "fmt::fmt" "include")
 # STB library
 install_dependency("STB" "STB" "stb" "" "" "")
 
+# JSON library
+install_dependency("JSON" "nlohmann_json" "nlohmann_json" "nlohmann_json::nlohmann_json" "nlohmann_json" "include")
+
 # GLEW
 install_dependency("GLEW" "GLEW" "glew" "GLEW::GLEW" "libglew_static" "include")
 
 # GLFW
-# TODO(sholloway): Make platform independent
 set( GLFW_BUILD_X11 ON CACHE BOOL "Build for X11 Unix")
 set( GLFW_BUILD_WAYLAND OFF CACHE BOOL "Do not build for Wayland Unix")
 set( GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only")
@@ -75,6 +77,7 @@ set(BASIL_DEPENDENCY_LIBRARIES
     ${FMT_LIBRARIES}
     ${GLEW_LIBRARIES}
     ${GLFW_LIBRARIES}
+    ${JSON_LIBRARIES}
     PARENT_SCOPE)
 
 set(BASIL_DEPENDENCY_INCLUDE_DIRS
@@ -82,6 +85,7 @@ set(BASIL_DEPENDENCY_INCLUDE_DIRS
     ${STB_INCLUDE_DIRS}
     ${GLEW_INCLUDE_DIRS}
     ${GLFW_INCLUDE_DIRS}
+    ${JSON_INCLUDE_DIRS}
     PARENT_SCOPE)
 
 set(BASIL_TEST_DEPENDENCY_LIBRARIES

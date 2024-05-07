@@ -18,17 +18,17 @@ void MetricsReporter::onLoop() {
         logger.lineBreak(logLevel);
 
         logger.log(
-            fmt::format("Frame #: {}",
+            fmt::format(LOG_FRAME,
                 record.frameID),
             logLevel);
 
         logger.log(
-            fmt::format("Frame rate: {:.2f}",
+            fmt::format(LOG_FRAME_RATE,
                 record.getFrameRate()),
             logLevel);
 
         logger.log(
-            fmt::format("Max frame rate: {:.2f}",
+            fmt::format(LOG_MAX_FRAME_RATE,
                 record.getUncappedFrameRate()),
             logLevel);
 
@@ -39,7 +39,7 @@ void MetricsReporter::onLoop() {
             double timeInMilliseconds = timeInNanoseconds.count() / 1'000'000.;
 
             logger.log(
-                fmt::format("Process \'{}\': {:.3f}ms",
+                fmt::format(LOG_PROCESS_TIME,
                     name, timeInMilliseconds),
                 logLevel);
         }
