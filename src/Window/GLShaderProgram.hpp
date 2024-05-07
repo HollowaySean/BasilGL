@@ -88,7 +88,8 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     /** @brief Sets a 2D uniform in shader program.
      *
      *  @param name   Name of uniform within shader.
-     *  @param value  Value of uniform. */
+     *  @param value1 x-value
+     *  @param value2 y-value */
     template<class T>
     void setUniform(const std::string& name,
             T value1, T value2)  {
@@ -103,7 +104,9 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     /** @brief Sets a 3D uniform in shader program.
      *
      *  @param name   Name of uniform within shader.
-     *  @param value  Value of uniform. */
+     *  @param value1 x-value
+     *  @param value2 y-value
+     *  @param value3 z-value */
     template<class T>
     void setUniform(const std::string& name,
             T value1, T value2, T value3)  {
@@ -118,7 +121,10 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     /** @brief Sets a 4D uniform in shader program.
      *
      *  @param name   Name of uniform within shader.
-     *  @param value  Value of uniform. */
+     *  @param value1 x-value
+     *  @param value2 y-value
+     *  @param value3 z-value
+     *  @param value4 w-value */
     template<class T>
     void setUniform(const std::string& name,
             T value1, T value2, T value3, T value4)  {
@@ -133,7 +139,7 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     /** @brief Sets a uniform of 1-4 dimensions in shader program.
      *
      *  @param name   Name of uniform within shader.
-     *  @param value  Vector of values. */
+     *  @param values Vector of values. */
     template<class T>
     void setUniformVector(const std::string& name, std::vector<T> values) {
         GLint location = getUniformLocation(name);

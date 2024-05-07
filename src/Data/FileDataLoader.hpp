@@ -21,8 +21,31 @@ using json = nlohmann::json;
 
 namespace basil {
 
+// TODO(sholloway): Documentation
+// TODO(sholloway): Test coverage
 class FileDataLoader {
  public:
+    /** @brief Generates a ShaderUniformModel object from JSON file
+     *
+     *  @details File must contain "uniforms" field, which has
+     *  subfields indexed by uniform type.
+     *  <br><br> Example:
+     *  <pre>
+     *  {
+     *      "uniforms" : {
+     *          "float" : {
+     *              "uniformName1": 1.5,
+     *              "uniformName2": [3.14, -0.5]
+     *          },
+     *          "bool" : {
+     *              "uniformName3": true,
+     *              "uniformName4": false
+     *          }
+     *      }
+     *  }
+     *  </pre>
+     *  @param filePath Path to .json file
+    */
     static std::optional<ShaderUniformModel>
     modelFromJSON(std::filesystem::path filePath);
 
