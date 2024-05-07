@@ -26,6 +26,11 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
     add_compile_definitions(DEBUG_BUILD)
 endif()
 
+## Testing options
+# TODO(sholloway): Understand these and put them in the right place
+include(Catch)
+include(CTest)
+enable_testing()
 
 ## Set paths
 set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
