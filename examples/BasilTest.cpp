@@ -23,10 +23,6 @@ using basil::WindowView;
  * @return Success code
  */
 int main(int argc, char** argv) {
-    auto jsonPath =
-        std::filesystem::path(EXAMPLE_DIR) / "assets/test.json";
-    auto dataModel = basil::FileDataLoader::modelFromJSON(jsonPath);
-
     auto fragmentPath =
         std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
 
@@ -38,6 +34,9 @@ int main(int argc, char** argv) {
                 .build())
             .build();
 
+    auto jsonPath =
+        std::filesystem::path(EXAMPLE_DIR) / "assets/test.json";
+    auto dataModel = basil::FileDataLoader::modelFromJSON(jsonPath);
     if (dataModel.has_value()) {
         window->publishData(dataModel.value());
     }

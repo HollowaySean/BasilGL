@@ -49,7 +49,10 @@ class FileDataLoader {
     static std::optional<ShaderUniformModel>
     modelFromJSON(std::filesystem::path filePath);
 
+#ifndef TEST_BUILD
+
  private:
+#endif
     static inline Logger& logger = Logger::get();
 
     template<class T>
@@ -57,6 +60,26 @@ class FileDataLoader {
         static const std::string_view key;
         static bool isCorrectType(json json);
     };
+
+    template<class T>
+    static std::vector<T> vectorFromJSONArray(
+            const std::string& key, json json) {
+        const std::string_view typeKey = TypeMap<T>::key;
+        std::vector<T> vector;
+
+        for (const auto& item : json.items()) {
+            if (TypeMap<T>::isCorrectType(item.value())) {
+                vector.push_back(item.value());
+            } else {
+                logger.log(
+                    fmt::format(LOG_VECTOR_TYPE_ERROR,
+                        typeKey, key.c_str(), item.value().dump(), item.key()),
+                    LogLevel::ERROR);
+            }
+        }
+
+        return vector;
+    }
 
     template<class T>
     static std::shared_ptr<ShaderUniformModel>
@@ -70,7 +93,7 @@ class FileDataLoader {
         for (auto& [key, value] : uniforms.items()) {
             if (value.is_array()) {
                 // Array of values
-                std::vector<T> vector = value.array();
+                std::vector<T> vector = vectorFromJSONArray<T>(key, value);
                 model->addUniformValue(vector, key);
 
                 logger.log(
@@ -117,6 +140,9 @@ class FileDataLoader {
         "Adding scalar {0} with name \"{1}\" and value \"{2}\"";
     LOGGER_FORMAT LOG_TYPE_ERROR =
         "Could not parse value \"{2}\" at key \"{1}\" as {0}";
+    LOGGER_FORMAT LOG_VECTOR_TYPE_ERROR =
+        "Could not coerce value \"{2}\" from key \"{1}\" "
+        "at position {3} to type {0}";
 };
 
 }  // namespace basil

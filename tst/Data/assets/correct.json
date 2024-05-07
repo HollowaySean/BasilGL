@@ -1,0 +1,17 @@
+{
+    "uniforms" : {
+        "float" : {
+            "test1": 0.8,
+            "test2": [0, 456.789, "badValue"]
+        },
+        "bool" : {
+            "test3": true,
+            "test4": [false, true]
+        },
+        "unsigned int" : {
+            "test5": 9,
+            "test6":[10],
+            "test7": -1
+        }
+    }
+}

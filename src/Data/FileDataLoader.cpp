@@ -13,7 +13,7 @@ FileDataLoader::TypeMap<bool>::key = "bool";
 
 template<>
 bool FileDataLoader::TypeMap<float>::isCorrectType(json json) {
-    return json.is_number_float();
+    return json.is_number_float() || json.is_number_integer();
 }
 template<>
 bool FileDataLoader::TypeMap<int>::isCorrectType(json json) {
@@ -30,14 +30,6 @@ bool FileDataLoader::TypeMap<bool>::isCorrectType(json json) {
 
 std::optional<ShaderUniformModel>
 FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
-    // Check for existence of file
-    if (!std::filesystem::exists(filePath)) {
-        logger.log(
-            fmt::format(LOG_FILE_MISSING, filePath.c_str()),
-            LogLevel::ERROR);
-        return std::nullopt;
-    }
-
     // Parse JSON from file
     json data;
     std::ifstream dataFile;
