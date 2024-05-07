@@ -33,7 +33,7 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
     // Check for existence of file
     if (!std::filesystem::exists(filePath)) {
         logger.log(
-            fmt::format(LOGGER_FILE_MISSING, filePath.c_str()),
+            fmt::format(LOG_FILE_MISSING, filePath.c_str()),
             LogLevel::ERROR);
         return std::nullopt;
     }
@@ -47,11 +47,11 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
         data = json::parse(dataFile);
 
         logger.log(
-            fmt::format(LOGGER_READ_SUCCESS),
+            fmt::format(LOG_READ_SUCCESS),
             LogLevel::DEBUG);
     } catch(std::ifstream::failure& error) {
         logger.log(
-            fmt::format(LOGGER_READ_FAILURE, filePath.c_str()),
+            fmt::format(LOG_READ_FAILURE, filePath.c_str()),
             LogLevel::ERROR);
         logger.log(
             strerror(errno),
@@ -60,7 +60,7 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
         return std::nullopt;
     } catch(json::parse_error& error) {
         logger.log(
-            fmt::format(LOGGER_PARSE_FAILURE, filePath.c_str(), error.byte),
+            fmt::format(LOG_PARSE_FAILURE, filePath.c_str(), error.byte),
             LogLevel::ERROR);
         logger.log(
             error.what(),
@@ -72,7 +72,7 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
     // Check if uniform definition exists
     if (data.empty() || !data.contains("uniforms")) {
         logger.log(
-            fmt::format(LOGGER_UNIFORMS_MISSING, filePath.c_str()),
+            fmt::format(LOG_UNIFORMS_MISSING, filePath.c_str()),
             LogLevel::WARN);
         return std::nullopt;
     }

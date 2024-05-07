@@ -28,7 +28,7 @@ void GLShaderProgram::compile() {
         glGetProgramInfoLog(ID, 512, NULL, infoLog);
 
         logger.log(
-            fmt::format(LOGGER_LINK_FAILURE, ID),
+            fmt::format(LOG_LINK_FAILURE, ID),
             LogLevel::ERROR);
         logger.log(
             infoLog,
@@ -37,7 +37,7 @@ void GLShaderProgram::compile() {
         hasLinked = false;
     } else {
         logger.log(
-            fmt::format(LOGGER_LINK_SUCCESS, ID),
+            fmt::format(LOG_LINK_SUCCESS, ID),
             LogLevel::INFO);
         hasLinked = true;
 
@@ -79,14 +79,14 @@ void GLShaderProgram::setFragmentShader(
 void GLShaderProgram::attachShader(GLint shaderID) {
     glAttachShader(ID, shaderID);
     logger.log(
-        fmt::format(LOGGER_ATTACH, ID, shaderID),
+        fmt::format(LOG_ATTACH, ID, shaderID),
         LogLevel::DEBUG);
 }
 
 void GLShaderProgram::detachShader(GLint shaderID) {
     glDetachShader(ID, shaderID);
     logger.log(
-        fmt::format(LOGGER_DETACH, ID, shaderID),
+        fmt::format(LOG_DETACH, ID, shaderID),
         LogLevel::DEBUG);
 }
 
@@ -94,7 +94,7 @@ GLint GLShaderProgram::getUniformLocation(const std::string& name) {
     GLint location = glGetUniformLocation(ID, name.c_str());
     if (location == -1) {
         logger.log(
-            fmt::format(LOGGER_UNIFORM_FAILURE, ID, name),
+            fmt::format(LOG_UNIFORM_FAILURE, ID, name),
             LogLevel::DEBUG);
     }
     return location;
@@ -257,7 +257,7 @@ void GLShaderProgram::destroyShaderProgram() {
     glDeleteProgram(ID);
 
     logger.log(
-        fmt::format(LOGGER_DELETE, ID),
+        fmt::format(LOG_DELETE, ID),
         LogLevel::DEBUG);
     ID = 0;
 }

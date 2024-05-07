@@ -54,6 +54,15 @@ class MetricsReporter : public IProcess,
     LogLevel logLevel = LogLevel::INFO;
 
     unsigned int regularity = 30;
+
+    LOGGER_FORMAT LOG_FRAME =
+        "Frame #: {}";
+    LOGGER_FORMAT LOG_FRAME_RATE =
+        "Frame rate: {:.2f}";
+    LOGGER_FORMAT LOG_MAX_FRAME_RATE =
+        "Max frame rate: {:.2f}";
+    LOGGER_FORMAT LOG_PROCESS_TIME =
+        "Process \'{}\': {:.3f}ms";
 };
 
 }  // namespace basil

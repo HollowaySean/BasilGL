@@ -74,7 +74,7 @@ class FileDataLoader {
                 model->addUniformValue(vector, key);
 
                 logger.log(
-                    fmt::format(LOGGER_VECTOR_ADDED,
+                    fmt::format(LOG_VECTOR_ADDED,
                         typeKey, key.c_str(), value.dump()),
                     LogLevel::DEBUG);
 
@@ -84,13 +84,13 @@ class FileDataLoader {
                 model->addUniformValue(scalar, key);
 
                 logger.log(
-                    fmt::format(LOGGER_SCALAR_ADDED,
+                    fmt::format(LOG_SCALAR_ADDED,
                         typeKey, key.c_str(), value.dump()),
                     LogLevel::DEBUG);
             } else {
                 // Incorrect type
                 logger.log(
-                    fmt::format(LOGGER_TYPE_ERROR,
+                    fmt::format(LOG_TYPE_ERROR,
                         typeKey, key.c_str(), value.dump()),
                     LogLevel::ERROR);
             }
