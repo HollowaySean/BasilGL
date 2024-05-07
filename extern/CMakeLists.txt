@@ -70,24 +70,6 @@ install_dependency("GLFW" "glfw3" "glfw" "glfw" "glfw" "include")
 # Catch2
 install_dependency("CATCH2" "Catch2" "catch2" "Catch2::Catch2" "Catch2::Catch2" "single_include/catch2")
 
-
-## STB library
-set(STB_SUBMODULE_DIR "${EXTERN_DIR}/stb")
-
-if(NOT IS_DIRECTORY "${STB_SUBMODULE_DIR}")
-    message("Could not find stb. Installing from local source.")
-    find_package(Git REQUIRED)
-    execute_process(COMMAND ${GIT_EXECUTABLE}
-        submodule update --init --recursive -- extern/stb
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        COMMAND_ERROR_IS_FATAL ANY)
-else()
-    message("Found stb in extern directory.")
-endif()
-set(STB_INCLUDE_DIRS "${STB_SUBMODULE_DIR}")
-
-
-
 ## Export directories and libraries to parent scope
 set(BASIL_DEPENDENCY_LIBRARIES
     ${FMT_LIBRARIES}
