@@ -34,17 +34,17 @@ TEST_CASE("Window_GLShaderPane_GLShaderPane") {
         GLShaderPane pane = GLShaderPane(
             props, shaderProgram);
 
-        REQUIRE(pane.vertexAttributeID > 0);
-        REQUIRE(pane.vertexBufferID > 0);
-        REQUIRE(pane.elementBufferID > 0);
+        CHECK(pane.vertexAttributeID > 0);
+        CHECK(pane.vertexBufferID > 0);
+        CHECK(pane.elementBufferID > 0);
     }
 
     SECTION("Creates uninitialized pane") {
         GLShaderPane pane = GLShaderPane();
 
-        REQUIRE(pane.vertexAttributeID == 0);
-        REQUIRE(pane.vertexBufferID == 0);
-        REQUIRE(pane.elementBufferID == 0);
+        CHECK(pane.vertexAttributeID == 0);
+        CHECK(pane.vertexBufferID == 0);
+        CHECK(pane.elementBufferID == 0);
     }
 }
 
@@ -53,10 +53,10 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
         GLShaderPane pane = GLShaderPane();
         pane.setShaderProgram(nullptr);
 
-        REQUIRE(pane.currentShaderProgram == nullptr);
-        REQUIRE(pane.vertexAttributeID == 0);
-        REQUIRE(pane.vertexBufferID == 0);
-        REQUIRE(pane.elementBufferID == 0);
+        CHECK(pane.currentShaderProgram == nullptr);
+        CHECK(pane.vertexAttributeID == 0);
+        CHECK(pane.vertexBufferID == 0);
+        CHECK(pane.elementBufferID == 0);
     }
 
     SECTION("Sets up OpenGL objects if new shader program provided") {
@@ -70,10 +70,10 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
         GLShaderPane pane = GLShaderPane();
         pane.setShaderProgram(program);
 
-        REQUIRE(pane.currentShaderProgram == program);
-        REQUIRE_FALSE(pane.vertexAttributeID == 0);
-        REQUIRE_FALSE(pane.vertexBufferID == 0);
-        REQUIRE_FALSE(pane.elementBufferID == 0);
+        CHECK(pane.currentShaderProgram == program);
+        CHECK_FALSE(pane.vertexAttributeID == 0);
+        CHECK_FALSE(pane.vertexBufferID == 0);
+        CHECK_FALSE(pane.elementBufferID == 0);
     }
 
     SECTION("Replaces previous program if one exists") { BASIL_LOCK_TEST
@@ -90,22 +90,22 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
 
         GLShaderPane pane = GLShaderPane();
         pane.setShaderProgram(program);
-        REQUIRE(pane.currentShaderProgram == program);
+        CHECK(pane.currentShaderProgram == program);
 
-        REQUIRE_FALSE(pane.vertexAttributeID == 0);
-        REQUIRE_FALSE(pane.vertexBufferID == 0);
-        REQUIRE_FALSE(pane.elementBufferID == 0);
+        CHECK_FALSE(pane.vertexAttributeID == 0);
+        CHECK_FALSE(pane.vertexBufferID == 0);
+        CHECK_FALSE(pane.elementBufferID == 0);
 
         int VAO = pane.vertexAttributeID;
         int VBO = pane.vertexBufferID;
         int EBO = pane.elementBufferID;
 
         pane.setShaderProgram(anotherProgram);
-        REQUIRE(pane.currentShaderProgram == anotherProgram);
+        CHECK(pane.currentShaderProgram == anotherProgram);
 
-        REQUIRE(pane.vertexAttributeID == VAO);
-        REQUIRE(pane.vertexBufferID == VBO);
-        REQUIRE(pane.elementBufferID == EBO);
+        CHECK(pane.vertexAttributeID == VAO);
+        CHECK(pane.vertexBufferID == VBO);
+        CHECK(pane.elementBufferID == EBO);
     }
 
     SECTION("Subscribes/unsubscribes data subscribers") { BASIL_LOCK_TEST
@@ -148,24 +148,24 @@ TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
     SECTION("Sets viewport size and position") {
         GLint props[4];
         glGetIntegerv(GL_VIEWPORT, props);
-        REQUIRE(props[0] == paneProps.xOffset);
-        REQUIRE(props[1] == paneProps.yOffset);
-        REQUIRE(props[2] == paneProps.width);
-        REQUIRE(props[3] == paneProps.height);
+        CHECK(props[0] == paneProps.xOffset);
+        CHECK(props[1] == paneProps.yOffset);
+        CHECK(props[2] == paneProps.width);
+        CHECK(props[3] == paneProps.height);
     }
 
     SECTION("Sets current shader active") {
         GLint ID;
         glGetIntegerv(GL_CURRENT_PROGRAM, &ID);
 
-        REQUIRE(pane.currentShaderProgram->getID() == ID);
+        CHECK(pane.currentShaderProgram->getID() == ID);
     }
 
     SECTION("Binds the vertex array") {
         GLint ID;
         glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &ID);
 
-        REQUIRE(pane.vertexAttributeID == ID);
+        CHECK(pane.vertexAttributeID == ID);
     }
 }
 
@@ -179,7 +179,7 @@ TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
             .build();
 
         REQUIRE_FALSE(pane->currentShaderProgram == nullptr);
-        REQUIRE(pane->currentShaderProgram->fragmentShader == fragmentShader);
+        CHECK(pane->currentShaderProgram->fragmentShader == fragmentShader);
     }
 
     SECTION("Builds from shader file path") {
@@ -188,8 +188,8 @@ TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
             .build();
 
         REQUIRE_FALSE(pane->currentShaderProgram == nullptr);
-        REQUIRE_FALSE(pane->currentShaderProgram->fragmentShader == nullptr);
-        REQUIRE_FALSE(pane->currentShaderProgram->vertexShader == nullptr);
+        CHECK_FALSE(pane->currentShaderProgram->fragmentShader == nullptr);
+        CHECK_FALSE(pane->currentShaderProgram->vertexShader == nullptr);
     }
 
     SECTION("Builds from shader code") {
@@ -199,8 +199,8 @@ TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
 
         REQUIRE_FALSE(pane->currentShaderProgram == nullptr);
         REQUIRE_FALSE(pane->currentShaderProgram->fragmentShader == nullptr);
-        REQUIRE_FALSE(pane->currentShaderProgram->vertexShader == nullptr);
-        REQUIRE(pane->currentShaderProgram->
+        CHECK_FALSE(pane->currentShaderProgram->vertexShader == nullptr);
+        CHECK(pane->currentShaderProgram->
             fragmentShader->rawShaderCode == validShaderCode);
     }
 
@@ -216,6 +216,6 @@ TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
             .withShaderProgram(shaderProgram)
             .build();
 
-        REQUIRE(pane->currentShaderProgram == shaderProgram);
+        CHECK(pane->currentShaderProgram == shaderProgram);
     }
 }

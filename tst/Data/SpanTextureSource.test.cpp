@@ -16,14 +16,14 @@ TEST_CASE("Data_SpanTextureSource_SpanTextureSource") {
             auto expected = data.data()[i];
             auto actual = ((const float*)(source.data()))[i];
 
-            REQUIRE(actual == expected);
+            CHECK(actual == expected);
         }
     }
 
     SECTION("Contains correct TextureFormat") {
-        REQUIRE(source.format.type == GL_FLOAT);
-        REQUIRE(source.format.format == GL_RGBA);
-        REQUIRE(source.format.internalFormat == GL_RGBA);
+        CHECK(source.format.type == GL_FLOAT);
+        CHECK(source.format.format == GL_RGBA);
+        CHECK(source.format.internalFormat == GL_RGBA);
     }
 }
 
@@ -32,6 +32,6 @@ TEST_CASE("Data_SpanTextureSource_Builder") {
         std::vector<float> data = { 1., 2., 3., 4. };
         auto source = SpanTextureSource<float>(data);
 
-        REQUIRE(data.data() == source.data());
+        CHECK(data.data() == source.data());
     }
 }

@@ -38,7 +38,7 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
 
         logger.clearTestInfo();
         reporter.onLoop();
-        REQUIRE(logger.getLastOutput() == "");
+        CHECK(logger.getLastOutput() == "");
     }
 
     SECTION("Does not log on non-multiple frame of regularity") {
@@ -48,7 +48,7 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
 
         logger.clearTestInfo();
         reporter.onLoop();
-        REQUIRE(logger.getLastOutput() == "");
+        CHECK(logger.getLastOutput() == "");
     }
 
     SECTION("Logs on multiple frame of regularity") {
@@ -58,7 +58,7 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
 
         logger.clearTestInfo();
         reporter.onLoop();
-        REQUIRE_FALSE(logger.getLastOutput() == "");
+        CHECK_FALSE(logger.getLastOutput() == "");
     }
 }
 
@@ -69,7 +69,7 @@ TEST_CASE("Process_MetricsReporter_Builder") {
             .withRegularity(25)
             .build();
 
-        REQUIRE(reporter->regularity == 25);
-        REQUIRE(reporter->logLevel == LogLevel::DEBUG);
+        CHECK(reporter->regularity == 25);
+        CHECK(reporter->logLevel == LogLevel::DEBUG);
     }
 }

@@ -22,15 +22,15 @@ TEST_CASE("Process_ProcessInstance_ProcessInstance") {
         secondProcess->setCurrentState(ProcessState::REQUEST_STOP);
         ProcessInstance secondInstance = ProcessInstance(secondProcess);
 
-        REQUIRE(firstInstance.processName ==
+        CHECK(firstInstance.processName ==
             ProcessInstance::DEFAULT_NAME +
                 std::to_string(firstInstance.getID()));
-        REQUIRE(secondInstance.processName == processName);
+        CHECK(secondInstance.processName == processName);
 
-        REQUIRE(secondInstance.getID() == firstInstance.getID() + 1);
+        CHECK(secondInstance.getID() == firstInstance.getID() + 1);
 
-        REQUIRE(firstInstance.getCurrentState() == ProcessState::READY);
-        REQUIRE(secondInstance.getCurrentState() == ProcessState::REQUEST_STOP);
+        CHECK(firstInstance.getCurrentState() == ProcessState::READY);
+        CHECK(secondInstance.getCurrentState() == ProcessState::REQUEST_STOP);
     }
 }
 

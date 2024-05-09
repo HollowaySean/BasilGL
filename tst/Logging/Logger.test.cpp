@@ -16,18 +16,18 @@ TEST_CASE("Logging_Logger_log") {
         logger.setLevel(LogLevel::INFO);
         logger.log(message, LogLevel::WARN);
 
-        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
-        REQUIRE(logger.getLastOutput() == message);
-        REQUIRE(logger.didOutputLastMessage());
+        CHECK(logger.getLastLevel() == LogLevel::WARN);
+        CHECK(logger.getLastOutput() == message);
+        CHECK(logger.didOutputLastMessage());
     }
 
     SECTION("Does not send message if level is lower than log level") {
         logger.setLevel(LogLevel::INFO);
         logger.log(message, LogLevel::DEBUG);
 
-        REQUIRE(logger.getLastLevel() == LogLevel::DEBUG);
-        REQUIRE(logger.getLastOutput() == message);
-        REQUIRE_FALSE(logger.didOutputLastMessage());
+        CHECK(logger.getLastLevel() == LogLevel::DEBUG);
+        CHECK(logger.getLastOutput() == message);
+        CHECK_FALSE(logger.didOutputLastMessage());
     }
 }
 
@@ -40,17 +40,17 @@ TEST_CASE("Logging_Logger_lineBreak") {
         logger.setLevel(LogLevel::INFO);
         logger.lineBreak(LogLevel::WARN);
 
-        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
-        REQUIRE(logger.getLastOutput() == "\n");
-        REQUIRE(logger.didOutputLastMessage());
+        CHECK(logger.getLastLevel() == LogLevel::WARN);
+        CHECK(logger.getLastOutput() == "\n");
+        CHECK(logger.didOutputLastMessage());
     }
 
     SECTION("Does not send line break if level is lower than log level") {
         logger.setLevel(LogLevel::INFO);
         logger.lineBreak(LogLevel::DEBUG);
 
-        REQUIRE(logger.getLastLevel() == LogLevel::DEBUG);
-        REQUIRE(logger.getLastOutput() == "\n");
-        REQUIRE_FALSE(logger.didOutputLastMessage());
+        CHECK(logger.getLastLevel() == LogLevel::DEBUG);
+        CHECK(logger.getLastOutput() == "\n");
+        CHECK_FALSE(logger.didOutputLastMessage());
     }
 }

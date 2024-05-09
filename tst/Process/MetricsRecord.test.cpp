@@ -32,48 +32,48 @@ TEST_CASE("Process_MetricsRecord_operator") {
     SECTION("operator+ adds subfields") {
         MetricsRecord result = firstRecord + secondRecord;
 
-        REQUIRE(result.frameID      == 2);
-        REQUIRE(result.frameTime    == ms(180));
-        REQUIRE(result.workTime     == ms(90));
+        CHECK(result.frameID      == 2);
+        CHECK(result.frameTime    == ms(180));
+        CHECK(result.workTime     == ms(90));
 
-        REQUIRE(result.processTimes.size()      == 3);
-        REQUIRE(result.processTimes[instance1]  == ms(55));
-        REQUIRE(result.processTimes[instance2]  == ms(20));
-        REQUIRE(result.processTimes[instance3]  == ms(15));
+        CHECK(result.processTimes.size()      == 3);
+        CHECK(result.processTimes[instance1]  == ms(55));
+        CHECK(result.processTimes[instance2]  == ms(20));
+        CHECK(result.processTimes[instance3]  == ms(15));
     }
 
     SECTION("operator- subtracts subfields") {
         MetricsRecord result = firstRecord - secondRecord;
 
-        REQUIRE(result.frameID      == 2);
-        REQUIRE(result.frameTime    == ms(20));
-        REQUIRE(result.workTime     == ms(10));
+        CHECK(result.frameID      == 2);
+        CHECK(result.frameTime    == ms(20));
+        CHECK(result.workTime     == ms(10));
 
-        REQUIRE(result.processTimes.size()      == 2);
-        REQUIRE(result.processTimes[instance1]  == ms(5));
-        REQUIRE(result.processTimes[instance2]  == ms(20));
+        CHECK(result.processTimes.size()      == 2);
+        CHECK(result.processTimes[instance1]  == ms(5));
+        CHECK(result.processTimes[instance2]  == ms(20));
     }
 
     SECTION("operator/ divides by integer") {
         MetricsRecord result = firstRecord / 5;
 
-        REQUIRE(result.frameID      == 1);
-        REQUIRE(result.frameTime    == ms(20));
-        REQUIRE(result.workTime     == ms(10));
+        CHECK(result.frameID      == 1);
+        CHECK(result.frameTime    == ms(20));
+        CHECK(result.workTime     == ms(10));
 
-        REQUIRE(result.processTimes.size()      == 2);
-        REQUIRE(result.processTimes[instance1]  == ms(6));
-        REQUIRE(result.processTimes[instance2]  == ms(4));
+        CHECK(result.processTimes.size()      == 2);
+        CHECK(result.processTimes[instance1]  == ms(6));
+        CHECK(result.processTimes[instance2]  == ms(4));
     }
 
     SECTION("operator== and operator!=") {
         MetricsRecord equalRecord = firstRecord;
 
-        REQUIRE(firstRecord.isEqual(equalRecord));
-        REQUIRE(equalRecord.isEqual(firstRecord));
+        CHECK(firstRecord.isEqual(equalRecord));
+        CHECK(equalRecord.isEqual(firstRecord));
 
-        REQUIRE_FALSE(firstRecord.isEqual(secondRecord));
-        REQUIRE_FALSE(secondRecord.isEqual(firstRecord));
+        CHECK_FALSE(firstRecord.isEqual(secondRecord));
+        CHECK_FALSE(secondRecord.isEqual(firstRecord));
     }
 }
 
@@ -82,7 +82,7 @@ TEST_CASE("Process_MetricsRecord_getFrameRate") {
     record.frameTime = ms(100);
 
     SECTION("Calculates from frame time") {
-        REQUIRE(record.getFrameRate() == 10.);
+        CHECK(record.getFrameRate() == 10.);
     }
 }
 
@@ -91,6 +91,6 @@ TEST_CASE("Process_MetricsRecord_getUncappedFrameRate") {
     record.workTime = ms(50);
 
     SECTION("Calculates from work time") {
-        REQUIRE(record.getUncappedFrameRate() == 20.);
+        CHECK(record.getUncappedFrameRate() == 20.);
     }
 }

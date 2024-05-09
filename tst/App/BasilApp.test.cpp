@@ -16,10 +16,10 @@ TEST_CASE("App_BasilApp_run") {
     SECTION("Calls run on controller") {
         app.setController(controller);
 
-        REQUIRE(controller->getCurrentState() ==
+        CHECK(controller->getCurrentState() ==
             ProcessControllerState::READY);
         app.run();
-        REQUIRE(controller->getCurrentState() ==
+        CHECK(controller->getCurrentState() ==
             ProcessControllerState::STOPPED);
     }
 
@@ -27,9 +27,9 @@ TEST_CASE("App_BasilApp_run") {
         Logger& logger = Logger::get();
         app.run();
 
-        REQUIRE(logger.getLastOutput()
+        CHECK(logger.getLastOutput()
             == "ProcessController not found for BasilApp.");
-        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
+        CHECK(logger.getLastLevel() == LogLevel::WARN);
     }
 }
 
@@ -40,10 +40,10 @@ TEST_CASE("App_BasilApp_stop") {
     SECTION("Calls stop on controller") {
         app.setController(controller);
 
-        REQUIRE(controller->getCurrentState() ==
+        CHECK(controller->getCurrentState() ==
             ProcessControllerState::READY);
         app.stop();
-        REQUIRE(controller->getCurrentState() ==
+        CHECK(controller->getCurrentState() ==
             ProcessControllerState::STOPPING);
     }
 
@@ -51,9 +51,9 @@ TEST_CASE("App_BasilApp_stop") {
         Logger& logger = Logger::get();
         app.stop();
 
-        REQUIRE(logger.getLastOutput()
+        CHECK(logger.getLastOutput()
             == "ProcessController not found for BasilApp.");
-        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
+        CHECK(logger.getLastLevel() == LogLevel::WARN);
     }
 }
 
@@ -64,10 +64,10 @@ TEST_CASE("App_BasilApp_kill") {
     SECTION("Calls kill on controller") {
         app.setController(controller);
 
-        REQUIRE(controller->getCurrentState() ==
+        CHECK(controller->getCurrentState() ==
             ProcessControllerState::READY);
         app.kill();
-        REQUIRE(controller->getCurrentState() ==
+        CHECK(controller->getCurrentState() ==
             ProcessControllerState::KILLED);
     }
 
@@ -75,9 +75,9 @@ TEST_CASE("App_BasilApp_kill") {
         Logger& logger = Logger::get();
         app.kill();
 
-        REQUIRE(logger.getLastOutput()
+        CHECK(logger.getLastOutput()
             == "ProcessController not found for BasilApp.");
-        REQUIRE(logger.getLastLevel() == LogLevel::WARN);
+        CHECK(logger.getLastLevel() == LogLevel::WARN);
     }
 }
 
@@ -91,12 +91,12 @@ TEST_CASE("App_BasilApp_Builder") {
         .build();
 
     SECTION("Builds from components") {
-        REQUIRE(basilApp->processController == controller);
-        REQUIRE(basilApp->windowView == window);
+        CHECK(basilApp->processController == controller);
+        CHECK(basilApp->windowView == window);
     }
 
     SECTION("Adds window process to controller") {
-        REQUIRE(controller->schedule.back()->process
+        CHECK(controller->schedule.back()->process
             == window);
     }
 }

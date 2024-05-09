@@ -21,8 +21,8 @@ TEST_CASE("Process_ProcessController_addProcess") {
         controller.addProcess(process, ProcessPrivilege::HIGH);
 
         REQUIRE(schedule.size() == 1);
-        REQUIRE(schedule.main.front()->process == process);
-        REQUIRE(schedule.main.front()->privilegeLevel
+        CHECK(schedule.main.front()->process == process);
+        CHECK(schedule.main.front()->privilegeLevel
             == ProcessPrivilege::HIGH);
     }
 
@@ -30,8 +30,8 @@ TEST_CASE("Process_ProcessController_addProcess") {
         controller.addEarlyProcess(process, ProcessPrivilege::LOW);
 
         REQUIRE(schedule.size() == 1);
-        REQUIRE(schedule.early.front()->process == process);
-        REQUIRE(schedule.early.front()->privilegeLevel
+        CHECK(schedule.early.front()->process == process);
+        CHECK(schedule.early.front()->privilegeLevel
             == ProcessPrivilege::LOW);
     }
 
@@ -39,8 +39,8 @@ TEST_CASE("Process_ProcessController_addProcess") {
         controller.addLateProcess(process);
 
         REQUIRE(schedule.size() == 1);
-        REQUIRE(schedule.late.front()->process == process);
-        REQUIRE(schedule.late.front()->privilegeLevel
+        CHECK(schedule.late.front()->process == process);
+        CHECK(schedule.late.front()->privilegeLevel
             == ProcessPrivilege::NONE);
     }
 }
@@ -55,15 +55,15 @@ TEST_CASE("Process_ProcessController_hasProcess") {
     auto instance = controller.addProcess(processOne);
 
     SECTION("Returns true for process in schedule") {
-        REQUIRE(controller.hasProcess(processOne));
-        REQUIRE(controller.hasProcess(instance->processName));
-        REQUIRE(controller.hasProcess(instance->getID()));
+        CHECK(controller.hasProcess(processOne));
+        CHECK(controller.hasProcess(instance->processName));
+        CHECK(controller.hasProcess(instance->getID()));
     }
 
     SECTION("Returns false for process not in schedule") {
-        REQUIRE_FALSE(controller.hasProcess(processTwo));
-        REQUIRE_FALSE(controller.hasProcess("processTwo"));
-        REQUIRE_FALSE(controller.hasProcess(instance->getID() + 1));
+        CHECK_FALSE(controller.hasProcess(processTwo));
+        CHECK_FALSE(controller.hasProcess("processTwo"));
+        CHECK_FALSE(controller.hasProcess(instance->getID() + 1));
     }
 }
 
@@ -79,22 +79,22 @@ TEST_CASE("Process_ProcessController_getProcess") {
 
     SECTION("Returns process instance with name") {
         auto result = controller.getProcess("processTwo");
-        REQUIRE(result.value() == instanceTwo);
+        CHECK(result.value() == instanceTwo);
     }
 
     SECTION("Returns empty optional for missing process") {
         auto result = controller.getProcess("processThree");
-        REQUIRE_FALSE(result.has_value());
+        CHECK_FALSE(result.has_value());
     }
 
     SECTION("Returns process instance with ID") {
         auto result = controller.getProcess(instanceTwo->getID());
-        REQUIRE(result.value() == instanceTwo);
+        CHECK(result.value() == instanceTwo);
     }
 
     SECTION("Returns empty optional for missing ID") {
         auto result = controller.getProcess(instanceOne->getID() + 1000);
-        REQUIRE_FALSE(result.has_value());
+        CHECK_FALSE(result.has_value());
     }
 }
 
@@ -103,38 +103,38 @@ TEST_CASE("Process_ProcessController_run") {
     auto process = std::make_shared<TestProcess>();
 
     SECTION("Falls through if no processes") {
-        REQUIRE(controller.getCurrentState()
+        CHECK(controller.getCurrentState()
             == ProcessControllerState::READY);
 
         controller.run();
 
-        REQUIRE(controller.getCurrentState()
+        CHECK(controller.getCurrentState()
             == ProcessControllerState::STOPPED);
     }
 
     SECTION("Maintains state throughout run") {
-        REQUIRE(controller.getCurrentState()
+        CHECK(controller.getCurrentState()
             == ProcessControllerState::READY);
 
         controller.addProcess(process, ProcessPrivilege::HIGH);
         controller.run();
 
-        REQUIRE(process->didStart);
-        REQUIRE(process->didLoop);
-        REQUIRE(process->didStop);
+        CHECK(process->didStart);
+        CHECK(process->didLoop);
+        CHECK(process->didStop);
 
-        REQUIRE(process->startPCState
+        CHECK(process->startPCState
             == ProcessControllerState::STARTING);
-        REQUIRE(process->loopPCState
+        CHECK(process->loopPCState
             == ProcessControllerState::RUNNING);
-        REQUIRE(process->stopPCState
+        CHECK(process->stopPCState
             == ProcessControllerState::STOPPING);
-        REQUIRE(controller.getCurrentState()
+        CHECK(controller.getCurrentState()
             == ProcessControllerState::STOPPED);
     }
 
     SECTION("Does not continue if killed") {
-        REQUIRE(controller.getCurrentState()
+        CHECK(controller.getCurrentState()
             == ProcessControllerState::READY);
 
         process->stateAfterStart = ProcessState::REQUEST_KILL;
@@ -142,14 +142,14 @@ TEST_CASE("Process_ProcessController_run") {
         controller.addProcess(process, ProcessPrivilege::HIGH);
         controller.run();
 
-        REQUIRE(process->startPCState
+        CHECK(process->startPCState
             == ProcessControllerState::STARTING);
-        REQUIRE(controller.getCurrentState()
+        CHECK(controller.getCurrentState()
             == ProcessControllerState::KILLED);
 
-        REQUIRE(process->didStart);
-        REQUIRE_FALSE(process->didLoop);
-        REQUIRE_FALSE(process->didStop);
+        CHECK(process->didStart);
+        CHECK_FALSE(process->didLoop);
+        CHECK_FALSE(process->didStop);
     }
 }
 
@@ -157,10 +157,10 @@ TEST_CASE("Process_ProcessController_stop") {
     SECTION("Sets state to STOPPING") {
         ProcessController controller = ProcessController();
 
-        REQUIRE(controller.getCurrentState()
+        CHECK(controller.getCurrentState()
             == ProcessControllerState::READY);
         controller.stop();
-        REQUIRE(controller.getCurrentState()
+        CHECK(controller.getCurrentState()
             == ProcessControllerState::STOPPING);
     }
 }
@@ -169,9 +169,9 @@ TEST_CASE("Process_ProcessController_kill") {
     SECTION("Sets state to KILLED") {
         ProcessController controller = ProcessController();
 
-        REQUIRE(controller.getCurrentState() == ProcessControllerState::READY);
+        CHECK(controller.getCurrentState() == ProcessControllerState::READY);
         controller.kill();
-        REQUIRE(controller.getCurrentState() == ProcessControllerState::KILLED);
+        CHECK(controller.getCurrentState() == ProcessControllerState::KILLED);
     }
 }
 
@@ -180,9 +180,9 @@ TEST_CASE("Process_ProcessController_setFrameCap") {
         ProcessController controller = ProcessController();
         controller.setFrameCap(50);
 
-        REQUIRE(controller.frameCap == 50);
+        CHECK(controller.frameCap == 50);
         TestClock::duration durNS = std::chrono::milliseconds(20);
-        REQUIRE(controller.frameTime == durNS);
+        CHECK(controller.frameTime == durNS);
     }
 }
 
@@ -196,7 +196,7 @@ void testControllerState(
     instance->process->setCurrentState(state);
 
     controller.interpretProcessState(instance);
-    REQUIRE(controller.getCurrentState() == expected);
+    CHECK(controller.getCurrentState() == expected);
 }
 
 TEST_CASE("Process_ProcessController_interpretProcessState") {
@@ -250,12 +250,12 @@ TEST_CASE("Process_ProcessController_interpretProcessState") {
         ProcessSchedule& schedule = controller.schedule;
 
         schedule.addProcess(instance);
-        REQUIRE(schedule.size() == 1);
+        CHECK(schedule.size() == 1);
 
         instance->process->setCurrentState(ProcessState::REMOVE_PROCESS);
         controller.interpretProcessState(instance);
 
-        REQUIRE(schedule.size() == 0);
+        CHECK(schedule.size() == 0);
     }
 }
 
@@ -278,7 +278,7 @@ TEST_CASE("Process_ProcessController_sleepForRestOfFrame") {
         unsigned int frameEndTimeCount =
             frameEndTime.time_since_epoch().count();
 
-        REQUIRE(frameEndTimeCount - frameStartTimeCount >= frameTimeCount);
+        CHECK(frameEndTimeCount - frameStartTimeCount >= frameTimeCount);
     }
 }
 
@@ -291,21 +291,21 @@ TEST_CASE("Process_ProcessController_shouldRunProcess") {
         controller.currentState = ProcessControllerState::READY;
         process->currentState = ProcessState::READY;
 
-        REQUIRE(controller.shouldRunProcess(instance));
+        CHECK(controller.shouldRunProcess(instance));
     }
 
     SECTION("Returns false if process is high status") {
         controller.currentState = ProcessControllerState::READY;
         process->currentState = ProcessState::REQUEST_KILL;
 
-        REQUIRE_FALSE(controller.shouldRunProcess(instance));
+        CHECK_FALSE(controller.shouldRunProcess(instance));
     }
 
     SECTION("Returns false if controller is high status") {
         controller.currentState = ProcessControllerState::KILLED;
         process->currentState = ProcessState::READY;
 
-        REQUIRE_FALSE(controller.shouldRunProcess(instance));
+        CHECK_FALSE(controller.shouldRunProcess(instance));
     }
 }
 
@@ -317,20 +317,20 @@ TEST_CASE("Process_ProcessController_shouldContinueLoop") {
         controller.currentState = ProcessControllerState::RUNNING;
         controller.addProcess(process);
 
-        REQUIRE(controller.shouldContinueLoop());
+        CHECK(controller.shouldContinueLoop());
     }
 
     SECTION("Returns false if controller is stopped") {
         controller.currentState = ProcessControllerState::STOPPING;
         controller.addProcess(process);
 
-        REQUIRE_FALSE(controller.shouldContinueLoop());
+        CHECK_FALSE(controller.shouldContinueLoop());
     }
 
     SECTION("Returns false if no processes exist") {
         controller.currentState = ProcessControllerState::RUNNING;
 
-        REQUIRE_FALSE(controller.shouldContinueLoop());
+        CHECK_FALSE(controller.shouldContinueLoop());
     }
 }
 
@@ -347,17 +347,17 @@ TEST_CASE("Process_ProcessController_Builder") {
             .withLateProcess(process3, ProcessPrivilege::HIGH)
             .build();
 
-        REQUIRE(controller->getFrameCap() == 25);
+        CHECK(controller->getFrameCap() == 25);
 
-        REQUIRE(controller->schedule.early.back()->process == process1);
-        REQUIRE(controller->schedule.main.back()->process == process2);
-        REQUIRE(controller->schedule.late.back()->process == process3);
+        CHECK(controller->schedule.early.back()->process == process1);
+        CHECK(controller->schedule.main.back()->process == process2);
+        CHECK(controller->schedule.late.back()->process == process3);
 
-        REQUIRE(controller->schedule.early.back()->privilegeLevel
+        CHECK(controller->schedule.early.back()->privilegeLevel
             == ProcessPrivilege::NONE);
-        REQUIRE(controller->schedule.main.back()->privilegeLevel
+        CHECK(controller->schedule.main.back()->privilegeLevel
             == ProcessPrivilege::LOW);
-        REQUIRE(controller->schedule.late.back()->privilegeLevel
+        CHECK(controller->schedule.late.back()->privilegeLevel
             == ProcessPrivilege::HIGH);
     }
 }

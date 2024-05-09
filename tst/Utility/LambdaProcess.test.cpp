@@ -12,6 +12,6 @@ TEST_CASE("Utility_LambdaProcess_onLoop") {
         auto process = LambdaProcess(lambda);
         process.onLoop();
 
-        REQUIRE(hasRun);
+        CHECK(hasRun);
     }
 }
