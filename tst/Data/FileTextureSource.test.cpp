@@ -17,7 +17,7 @@ TEST_CASE("Data_FileTextureSource_FileTextureSource") {
         CHECK(source.getHeight() == 256);
 
         CHECK(source.format.format == GL_RGBA);
-        CHECK(source.format.internalFormat == GL_RGBA);
+        CHECK(source.format.internalFormat == GL_RGBA8);
         CHECK(source.format.type == GL_UNSIGNED_BYTE);
 
         CHECK(source.data() == source.imageData);
@@ -49,7 +49,7 @@ TEST_CASE("Data_FileTextureSource_Builder") {
         CHECK(source->getHeight() == 256);
 
         CHECK(source->format.format == GL_RGBA);
-        CHECK(source->format.internalFormat == GL_RGBA);
+        CHECK(source->format.internalFormat == GL_RGBA8);
         CHECK(source->format.type == GL_UNSIGNED_BYTE);
 
         CHECK(source->data() == source->imageData);

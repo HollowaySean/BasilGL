@@ -5,60 +5,9 @@
 
 #include <array>
 
+#include "TextureFormat.hpp"
+
 namespace basil {
-
-/**
- * @brief Struct containing OpenGL enums for defining textures.
- */
-struct TextureFormat {
-    /** @brief Numeric type of data, i.e. GL_FLOAT, GL_UNSIGNED_BYTE */
-    GLenum  type;
-
-    /** @brief Format of texture data, i.e. GL_RED, GL_RGBA */
-    GLenum  format;
-
-    /** @brief Format to save texture as, i.e. GL_RED, GL_RGBA */
-    GLenum  internalFormat;
-
-    /** @return Builds TextureFormat struct for a given type and number of channels
-     *  @tparam T Numeric type of data
-     *  @tparam channels Number of channels in image data
-    */
-    template<typename T, int channels>
-    static constexpr TextureFormat getTextureFormat() {
-        return {
-            getType<T>(),
-            getFormat<channels>(),
-            getFormat<channels>()
-        };
-    }
-
-    template<typename T>
-    static constexpr GLenum getType();
-
-    template<int channels>
-    static constexpr GLenum getFormat();
-};
-
-template<> constexpr GLenum
-    TextureFormat::getType<float>()  { return GL_FLOAT;         }
-template<> constexpr GLenum
-    TextureFormat::getType<int>()    { return GL_INT;           }
-template<> constexpr GLenum
-    TextureFormat::getType<u_int>()  { return GL_UNSIGNED_INT;  }
-template<> constexpr GLenum
-    TextureFormat::getType<char>()   { return GL_BYTE;          }
-template<> constexpr GLenum
-    TextureFormat::getType<u_char>() { return GL_UNSIGNED_BYTE; }
-
-template<> constexpr GLenum
-    TextureFormat::getFormat<1>()    { return GL_RED;   }
-template<> constexpr GLenum
-    TextureFormat::getFormat<2>()    { return GL_RG;    }
-template<> constexpr GLenum
-    TextureFormat::getFormat<3>()    { return GL_RGB;   }
-template<> constexpr GLenum
-    TextureFormat::getFormat<4>()    { return GL_RGBA;  }
 
 /**
  * @brief Interface for container of data which can be used in GLTexture
