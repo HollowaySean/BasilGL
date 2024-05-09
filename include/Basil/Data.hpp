@@ -12,5 +12,6 @@
 #include "Data/ShaderUniformModel.hpp"
 #include "Data/SpanTextureSource.hpp"
 #include "Data/TextureFormat.hpp"
+#include "Data/UserInputModel.hpp"
 
 #endif  // INCLUDE_BASIL_DATA_HPP_

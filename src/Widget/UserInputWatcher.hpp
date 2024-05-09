@@ -6,6 +6,8 @@
 
 #include <Basil/App.hpp>
 
+#include "Data/UserInputModel.hpp"
+
 namespace basil {
 
 class UserInputWatcher : public  IBasilWidget,
@@ -18,20 +20,25 @@ class UserInputWatcher : public  IBasilWidget,
 
     void onLoop() override;
 
+#ifndef TEST_BUILD
+
  private:
-    // TEMP
-    Logger& logger = Logger::get();
-
+#endif
     GLFWwindow* window;
-    // TODO(sholloway): Break out into data structure after PoC
-    static inline std::map<int, std::pair<int, int>> mouseState = {
-            {GLFW_MOUSE_BUTTON_LEFT,    {GLFW_KEY_UNKNOWN, 0}},
-            {GLFW_MOUSE_BUTTON_MIDDLE,  {GLFW_KEY_UNKNOWN, 0}},
-            {GLFW_MOUSE_BUTTON_RIGHT,   {GLFW_KEY_UNKNOWN, 0}}
-        };
 
-    static void onMouseKeyChange(
+    void initializeState();
+    void setCallbacks();
+    void checkMousePosition();
+    void checkIsMouseInWindow();
+
+    static inline UserInputModel model = UserInputModel();
+
+    static void onMouseButtonChange(
         GLFWwindow* window, int button, int action, int mods);
+    static void onKeyChange(
+        GLFWwindow* window, int button, int scancode, int action, int mods);
+    static void onCursorEnter(
+        GLFWwindow* window, int entered);
 };
 
 }  // namespace basil
