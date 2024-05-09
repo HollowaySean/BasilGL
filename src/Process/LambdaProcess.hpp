@@ -1,9 +1,9 @@
-#ifndef SRC_UTILITY_LAMBDAPROCESS_HPP_
-#define SRC_UTILITY_LAMBDAPROCESS_HPP_
+#ifndef SRC_PROCESS_LAMBDAPROCESS_HPP_
+#define SRC_PROCESS_LAMBDAPROCESS_HPP_
 
 #include <functional>
 
-#include "Process/IProcess.hpp"
+#include "IProcess.hpp"
 
 namespace basil {
 
@@ -22,4 +22,4 @@ class LambdaProcess : public IProcess {
 
 }  // namespace basil
 
-#endif  // SRC_UTILITY_LAMBDAPROCESS_HPP_
+#endif  // SRC_PROCESS_LAMBDAPROCESS_HPP_

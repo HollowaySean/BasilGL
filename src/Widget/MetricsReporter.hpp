@@ -1,5 +1,5 @@
-#ifndef SRC_UTILITY_METRICSREPORTER_HPP_
-#define SRC_UTILITY_METRICSREPORTER_HPP_
+#ifndef SRC_WIDGET_METRICSREPORTER_HPP_
+#define SRC_WIDGET_METRICSREPORTER_HPP_
 
 #include <fmt/core.h>
 
@@ -66,4 +66,4 @@ class MetricsReporter : public IBasilWidget,
 
 }  // namespace basil
 
-#endif  // SRC_UTILITY_METRICSREPORTER_HPP_
+#endif  // SRC_WIDGET_METRICSREPORTER_HPP_

@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include <Basil/Utility.hpp>
+#include "Process/LambdaProcess.hpp"
 
 using basil::LambdaProcess;
 

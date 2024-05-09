@@ -1,7 +1,7 @@
 #include <catch.hpp>
 
 #include "Data/PubSubTestUtils.hpp"
-#include "Utility/UniformJSONFileWatcher.hpp"
+#include "Widget/UniformJSONFileWatcher.hpp"
 
 using basil::TestUniformSubscriber;
 using basil::UniformJSONFileWatcher;
@@ -9,7 +9,7 @@ using basil::UniformJSONFileWatcher;
 TEST_CASE("Data_UniformJSONFileWatcher_onLoop") {
     auto subscriber = std::make_shared<TestUniformSubscriber>();
     auto path = std::filesystem::path(TEST_DIR) /
-        "Utility/assets/test.json";
+        "Widget/assets/test.json";
 
     SECTION("Updates based on file modification time") {
         auto watcher = UniformJSONFileWatcher(path);
@@ -24,7 +24,7 @@ TEST_CASE("Data_UniformJSONFileWatcher_onLoop") {
 TEST_CASE("Data_UniformJSONFileWatcher_Builder") {
     auto subscriber = std::make_shared<TestUniformSubscriber>();
     auto path = std::filesystem::path(TEST_DIR) /
-        "Utility/assets/test.json";
+        "Widget/assets/test.json";
 
     SECTION("Builds correctly") {
         auto watcher = UniformJSONFileWatcher::Builder()
