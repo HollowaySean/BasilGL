@@ -23,7 +23,7 @@ TEST_CASE("Data_SpanTextureSource_SpanTextureSource") {
     SECTION("Contains correct TextureFormat") {
         CHECK(source.format.type == GL_FLOAT);
         CHECK(source.format.format == GL_RGBA);
-        CHECK(source.format.internalFormat == GL_RGBA);
+        CHECK(source.format.internalFormat == GL_RGBA32F);
     }
 }
 

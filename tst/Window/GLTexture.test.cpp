@@ -42,8 +42,6 @@ TEST_CASE("Window_GLTexture_GLTexture") { BASIL_LOCK_TEST
 }
 
 TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
-    std::vector<int> data = { 1, 2, 3, 4, 5, 6, 7, 8 };
-
     SECTION("Logs error if missing texture source") {
         GLTexture2D texture = GLTexture2D();
         texture.update();
@@ -53,6 +51,7 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
     }
 
     SECTION("Creates OpenGL 1D texture object") {
+        std::vector<int> data = { 1, 2, 3, 4, 5, 6, 7, 8 };
         std::shared_ptr<SpanTextureSource<int, 1, 1>> source
             = std::make_shared<SpanTextureSource<int, 1, 1>>(data);
 
@@ -68,37 +67,35 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
             source->format.type, result);
 
         for (int i = 0; i < 8; i++) {
-            // TODO(sholloway): Fix broken tests
-            // CHECK(result[i] == data.at(i));
+            CHECK(result[i] == data.at(i));
         }
     }
 
     SECTION("Creates OpenGL 2D texture object") {
-        std::shared_ptr<SpanTextureSource<int, 2, 1>> source
-            = std::make_shared<SpanTextureSource<int, 2, 1>>();
+        std::vector<char> data = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        std::shared_ptr<SpanTextureSource<char, 2, 1>> source
+            = std::make_shared<SpanTextureSource<char, 2, 1>>();
         source->setSource(data);
 
         GLTexture2D texture = GLTexture2D();
         source->setWidth(4);
         source->setHeight(2);
         texture.setSource(source);
-        texture.update();
 
-        int result[8];
+        char result[8];
         glActiveTexture(texture.getEnum());
         glBindTexture(GL_TEXTURE_2D, texture.getID());
-        glGetTexImage(GL_TEXTURE_2D, 0, source->format.format,
-            source->format.type, result);
+        glGetTexImage(GL_TEXTURE_2D, 0, source->format.format, source->format.type, result);
 
         for (int i = 0; i < 8; i++) {
-            // TODO(sholloway): Fix broken tests
-            // CHECK(result[i] == data.at(i));
+            CHECK(result[i] == data.at(i));
         }
     }
 
     SECTION("Creates OpenGL 3D texture object") {
-        std::shared_ptr<SpanTextureSource<int, 3, 1>> source
-            = std::make_shared<SpanTextureSource<int, 3, 1>>(data);
+        std::vector<float> data = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        std::shared_ptr<SpanTextureSource<float, 3, 1>> source
+            = std::make_shared<SpanTextureSource<float, 3, 1>>(data);
         source->setSource(data);
 
         GLTexture3D texture = GLTexture3D();
@@ -108,15 +105,14 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
         texture.setSource(source);
         texture.update();
 
-        int result[8];
+        float result[8];
         glActiveTexture(texture.getEnum());
         glBindTexture(GL_TEXTURE_3D, texture.getID());
         glGetTexImage(GL_TEXTURE_3D, 0, source->format.format,
             source->format.type, result);
 
         for (int i = 0; i < 8; i++) {
-            // TODO(sholloway): Fix broken tests
-            // CHECK(result[i] == data.at(i));
+            CHECK(result[i] == data.at(i));
         }
     }
 }
