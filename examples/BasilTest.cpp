@@ -1,5 +1,5 @@
 #include <Basil/App.hpp>
-#include <Basil/Utility.hpp>
+#include <Basil/Widget.hpp>
 
 /**
  * @brief Entry point function.
@@ -31,6 +31,8 @@ int main(int argc, char** argv) {
         .withWidget(basil::MetricsReporter::Builder()
             .withRegularity(120)
             .withLogLevel(basil::LogLevel::INFO)
+            .build())
+        .withWidget(basil::UserInputWatcher::Builder()
             .build())
         .build();
 
