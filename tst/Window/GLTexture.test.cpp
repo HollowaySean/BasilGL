@@ -85,7 +85,8 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
         char result[8];
         glActiveTexture(texture.getEnum());
         glBindTexture(GL_TEXTURE_2D, texture.getID());
-        glGetTexImage(GL_TEXTURE_2D, 0, source->format.format, source->format.type, result);
+        glGetTexImage(GL_TEXTURE_2D, 0,
+            source->format.format, source->format.type, result);
 
         for (int i = 0; i < 8; i++) {
             CHECK(result[i] == data.at(i));
