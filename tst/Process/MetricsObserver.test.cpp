@@ -10,17 +10,17 @@ using basil::ProcessInstance;
 
 TEST_CASE("Process_MetricsObserver_recordFrameStart") {
     MetricsObserver metrics = MetricsObserver();
-    REQUIRE(metrics.currentFrame == 0);
+    CHECK(metrics.currentFrame == 0);
 
     auto time = FrameClock::now();
     metrics.recordFrameStart(time);
 
     SECTION("Records frame time") {
-        REQUIRE(metrics.frameStartTime == time);
+        CHECK(metrics.frameStartTime == time);
     }
 
     SECTION("Increments frame counter") {
-        REQUIRE(metrics.currentFrame == 1);
+        CHECK(metrics.currentFrame == 1);
     }
 }
 
@@ -36,14 +36,14 @@ TEST_CASE("Process_MetricsObserver_recordProcessTime") {
 
     SECTION("Records time in process map") {
         MetricsRecord& currentRecord = metrics.current;
-        REQUIRE(currentRecord.processTimes.size() == 0);
+        CHECK(currentRecord.processTimes.size() == 0);
 
         metrics.recordProcessTime(instance1, time1);
         metrics.recordProcessTime(instance2, time2);
 
-        REQUIRE(currentRecord.processTimes.size() == 2);
-        REQUIRE(currentRecord.processTimes[instance1] == time1);
-        REQUIRE(currentRecord.processTimes[instance2] == time2);
+        CHECK(currentRecord.processTimes.size() == 2);
+        CHECK(currentRecord.processTimes[instance1] == time1);
+        CHECK(currentRecord.processTimes[instance2] == time2);
     }
 }
 
@@ -58,7 +58,7 @@ TEST_CASE("Process_MetricsObserver_recordWorkEnd") {
     metrics.recordWorkEnd(stop);
 
     SECTION("Records work duration in record") {
-        REQUIRE(metrics.current.workTime == duration);
+        CHECK(metrics.current.workTime == duration);
     }
 }
 
@@ -73,7 +73,7 @@ TEST_CASE("Process_MetricsObserver_recordFrameEnd") {
     metrics.recordFrameEnd(stop);
 
     SECTION("Records frame duration in record") {
-        REQUIRE(metrics.current.frameTime == duration);
+        CHECK(metrics.current.frameTime == duration);
     }
 }
 
@@ -93,9 +93,9 @@ TEST_CASE("Process_MetricsObserver_getCurrentMetrics") {
     SECTION("Averages over buffer") {
         MetricsRecord output = metrics.getCurrentMetrics();
 
-        REQUIRE(output.frameID == 10);
-        REQUIRE(output.frameTime == std::chrono::milliseconds(50));
-        REQUIRE(output.workTime == std::chrono::milliseconds(40));
+        CHECK(output.frameID == 10);
+        CHECK(output.frameTime == std::chrono::milliseconds(50));
+        CHECK(output.workTime == std::chrono::milliseconds(40));
     }
 }
 
@@ -118,14 +118,14 @@ TEST_CASE("Process_MetricsObserver_getLatestMetrics") {
     SECTION("Returns most recent metrics") {
         auto result = metrics.getLatestMetrics();
 
-        REQUIRE(result.isEqual(record2));
-        REQUIRE_FALSE(result.isEqual(record1));
+        CHECK(result.isEqual(record2));
+        CHECK_FALSE(result.isEqual(record1));
 
         metrics.buffer.emplace(record1);
 
         result = metrics.getLatestMetrics();
 
-        REQUIRE(result.isEqual(record1));
+        CHECK(result.isEqual(record1));
     }
 }
 
@@ -149,21 +149,21 @@ TEST_CASE("Process_MetricsObserver_setBufferSize") {
     SECTION("No op if provided zero") {
         metrics.setBufferSize(0);
 
-        REQUIRE(metrics.getBufferSize() == 2);
-        REQUIRE(metrics.getBufferCount() == 2);
+        CHECK(metrics.getBufferSize() == 2);
+        CHECK(metrics.getBufferCount() == 2);
     }
 
     SECTION("Increases non-destructively") {
         metrics.setBufferSize(5);
 
-        REQUIRE(metrics.getBufferSize() == 5);
-        REQUIRE(metrics.getBufferCount() == 2);
+        CHECK(metrics.getBufferSize() == 5);
+        CHECK(metrics.getBufferCount() == 2);
     }
 
     SECTION("Decreases destructively") {
         metrics.setBufferSize(1);
 
-        REQUIRE(metrics.getBufferSize() == 1);
-        REQUIRE(metrics.getBufferCount() == 1);
+        CHECK(metrics.getBufferSize() == 1);
+        CHECK(metrics.getBufferCount() == 1);
     }
 }

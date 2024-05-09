@@ -15,16 +15,16 @@ TEST_CASE("Context_BasilContext_logGLFWError") { BASIL_LOCK_TEST
     SECTION("Logs info on success") {
         BasilContext::logGLFWError(1);
 
-        REQUIRE(logger.getLastOutput() ==
+        CHECK(logger.getLastOutput() ==
             "GLFW context initialized successfully.");
-        REQUIRE(logger.getLastLevel() ==
+        CHECK(logger.getLastLevel() ==
             LogLevel::INFO);
     }
 
     SECTION("Logs error on failure") {
         BasilContext::logGLFWError(0);
 
-        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
+        CHECK(logger.getLastLevel() == LogLevel::ERROR);
     }
 }
 
@@ -35,21 +35,21 @@ TEST_CASE("Context_BasilContext_logGLFWWindowError") { BASIL_LOCK_TEST
         GLFWwindow* window = BasilContext::getGLFWWindow();
         BasilContext::logGLFWWindowError(window);
 
-        REQUIRE(logger.getLastOutput() ==
+        CHECK(logger.getLastOutput() ==
             "GLFW window created successfully.");
-        REQUIRE(logger.getLastLevel() ==
+        CHECK(logger.getLastLevel() ==
             LogLevel::INFO);
     }
 
     SECTION("Logs error and terminates on failure") {
         BasilContext::initialize();
-        REQUIRE(BasilContext::isInitialized());
+        CHECK(BasilContext::isInitialized());
 
         BasilContext::logGLFWWindowError(nullptr);
 
-        REQUIRE(logger.getLastOutput() == "GLFW failed to create window.");
-        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
-        REQUIRE_FALSE(BasilContext::isInitialized());
+        CHECK(logger.getLastOutput() == "GLFW failed to create window.");
+        CHECK(logger.getLastLevel() == LogLevel::ERROR);
+        CHECK_FALSE(BasilContext::isInitialized());
 
         // Re-initialize to prevent issues
         BasilContext::initialize();
@@ -62,15 +62,15 @@ TEST_CASE("Context_BasilContext_logGLEWError") { BASIL_LOCK_TEST
     SECTION("Logs info on success") {
         BasilContext::logGLEWError(GLEW_OK);
 
-        REQUIRE(logger.getLastOutput() ==
+        CHECK(logger.getLastOutput() ==
             "GLEW context initialized successfully.");
-        REQUIRE(logger.getLastLevel() ==
+        CHECK(logger.getLastLevel() ==
             LogLevel::INFO);
     }
 
     SECTION("Logs error on failure") {
         BasilContext::logGLEWError(!GLEW_OK);
 
-        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
+        CHECK(logger.getLastLevel() == LogLevel::ERROR);
     }
 }

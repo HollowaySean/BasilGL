@@ -13,14 +13,14 @@ TEST_CASE("Data_FileTextureSource_FileTextureSource") {
     SECTION("Loads image file") {
         auto source = FileTextureSource(testImagePath);
 
-        REQUIRE(source.getWidth() == 256);
-        REQUIRE(source.getHeight() == 256);
+        CHECK(source.getWidth() == 256);
+        CHECK(source.getHeight() == 256);
 
-        REQUIRE(source.format.format == GL_RGBA);
-        REQUIRE(source.format.internalFormat == GL_RGBA);
-        REQUIRE(source.format.type == GL_UNSIGNED_BYTE);
+        CHECK(source.format.format == GL_RGBA);
+        CHECK(source.format.internalFormat == GL_RGBA);
+        CHECK(source.format.type == GL_UNSIGNED_BYTE);
 
-        REQUIRE(source.data() == source.imageData);
+        CHECK(source.data() == source.imageData);
     }
 
     SECTION("Logs error if file does not exist") {
@@ -28,10 +28,10 @@ TEST_CASE("Data_FileTextureSource_FileTextureSource") {
         auto source = FileTextureSource(badPath);
 
         Logger& logger = Logger::get();
-        REQUIRE(logger.getLastLevel() == LogLevel::ERROR);
+        CHECK(logger.getLastLevel() == LogLevel::ERROR);
 
-        REQUIRE(source.getWidth() == 0);
-        REQUIRE(source.getHeight() == 0);
+        CHECK(source.getWidth() == 0);
+        CHECK(source.getHeight() == 0);
     }
 }
 
@@ -45,13 +45,13 @@ TEST_CASE("Data_FileTextureSource_Builder") {
                 .fromFilePath(testImagePath)
                 .build();
 
-        REQUIRE(source->getWidth() == 256);
-        REQUIRE(source->getHeight() == 256);
+        CHECK(source->getWidth() == 256);
+        CHECK(source->getHeight() == 256);
 
-        REQUIRE(source->format.format == GL_RGBA);
-        REQUIRE(source->format.internalFormat == GL_RGBA);
-        REQUIRE(source->format.type == GL_UNSIGNED_BYTE);
+        CHECK(source->format.format == GL_RGBA);
+        CHECK(source->format.internalFormat == GL_RGBA);
+        CHECK(source->format.type == GL_UNSIGNED_BYTE);
 
-        REQUIRE(source->data() == source->imageData);
+        CHECK(source->data() == source->imageData);
     }
 }

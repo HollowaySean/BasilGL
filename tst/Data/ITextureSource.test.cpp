@@ -18,8 +18,8 @@ TEST_CASE("Data_ITextureSource_setDimensions") {
         source.setHeight(2);
         source.setDepth(3);
 
-        REQUIRE(source.getWidth()  == 1);
-        REQUIRE(source.getHeight() == 2);
-        REQUIRE(source.getDepth()  == 3);
+        CHECK(source.getWidth()  == 1);
+        CHECK(source.getHeight() == 2);
+        CHECK(source.getDepth()  == 3);
     }
 }

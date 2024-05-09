@@ -20,38 +20,38 @@ TEST_CASE("Process_ProcessSchedule_addProcess") {
     schedule.addProcess(otherInstance);
 
     SECTION("Does nothing if provided null") {
-        REQUIRE(schedule.size() == 1);
+        CHECK(schedule.size() == 1);
         schedule.addProcess(nullptr);
-        REQUIRE(schedule.size() == 1);
+        CHECK(schedule.size() == 1);
     }
 
     SECTION("Adds early process") {
         instance->ordinal = ProcessOrdinal::EARLY;
         schedule.addProcess(instance);
 
-        REQUIRE(schedule.early.back() == instance);
+        CHECK(schedule.early.back() == instance);
 
-        REQUIRE(schedule.front() == instance);
-        REQUIRE(schedule.back() == otherInstance);
+        CHECK(schedule.front() == instance);
+        CHECK(schedule.back() == otherInstance);
     }
 
     SECTION("Adds main process") {
         schedule.addProcess(instance);
 
-        REQUIRE(schedule.main.back() == instance);
+        CHECK(schedule.main.back() == instance);
 
-        REQUIRE(schedule.front() == otherInstance);
-        REQUIRE(schedule.back() == instance);
+        CHECK(schedule.front() == otherInstance);
+        CHECK(schedule.back() == instance);
     }
 
     SECTION("Adds early process") {
         instance->ordinal = ProcessOrdinal::LATE;
         schedule.addProcess(instance);
 
-        REQUIRE(schedule.late.back() == instance);
+        CHECK(schedule.late.back() == instance);
 
-        REQUIRE(schedule.front() == otherInstance);
-        REQUIRE(schedule.back() == instance);
+        CHECK(schedule.front() == otherInstance);
+        CHECK(schedule.back() == instance);
     }
 }
 
@@ -68,7 +68,7 @@ TEST_CASE("Process_ProcessSchedule_back") {
         instance->ordinal = ProcessOrdinal::EARLY;
         schedule.addProcess(instance);
 
-        REQUIRE(schedule.back() == instance);
+        CHECK(schedule.back() == instance);
     }
 
     SECTION("Returns main if no late") {
@@ -77,7 +77,7 @@ TEST_CASE("Process_ProcessSchedule_back") {
         secondInstance->ordinal = ProcessOrdinal::EARLY;
         schedule.addProcess(secondInstance);
 
-        REQUIRE(schedule.back() == instance);
+        CHECK(schedule.back() == instance);
     }
 
     SECTION("Returns late otherwise") {
@@ -86,7 +86,7 @@ TEST_CASE("Process_ProcessSchedule_back") {
         secondInstance->ordinal = ProcessOrdinal::MAIN;
         schedule.addProcess(secondInstance);
 
-        REQUIRE(schedule.back() == instance);
+        CHECK(schedule.back() == instance);
     }
 }
 
@@ -102,20 +102,20 @@ TEST_CASE("Process_ProcessSchedule_removeProcess") {
     schedule.addProcess(secondInstance);
 
     SECTION("Does nothing if provided null") {
-        REQUIRE(schedule.size() == 2);
+        CHECK(schedule.size() == 2);
 
         schedule.removeProcess(nullptr);
 
-        REQUIRE(schedule.size() == 2);
+        CHECK(schedule.size() == 2);
     }
 
     SECTION("Removes process from schedule") {
-        REQUIRE(schedule.size() == 2);
-        REQUIRE(schedule.front() == firstInstance);
+        CHECK(schedule.size() == 2);
+        CHECK(schedule.front() == firstInstance);
 
         schedule.removeProcess(firstInstance);
 
-        REQUIRE(schedule.size() == 1);
-        REQUIRE(schedule.front() == secondInstance);
+        CHECK(schedule.size() == 1);
+        CHECK(schedule.front() == secondInstance);
     }
 }

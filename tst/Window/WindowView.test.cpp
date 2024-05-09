@@ -33,7 +33,7 @@ TEST_CASE("Window_WindowView_WindowView") { BASIL_LOCK_TEST
         BasilContext::terminate();
 
         GLFWwindow* glfwContext = glfwGetCurrentContext();
-        REQUIRE(glfwContext == nullptr);
+        CHECK(glfwContext == nullptr);
 
         WindowProps windowProps = WindowProps {
             .title = "test name",
@@ -43,16 +43,16 @@ TEST_CASE("Window_WindowView_WindowView") { BASIL_LOCK_TEST
         WindowView windowView = WindowView(windowProps);
 
         glfwContext = glfwGetCurrentContext();
-        REQUIRE_FALSE(glfwContext == nullptr);
+        CHECK_FALSE(glfwContext == nullptr);
     }
 
     SECTION("Uses default WindowProps if none provided") {
         WindowView windowView = WindowView();
         WindowProps windowProps = windowView.windowProps;
 
-        REQUIRE(windowProps.width == WindowProps::DEFAULT_WIDTH);
-        REQUIRE(windowProps.height == WindowProps::DEFAULT_HEIGHT);
-        REQUIRE(windowProps.title == WindowProps::DEFAULT_TITLE);
+        CHECK(windowProps.width == WindowProps::DEFAULT_WIDTH);
+        CHECK(windowProps.height == WindowProps::DEFAULT_HEIGHT);
+        CHECK(windowProps.title == WindowProps::DEFAULT_TITLE);
     }
 }
 
@@ -63,10 +63,10 @@ TEST_CASE("Window_WindowView_getTopPaneProps") {
         PaneProps paneProps = window.getTopPaneProps();
         WindowProps windowProps = window.windowProps;
 
-        REQUIRE(paneProps.width == windowProps.width);
-        REQUIRE(paneProps.height == windowProps.height);
-        REQUIRE(paneProps.xOffset == 0);
-        REQUIRE(paneProps.yOffset == 0);
+        CHECK(paneProps.width == windowProps.width);
+        CHECK(paneProps.height == windowProps.height);
+        CHECK(paneProps.xOffset == 0);
+        CHECK(paneProps.yOffset == 0);
     }
 }
 
@@ -81,9 +81,9 @@ TEST_CASE("Window_WindowView_setWindowProps") { BASIL_LOCK_TEST
 
         window.setWindowProps(newProps);
 
-        REQUIRE(window.windowProps.title == newProps.title);
-        REQUIRE(window.windowProps.width == newProps.width);
-        REQUIRE(window.windowProps.height == newProps.height);
+        CHECK(window.windowProps.title == newProps.title);
+        CHECK(window.windowProps.width == newProps.width);
+        CHECK(window.windowProps.height == newProps.height);
     }
 }
 
@@ -94,10 +94,10 @@ TEST_CASE("Window_WindowView_setWindowTitle") { BASIL_LOCK_TEST
         std::string newTitle = "newTitle";
         window.setWindowTitle(newTitle);
 
-        REQUIRE(window.windowProps.title == newTitle);
+        CHECK(window.windowProps.title == newTitle);
 
         const char* glfwTitle = glfwGetWindowTitle(window.glfwWindow);
-        REQUIRE(std::string(glfwTitle) == newTitle);
+        CHECK(std::string(glfwTitle) == newTitle);
     }
 }
 
@@ -109,10 +109,10 @@ TEST_CASE("Window_WindowView_setWindowSize") { BASIL_LOCK_TEST
         int newHeight = 22;
         window.setWindowSize(newWidth, newHeight);
 
-        REQUIRE(window.windowProps.width == newWidth);
-        REQUIRE(window.windowProps.height == newHeight);
+        CHECK(window.windowProps.width == newWidth);
+        CHECK(window.windowProps.height == newHeight);
 
-        // glfwGetWindowSize seems to require at least
+        // glfwGetWindowSize seems to CHECK at least
         //  one frame to pass before update
         std::this_thread::sleep_for(
             std::chrono::milliseconds(100));
@@ -120,8 +120,8 @@ TEST_CASE("Window_WindowView_setWindowSize") { BASIL_LOCK_TEST
         int actualWidth, actualHeight;
         glfwGetWindowSize(window.glfwWindow, &actualWidth, &actualHeight);
 
-        REQUIRE(actualWidth == newWidth);
-        REQUIRE(actualHeight == newHeight);
+        CHECK(actualWidth == newWidth);
+        CHECK(actualHeight == newHeight);
     }
 }
 
@@ -133,10 +133,10 @@ TEST_CASE("Window_WindowView_draw") {
         s_pt<TestPane> testPane = std::make_shared<TestPane>(paneProps);
 
         window.draw();
-        REQUIRE_FALSE(testPane->didDraw);
+        CHECK_FALSE(testPane->didDraw);
         window.setTopPane(testPane);
         window.draw();
-        REQUIRE(testPane->didDraw);
+        CHECK(testPane->didDraw);
     }
 }
 
@@ -147,10 +147,10 @@ TEST_CASE("Window_WindowView_onLoop") {
         PaneProps paneProps = window.getTopPaneProps();
         s_pt<TestPane> testPane = std::make_shared<TestPane>(paneProps);
 
-        REQUIRE_FALSE(testPane->didDraw);
+        CHECK_FALSE(testPane->didDraw);
         window.setTopPane(testPane);
         window.onLoop();
-        REQUIRE(testPane->didDraw);
+        CHECK(testPane->didDraw);
     }
 
     SECTION("Closes window if requested by GLFW") {
@@ -161,10 +161,10 @@ TEST_CASE("Window_WindowView_onLoop") {
         glfwSetWindowShouldClose(window.glfwWindow, GLFW_TRUE);
         window.onLoop();
 
-        REQUIRE(window.currentState == ProcessState::REQUEST_STOP);
+        CHECK(window.currentState == ProcessState::REQUEST_STOP);
 
         GLFWwindow* glfwContext = glfwGetCurrentContext();
-        REQUIRE(glfwContext == nullptr);
+        CHECK(glfwContext == nullptr);
     }
 }
 
@@ -173,11 +173,11 @@ TEST_CASE("Window_WindowView_onStart") { BASIL_LOCK_TEST
         WindowView window = WindowView();
 
         int visible = glfwGetWindowAttrib(window.glfwWindow, GLFW_VISIBLE);
-        REQUIRE(visible == GLFW_FALSE);
+        CHECK(visible == GLFW_FALSE);
 
         window.onStart();
         visible = glfwGetWindowAttrib(window.glfwWindow, GLFW_VISIBLE);
-        REQUIRE(visible == GLFW_TRUE);
+        CHECK(visible == GLFW_TRUE);
     }
 }
 
@@ -188,8 +188,8 @@ TEST_CASE("Window_WindowView_onStop") {
         WindowView window = WindowView();
 
         window.onStop();
-        REQUIRE(logger.getLastLevel() == LogLevel::INFO);
-        REQUIRE(logger.getLastOutput() == "Stopping loop");
+        CHECK(logger.getLastLevel() == LogLevel::INFO);
+        CHECK(logger.getLastOutput() == "Stopping loop");
     }
 }
 
@@ -219,8 +219,8 @@ TEST_CASE("Window_WindowView_onResize") {
         window.setTopPane(testPane);
 
         window.onResize(50, 25);
-        REQUIRE(testPane->paneProps.width == 50);
-        REQUIRE(testPane->paneProps.height == 25);
+        CHECK(testPane->paneProps.width == 50);
+        CHECK(testPane->paneProps.height == 25);
     }
 }
 
@@ -229,8 +229,8 @@ TEST_CASE("Window_WindowView_resizeCallback") { BASIL_LOCK_TEST
         WindowView window = WindowView();
         WindowView::resizeCallback(window.glfwWindow, 60, 30);
 
-        REQUIRE(window.windowProps.width == 60);
-        REQUIRE(window.windowProps.height == 30);
+        CHECK(window.windowProps.width == 60);
+        CHECK(window.windowProps.height == 30);
     }
 }
 
@@ -247,9 +247,9 @@ TEST_CASE("Window_WindowView_Builder") { BASIL_LOCK_TEST
             .withTopPane(pane)
             .build();
 
-        REQUIRE(window->windowProps.title == title);
-        REQUIRE(window->windowProps.width == width);
-        REQUIRE(window->windowProps.height == height);
-        REQUIRE(window->topPane == pane);
+        CHECK(window->windowProps.title == title);
+        CHECK(window->windowProps.width == width);
+        CHECK(window->windowProps.height == height);
+        CHECK(window->topPane == pane);
     }
 }
