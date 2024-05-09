@@ -1,8 +1,5 @@
 #include <Basil/App.hpp>
-#include <Basil/Data.hpp>
-#include <Basil/Process.hpp>
 #include <Basil/Utility.hpp>
-#include <Basil/Window.hpp>
 
 /**
  * @brief Entry point function.
@@ -17,22 +14,23 @@ int main(int argc, char** argv) {
     auto jsonPath =
         std::filesystem::path(EXAMPLE_DIR) / "assets/test.json";
 
-    auto window = basil::WindowView::Builder()
+    auto basilApp = basil::BasilApp::Builder()
+        .withWindow(basil::WindowView::Builder()
             .withTitle("My window")
             .withDimensions(400, 400)
             .withTopPane(basil::HotReloadShaderPane::Builder()
                 .fromFilePath(fragmentPath)
                 .build())
-            .build();
-
-    auto basilApp = basil::BasilApp::Builder()
-        .withWindow(window)
+            .build())
         .withController(basil::ProcessController::Builder()
             .withFrameCap(30)
-            .withEarlyProcess(basil::UniformJSONFileWatcher::Builder()
-                .withFilePath(jsonPath)
-                .withPublisher(window)
-                .build())
+            .build())
+        .withWidget(basil::UniformJSONFileWatcher::Builder()
+            .withFilePath(jsonPath)
+            .build())
+        .withWidget(basil::MetricsReporter::Builder()
+            .withRegularity(120)
+            .withLogLevel(basil::LogLevel::INFO)
             .build())
         .build();
 

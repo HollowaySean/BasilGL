@@ -4,6 +4,7 @@
 #include "Data/IDataModel.hpp"
 #include "Data/IDataPublisher.hpp"
 #include "Data/IDataSubscriber.hpp"
+#include "Data/ShaderUniformModel.hpp"
 
 namespace basil {
 
@@ -26,6 +27,25 @@ class TestSubscriber : public IDataSubscriber<TestDataModel> {
     }
 
     bool hasReceivedData = false;
+};
+
+class TestUniformSubscriber : public IDataSubscriber<ShaderUniformModel> {
+ public:
+    void receiveData(const ShaderUniformModel& dataModel) override {
+        hasReceivedData = true;
+    }
+
+    bool hasReceivedData = false;
+};
+
+class TestUniformPublisher : public IDataPublisher<ShaderUniformModel> {
+ public:
+    void publishData(const ShaderUniformModel& dataModel) override {
+        hasPublishedData = true;
+        IDataPublisher::publishData(dataModel);
+    }
+
+    bool hasPublishedData = false;
 };
 
 }  // namespace basil

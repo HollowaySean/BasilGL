@@ -3,6 +3,8 @@
 namespace basil {
 
 void BasilApp::run() {
+    autoWire();
+
     if (!processController) {
         logControllerMissing();
         return;
@@ -31,9 +33,55 @@ void BasilApp::kill() {
     processController->kill();
 }
 
+void BasilApp::addWidget(std::shared_ptr<IBasilWidget> widget) {
+    widgets.emplace_back(widget);
+}
+
 void BasilApp::logControllerMissing() {
     logger.log("ProcessController not found for BasilApp.",
         LogLevel::WARN);
+}
+
+void BasilApp::autoWire() {
+    autoWireWindowProcess();
+
+    for (auto widget : widgets) {
+        autoWireWidget(widget);
+    }
+}
+
+void BasilApp::autoWireWindowProcess() {
+    if (!(this->processController && this->windowView)) return;
+    if (this->processController->hasProcess(windowView)) return;
+
+    this->processController->addProcess(
+        windowView, ProcessPrivilege::HIGH);
+}
+
+void BasilApp::autoWireWidgetProcess(
+        std::shared_ptr<IBasilWidget> widget) {
+    if (widget && !processController->hasProcess(widget)) {
+        processController->addProcessWithOrdinal(
+            widget, widget->ordinal, widget->privilege);
+    }
+}
+
+void BasilApp::autoWireWidgetPublisher(
+        std::shared_ptr<IBasilWidget> widget) {
+    if (widget && !widget->hasSubscriber(windowView)) {
+        widget->subscribe(windowView);
+    }
+}
+
+void BasilApp::autoWireWidget(
+        std::shared_ptr<IBasilWidget> widget) {
+    if (processController) {
+        autoWireWidgetProcess(widget);
+    }
+
+    if (windowView) {
+        autoWireWidgetPublisher(widget);
+    }
 }
 
 BasilApp::Builder&
@@ -50,13 +98,15 @@ BasilApp::Builder::withWindow(
     return *this;
 }
 
+BasilApp::Builder&
+BasilApp::Builder::withWidget(std::shared_ptr<IBasilWidget> widget) {
+    impl->addWidget(widget);
+    return *this;
+}
+
 std::shared_ptr<BasilApp>
 BasilApp::Builder::build() {
-    // TODO(sholloway): Check if already added
-    if (impl->processController && impl->windowView) {
-        impl->processController->addProcess(
-            impl->windowView, ProcessPrivilege::HIGH);
-    }
+    impl->autoWire();
 
     return IBuilder<BasilApp>::build();
 }

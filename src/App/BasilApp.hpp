@@ -2,6 +2,9 @@
 #define SRC_APP_BASILAPP_HPP_
 
 #include <memory>
+#include <vector>
+
+#include "IBasilWidget.hpp"
 
 #include <Basil/Builder.hpp>
 #include <Basil/Process.hpp>
@@ -37,6 +40,8 @@ class BasilApp : public IBuildable<BasilApp> {
         this->windowView = window;
     }
 
+    void addWidget(std::shared_ptr<IBasilWidget> widget);
+
     /** @brief Builder pattern for BasilApp. */
     class Builder : public IBuilder<BasilApp> {
      public:
@@ -45,6 +50,9 @@ class BasilApp : public IBuildable<BasilApp> {
 
         /** @brief Sets WindowView */
         Builder& withWindow(std::shared_ptr<WindowView> window);
+
+        /** @brief Adds IBasilWidget to App */
+        Builder& withWidget(std::shared_ptr<IBasilWidget> widget);
 
         /** @brief Override of base builder method */
         std::shared_ptr<BasilApp> build() override;
@@ -56,6 +64,15 @@ class BasilApp : public IBuildable<BasilApp> {
 #endif
     Logger& logger = Logger::get();
     void logControllerMissing();
+
+    friend class Builder;
+    void autoWire();
+    void autoWireWindowProcess();
+    void autoWireWidget(std::shared_ptr<IBasilWidget> widget);
+    void autoWireWidgetProcess(std::shared_ptr<IBasilWidget> widget);
+    void autoWireWidgetPublisher(std::shared_ptr<IBasilWidget> widget);
+
+    std::vector<std::shared_ptr<IBasilWidget>> widgets;
 
     std::shared_ptr<ProcessController> processController;
     std::shared_ptr<WindowView> windowView;

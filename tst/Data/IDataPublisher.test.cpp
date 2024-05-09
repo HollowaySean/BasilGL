@@ -95,3 +95,14 @@ TEST_CASE("Data_IDataPublisher_publishData") {
     }
 }
 
+TEST_CASE("Data_IDataPublisher_hasSubscriber") {
+    auto publisher = TestPublisher();
+    auto subscriber = std::make_shared<TestSubscriber>();
+
+    SECTION("Returns true if subscriber exists") {
+        CHECK_FALSE(publisher.hasSubscriber(subscriber));
+        publisher.subscribe(subscriber);
+        CHECK(publisher.hasSubscriber(subscriber));
+    }
+}
+
