@@ -6,15 +6,14 @@
 #include <memory>
 #include <string>
 
-#include <Basil/Logging.hpp>
-#include <Basil/Process.hpp>
+#include <Basil/App.hpp>
 
 namespace basil {
 
 /** @brief Utility FrameProcess that prints frame rate to
  *  the command line.
 */
-class MetricsReporter : public IProcess,
+class MetricsReporter : public IBasilWidget,
                         public IBuildable<MetricsReporter> {
  public:
     /** @brief Create MetricsReporter object. */

@@ -4,7 +4,11 @@ namespace basil {
 
 MetricsReporter::MetricsReporter() {
     // Set process name for IProcess
-    IProcess::setProcessName("MetricsReporter");
+    this->IProcess::setProcessName("MetricsReporter");
+
+    // Set widget defaults
+    this->IBasilWidget::ordinal = ProcessOrdinal::LATE;
+    this->IBasilWidget::privilege = ProcessPrivilege::NONE;
 }
 
 void MetricsReporter::onLoop() {

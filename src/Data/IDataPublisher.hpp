@@ -60,6 +60,12 @@ class IDataPublisher {
         }
     }
 
+    /** @returns Boolean indicating whether IDataSubscriber is subscribed. */
+    bool hasSubscriber(
+            std::shared_ptr<IDataSubscriber<T>> subscriber) {
+        return subscriptions.contains(subscriber);
+    }
+
 #ifndef TEST_BUILD
 
  private:
