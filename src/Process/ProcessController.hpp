@@ -46,6 +46,17 @@ class ProcessController : private IBuildable<ProcessController> {
         std::shared_ptr<IProcess> process,
         std::optional<ProcessPrivilege> privilege = std::nullopt);
 
+    /** @brief Add process with given parameters.
+     *  @param process      Pointer to IProcess to add
+     *  @param ordinal      Ordinal indicating process timing
+     *  @param privilege    Privilege level for process
+     *  @returns ProcessInstance wrapper
+    */
+    std::shared_ptr<ProcessInstance>
+    addProcessWithOrdinal(std::shared_ptr<IProcess> process,
+        ProcessOrdinal ordinal,
+        ProcessPrivilege privilege);
+
     /** @param process      Pointer to IProcess to check for
      *  @returns Boolean indicating if process exists in schedule */
     bool hasProcess(std::shared_ptr<IProcess> process);
@@ -113,11 +124,6 @@ class ProcessController : private IBuildable<ProcessController> {
  private:
 #endif
     void sleepForRestOfFrame(FrameClock::time_point frameStartTime);
-
-    std::shared_ptr<ProcessInstance>
-    addProcessWithOrdinal(std::shared_ptr<IProcess> process,
-        ProcessOrdinal ordinal,
-        ProcessPrivilege privilege);
     void runProcessMethod(
         std::function<void(std::shared_ptr<IProcess>)> method);
     void interpretProcessState(

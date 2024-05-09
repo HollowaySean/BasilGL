@@ -61,22 +61,8 @@ void BasilApp::autoWireWindowProcess() {
 void BasilApp::autoWireWidgetProcess(
         std::shared_ptr<IBasilWidget> widget) {
     if (widget && !processController->hasProcess(widget)) {
-        auto privilege = widget->privilege;
-
-        switch (widget->ordinal) {
-            case ProcessOrdinal::EARLY:
-                processController->addEarlyProcess(
-                    widget, privilege);
-                break;
-            case ProcessOrdinal::MAIN:
-                processController->addProcess(
-                    widget, privilege);
-                break;
-            case ProcessOrdinal::LATE:
-                processController->addLateProcess(
-                    widget, privilege);
-                break;
-        }
+        processController->addProcessWithOrdinal(
+            widget, widget->ordinal, widget->privilege);
     }
 }
 

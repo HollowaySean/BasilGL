@@ -2,11 +2,15 @@
 
 #include <Basil/App.hpp>
 
+#include "AppTestUtils.hpp"
+
 using basil::BasilApp;
+using basil::IBasilWidget;
 using basil::Logger;
 using basil::LogLevel;
 using basil::ProcessController;
 using basil::ProcessControllerState;
+using basil::TestWidget;
 using basil::WindowView;
 
 TEST_CASE("App_BasilApp_run") {
@@ -81,11 +85,37 @@ TEST_CASE("App_BasilApp_kill") {
     }
 }
 
+TEST_CASE("App_BasilApp_autoWire") {
+    auto controller = std::make_shared<ProcessController>();
+    auto window = std::make_shared<WindowView>();
+    std::shared_ptr<IBasilWidget> widget
+        = std::make_shared<TestWidget>();
+    auto basilApp = BasilApp();
+
+    basilApp.addWidget(widget);
+    basilApp.setWindow(window);
+    basilApp.setController(controller);
+
+    basilApp.autoWire();
+
+    SECTION("Adds processes to controller") {
+        CHECK(controller->hasProcess(window));
+        CHECK(controller->hasProcess(widget));
+    }
+
+    SECTION("Subscribes window to widgets") {
+        CHECK(widget->hasSubscriber(window));
+    }
+}
+
 TEST_CASE("App_BasilApp_Builder") {
     auto controller = std::make_shared<ProcessController>();
     auto window = std::make_shared<WindowView>();
+    std::shared_ptr<IBasilWidget> widget
+        = std::make_shared<TestWidget>();
 
     auto basilApp = BasilApp::Builder()
+        .withWidget(widget)
         .withWindow(window)
         .withController(controller)
         .build();
@@ -93,10 +123,15 @@ TEST_CASE("App_BasilApp_Builder") {
     SECTION("Builds from components") {
         CHECK(basilApp->processController == controller);
         CHECK(basilApp->windowView == window);
+        CHECK(basilApp->widgets.front() == widget);
     }
 
-    SECTION("Adds window process to controller") {
-        CHECK(controller->schedule.back()->process
-            == window);
+    SECTION("Adds processes to controller") {
+        CHECK(controller->hasProcess(window));
+        CHECK(controller->hasProcess(widget));
+    }
+
+    SECTION("Subscribes window to widgets") {
+        CHECK(widget->hasSubscriber(window));
     }
 }
