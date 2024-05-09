@@ -3,11 +3,11 @@
 #include "Data/PubSubTestUtils.hpp"
 #include "Widget/UniformJSONFileWatcher.hpp"
 
-using basil::TestUniformSubscriber;
+using basil::TestSubscriber;
 using basil::UniformJSONFileWatcher;
 
 TEST_CASE("Data_UniformJSONFileWatcher_onLoop") {
-    auto subscriber = std::make_shared<TestUniformSubscriber>();
+    auto subscriber = std::make_shared<TestSubscriber>();
     auto path = std::filesystem::path(TEST_DIR) /
         "Widget/assets/test.json";
 
@@ -22,7 +22,7 @@ TEST_CASE("Data_UniformJSONFileWatcher_onLoop") {
 }
 
 TEST_CASE("Data_UniformJSONFileWatcher_Builder") {
-    auto subscriber = std::make_shared<TestUniformSubscriber>();
+    auto subscriber = std::make_shared<TestSubscriber>();
     auto path = std::filesystem::path(TEST_DIR) /
         "Widget/assets/test.json";
 

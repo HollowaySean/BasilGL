@@ -11,7 +11,6 @@
 
 #include <Basil/Builder.hpp>
 
-#include "IDataModel.hpp"
 #include "GLUniform.hpp"
 #include "GLTextureUniform.hpp"
 
@@ -19,8 +18,7 @@ namespace basil {
 
 /** @brief Implementation of IDataModel to maintain
  *  uniforms for GLShaderProgram objects. */
-class ShaderUniformModel : public IDataModel,
-                           public IBuildable<ShaderUniformModel> {
+class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
  public:
     /** @brief Add uniform to model
      *  @param value        Value of uniform

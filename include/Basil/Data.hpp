@@ -4,7 +4,7 @@
 #include "Data/FileDataLoader.hpp"
 #include "Data/FileTextureSource.hpp"
 #include "Data/GLUniform.hpp"
-#include "Data/IDataModel.hpp"
+#include "Data/DataMessage.hpp"
 #include "Data/IDataPassThrough.hpp"
 #include "Data/IDataPublisher.hpp"
 #include "Data/IDataSubscriber.hpp"

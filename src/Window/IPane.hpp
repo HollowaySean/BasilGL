@@ -16,7 +16,7 @@ struct PaneProps {
 /** @brief Interface consumable by WindowView, describing
  *  a single section of the top-level window.
  */
-class IPane : public IDataPassThrough<ShaderUniformModel> {
+class IPane : public IDataPassThrough {
  public:
     /** @param paneProps Struct containing pane size & offset. */
     explicit IPane(PaneProps paneProps): paneProps(paneProps) {}

@@ -4,8 +4,6 @@
 #include <utility>
 #include <array>
 
-#include "IDataModel.hpp"
-
 namespace basil {
 
 struct KeyState {
@@ -23,7 +21,7 @@ struct MousePosition {
     bool isInWindow;
 };
 
-class UserInputModel : public IDataModel {
+class UserInputModel {
  public:
     KeyState getKeyState(uint keyCode) {
         return keyStates.at(keyCode);

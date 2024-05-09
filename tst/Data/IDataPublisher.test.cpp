@@ -2,6 +2,7 @@
 
 #include "PubSubTestUtils.hpp"
 
+using basil::DataMessage;
 using basil::TestDataModel;
 using basil::TestPublisher;
 using basil::TestSubscriber;
@@ -66,12 +67,14 @@ TEST_CASE("Data_IDataPublisher_publishData") {
     auto publisher = TestPublisher();
     auto subscriber = std::make_shared<TestSubscriber>();
     auto model = TestDataModel();
+    auto message = DataMessage(model);
 
     SECTION("Sends DataModel if subscriber accepts modelID") {
         CHECK_FALSE(subscriber->hasReceivedData);
 
-        publisher.subscribe(subscriber, model.getID());
-        publisher.publishData(model);
+        publisher.subscribe(subscriber,
+            DataMessage::getIDForType<TestDataModel>());
+        publisher.publishData(message);
 
         CHECK(subscriber->hasReceivedData);
     }
@@ -80,7 +83,7 @@ TEST_CASE("Data_IDataPublisher_publishData") {
         CHECK_FALSE(subscriber->hasReceivedData);
 
         publisher.subscribe(subscriber);
-        publisher.publishData(model);
+        publisher.publishData(message);
 
         CHECK(subscriber->hasReceivedData);
     }
@@ -88,8 +91,9 @@ TEST_CASE("Data_IDataPublisher_publishData") {
     SECTION("Does not send DataModel if not subscribed") {
         CHECK_FALSE(subscriber->hasReceivedData);
 
-        publisher.subscribe(subscriber, model.getID() + 1);
-        publisher.publishData(model);
+        publisher.subscribe(subscriber,
+            DataMessage::getIDForType<TestDataModel>() + 1);
+        publisher.publishData(message);
 
         CHECK_FALSE(subscriber->hasReceivedData);
     }

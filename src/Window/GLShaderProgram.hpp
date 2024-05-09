@@ -19,7 +19,7 @@
 namespace basil {
 
 /** @brief Container class for compiled and linked shader program. */
-class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
+class GLShaderProgram : public IDataSubscriber,
                         public IBuildable<GLShaderProgram>,
                         private IBasilContextConsumer {
  public:
@@ -151,7 +151,7 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
 
     /** @brief Updates shaders and textures from ShaderUniformModel object.
      *  Overridden method from IDataSubscriber base class. */
-    void receiveData(const ShaderUniformModel& dataModel) override;
+    void receiveData(const DataMessage& message) override;
 
     class Builder : public IBuilder<GLShaderProgram> {
      public:

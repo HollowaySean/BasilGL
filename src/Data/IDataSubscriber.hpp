@@ -1,19 +1,15 @@
 #ifndef SRC_DATA_IDATASUBSCRIBER_HPP_
 #define SRC_DATA_IDATASUBSCRIBER_HPP_
 
-#include "IDataModel.hpp"
+#include "DataMessage.hpp"
 
 namespace basil {
 
-/** @brief  Interface for receiver of PubSub data model
- *  @tparam IDataModel implementation which is received */
-template <class T>
-requires std::is_base_of_v<IDataModel, T>
+/** @brief  Interface for receiver of PubSub data model */
 class IDataSubscriber {
  private:
-    virtual void receiveData(const T& dataModel) = 0;
+    virtual void receiveData(const DataMessage& dataMessage) = 0;
 
-    template <class U>
     friend class IDataPublisher;
 };
 

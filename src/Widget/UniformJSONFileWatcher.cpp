@@ -23,7 +23,8 @@ void UniformJSONFileWatcher::updateModel() {
             FileDataLoader::modelFromJSON(filePath);
 
         if (model.has_value()) {
-            publishData(model.value());
+            auto message = DataMessage(model.value());
+            publishData(message);
         }
     }
 }

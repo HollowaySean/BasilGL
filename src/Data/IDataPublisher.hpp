@@ -10,19 +10,16 @@
 
 namespace basil {
 
-/** @brief  Interface for publisher of PubSub data model
- *  @tparam IDataModel implementation which is sent */
-template <class T>
-requires std::is_base_of_v<IDataModel, T>
+/** @brief  Interface for publisher of PubSub data model */
 class IDataPublisher {
  public:
     /** @brief Send data model to subscribers */
-    virtual void publishData(const T& dataModel) {
+    virtual void publishData(const DataMessage& dataMessage) {
         for (auto pair : subscriptions) {
             auto [ subscriber, subscription] = pair;
 
-            if (subscription.acceptsModel(dataModel.getID())) {
-                subscriber->receiveData(dataModel);
+            if (subscription.acceptsModel(dataMessage.getID())) {
+                subscriber->receiveData(dataMessage);
             }
         }
     }
@@ -33,7 +30,7 @@ class IDataPublisher {
      *  If modelID is 0, all models are subscribed to.
      */
     void subscribe(
-            std::shared_ptr<IDataSubscriber<T>> subscriber,
+            std::shared_ptr<IDataSubscriber> subscriber,
             unsigned int modelID = 0) {
         if (subscriptions.contains(subscriber)) {
             subscriptions.at(subscriber).addModel(modelID);
@@ -49,7 +46,7 @@ class IDataPublisher {
      *  If modelID is 0, all models are unsubscribed from.
      */
     void unsubscribe(
-            std::shared_ptr<IDataSubscriber<T>> subscriber,
+            std::shared_ptr<IDataSubscriber> subscriber,
             unsigned int modelID = 0) {
         if (!subscriptions.contains(subscriber)) { return; }
 
@@ -62,7 +59,7 @@ class IDataPublisher {
 
     /** @returns Boolean indicating whether IDataSubscriber is subscribed. */
     bool hasSubscriber(
-            std::shared_ptr<IDataSubscriber<T>> subscriber) {
+            std::shared_ptr<IDataSubscriber> subscriber) {
         return subscriptions.contains(subscriber);
     }
 
@@ -96,7 +93,7 @@ class IDataPublisher {
     };
 
     std::unordered_map<
-        std::shared_ptr<IDataSubscriber<T>>, Subscription> subscriptions;
+        std::shared_ptr<IDataSubscriber>, Subscription> subscriptions;
 };
 
 }  // namespace basil

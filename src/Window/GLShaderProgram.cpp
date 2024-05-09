@@ -225,8 +225,12 @@ void GLShaderProgram::applyChachedUniforms() {
     }
 }
 
-void GLShaderProgram::receiveData(const ShaderUniformModel& dataModel) {
-    auto uniforms = dataModel.getUniforms();
+void GLShaderProgram::receiveData(const DataMessage& message) {
+    if (!std::holds_alternative<ShaderUniformModel>(message.model)) return;
+
+    auto model = std::get<ShaderUniformModel>(message.model);
+
+    auto uniforms = model.getUniforms();
     for (auto pair : uniforms) {
         auto uniform = pair.second;
         const std::string& name = uniform.name;
@@ -236,7 +240,7 @@ void GLShaderProgram::receiveData(const ShaderUniformModel& dataModel) {
             }, uniform.value);
     }
 
-    auto modelTextures = dataModel.getTextures();
+    auto modelTextures = model.getTextures();
     for (auto pair : modelTextures) {
         auto texture = pair.second;
         addTexture(texture.name, texture.texture);

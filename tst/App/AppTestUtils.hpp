@@ -8,7 +8,7 @@
 namespace basil {
 
 class TestWidget :  public TestProcess,
-                    public TestUniformPublisher,
+                    public IDataPublisher,
                     public IBasilWidget {
  public:
     TestWidget() = default;

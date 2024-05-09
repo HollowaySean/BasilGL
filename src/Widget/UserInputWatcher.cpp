@@ -16,6 +16,9 @@ void UserInputWatcher::onLoop() {
     checkMousePosition();
 
     // TODO(sholloway): upload data model
+    if (model.getMouseButtonState(GLFW_MOUSE_BUTTON_LEFT).isPressed()) {
+        Logger::get().log("Clicked!!!!");
+    }
 }
 
 void UserInputWatcher::initializeState() {

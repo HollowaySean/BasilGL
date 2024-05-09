@@ -10,12 +10,11 @@ namespace basil {
 
 /** @brief Interface which acts as publisher,
  *  and passes received IDataModel on to subscribers. */
-template<class T>
-class IDataPassThrough : public IDataSubscriber<T>,
-                         public IDataPublisher<T> {
+class IDataPassThrough : public IDataSubscriber,
+                         public IDataPublisher {
  private:
-    void receiveData(const T& dataModel) override {
-        this->IDataPublisher<T>::publishData(dataModel);
+    void receiveData(const DataMessage& message) override {
+        this->IDataPublisher::publishData(message);
     }
 };
 

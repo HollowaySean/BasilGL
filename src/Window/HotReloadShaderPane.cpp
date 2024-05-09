@@ -8,7 +8,8 @@ HotReloadShaderPane::HotReloadShaderPane() {
     currentShaderProgram = std::make_shared<GLShaderProgram>();
     currentShaderProgram->setVertexShader(defaultVert);
 
-    this->IDataPublisher::subscribe(currentShaderProgram);
+    this->IDataPublisher::subscribe(currentShaderProgram,
+            DataMessage::getIDForType<ShaderUniformModel>());
 }
 
 HotReloadShaderPane::HotReloadShaderPane(PaneProps paneProps,
