@@ -9,7 +9,7 @@
 namespace basil {
 
 /** @brief Interface which acts as publisher,
- *  and passes received IDataModel on to subscribers. */
+ *  and passes received DataModel on to subscribers. */
 class IDataPassThrough : public IDataSubscriber,
                          public IDataPublisher {
  private:

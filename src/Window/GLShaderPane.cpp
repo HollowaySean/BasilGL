@@ -20,8 +20,7 @@ void GLShaderPane::setShaderProgram(
         this->currentShaderProgram = shaderProgram;
     }
 
-    this->IDataPublisher::subscribe(this->currentShaderProgram,
-            DataMessage::getIDForType<ShaderUniformModel>());
+    this->IDataPublisher::subscribe(this->currentShaderProgram);
 }
 
 void GLShaderPane::createVertexObjects() {

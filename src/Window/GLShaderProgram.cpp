@@ -226,9 +226,9 @@ void GLShaderProgram::applyChachedUniforms() {
 }
 
 void GLShaderProgram::receiveData(const DataMessage& message) {
-    if (!std::holds_alternative<ShaderUniformModel>(message.model)) return;
-
-    auto model = std::get<ShaderUniformModel>(message.model);
+    auto data = message.getData<ShaderUniformModel>();
+    if (!data.has_value()) return;
+    auto model = data.value();
 
     auto uniforms = model.getUniforms();
     for (auto pair : uniforms) {

@@ -16,7 +16,7 @@
 
 namespace basil {
 
-/** @brief Implementation of IDataModel to maintain
+/** @brief Data model used to maintain
  *  uniforms for GLShaderProgram objects. */
 class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
  public:
