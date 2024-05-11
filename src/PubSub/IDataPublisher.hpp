@@ -1,5 +1,5 @@
-#ifndef SRC_DATA_IDATAPUBLISHER_HPP_
-#define SRC_DATA_IDATAPUBLISHER_HPP_
+#ifndef SRC_PUBSUB_IDATAPUBLISHER_HPP_
+#define SRC_PUBSUB_IDATAPUBLISHER_HPP_
 
 #include <memory>
 #include <set>
@@ -44,4 +44,4 @@ class IDataPublisher {
 
 }  // namespace basil
 
-#endif  // SRC_DATA_IDATAPUBLISHER_HPP_
+#endif  // SRC_PUBSUB_IDATAPUBLISHER_HPP_

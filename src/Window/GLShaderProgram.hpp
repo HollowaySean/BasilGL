@@ -15,6 +15,7 @@
 #include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
 #include <Basil/Data.hpp>
+#include <Basil/PubSub.hpp>
 
 namespace basil {
 

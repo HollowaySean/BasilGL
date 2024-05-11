@@ -1,7 +1,7 @@
 #ifndef SRC_WINDOW_IPANE_HPP_
 #define SRC_WINDOW_IPANE_HPP_
 
-#include <Basil/Data.hpp>
+#include <Basil/PubSub.hpp>
 
 namespace basil {
 

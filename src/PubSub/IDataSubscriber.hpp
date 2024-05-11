@@ -1,5 +1,5 @@
-#ifndef SRC_DATA_IDATASUBSCRIBER_HPP_
-#define SRC_DATA_IDATASUBSCRIBER_HPP_
+#ifndef SRC_PUBSUB_IDATASUBSCRIBER_HPP_
+#define SRC_PUBSUB_IDATASUBSCRIBER_HPP_
 
 #include <any>
 
@@ -14,4 +14,4 @@ class IDataSubscriber {
 
 }  // namespace basil
 
-#endif  // SRC_DATA_IDATASUBSCRIBER_HPP_
+#endif  // SRC_PUBSUB_IDATASUBSCRIBER_HPP_

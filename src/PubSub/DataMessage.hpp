@@ -1,10 +1,8 @@
-#ifndef SRC_DATA_DATAMESSAGE_HPP_
-#define SRC_DATA_DATAMESSAGE_HPP_
+#ifndef SRC_PUBSUB_DATAMESSAGE_HPP_
+#define SRC_PUBSUB_DATAMESSAGE_HPP_
 
 #include <any>
-
-#include "ShaderUniformModel.hpp"
-#include "UserInputModel.hpp"
+#include <optional>
 
 namespace basil {
 
@@ -28,4 +26,4 @@ class DataMessage {
 
 }  // namespace basil
 
-#endif  // SRC_DATA_DATAMESSAGE_HPP_
+#endif  // SRC_PUBSUB_DATAMESSAGE_HPP_

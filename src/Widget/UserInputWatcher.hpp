@@ -12,10 +12,9 @@ namespace basil {
 
 // TODO(sholloway): Documentation
 // TODO(sholloway): Test coverage
-// TODO(sholloway): Fix data passing system
 // TODO(sholloway): Publish input data
 // TODO(sholloway): Also fix test case prefixes while you're at it
-// TODO(sholloway): And fix PubSub for BasilApp, WindowView should not be the hub
+// TODO(sholloway): And fix PubSub for BasilApp
 class UserInputWatcher : public  IBasilWidget,
                          public  IBuildable<UserInputWatcher>,
                          private IBasilContextConsumer {
