@@ -2,7 +2,7 @@
 #define TST_APP_APPTESTUTILS_HPP_
 
 #include "App/IBasilWidget.hpp"
-#include "Data/PubSubTestUtils.hpp"
+#include "PubSub/PubSubTestUtils.hpp"
 #include "Process/ProcessTestUtils.hpp"
 
 namespace basil {

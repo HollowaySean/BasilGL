@@ -1,9 +1,9 @@
-#ifndef TST_DATA_PUBSUBTESTUTILS_HPP_
-#define TST_DATA_PUBSUBTESTUTILS_HPP_
+#ifndef TST_PUBSUB_PUBSUBTESTUTILS_HPP_
+#define TST_PUBSUB_PUBSUBTESTUTILS_HPP_
 
-#include "Data/DataMessage.hpp"
-#include "Data/IDataPublisher.hpp"
-#include "Data/IDataSubscriber.hpp"
+#include "PubSub/DataMessage.hpp"
+#include "PubSub/IDataPublisher.hpp"
+#include "PubSub/IDataSubscriber.hpp"
 #include "Data/ShaderUniformModel.hpp"
 
 namespace basil {
@@ -29,4 +29,4 @@ class TestSubscriber : public IDataSubscriber {
 
 }  // namespace basil
 
-#endif  // TST_DATA_PUBSUBTESTUTILS_HPP_
+#endif  // TST_PUBSUB_PUBSUBTESTUTILS_HPP_

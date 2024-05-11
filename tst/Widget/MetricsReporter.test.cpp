@@ -11,7 +11,7 @@ using basil::MetricsReporter;
 using basil::MetricsObserver;
 using basil::ProcessInstance;
 
-TEST_CASE("Process_MetricsReporter_onLoop") {
+TEST_CASE("Widget_MetricsReporter_onLoop") {
     auto controller = std::make_shared<ProcessController>();
     MetricsObserver& observer = controller->getMetricsObserver();
 
@@ -62,7 +62,7 @@ TEST_CASE("Process_MetricsReporter_onLoop") {
     }
 }
 
-TEST_CASE("Process_MetricsReporter_Builder") {
+TEST_CASE("Widget_MetricsReporter_Builder") {
     SECTION("Builds MetricsReporter object") {
         auto reporter = MetricsReporter::Builder()
             .withLogLevel(LogLevel::DEBUG)

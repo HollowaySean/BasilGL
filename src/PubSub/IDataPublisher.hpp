@@ -14,7 +14,7 @@ namespace basil {
 class IDataPublisher {
  public:
     /** @brief Send data model to subscribers */
-    void publishData(const DataMessage& dataMessage) const {
+    virtual void publishData(const DataMessage& dataMessage) {
         for (auto subscriber : subscriptions) {
             subscriber->receiveData(dataMessage);
         }
