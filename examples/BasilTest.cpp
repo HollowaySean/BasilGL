@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
             .build())
         .withWidget(basil::UserInputWatcher::Builder()
             .build())
+        .withWidget(std::make_shared<basil::MousePositionUniformPublisher>())
         .build();
 
     basilApp->run();

@@ -13,7 +13,8 @@ namespace basil {
  *  via addWidget or added to builder with withWidget method.
  */
 class IBasilWidget : public IProcess,
-                     public IDataPublisher {
+                     public IDataPublisher,
+                     public IDataSubscriber {
  protected:
     IBasilWidget() = default;
     IBasilWidget(ProcessOrdinal ordinal, ProcessPrivilege privilege)

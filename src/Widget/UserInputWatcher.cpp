@@ -15,10 +15,7 @@ void UserInputWatcher::onStart() {
 void UserInputWatcher::onLoop() {
     checkMousePosition();
 
-    // TODO(sholloway): upload data model
-    if (model.getMouseButtonState(GLFW_MOUSE_BUTTON_LEFT).isPressed()) {
-        Logger::get().log("Clicked!!!!");
-    }
+    this->IDataPublisher::publishData(DataMessage(model));
 }
 
 void UserInputWatcher::initializeState() {
@@ -26,14 +23,23 @@ void UserInputWatcher::initializeState() {
     for (uint button = 0;
             button < UserInputModel::MOUSE_BUTTONS_COUNT;
             button++) {
+        #ifndef TEST_BUILD
         int state = glfwGetMouseButton(window, button);
+        #else
+        int state = GLFW_PRESS;
+        #endif
+
         model.setMouseButtonState(button, state, 0);
     }
 
     for (uint button = 0;
             button < UserInputModel::KEY_CODE_COUNT;
             button++) {
+        #ifndef TEST_BUILD
         int state = glfwGetKey(window, button);
+        #else
+        int state = GLFW_PRESS;
+        #endif
         model.setKeyState(button, state, 0);
     }
 
@@ -44,13 +50,23 @@ void UserInputWatcher::initializeState() {
 
 void UserInputWatcher::checkMousePosition() {
     double xPosition, yPosition;
+
+    #ifndef TEST_BUILD
     glfwGetCursorPos(window, &xPosition, &yPosition);
+    #else
+    xPosition = TEST_MOUSE_X_POSITION;
+    yPosition = TEST_MOUSE_Y_POSITION;
+    #endif
 
     model.setMousePosition(xPosition, yPosition);
 }
 
 void UserInputWatcher::checkIsMouseInWindow() {
+    #ifndef TEST_BUILD
     bool isInWindow = glfwGetWindowAttrib(window, GLFW_HOVERED);
+    #else
+    bool isInWindow = TEST_MOUSE_IS_IN_WINDOW;
+    #endif
 
     model.setIsMouseInWindow(isInWindow);
 }

@@ -22,6 +22,7 @@ class TestSubscriber : public IDataSubscriber {
  public:
     void receiveData(const DataMessage& message) override {
         hasReceivedData = true;
+        IDataSubscriber::receiveData(message);
     }
 
     bool hasReceivedData = false;

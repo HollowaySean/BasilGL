@@ -44,6 +44,12 @@ class UserInputWatcher : public  IBasilWidget,
         GLFWwindow* window, int button, int scancode, int action, int mods);
     static void onCursorEnter(
         GLFWwindow* window, int entered);
+
+    #ifdef TEST_BUILD
+    static inline const double TEST_MOUSE_X_POSITION = 1;
+    static inline const double TEST_MOUSE_Y_POSITION = 2;
+    static inline const bool TEST_MOUSE_IS_IN_WINDOW = true;
+    #endif
 };
 
 }  // namespace basil
