@@ -2,6 +2,7 @@
 #define INCLUDE_BASIL_WIDGET_HPP_
 
 #include "Widget/MetricsReporter.hpp"
+#include "Widget/MousePositionUniformPublisher.hpp"
 #include "Widget/UniformJSONFileWatcher.hpp"
 #include "Widget/UserInputWatcher.hpp"
 

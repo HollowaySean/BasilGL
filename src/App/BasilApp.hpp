@@ -71,8 +71,13 @@ class BasilApp : public IBuildable<BasilApp> {
     void autoWireWidget(std::shared_ptr<IBasilWidget> widget);
     void autoWireWidgetProcess(std::shared_ptr<IBasilWidget> widget);
     void autoWireWidgetPublisher(std::shared_ptr<IBasilWidget> widget);
+    void autoWireWidgetSubscriber(std::shared_ptr<IBasilWidget> widget);
 
     std::vector<std::shared_ptr<IBasilWidget>> widgets;
+
+
+    std::shared_ptr<IDataPassThrough> publisher
+        = std::make_shared<IDataPassThrough>();
 
     std::shared_ptr<ProcessController> processController;
     std::shared_ptr<WindowView> windowView;

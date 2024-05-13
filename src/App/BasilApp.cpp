@@ -52,6 +52,11 @@ void BasilApp::autoWire() {
 
 void BasilApp::autoWireWindowProcess() {
     if (!(this->processController && this->windowView)) return;
+
+    if (!(publisher->hasSubscriber(windowView))) {
+        publisher->subscribe(windowView);
+    }
+
     if (this->processController->hasProcess(windowView)) return;
 
     this->processController->addProcess(
@@ -68,13 +73,19 @@ void BasilApp::autoWireWidgetProcess(
 
 void BasilApp::autoWireWidgetPublisher(
         std::shared_ptr<IBasilWidget> widget) {
-    if (widget && !widget->hasSubscriber(windowView)) {
-        widget->subscribe(windowView);
+    if (widget && !publisher->hasSubscriber(widget)) {
+        publisher->subscribe(widget);
+    }
+
+    if (widget && !widget->hasSubscriber(publisher)) {
+        widget->subscribe(publisher);
     }
 }
 
 void BasilApp::autoWireWidget(
         std::shared_ptr<IBasilWidget> widget) {
+    autoWireWidgetPublisher(widget);
+
     if (processController) {
         autoWireWidgetProcess(widget);
     }
