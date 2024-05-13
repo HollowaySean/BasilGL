@@ -10,7 +10,7 @@ namespace basil {
 // TODO(sholloway): Documentation
 class IDataSubscriber {
  public:
-    virtual void receiveData(const DataMessage& message) = 0;
+    virtual void receiveData(const DataMessage& message) {}
 };
 
 }  // namespace basil

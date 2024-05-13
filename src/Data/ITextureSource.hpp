@@ -5,7 +5,7 @@
 
 #include <array>
 
-#include "TextureFormat.hpp"
+#include "GLTextureFormat.hpp"
 
 namespace basil {
 
@@ -41,7 +41,7 @@ class ITextureSource {
     virtual const void* data() = 0;
 
     /** @brief Struct containing OpenGL data type information. */
-    TextureFormat format;
+    GLTextureFormat format;
 
 #ifndef TEST_BUILD
 

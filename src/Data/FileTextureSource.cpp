@@ -21,7 +21,7 @@ FileTextureSource::FileTextureSource(std::filesystem::path filePath) {
     setWidth(width);
     setHeight(height);
 
-    format = TextureFormat::getTextureFormat<unsigned char, 4>();
+    format = GLTextureFormat::getTextureFormat<unsigned char, 4>();
 }
 
 const void* FileTextureSource::data() {
