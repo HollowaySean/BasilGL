@@ -39,7 +39,7 @@ class BasilContext {
 
     using BasilFrameBufferSizeFun = std::function<void(int, int)>;
     static void setGLFWFramebufferSizeCallback(
-        BasilFrameBufferSizeFun callback);
+        const BasilFrameBufferSizeFun& callback);
     static void setGLFWMouseButtonCallback(
         GLFWmousebuttonfun callback);
     static void setGLFWKeyCallback(

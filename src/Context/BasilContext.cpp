@@ -104,6 +104,7 @@ GLFWwindow* BasilContext::getGLFWWindow() {
 }
 
 void BasilContext::setGLFWCallbacks() {
+    // TODO(sholloway): See about testing for bad std::functions
     GLFWwindow* window = getGLFWWindow();
 
     glfwSetFramebufferSizeCallback(window, BasilContext::onFrameBufferResize);
@@ -117,7 +118,8 @@ void BasilContext::onFrameBufferResize(
 }
 
 void BasilContext::setGLFWFramebufferSizeCallback(
-        BasilFrameBufferSizeFun callback) {
+        const BasilFrameBufferSizeFun& callback) {
+    // TODO(sholloway): Is pass by reference correct here?
     framebufferCallbacks.push_back(callback);
 }
 

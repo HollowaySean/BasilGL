@@ -219,6 +219,7 @@ void GLShaderProgram::cacheUniform(
     }
 }
 
+// TODO(sholloway): Rename
 void GLShaderProgram::applyChachedUniforms() {
     for (auto uniformRecord : uniformCache) {
         visitUniform(uniformRecord.first, uniformRecord.second);
