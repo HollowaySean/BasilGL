@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -108,7 +109,7 @@ class WindowView :  public IProcess,
     void draw();
     void closeWindow();
 
-    static void resizeCallback(GLFWwindow* window, int width, int height);
+    void resizeCallback(GLFWwindow* window, int width, int height);
     void setCallbacks();
     void onResize(int width, int height);
 

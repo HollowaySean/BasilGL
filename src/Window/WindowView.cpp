@@ -127,13 +127,18 @@ void WindowView::closeWindow() {
 }
 
 void WindowView::resizeCallback(GLFWwindow* window, int width, int height) {
-    WindowView* windowView =
-        static_cast<WindowView*>(glfwGetWindowUserPointer(window));
-    windowView->onResize(width, height);
+    // TODO(sholloway): Clean this up
+    onResize(width, height);
 }
 
 void WindowView::setCallbacks() {
-    glfwSetFramebufferSizeCallback(glfwWindow, WindowView::resizeCallback);
+    using std::placeholders::_1;
+    using std::placeholders::_2;
+
+    BasilContext::BasilFrameBufferSizeFun func =
+        std::bind(&WindowView::onResize,
+            this, std::placeholders::_1, std::placeholders::_2);
+    BasilContext::setGLFWFramebufferSizeCallback(func);
 }
 
 WindowView::Builder&

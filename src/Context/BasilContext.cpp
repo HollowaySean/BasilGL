@@ -38,6 +38,9 @@ void BasilContext::initializeGLFWContext() {
     // Save success/failure flag and log errors
     hasInitialized &= glfwWindow != nullptr;
     logGLFWWindowError(glfwWindow);
+
+    // Set callback functions
+    setGLFWCallbacks();
 }
 
 void BasilContext::initializeGLEWContext() {
@@ -98,6 +101,24 @@ GLFWwindow* BasilContext::getGLFWWindow() {
 
     const BasilContext& instance = get();
     return instance.glfwWindow;
+}
+
+void BasilContext::setGLFWCallbacks() {
+    GLFWwindow* window = getGLFWWindow();
+
+    glfwSetFramebufferSizeCallback(window, BasilContext::onFrameBufferResize);
+}
+
+void BasilContext::onFrameBufferResize(
+        GLFWwindow* window, int width, int height) {
+    for (auto callback : framebufferCallbacks) {
+        callback(width, height);
+    }
+}
+
+void BasilContext::setGLFWFramebufferSizeCallback(
+        BasilFrameBufferSizeFun callback) {
+    framebufferCallbacks.push_back(callback);
 }
 
 }  // namespace basil
