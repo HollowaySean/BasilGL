@@ -20,7 +20,7 @@
 
 namespace basil {
 
-// TODO(sholloway): De-dupe error messages for missing uniforms
+// TODO(sholloway): Tests for de-duping errors
 
 /** @brief Container class for compiled and linked shader program. */
 class GLShaderProgram : public IDataSubscriber,
@@ -274,7 +274,7 @@ class GLShaderProgram : public IDataSubscriber,
     void visitUniform(const std::string& name, GLUniformVector value);
 
     void cacheUniform(const std::string& name, GLUniformVector values);
-    void applyChachedUniforms();
+    void applyCachedUniforms();
     std::map<std::string, GLUniformVector> uniformCache;
     std::set<std::string> errorHistory;
 

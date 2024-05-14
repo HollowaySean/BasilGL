@@ -42,7 +42,7 @@ void GLShaderProgram::compile() {
         hasLinked = true;
 
         // Restore any previously-applied uniforms
-        applyChachedUniforms();
+        applyCachedUniforms();
     }
 }
 
@@ -225,8 +225,7 @@ void GLShaderProgram::cacheUniform(
     }
 }
 
-// TODO(sholloway): Rename
-void GLShaderProgram::applyChachedUniforms() {
+void GLShaderProgram::applyCachedUniforms() {
     for (auto uniformRecord : uniformCache) {
         visitUniform(uniformRecord.first, uniformRecord.second);
     }

@@ -10,7 +10,7 @@
  */
 int main(int argc, char** argv) {
     auto exPath = std::filesystem::path(EXAMPLE_DIR);
-    auto fragmentPath = exPath / "shaders/test.frag";
+    auto fragmentPath = exPath / "shaders/test.shadertoy";
     auto jsonPath =     exPath / "assets/test.json";
 
     // TODO(sholloway): Easy way to inject uniforms

@@ -108,8 +108,6 @@ class WindowView :  public IProcess,
 
     void draw();
     void closeWindow();
-
-    void resizeCallback(GLFWwindow* window, int width, int height);
     void setCallbacks();
     void onResize(int width, int height);
 

@@ -62,7 +62,8 @@ class MousePositionUniformPublisher : public IBasilWidget {
         uniformModel.addUniformValue(iMouse, "iMouse");
 
         // TODO(sholloway): Rename class if also publishing this
-        std::vector<float> iResolution = { resolution_x, resolution_y };
+        // Also add explanation of third value
+        std::vector<float> iResolution = { resolution_x, resolution_y, 1.0 };
         uniformModel.addUniformValue(iResolution, "iResolution");
 
         this->IDataPublisher::publishData(DataMessage(uniformModel));

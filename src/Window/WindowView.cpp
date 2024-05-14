@@ -120,16 +120,12 @@ void WindowView::draw() {
 }
 
 void WindowView::closeWindow() {
+    // TODO(sholloway): De-duplicate logic between this and BasilContext
     setCurrentState(ProcessState::REQUEST_STOP);
 
     glfwDestroyWindow(glfwWindow);
 
     BasilContext::terminate();
-}
-
-void WindowView::resizeCallback(GLFWwindow* window, int width, int height) {
-    // TODO(sholloway): Clean this up
-    onResize(width, height);
 }
 
 void WindowView::setCallbacks() {
