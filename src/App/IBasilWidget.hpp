@@ -2,6 +2,7 @@
 #define SRC_APP_IBASILWIDGET_HPP_
 
 #include <memory>
+#include <string>
 
 #include <Basil/Process.hpp>
 #include <Basil/PubSub.hpp>
@@ -17,8 +18,14 @@ class IBasilWidget : public IProcess,
                      public IDataSubscriber {
  protected:
     IBasilWidget() = default;
-    IBasilWidget(ProcessOrdinal ordinal, ProcessPrivilege privilege)
-        : ordinal(ordinal), privilege(privilege) {}
+    IBasilWidget(ProcessOrdinal ordinal,
+            ProcessPrivilege privilege,
+            const std::string& defaultName = "")
+            : ordinal(ordinal), privilege(privilege) {
+        if (!defaultName.empty()) {
+            setProcessName(defaultName);
+        }
+    }
 
     friend class BasilApp;
 

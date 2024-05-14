@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
                 .build())
             .build())
         .withController(basil::ProcessController::Builder()
-            .withFrameCap(30)
+            .withFrameCap(60)
             .build())
         .withWidget(basil::UniformJSONFileWatcher::Builder()
             .withFilePath(jsonPath)

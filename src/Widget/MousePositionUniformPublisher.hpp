@@ -10,6 +10,10 @@ namespace basil {
 
 class MousePositionUniformPublisher : public IBasilWidget {
  public:
+    MousePositionUniformPublisher()
+        : IBasilWidget(ProcessOrdinal::EARLY, ProcessPrivilege::NONE,
+            "MousePositionUniformPublisher") {}
+
     void receiveData(const DataMessage& message) override {
         auto data = message.getData<UserInputModel>();
         if (data.has_value()) {
@@ -52,7 +56,10 @@ class MousePositionUniformPublisher : public IBasilWidget {
 
  private:
     UserInputModel model = UserInputModel();
-    float lastDown_x, lastDown_y, lastStart_x, lastStart_y;
+    float lastDown_x = 0;
+    float lastDown_y = 0;
+    float lastStart_x = 0;
+    float lastStart_y = 0;
     bool wasClicking = false;
 };
 

@@ -3,7 +3,9 @@
 namespace basil {
 
 UserInputWatcher::UserInputWatcher()
-        : IBasilWidget(ProcessOrdinal::EARLY, ProcessPrivilege::LOW) {
+        : IBasilWidget(ProcessOrdinal::EARLY,
+            ProcessPrivilege::LOW,
+            "UserInputWatcher") {
     window = BasilContext::getGLFWWindow();
 }
 
