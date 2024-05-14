@@ -10,11 +10,8 @@
 
 namespace basil {
 
+// TODO(sholloway): Add screen size watcher?
 // TODO(sholloway): Documentation
-// TODO(sholloway): Test coverage
-// TODO(sholloway): Publish input data
-// TODO(sholloway): Also fix test case prefixes while you're at it
-// TODO(sholloway): And fix PubSub for BasilApp
 class UserInputWatcher : public  IBasilWidget,
                          public  IBuildable<UserInputWatcher>,
                          private IBasilContextConsumer {

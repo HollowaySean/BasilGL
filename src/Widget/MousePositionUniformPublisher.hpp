@@ -20,28 +20,31 @@ class MousePositionUniformPublisher : public IBasilWidget {
     void onLoop() override {
         auto mouseState = model.getMousePosition();
 
-        float mouse_x = static_cast<float>(mouseState.xPosition);
         // TODO(sholloway): FIX THIS
-        float mouse_y = -1 * static_cast<float>(mouseState.yPosition) + 400;
-        float mouse_z, mouse_w;
+        float raw_x = static_cast<float>(mouseState.xPosition);
+        float raw_y = 400 - static_cast<float>(mouseState.yPosition);
+        bool isClicking = model.getIsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT);
 
-        Logger::get().log(fmt::format("X: {}, Y: {}", mouse_x, mouse_y));
+        if (isClicking) {
+            if (!wasClicking) {
+                lastStart_x = raw_x;
+                lastStart_y = raw_y;
+            }
 
-        bool isClicked = model.getIsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT);
-        bool isClicking = isClicked && !wasClicked;
-        wasClicked = isClicked;
-
-        if (isClicked) {
-            lastXPosition = mouse_x;
-            lastYPosition = mouse_y;
+            lastDown_x = raw_x;
+            lastDown_y = raw_y;
         }
-
-        mouse_z = isClicked ? lastXPosition : -1 * lastXPosition;
-        mouse_w = isClicking ? lastYPosition : -1 * lastYPosition;
+        wasClicking = isClicking;
 
         ShaderUniformModel uniformModel = ShaderUniformModel();
 
-        std::vector<float> iMouse = { mouse_x, mouse_y, mouse_z, mouse_w };
+        std::vector<float> iMouse =
+            {   lastDown_x,
+                lastDown_y,
+                (isClicking ? 1 : -1) * lastStart_x,
+                (isClicking ? 1 : -1) * lastStart_y
+            };
+
         uniformModel.addUniformValue(iMouse, "iMouse");
 
         this->IDataPublisher::publishData(DataMessage(uniformModel));
@@ -49,8 +52,8 @@ class MousePositionUniformPublisher : public IBasilWidget {
 
  private:
     UserInputModel model = UserInputModel();
-    float lastXPosition, lastYPosition = 0;
-    bool wasClicked = false;
+    float lastDown_x, lastDown_y, lastStart_x, lastStart_y;
+    bool wasClicking = false;
 };
 
 }  // namespace basil

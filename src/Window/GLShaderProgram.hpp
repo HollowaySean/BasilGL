@@ -19,6 +19,8 @@
 
 namespace basil {
 
+// TODO(sholloway): De-dupe error messages for missing uniforms
+
 /** @brief Container class for compiled and linked shader program. */
 class GLShaderProgram : public IDataSubscriber,
                         public IBuildable<GLShaderProgram>,
