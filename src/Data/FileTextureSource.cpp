@@ -15,6 +15,9 @@ FileTextureSource::FileTextureSource(std::filesystem::path filePath) {
         return;
     }
 
+    // Flips vertically to match GLFW coordinate system
+    stbi_set_flip_vertically_on_load(true);
+
     int width, height, channels;
     imageData = stbi_load(filePath.c_str(), &width, &height, &channels, 4);
 

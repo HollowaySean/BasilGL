@@ -9,11 +9,11 @@
  * @return Success code
  */
 int main(int argc, char** argv) {
-    auto fragmentPath =
-        std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
-    auto jsonPath =
-        std::filesystem::path(EXAMPLE_DIR) / "assets/test.json";
+    auto exPath = std::filesystem::path(EXAMPLE_DIR);
+    auto fragmentPath = exPath / "shaders/test.frag";
+    auto jsonPath =     exPath / "assets/test.json";
 
+    // TODO(sholloway): Easy way to inject uniforms
     auto basilApp = basil::BasilApp::Builder()
         .withWindow(basil::WindowView::Builder()
             .withTitle("My window")

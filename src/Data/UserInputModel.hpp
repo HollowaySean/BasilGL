@@ -24,6 +24,11 @@ class UserInputModel {
         bool isInWindow;
     };
 
+    struct WindowSize {
+        int width;
+        int height;
+    };
+
     KeyState getKeyState(uint keyCode) {
         return keyStates.at(keyCode);
     }
@@ -65,6 +70,15 @@ class UserInputModel {
         mousePosition.isInWindow = isMouseInWindow;
     }
 
+    WindowSize getWindowSize() {
+        return windowSize;
+    }
+
+    void setWindowSize(int width, int height) {
+        windowSize.width = width;
+        windowSize.height = height;
+    }
+
     static inline const uint MOUSE_BUTTONS_COUNT = 8;
     static inline const uint KEY_CODE_COUNT = 349;
 
@@ -78,6 +92,7 @@ class UserInputModel {
         keyStates   = { { {-1, 0} } };
 
     MousePosition mousePosition = { 0., 0., false };
+    WindowSize windowSize = { 0, 0 };
 };
 
 }  // namespace basil

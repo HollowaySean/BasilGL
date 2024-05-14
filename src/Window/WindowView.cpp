@@ -13,6 +13,7 @@ WindowView::WindowView(std::optional<WindowProps> windowProps) {
     this->windowProps = windowProps.value_or(WindowProps());
 
     // Set process name for IProcess
+    // TODO(sholloway): Make WindowView special case of IBasilWidget?
     IProcess::setProcessName("WindowView");
 
     // Create window
@@ -135,9 +136,8 @@ void WindowView::setCallbacks() {
     using std::placeholders::_1;
     using std::placeholders::_2;
 
-    BasilContext::BasilFrameBufferSizeFun func =
-        std::bind(&WindowView::onResize,
-            this, std::placeholders::_1, std::placeholders::_2);
+    BasilContext::BasilFrameBufferSizeFunc func =
+        std::bind(&WindowView::onResize, this, _1, _2);
     BasilContext::setGLFWFramebufferSizeCallback(func);
 }
 

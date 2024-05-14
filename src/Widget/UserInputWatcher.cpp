@@ -48,6 +48,9 @@ void UserInputWatcher::initializeState() {
     // Check mouse state on startup
     checkMousePosition();
     checkIsMouseInWindow();
+
+    // Check window size on startup
+    checkWindowSize();
 }
 
 void UserInputWatcher::checkMousePosition() {
@@ -73,25 +76,52 @@ void UserInputWatcher::checkIsMouseInWindow() {
     model.setIsMouseInWindow(isInWindow);
 }
 
+void UserInputWatcher::checkWindowSize() {
+    #ifndef TEST_BUILD
+    int width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+    #else
+    int width = TEST_WINDOW_WIDTH;
+    int height = TEST_WINDOW_HEIGHT;
+    #endif
+
+    model.setWindowSize(width, height);
+}
+
 void UserInputWatcher::setCallbacks() {
-    glfwSetMouseButtonCallback(window, onMouseButtonChange);
-    glfwSetKeyCallback(window, onKeyChange);
-    glfwSetCursorEnterCallback(window, onCursorEnter);
+    using std::placeholders::_1;
+    using std::placeholders::_2;
+    using std::placeholders::_3;
+    using std::placeholders::_4;
+
+    BasilContext::setGLFWMouseButtonCallback(
+        std::bind(&UserInputWatcher::onMouseButtonChange, this, _1, _2, _3));
+    BasilContext::setGLFWKeyCallback(
+        std::bind(&UserInputWatcher::onKeyChange, this, _1, _2, _3, _4));
+    BasilContext::setGLFWCursorEnterCallback(
+        std::bind(&UserInputWatcher::onCursorEnter, this, _1));
+    BasilContext::setGLFWFramebufferSizeCallback(
+        std::bind(&UserInputWatcher::onResize, this, _1, _2));
 }
 
 void UserInputWatcher::onMouseButtonChange(
-        GLFWwindow* window, int button, int action, int mods) {
+        int button, int action, int mods) {
     model.setMouseButtonState(button, action, mods);
 }
 
 void UserInputWatcher::onKeyChange(
-        GLFWwindow* window, int button, int scancode, int action, int mods) {
+        int button, int scancode, int action, int mods) {
     model.setKeyState(button, action, mods);
 }
 
 void UserInputWatcher::onCursorEnter(
-        GLFWwindow* window, int entered) {
+        int entered) {
     model.setIsMouseInWindow(entered > 0);
+}
+
+void UserInputWatcher::onResize(
+        int width, int height) {
+    model.setWindowSize(width, height);
 }
 
 }  // namespace basil

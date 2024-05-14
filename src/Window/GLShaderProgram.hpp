@@ -6,6 +6,7 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -275,6 +276,7 @@ class GLShaderProgram : public IDataSubscriber,
     void cacheUniform(const std::string& name, GLUniformVector values);
     void applyChachedUniforms();
     std::map<std::string, GLUniformVector> uniformCache;
+    std::set<std::string> errorHistory;
 
     GLuint ID = 0;
 

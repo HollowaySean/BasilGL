@@ -104,10 +104,12 @@ GLFWwindow* BasilContext::getGLFWWindow() {
 }
 
 void BasilContext::setGLFWCallbacks() {
-    // TODO(sholloway): See about testing for bad std::functions
     GLFWwindow* window = getGLFWWindow();
 
     glfwSetFramebufferSizeCallback(window, BasilContext::onFrameBufferResize);
+    glfwSetMouseButtonCallback(window, BasilContext::onMouseButton);
+    glfwSetKeyCallback(window, BasilContext::onKeyAction);
+    glfwSetCursorEnterCallback(window, BasilContext::onCursorEnter);
 }
 
 void BasilContext::onFrameBufferResize(
@@ -117,10 +119,46 @@ void BasilContext::onFrameBufferResize(
     }
 }
 
+void BasilContext::onMouseButton(
+        GLFWwindow* window, int button, int action, int mods) {
+    for (auto callback : mouseButtonCallbacks) {
+        callback(button, action, mods);
+    }
+}
+
+void BasilContext::onKeyAction(
+        GLFWwindow* window, int key, int scancode, int action, int mods) {
+    for (auto callback : keyCallbacks) {
+        callback(key, scancode, action, mods);
+    }
+}
+
+void BasilContext::onCursorEnter(
+        GLFWwindow* window, int entered) {
+    for (auto callback : cursorEnterCallbacks) {
+        callback(entered);
+    }
+}
+
 void BasilContext::setGLFWFramebufferSizeCallback(
-        const BasilFrameBufferSizeFun& callback) {
-    // TODO(sholloway): Is pass by reference correct here?
+        const BasilFrameBufferSizeFunc& callback) {
+    // TODO(sholloway): Is pass by const reference correct here?
     framebufferCallbacks.push_back(callback);
+}
+
+void BasilContext::setGLFWMouseButtonCallback(
+        const BasilMouseButtonFunc& callback) {
+    mouseButtonCallbacks.push_back(callback);
+}
+
+void BasilContext::setGLFWKeyCallback(
+        const BasilKeyFunc& callback) {
+    keyCallbacks.push_back(callback);
+}
+
+void BasilContext::setGLFWCursorEnterCallback(
+        const BasilCursorEnterFunc& callback) {
+    cursorEnterCallbacks.push_back(callback);
 }
 
 }  // namespace basil

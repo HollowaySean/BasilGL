@@ -92,12 +92,18 @@ void GLShaderProgram::detachShader(GLint shaderID) {
 
 GLint GLShaderProgram::getUniformLocation(const std::string& name) {
     GLint location = glGetUniformLocation(ID, name.c_str());
-    if (location == -1) {
-        logger.log(
-            fmt::format(LOG_UNIFORM_FAILURE, ID, name),
-            LogLevel::DEBUG);
+    if (location > -1) {
+        errorHistory.erase(name);
+        return location;
     }
-    return location;
+
+    if (errorHistory.contains(name)) return -1;
+
+    errorHistory.insert(name);
+    logger.log(
+        fmt::format(LOG_UNIFORM_FAILURE, ID, name),
+        LogLevel::DEBUG);
+    return -1;
 }
 
 template<>

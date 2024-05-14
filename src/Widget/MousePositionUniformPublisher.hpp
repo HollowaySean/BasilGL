@@ -23,18 +23,28 @@ class MousePositionUniformPublisher : public IBasilWidget {
 
     void onLoop() override {
         auto mouseState = model.getMousePosition();
+        auto windowSize = model.getWindowSize();
 
-        // TODO(sholloway): FIX THIS
+        float resolution_x = static_cast<float>(windowSize.width);
+        float resolution_y = static_cast<float>(windowSize.height);
+
         float raw_x = static_cast<float>(mouseState.xPosition);
-        float raw_y = 400 - static_cast<float>(mouseState.yPosition);
+        float raw_y;
+        if (INVERT_Y_AXIS) {
+            raw_y = resolution_y - static_cast<float>(mouseState.yPosition);
+        } else {
+            raw_y = static_cast<float>(mouseState.yPosition);
+        }
+
         bool isClicking = model.getIsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT);
+        bool isClickStart = isClicking && !wasClicking;
+
+        if (isClickStart) {
+            lastStart_x = raw_x;
+            lastStart_y = raw_y;
+        }
 
         if (isClicking) {
-            if (!wasClicking) {
-                lastStart_x = raw_x;
-                lastStart_y = raw_y;
-            }
-
             lastDown_x = raw_x;
             lastDown_y = raw_y;
         }
@@ -45,11 +55,15 @@ class MousePositionUniformPublisher : public IBasilWidget {
         std::vector<float> iMouse =
             {   lastDown_x,
                 lastDown_y,
-                (isClicking ? 1 : -1) * lastStart_x,
-                (isClicking ? 1 : -1) * lastStart_y
+                (isClicking   ? 1 : -1) * lastStart_x,
+                (isClickStart ? 1 : -1) * lastStart_y
             };
 
         uniformModel.addUniformValue(iMouse, "iMouse");
+
+        // TODO(sholloway): Rename class if also publishing this
+        std::vector<float> iResolution = { resolution_x, resolution_y };
+        uniformModel.addUniformValue(iResolution, "iResolution");
 
         this->IDataPublisher::publishData(DataMessage(uniformModel));
     }
@@ -61,6 +75,8 @@ class MousePositionUniformPublisher : public IBasilWidget {
     float lastStart_x = 0;
     float lastStart_y = 0;
     bool wasClicking = false;
+
+    bool INVERT_Y_AXIS = BASIL_INVERT_CURSOR_Y_AXIS;
 };
 
 }  // namespace basil

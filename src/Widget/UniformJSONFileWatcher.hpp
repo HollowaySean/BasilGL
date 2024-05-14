@@ -8,6 +8,7 @@
 
 namespace basil {
 
+// TODO(sholloway): Read texture filepaths from here
 /** @brief Utility class to hot reload shader uniforms from JSON file */
 class UniformJSONFileWatcher : public IBasilWidget,
                                public IBuildable<UniformJSONFileWatcher> {

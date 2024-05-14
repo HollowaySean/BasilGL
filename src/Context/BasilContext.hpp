@@ -37,15 +37,21 @@ class BasilContext {
     /** @return Pointer to GLFW window. */
     static GLFWwindow* getGLFWWindow();
 
-    using BasilFrameBufferSizeFun = std::function<void(int, int)>;
+    using BasilFrameBufferSizeFunc = std::function<void(int, int)>;
     static void setGLFWFramebufferSizeCallback(
-        const BasilFrameBufferSizeFun& callback);
+        const BasilFrameBufferSizeFunc& callback);
+
+    using BasilMouseButtonFunc = std::function<void(int, int, int)>;
     static void setGLFWMouseButtonCallback(
-        GLFWmousebuttonfun callback);
+        const BasilMouseButtonFunc& callback);
+
+    using BasilKeyFunc = std::function<void(int, int, int, int)>;
     static void setGLFWKeyCallback(
-        GLFWkeyfun callback);
+        const BasilKeyFunc& callback);
+
+    using BasilCursorEnterFunc = std::function<void(int)>;
     static void setGLFWCursorEnterCallback(
-        GLFWcursorenterfun callback);
+        const BasilCursorEnterFunc& callback);
 
 #ifdef TEST_BUILD
 
@@ -66,14 +72,14 @@ class BasilContext {
 
     GLFWwindow* glfwWindow = nullptr;
 
-    static inline std::vector<BasilFrameBufferSizeFun>
-        framebufferCallbacks = std::vector<BasilFrameBufferSizeFun>();
-    static std::vector<std::function<void(int, int, int)>>
-        mouseButtonCallbacks;
-    static std::vector<std::function<void(int, int, int, int)>>
-        keyCallbacks;
-    static std::vector<std::function<void(int)>>
-        cursorEnterCallbacks;
+    static inline std::vector<BasilFrameBufferSizeFunc>
+        framebufferCallbacks = std::vector<BasilFrameBufferSizeFunc>();
+    static inline std::vector<BasilMouseButtonFunc>
+        mouseButtonCallbacks = std::vector<BasilMouseButtonFunc>();
+    static inline std::vector<BasilKeyFunc>
+        keyCallbacks = std::vector<BasilKeyFunc>();
+    static inline std::vector<BasilCursorEnterFunc>
+        cursorEnterCallbacks = std::vector<BasilCursorEnterFunc>();
 
     void initializeGLFWContext();
     void initializeGLEWContext();

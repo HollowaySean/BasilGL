@@ -10,7 +10,7 @@
 
 namespace basil {
 
-// TODO(sholloway): Add screen size watcher?
+// TODO(sholloway): Consolidate with publisher widget?
 // TODO(sholloway): Documentation
 class UserInputWatcher : public  IBasilWidget,
                          public  IBuildable<UserInputWatcher>,
@@ -32,20 +32,25 @@ class UserInputWatcher : public  IBasilWidget,
     void setCallbacks();
     void checkMousePosition();
     void checkIsMouseInWindow();
+    void checkWindowSize();
 
-    static inline UserInputModel model = UserInputModel();
+    UserInputModel model = UserInputModel();
 
-    static void onMouseButtonChange(
-        GLFWwindow* window, int button, int action, int mods);
-    static void onKeyChange(
-        GLFWwindow* window, int button, int scancode, int action, int mods);
-    static void onCursorEnter(
-        GLFWwindow* window, int entered);
+    void onMouseButtonChange(
+        int button, int action, int mods);
+    void onKeyChange(
+        int button, int scancode, int action, int mods);
+    void onCursorEnter(
+        int entered);
+    void onResize(
+        int width, int height);
 
     #ifdef TEST_BUILD
     static inline const double TEST_MOUSE_X_POSITION = 1;
     static inline const double TEST_MOUSE_Y_POSITION = 2;
     static inline const bool TEST_MOUSE_IS_IN_WINDOW = true;
+    static inline const int TEST_WINDOW_WIDTH = 2;
+    static inline const int TEST_WINDOW_HEIGHT = 1;
     #endif
 };
 

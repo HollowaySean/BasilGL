@@ -64,5 +64,10 @@
     #define BASIL_DEFAULT_WINDOW_HEIGHT_TEST 1
 #endif
 
+#ifndef BASIL_INVERT_CURSOR_Y_AXIS
+    // Defaults to true to match UV coordinates with mouse coordinates
+    #define BASIL_INVERT_CURSOR_Y_AXIS true
+#endif
+
 
 #endif  // SRC_DEFINITIONS_HPP_
