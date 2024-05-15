@@ -10,7 +10,6 @@
 
 namespace basil {
 
-// TODO(sholloway): Consolidate with publisher widget?
 // TODO(sholloway): Documentation
 class UserInputWatcher : public  IBasilWidget,
                          public  IBuildable<UserInputWatcher>,
@@ -21,6 +20,8 @@ class UserInputWatcher : public  IBasilWidget,
     void onStart() override;
 
     void onLoop() override;
+
+    UserInputModel& getModel() { return model; }
 
 #ifndef TEST_BUILD
 

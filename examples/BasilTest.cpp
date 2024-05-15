@@ -32,9 +32,7 @@ int main(int argc, char** argv) {
             .withRegularity(120)
             .withLogLevel(basil::LogLevel::INFO)
             .build())
-        .withWidget(basil::UserInputWatcher::Builder()
-            .build())
-        .withWidget(std::make_shared<basil::MousePositionUniformPublisher>())
+        .withWidget(std::make_shared<basil::ShadertoyUniformPublisher>())
         .build();
 
     basilApp->run();

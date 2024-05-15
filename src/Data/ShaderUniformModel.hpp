@@ -33,8 +33,8 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
      *  @param value        New value
      *  @returns            Whether uniform with ID was found. */
     bool setUniformValue(
-        unsigned int uniformID,
-        GLUniformType value);
+        GLUniformType value,
+        unsigned int uniformID);
 
     /** @brief Gets value of uniform with identifier, if found */
     std::optional<GLUniform> getUniform(
@@ -60,6 +60,10 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
     std::optional<GLTextureUniform> getTexture(
         unsigned int textureID) const;
 
+    // TODO(sholloway): Documentation & testing
+    bool setTextureSource(std::shared_ptr<IGLTexture> texture,
+        unsigned int textureID);
+
     /** @returns Reference to map containing all textures in model */
     const std::map<unsigned int, GLTextureUniform>& getTextures()
         const { return textures; }
@@ -77,7 +81,10 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
     };
 
  private:
+    std::map<std::string, unsigned int> uniformIDs;
     std::map<unsigned int, GLUniform> uniforms;
+
+    std::map<std::string, unsigned int> textureIDs;
     std::map<unsigned int, GLTextureUniform> textures;
     static inline unsigned int nextID = 0;
 };
