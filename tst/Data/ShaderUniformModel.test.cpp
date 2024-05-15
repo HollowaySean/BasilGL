@@ -41,10 +41,10 @@ TEST_CASE("Data_ShaderUniformModel_setUniformValue") {
     unsigned int intID = dataModel.addUniformValue(-15, "myInt");
     unsigned int uintID = dataModel.addUniformValue(2, "myUint");
 
-    dataModel.setUniformValue(boolID, true);
-    dataModel.setUniformValue(floatID, 1.5f);
-    dataModel.setUniformValue(intID, -15);
-    dataModel.setUniformValue(uintID, 2);
+    dataModel.setUniformValue(true, boolID);
+    dataModel.setUniformValue(1.5f, floatID);
+    dataModel.setUniformValue(-15, intID);
+    dataModel.setUniformValue(2, uintID);
 
     SECTION("Updates uniform values") {
         CHECK(dataModel.getUniform(boolID).value().value
@@ -58,11 +58,11 @@ TEST_CASE("Data_ShaderUniformModel_setUniformValue") {
     }
 
     SECTION("Returns true if uniform exists") {
-        CHECK(dataModel.setUniformValue(boolID, true));
+        CHECK(dataModel.setUniformValue(true, boolID));
     }
 
     SECTION("Returns false if uniform does not exist") {
-        CHECK_FALSE(dataModel.setUniformValue(-1, true));
+        CHECK_FALSE(dataModel.setUniformValue(true, -1));
     }
 }
 

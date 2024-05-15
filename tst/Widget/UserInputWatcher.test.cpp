@@ -10,7 +10,7 @@ using basil::TestSubscriber;
 
 TEST_CASE("Widget_UserInputWatcher_onStart") { BASIL_LOCK_TEST
     auto widget = UserInputWatcher();
-    auto& model = UserInputWatcher::model;
+    auto& model = widget.getModel();
 
     widget.onStart();
 

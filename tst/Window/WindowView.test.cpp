@@ -210,6 +210,14 @@ TEST_CASE("Window_WindowView_setTopPane") {
 }
 
 TEST_CASE("Window_WindowView_onResize") {
+    SECTION("Resizes main window") {
+        WindowView window = WindowView();
+        window.onResize(60, 30);
+
+        CHECK(window.windowProps.width == 60);
+        CHECK(window.windowProps.height == 30);
+    }
+
     SECTION("Calls resize function on top pane") {
         WindowView window = WindowView();
 
@@ -221,16 +229,6 @@ TEST_CASE("Window_WindowView_onResize") {
         window.onResize(50, 25);
         CHECK(testPane->paneProps.width == 50);
         CHECK(testPane->paneProps.height == 25);
-    }
-}
-
-TEST_CASE("Window_WindowView_resizeCallback") { BASIL_LOCK_TEST
-    SECTION("Calls resize function on window") {
-        WindowView window = WindowView();
-        WindowView::resizeCallback(window.glfwWindow, 60, 30);
-
-        CHECK(window.windowProps.width == 60);
-        CHECK(window.windowProps.height == 30);
     }
 }
 
