@@ -28,6 +28,13 @@ TEST_CASE("Window_GLShader_getShaderFromFile") { BASIL_LOCK_TEST
         CHECK(shader.hasCompiledSuccessfully());
     }
 
+    SECTION("Adds prefix & suffix to Shadertoy file") {
+        shader.getShaderFromFile(shaderToyPath);
+
+        CHECK(shader.rawShaderCode.starts_with(GLShader::SHADERTOY_PREFIX));
+        CHECK(shader.rawShaderCode.ends_with(GLShader::SHADERTOY_SUFFIX));
+    }
+
     SECTION("Prints error for missing file") {
         shader.getShaderFromFile(invalidPath);
 

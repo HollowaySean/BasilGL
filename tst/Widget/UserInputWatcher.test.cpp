@@ -8,7 +8,7 @@
 using basil::UserInputWatcher;
 using basil::TestSubscriber;
 
-TEST_CASE("Widget_UserInputWatcher_onStart") { BASIL_LOCK_TEST
+TEST_CASE("Widget_UserInputWatcher_onStart") {
     auto widget = UserInputWatcher();
     auto& model = widget.getModel();
 
@@ -24,7 +24,7 @@ TEST_CASE("Widget_UserInputWatcher_onStart") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Widget_UserInputWatcher_onLoop") { BASIL_LOCK_TEST
+TEST_CASE("Widget_UserInputWatcher_onLoop") {
     auto widget = UserInputWatcher();
 
     SECTION("Updates mouse state") {
@@ -48,5 +48,45 @@ TEST_CASE("Widget_UserInputWatcher_onLoop") { BASIL_LOCK_TEST
         CHECK_FALSE(subscriber->hasReceivedData);
         widget.onLoop();
         CHECK(subscriber->hasReceivedData);
+    }
+}
+
+TEST_CASE("Widget_UserInputWatcher_onMouseButtonChange") {
+    auto widget = UserInputWatcher();
+    auto& model = widget.getModel();
+
+    SECTION("Sets mouse button state") {
+        widget.onMouseButtonChange(
+            GLFW_MOUSE_BUTTON_1, GLFW_PRESS, GLFW_MOD_ALT);
+
+        auto state = model.getMouseButtonState(GLFW_MOUSE_BUTTON_1);
+        CHECK(state.pressState == GLFW_PRESS);
+        CHECK(state.modifiers == GLFW_MOD_ALT);
+    }
+}
+
+TEST_CASE("Widget_UserInputWatcher_onKeyChange") {
+    auto widget = UserInputWatcher();
+    auto& model = widget.getModel();
+
+    SECTION("Sets key state") {
+        widget.onKeyChange(
+            GLFW_KEY_0, 0, GLFW_RELEASE, GLFW_MOD_CAPS_LOCK);
+
+        auto state = model.getKeyState(GLFW_KEY_0);
+        CHECK(state.pressState == GLFW_RELEASE);
+        CHECK(state.modifiers == GLFW_MOD_CAPS_LOCK);
+    }
+}
+
+
+TEST_CASE("Widget_UserInputWatcher_onCursorEnter") {
+    auto widget = UserInputWatcher();
+    auto& model = widget.getModel();
+
+    SECTION("Sets boolean indicating cursor state") {
+        widget.onCursorEnter(GLFW_TRUE);
+
+        CHECK(model.getIsMouseInWindow());
     }
 }

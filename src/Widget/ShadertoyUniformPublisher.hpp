@@ -12,15 +12,30 @@
 
 namespace basil {
 
+// TODO(sholloway): Builder patterns
+
+/** @brief IBasilWidget that reads and publishes common shader uniforms
+ *  used by Shadertoy shaders */
 class ShadertoyUniformPublisher : public IBasilWidget {
  public:
+    /** @brief Initialize ShadertoyUniformPublisher */
     ShadertoyUniformPublisher();
 
+    /** @brief Initialize uniforms and start child widgets */
     void onStart() override;
 
+    /** @brief Update uniforms, run child widgets, and publish model */
     void onLoop() override;
 
+    /** @returns Reference to ShaderUniformModel */
+    ShaderUniformModel& getModel() {
+        return uniformModel;
+    }
+
+#ifndef TEST_BUILD
+
  private:
+#endif
     void initializeUniforms();
 
     void setResolution();

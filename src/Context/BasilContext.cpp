@@ -142,7 +142,6 @@ void BasilContext::onCursorEnter(
 
 void BasilContext::setGLFWFramebufferSizeCallback(
         const BasilFrameBufferSizeFunc& callback) {
-    // TODO(sholloway): Is pass by const reference correct here?
     framebufferCallbacks.push_back(callback);
 }
 

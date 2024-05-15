@@ -18,6 +18,7 @@ TEST_CASE("Data_ShaderUniformModel_addUniformValue") {
     dataModel.addUniformValue(true, "myBool");
     dataModel.addUniformValue(1.5f, "myFloat");
     dataModel.addUniformValue(-15, "myInt");
+    dataModel.addUniformValue(5, "myUint");
     dataModel.addUniformValue(2, "myUint");
 
     SECTION("Saves uniforms to container") {
@@ -77,19 +78,59 @@ TEST_CASE("Data_ShaderUniformModel_getUniform") {
 
 TEST_CASE("Data_ShaderUniformModel_addTexture") {
     std::vector<float> values = { 1, 2, 3, 4 };
-    auto texture = GLTexture1D::Builder()
+    auto texture1 = GLTexture1D::Builder()
+        .fromSpan<float>(values)
+        .build();
+    auto texture2 = GLTexture1D::Builder()
         .fromSpan<float>(values)
         .build();
 
     auto dataModel = ShaderUniformModel();
-    int ID = dataModel.addTexture(texture, "texture1");
+    int ID1 = dataModel.addTexture(texture1, "texture1");
+    int ID2 = dataModel.addTexture(texture2, "texture1");
 
     SECTION("Updates texture list") {
+        CHECK(ID1 == ID2);
+        CHECK(dataModel.getTextures().size() == 1);
+
         auto resultFromName = dataModel.getTexture("texture1");
-        CHECK(resultFromName.value().texture == texture);
+        CHECK(resultFromName.value().texture == texture2);
+
+        auto resultFromID = dataModel.getTexture(ID1);
+        CHECK(resultFromID.value().texture == texture2);
+    }
+}
+
+TEST_CASE("Data_ShaderUniformModel_setTextureSource") {
+    std::vector<float> values = { 1, 2, 3, 4 };
+    auto texture1 = GLTexture1D::Builder()
+        .fromSpan<float>(values)
+        .build();
+    auto texture2 = GLTexture1D::Builder()
+        .fromSpan<float>(values)
+        .build();
+
+    auto dataModel = ShaderUniformModel();
+
+    SECTION("Updates texture source if it exists") {
+        int ID = dataModel.addTexture(texture1, "texture1");
+        bool didSet = dataModel.setTextureSource(texture2, ID);
+
+        CHECK(didSet);
+        CHECK(dataModel.getTextures().size() == 1);
+
+        auto resultFromName = dataModel.getTexture("texture1");
+        CHECK(resultFromName.value().texture == texture2);
 
         auto resultFromID = dataModel.getTexture(ID);
-        CHECK(resultFromID.value().texture == texture);
+        CHECK(resultFromID.value().texture == texture2);
+    }
+
+    SECTION("Returns false if texture does not exist") {
+        bool didSet = dataModel.setTextureSource(texture1, -1);
+
+        CHECK_FALSE(didSet);
+        CHECK(dataModel.getTextures().size() == 0);
     }
 }
 

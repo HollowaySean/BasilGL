@@ -10,17 +10,21 @@
 
 namespace basil {
 
-// TODO(sholloway): Documentation
+/** @brief IBasilWidget which monitors and publishes user inputs */
 class UserInputWatcher : public  IBasilWidget,
                          public  IBuildable<UserInputWatcher>,
                          private IBasilContextConsumer {
  public:
+    /** @brief Initialize UserInputWatcher */
     UserInputWatcher();
 
+    /** @brief Initialize input state model */
     void onStart() override;
 
+    /** @brief Update mouse position and publish state */
     void onLoop() override;
 
+    /** @returns Reference to UserInputModel */
     UserInputModel& getModel() { return model; }
 
 #ifndef TEST_BUILD

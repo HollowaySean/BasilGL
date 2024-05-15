@@ -4,6 +4,8 @@
 #include <functional>
 #include <memory>
 
+#include <Basil/Logging.hpp>
+
 #include "FrameClock.hpp"
 #include "IProcess.hpp"
 #include "ProcessEnums.hpp"
@@ -123,6 +125,8 @@ class ProcessController : private IBuildable<ProcessController> {
 
  private:
 #endif
+    Logger& logger = Logger::get();
+
     void sleepForRestOfFrame(FrameClock::time_point frameStartTime);
     void runProcessMethod(
         std::function<void(std::shared_ptr<IProcess>)> method);

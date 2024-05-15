@@ -61,9 +61,6 @@ class WindowView :  public IProcess,
     /** @brief Makes window visible. */
     void onStart() override;
 
-    /** @brief Removes GLFW context and closes window. */
-    void onStop() override;
-
     /** @brief Main loop function for IProcess parent class. */
     void onLoop() override;
 

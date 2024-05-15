@@ -6,15 +6,19 @@
 
 namespace basil {
 
-// TODO(sholloway): Create interface for watcher/model pattern?
+/** @brief IBasilWidget that records and publishes frame and process time */
 class SystemTimeWatcher : public IBasilWidget {
  public:
+    /** @brief Initialize SystemTimeWatcher */
     SystemTimeWatcher();
 
+    /** @brief Initialize SystemTimeModel values */
     void onStart() override;
 
+    /** @brief Update model based on FrameClock */
     void onLoop() override;
 
+    /** @returns Reference to SystemTimeModel */
     SystemTimeModel& getModel() {
         return model;
     }

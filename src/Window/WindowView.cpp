@@ -13,7 +13,6 @@ WindowView::WindowView(std::optional<WindowProps> windowProps) {
     this->windowProps = windowProps.value_or(WindowProps());
 
     // Set process name for IProcess
-    // TODO(sholloway): Make WindowView special case of IBasilWidget?
     IProcess::setProcessName("WindowView");
 
     // Create window
@@ -47,11 +46,6 @@ void WindowView::onStart() {
     glfwIconifyWindow(glfwWindow);
     #endif
     glfwShowWindow(glfwWindow);
-}
-
-void WindowView::onStop() {
-    // TODO(sholloway): This should be in ProcessController or similar
-    logger.log("Stopping loop", LogLevel::INFO);
 }
 
 void WindowView::setTopPane(std::shared_ptr<IPane> newTopPane) {
@@ -120,7 +114,6 @@ void WindowView::draw() {
 }
 
 void WindowView::closeWindow() {
-    // TODO(sholloway): De-duplicate logic between this and BasilContext
     setCurrentState(ProcessState::REQUEST_STOP);
 
     glfwDestroyWindow(glfwWindow);

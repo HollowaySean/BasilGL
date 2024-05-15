@@ -13,7 +13,6 @@ int main(int argc, char** argv) {
     auto fragmentPath = exPath / "shaders/test.shadertoy";
     auto jsonPath =     exPath / "assets/test.json";
 
-    // TODO(sholloway): Easy way to inject uniforms
     auto basilApp = basil::BasilApp::Builder()
         .withWindow(basil::WindowView::Builder()
             .withTitle("My window")

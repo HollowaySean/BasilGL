@@ -51,6 +51,8 @@ unsigned int ShaderUniformModel::addTexture(
     if (textureIDs.contains(name)) {
         unsigned int ID = textureIDs.at(name);
         setTextureSource(texture, ID);
+
+        return ID;
     }
 
     textures.emplace(nextID, GLTextureUniform { texture, name, nextID });

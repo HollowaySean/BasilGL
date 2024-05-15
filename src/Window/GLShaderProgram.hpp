@@ -20,8 +20,6 @@
 
 namespace basil {
 
-// TODO(sholloway): Tests for de-duping errors
-
 /** @brief Container class for compiled and linked shader program. */
 class GLShaderProgram : public IDataSubscriber,
                         public IBuildable<GLShaderProgram>,

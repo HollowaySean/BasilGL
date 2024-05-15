@@ -61,3 +61,14 @@ TEST_CASE("Data_UserInputModel_setIsMouseInWindow") {
         CHECK(model.getMousePosition().isInWindow);
     }
 }
+
+TEST_CASE("Data_UserInputModel_setWindowSize") {
+    auto model = UserInputModel();
+
+    SECTION("Saves window size to model") {
+        model.setWindowSize(50, 100);
+
+        CHECK(model.getWindowSize().width == 50);
+        CHECK(model.getWindowSize().height == 100);
+    }
+}

@@ -7,9 +7,10 @@
 
 namespace basil {
 
-// TODO(sholloway): Documentation
+/** @brief Interface for PubSub subscriber */
 class IDataSubscriber {
  public:
+    /** @brief Virtual method to receive DataMessage object */
     virtual void receiveData(const DataMessage& message) {}
 };
 

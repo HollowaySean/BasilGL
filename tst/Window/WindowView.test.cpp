@@ -181,18 +181,6 @@ TEST_CASE("Window_WindowView_onStart") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_WindowView_onStop") {
-    Logger& logger = Logger::get();
-
-    SECTION("Logs closing message") {
-        WindowView window = WindowView();
-
-        window.onStop();
-        CHECK(logger.getLastLevel() == LogLevel::INFO);
-        CHECK(logger.getLastOutput() == "Stopping loop");
-    }
-}
-
 TEST_CASE("Window_WindowView_setTopPane") {
     auto window = WindowView();
     auto props = window.getTopPaneProps();
