@@ -31,7 +31,8 @@ int main(int argc, char** argv) {
             .withRegularity(120)
             .withLogLevel(basil::LogLevel::INFO)
             .build())
-        .withWidget(std::make_shared<basil::ShadertoyUniformPublisher>())
+        .withWidget(basil::ShadertoyUniformPublisher::Builder()
+            .build())
         .build();
 
     basilApp->run();

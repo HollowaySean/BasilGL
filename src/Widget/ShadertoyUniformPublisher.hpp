@@ -16,7 +16,8 @@ namespace basil {
 
 /** @brief IBasilWidget that reads and publishes common shader uniforms
  *  used by Shadertoy shaders */
-class ShadertoyUniformPublisher : public IBasilWidget {
+class ShadertoyUniformPublisher : public IBasilWidget,
+                                  public IBuildable<ShadertoyUniformPublisher> {
  public:
     /** @brief Initialize ShadertoyUniformPublisher */
     ShadertoyUniformPublisher();
@@ -31,6 +32,9 @@ class ShadertoyUniformPublisher : public IBasilWidget {
     ShaderUniformModel& getModel() {
         return uniformModel;
     }
+
+    /** @brief Builder pattern for ShadertoyUniformPublisher */
+    class Builder : public IBuilder<ShadertoyUniformPublisher> {};
 
 #ifndef TEST_BUILD
 

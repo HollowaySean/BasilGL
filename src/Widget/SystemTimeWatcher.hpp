@@ -7,7 +7,8 @@
 namespace basil {
 
 /** @brief IBasilWidget that records and publishes frame and process time */
-class SystemTimeWatcher : public IBasilWidget {
+class SystemTimeWatcher : public IBasilWidget,
+                          public IBuildable<SystemTimeWatcher> {
  public:
     /** @brief Initialize SystemTimeWatcher */
     SystemTimeWatcher();
@@ -22,6 +23,9 @@ class SystemTimeWatcher : public IBasilWidget {
     SystemTimeModel& getModel() {
         return model;
     }
+
+    /** @brief Builder pattern for SystemTimeWatcher */
+    class Builder : public IBuilder<SystemTimeWatcher> {};
 
  private:
     SystemTimeModel model = SystemTimeModel();

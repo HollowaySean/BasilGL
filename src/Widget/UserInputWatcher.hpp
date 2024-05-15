@@ -27,6 +27,9 @@ class UserInputWatcher : public  IBasilWidget,
     /** @returns Reference to UserInputModel */
     UserInputModel& getModel() { return model; }
 
+    /** @brief Builder pattern for UserInputWatcher */
+    class Builder : public IBuildable<UserInputWatcher> {};
+
 #ifndef TEST_BUILD
 
  private:
