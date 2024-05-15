@@ -74,6 +74,10 @@ class BasilApp : public IBuildable<BasilApp> {
 
     std::vector<std::shared_ptr<IBasilWidget>> widgets;
 
+
+    std::shared_ptr<IDataPassThrough> publisher
+        = std::make_shared<IDataPassThrough>();
+
     std::shared_ptr<ProcessController> processController;
     std::shared_ptr<WindowView> windowView;
 };

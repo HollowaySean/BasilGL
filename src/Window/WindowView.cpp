@@ -48,11 +48,6 @@ void WindowView::onStart() {
     glfwShowWindow(glfwWindow);
 }
 
-void WindowView::onStop() {
-    // TODO(sholloway): This should be in ProcessController or similar
-    logger.log("Stopping loop", LogLevel::INFO);
-}
-
 void WindowView::setTopPane(std::shared_ptr<IPane> newTopPane) {
     if (topPane) {
         IDataPublisher::unsubscribe(topPane);
@@ -126,14 +121,13 @@ void WindowView::closeWindow() {
     BasilContext::terminate();
 }
 
-void WindowView::resizeCallback(GLFWwindow* window, int width, int height) {
-    WindowView* windowView =
-        static_cast<WindowView*>(glfwGetWindowUserPointer(window));
-    windowView->onResize(width, height);
-}
-
 void WindowView::setCallbacks() {
-    glfwSetFramebufferSizeCallback(glfwWindow, WindowView::resizeCallback);
+    using std::placeholders::_1;
+    using std::placeholders::_2;
+
+    BasilContext::BasilFrameBufferSizeFunc func =
+        std::bind(&WindowView::onResize, this, _1, _2);
+    BasilContext::setGLFWFramebufferSizeCallback(func);
 }
 
 WindowView::Builder&

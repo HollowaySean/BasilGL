@@ -42,7 +42,7 @@ void GLShaderProgram::compile() {
         hasLinked = true;
 
         // Restore any previously-applied uniforms
-        applyChachedUniforms();
+        applyCachedUniforms();
     }
 }
 
@@ -92,12 +92,18 @@ void GLShaderProgram::detachShader(GLint shaderID) {
 
 GLint GLShaderProgram::getUniformLocation(const std::string& name) {
     GLint location = glGetUniformLocation(ID, name.c_str());
-    if (location == -1) {
-        logger.log(
-            fmt::format(LOG_UNIFORM_FAILURE, ID, name),
-            LogLevel::DEBUG);
+    if (location > -1) {
+        errorHistory.erase(name);
+        return location;
     }
-    return location;
+
+    if (errorHistory.contains(name)) return -1;
+
+    errorHistory.insert(name);
+    logger.log(
+        fmt::format(LOG_UNIFORM_FAILURE, ID, name),
+        LogLevel::DEBUG);
+    return -1;
 }
 
 template<>
@@ -219,14 +225,18 @@ void GLShaderProgram::cacheUniform(
     }
 }
 
-void GLShaderProgram::applyChachedUniforms() {
+void GLShaderProgram::applyCachedUniforms() {
     for (auto uniformRecord : uniformCache) {
         visitUniform(uniformRecord.first, uniformRecord.second);
     }
 }
 
-void GLShaderProgram::receiveData(const ShaderUniformModel& dataModel) {
-    auto uniforms = dataModel.getUniforms();
+void GLShaderProgram::receiveData(const DataMessage& message) {
+    auto data = message.getData<ShaderUniformModel>();
+    if (!data.has_value()) return;
+    auto model = data.value();
+
+    auto uniforms = model.getUniforms();
     for (auto pair : uniforms) {
         auto uniform = pair.second;
         const std::string& name = uniform.name;
@@ -236,7 +246,7 @@ void GLShaderProgram::receiveData(const ShaderUniformModel& dataModel) {
             }, uniform.value);
     }
 
-    auto modelTextures = dataModel.getTextures();
+    auto modelTextures = model.getTextures();
     for (auto pair : modelTextures) {
         auto texture = pair.second;
         addTexture(texture.name, texture.texture);

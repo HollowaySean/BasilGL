@@ -1,5 +1,5 @@
 #include <Basil/App.hpp>
-#include <Basil/Utility.hpp>
+#include <Basil/Widget.hpp>
 
 /**
  * @brief Entry point function.
@@ -9,10 +9,9 @@
  * @return Success code
  */
 int main(int argc, char** argv) {
-    auto fragmentPath =
-        std::filesystem::path(EXAMPLE_DIR) / "shaders/test.frag";
-    auto jsonPath =
-        std::filesystem::path(EXAMPLE_DIR) / "assets/test.json";
+    auto exPath = std::filesystem::path(EXAMPLE_DIR);
+    auto fragmentPath = exPath / "shaders/test.shadertoy";
+    auto jsonPath =     exPath / "assets/test.json";
 
     auto basilApp = basil::BasilApp::Builder()
         .withWindow(basil::WindowView::Builder()
@@ -23,7 +22,7 @@ int main(int argc, char** argv) {
                 .build())
             .build())
         .withController(basil::ProcessController::Builder()
-            .withFrameCap(30)
+            .withFrameCap(60)
             .build())
         .withWidget(basil::UniformJSONFileWatcher::Builder()
             .withFilePath(jsonPath)
@@ -31,6 +30,8 @@ int main(int argc, char** argv) {
         .withWidget(basil::MetricsReporter::Builder()
             .withRegularity(120)
             .withLogLevel(basil::LogLevel::INFO)
+            .build())
+        .withWidget(basil::ShadertoyUniformPublisher::Builder()
             .build())
         .build();
 

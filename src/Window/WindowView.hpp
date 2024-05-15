@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -49,7 +50,7 @@ struct WindowProps {
  * public facade.
  */
 class WindowView :  public IProcess,
-                    public IDataPassThrough<ShaderUniformModel>,
+                    public IDataPassThrough,
                     public IBuildable<WindowView>,
                     private IBasilContextDependency {
  public:
@@ -59,9 +60,6 @@ class WindowView :  public IProcess,
 
     /** @brief Makes window visible. */
     void onStart() override;
-
-    /** @brief Removes GLFW context and closes window. */
-    void onStop() override;
 
     /** @brief Main loop function for IProcess parent class. */
     void onLoop() override;
@@ -107,8 +105,6 @@ class WindowView :  public IProcess,
 
     void draw();
     void closeWindow();
-
-    static void resizeCallback(GLFWwindow* window, int width, int height);
     void setCallbacks();
     void onResize(int width, int height);
 

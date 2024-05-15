@@ -2,14 +2,14 @@
 
 namespace basil {
 
+UniformJSONFileWatcher::UniformJSONFileWatcher() : IBasilWidget(
+    ProcessOrdinal::EARLY,
+    ProcessPrivilege::NONE,
+    "UniformJSONFileWatcher") {}
+
 UniformJSONFileWatcher::UniformJSONFileWatcher(std::filesystem::path filePath)
         : UniformJSONFileWatcher() {
     setFilePath(filePath);
-}
-
-UniformJSONFileWatcher::UniformJSONFileWatcher()
-    : IBasilWidget(ProcessOrdinal::EARLY, ProcessPrivilege::NONE) {
-        this->IProcess::setProcessName("UniformJSONFileWatcher");
 }
 
 void UniformJSONFileWatcher::updateModel() {
@@ -23,7 +23,8 @@ void UniformJSONFileWatcher::updateModel() {
             FileDataLoader::modelFromJSON(filePath);
 
         if (model.has_value()) {
-            publishData(model.value());
+            auto message = DataMessage(model.value());
+            publishData(message);
         }
     }
 }

@@ -103,8 +103,8 @@ TEST_CASE("App_BasilApp_autoWire") {
         CHECK(controller->hasProcess(widget));
     }
 
-    SECTION("Subscribes window to widgets") {
-        CHECK(widget->hasSubscriber(window));
+    SECTION("Subscribes window to app publisher") {
+        CHECK(basilApp.publisher->hasSubscriber(window));
     }
 }
 
@@ -131,7 +131,7 @@ TEST_CASE("App_BasilApp_Builder") {
         CHECK(controller->hasProcess(widget));
     }
 
-    SECTION("Subscribes window to widgets") {
-        CHECK(widget->hasSubscriber(window));
+    SECTION("Subscribes app to widget") {
+        CHECK(widget->hasSubscriber(basilApp->publisher));
     }
 }

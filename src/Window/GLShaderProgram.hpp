@@ -6,6 +6,7 @@
 
 #include <map>
 #include <memory>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -15,11 +16,12 @@
 #include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
 #include <Basil/Data.hpp>
+#include <Basil/PubSub.hpp>
 
 namespace basil {
 
 /** @brief Container class for compiled and linked shader program. */
-class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
+class GLShaderProgram : public IDataSubscriber,
                         public IBuildable<GLShaderProgram>,
                         private IBasilContextConsumer {
  public:
@@ -151,7 +153,7 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
 
     /** @brief Updates shaders and textures from ShaderUniformModel object.
      *  Overridden method from IDataSubscriber base class. */
-    void receiveData(const ShaderUniformModel& dataModel) override;
+    void receiveData(const DataMessage& message) override;
 
     class Builder : public IBuilder<GLShaderProgram> {
      public:
@@ -270,8 +272,9 @@ class GLShaderProgram : public IDataSubscriber<ShaderUniformModel>,
     void visitUniform(const std::string& name, GLUniformVector value);
 
     void cacheUniform(const std::string& name, GLUniformVector values);
-    void applyChachedUniforms();
+    void applyCachedUniforms();
     std::map<std::string, GLUniformVector> uniformCache;
+    std::set<std::string> errorHistory;
 
     GLuint ID = 0;
 

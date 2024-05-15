@@ -1,5 +1,5 @@
-#ifndef SRC_UTILITY_UNIFORMJSONFILEWATCHER_HPP_
-#define SRC_UTILITY_UNIFORMJSONFILEWATCHER_HPP_
+#ifndef SRC_WIDGET_UNIFORMJSONFILEWATCHER_HPP_
+#define SRC_WIDGET_UNIFORMJSONFILEWATCHER_HPP_
 
 #include <filesystem>
 #include <memory>
@@ -47,4 +47,4 @@ class UniformJSONFileWatcher : public IBasilWidget,
 
 }  // namespace basil
 
-#endif  // SRC_UTILITY_UNIFORMJSONFILEWATCHER_HPP_
+#endif  // SRC_WIDGET_UNIFORMJSONFILEWATCHER_HPP_

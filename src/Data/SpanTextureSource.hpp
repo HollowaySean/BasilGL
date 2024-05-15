@@ -25,12 +25,12 @@ class SpanTextureSource : public ITextureSource<dimension>,
  public:
     /** @brief Creates empty container. */
     SpanTextureSource() {
-        this->format = TextureFormat::getTextureFormat<T, channels>();
+        this->format = GLTextureFormat::getTextureFormat<T, channels>();
     }
 
     /** @brief Creates container from std::span source. */
     explicit SpanTextureSource(std::span<T> source) : source(source) {
-        this->format = TextureFormat::getTextureFormat<T, channels>();
+        this->format = GLTextureFormat::getTextureFormat<T, channels>();
     }
 
     /** @brief Pointer to const T* data source, as const void*. */

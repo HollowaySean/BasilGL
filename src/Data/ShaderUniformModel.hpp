@@ -11,16 +11,14 @@
 
 #include <Basil/Builder.hpp>
 
-#include "IDataModel.hpp"
 #include "GLUniform.hpp"
 #include "GLTextureUniform.hpp"
 
 namespace basil {
 
-/** @brief Implementation of IDataModel to maintain
+/** @brief Data model used to maintain
  *  uniforms for GLShaderProgram objects. */
-class ShaderUniformModel : public IDataModel,
-                           public IBuildable<ShaderUniformModel> {
+class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
  public:
     /** @brief Add uniform to model
      *  @param value        Value of uniform
@@ -31,12 +29,12 @@ class ShaderUniformModel : public IDataModel,
         const std::string& uniformName);
 
     /** @brief Updates uniform in model
-     *  @param uniformID    ID of uniform to set
      *  @param value        New value
-     *  @returns            Whether uniform with ID was found. */
+     *  @param uniformID    ID of uniform to set
+     *  @returns            Whether uniform with ID was found */
     bool setUniformValue(
-        unsigned int uniformID,
-        GLUniformType value);
+        GLUniformType value,
+        unsigned int uniformID);
 
     /** @brief Gets value of uniform with identifier, if found */
     std::optional<GLUniform> getUniform(
@@ -50,9 +48,19 @@ class ShaderUniformModel : public IDataModel,
     const std::map<unsigned int, GLUniform>& getUniforms()
         const { return uniforms; }
 
-    /** @brief Add texture object to model */
+    /** @brief Add texture object to model
+     *  @param texture      IGLTexture pointer
+     *  @param name         Name to use in shader
+     *  @returns            UID for string-less lookup */
     unsigned int addTexture(std::shared_ptr<IGLTexture> texture,
         const std::string& name);
+
+    /** @brief Updates texture in model
+     *  @param texture      IGLTexture pointer
+     *  @param textureID    ID of texture to set
+     *  @returns            Whether texture with ID was found */
+    bool setTextureSource(std::shared_ptr<IGLTexture> texture,
+        unsigned int textureID);
 
     /** @brief Gets value of texture with identifier, if found */
     std::optional<GLTextureUniform> getTexture(
@@ -79,7 +87,10 @@ class ShaderUniformModel : public IDataModel,
     };
 
  private:
+    std::map<std::string, unsigned int> uniformIDs;
     std::map<unsigned int, GLUniform> uniforms;
+
+    std::map<std::string, unsigned int> textureIDs;
     std::map<unsigned int, GLTextureUniform> textures;
     static inline unsigned int nextID = 0;
 };

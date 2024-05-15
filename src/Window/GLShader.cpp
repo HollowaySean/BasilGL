@@ -82,6 +82,10 @@ void GLShader::getShaderFromString(const std::string &shaderCode) {
 
 void GLShader::getShaderFromFile(
         std::filesystem::path path) {
+    // Read .st or .shadertoy files as ShaderToy format
+    bool shouldTranslateShaderToy =
+        path.extension() == ".st" || path.extension() == ".shadertoy";
+
     // Read shader code from file
     std::ifstream shaderFile;
     shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -96,6 +100,14 @@ void GLShader::getShaderFromFile(
             fmt::format(LOG_READ_SUCCESS),
             LogLevel::DEBUG);
         hasCompiled = true;
+
+
+        if (shouldTranslateShaderToy) {
+            logger.log(
+               fmt::format(LOG_TRANSLATE_SHADERTOY),
+                LogLevel::DEBUG);
+            rawShaderCode = SHADERTOY_PREFIX + rawShaderCode + SHADERTOY_SUFFIX;
+        }
     } catch(std::ifstream::failure& error) {
         logger.log(
             fmt::format(LOG_READ_FAILURE, path.string()),

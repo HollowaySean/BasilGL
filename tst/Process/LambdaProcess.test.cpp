@@ -1,10 +1,10 @@
 #include <catch.hpp>
 
-#include <Basil/Utility.hpp>
+#include "Process/LambdaProcess.hpp"
 
 using basil::LambdaProcess;
 
-TEST_CASE("Utility_LambdaProcess_onLoop") {
+TEST_CASE("Process_LambdaProcess_onLoop") {
     bool hasRun = false;
     std::function<void()> lambda = [&]() { hasRun = true; };
 

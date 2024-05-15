@@ -20,6 +20,8 @@ inline std::filesystem::path vertexPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.vert";
 inline std::filesystem::path fragmentPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/test.frag";
+inline std::filesystem::path shaderToyPath =
+    std::filesystem::path(TEST_DIR) / "Window/assets/test.shadertoy";
 inline std::filesystem::path badFragmentPath =
     std::filesystem::path(TEST_DIR) / "Window/assets/invalid-frag";
 inline std::filesystem::path validPath =

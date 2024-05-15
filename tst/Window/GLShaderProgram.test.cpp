@@ -5,6 +5,7 @@
 #include "GLTestUtils.hpp"
 
 using basil::BasilContextLock;
+using basil::DataMessage;
 using basil::IGLTexture;
 using basil::Logger;
 using basil::LogLevel;
@@ -313,7 +314,8 @@ void verifyDataModelScalar(
         GLShaderProgram* program, ShaderUniformModel* dataModel,
         const std::string& name, T value) {
     dataModel->addUniformValue(value, name);
-    program->receiveData(*dataModel);
+    auto message = DataMessage(*dataModel);
+    program->receiveData(message);
 
     GLint location =
         glGetUniformLocation(program->getID(), name.c_str());
@@ -332,7 +334,8 @@ void verifyDataModelVector(
     }
 
     dataModel->addUniformValue(input, name);
-    program->receiveData(*dataModel);
+    auto message = DataMessage(*dataModel);
+    program->receiveData(message);
 
     GLint location =
         glGetUniformLocation(program->getID(), name.c_str());
@@ -416,8 +419,9 @@ TEST_CASE("Window_GLShaderProgram_receiveData") { BASIL_LOCK_TEST
         auto model = ShaderUniformModel();
         std::shared_ptr<IGLTexture> texture = std::make_shared<GLTexture2D>();
         model.addTexture(texture, "testTex");
+        auto message = DataMessage(model);
 
-        shaderProgram.receiveData(model);
+        shaderProgram.receiveData(message);
         CHECK(shaderProgram.textures.at(0) == texture);
     }
 }

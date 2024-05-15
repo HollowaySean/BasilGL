@@ -68,6 +68,20 @@ class GLShader : private IBasilContextConsumer {
         "float mask = mod(coord.x + mod(coord.y, 2.0), 2.0);\n"
         "FragColor = mask * highColor; }";
 
+    static inline const std::string SHADERTOY_PREFIX =
+        "#version 450 core\n"
+        "out vec4 st_translate_fragColor;\n"
+        "uniform vec3 iResolution;\n"
+        "uniform vec4 iMouse;\n"
+        "#line 1\n";
+        // "uniform float iTime;\n"
+        // "uniform float iTimeDelta;\n"
+        // "uniform float iFrame;\n"
+        // "uniform vec4 iDate;\n"
+
+    static inline const std::string SHADERTOY_SUFFIX =
+        "void main() { mainImage(st_translate_fragColor, gl_FragCoord.xy); }";
+
 #ifndef TEST_BUILD
 
  private:
@@ -87,6 +101,9 @@ class GLShader : private IBasilContextConsumer {
         "See error message:";
     LOGGER_FORMAT LOG_READ_SUCCESS =
         "Shader file read successfully.";
+
+    LOGGER_FORMAT LOG_TRANSLATE_SHADERTOY =
+        "Translating Shadertoy file to portable GLSL.";
 
     LOGGER_FORMAT LOG_COMPILE_FAILURE =
         "Shader (ID{:02}) - Unable to compile {} shader. "

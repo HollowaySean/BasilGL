@@ -2,9 +2,10 @@
 #define SRC_APP_IBASILWIDGET_HPP_
 
 #include <memory>
+#include <string>
 
-#include <Basil/Data.hpp>
 #include <Basil/Process.hpp>
+#include <Basil/PubSub.hpp>
 
 namespace basil {
 
@@ -13,11 +14,18 @@ namespace basil {
  *  via addWidget or added to builder with withWidget method.
  */
 class IBasilWidget : public IProcess,
-                     public IDataPublisher<ShaderUniformModel> {
+                     public IDataPublisher,
+                     public IDataSubscriber {
  protected:
     IBasilWidget() = default;
-    IBasilWidget(ProcessOrdinal ordinal, ProcessPrivilege privilege)
-        : ordinal(ordinal), privilege(privilege) {}
+    IBasilWidget(ProcessOrdinal ordinal,
+            ProcessPrivilege privilege,
+            const std::string& defaultName = "")
+            : ordinal(ordinal), privilege(privilege) {
+        if (!defaultName.empty()) {
+            setProcessName(defaultName);
+        }
+    }
 
     friend class BasilApp;
 

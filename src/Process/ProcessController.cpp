@@ -125,6 +125,8 @@ void ProcessController::run() {
 
 void ProcessController::stop() {
     currentState = ProcessControllerState::STOPPING;
+
+    logger.log("Stopping loop", LogLevel::INFO);
 }
 
 void ProcessController::kill() {
