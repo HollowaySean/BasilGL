@@ -13,7 +13,6 @@ void BasilApp::run() {
     processController->run();
 }
 
-
 void BasilApp::stop() {
     if (!processController) {
         logControllerMissing();
@@ -22,7 +21,6 @@ void BasilApp::stop() {
 
     processController->stop();
 }
-
 
 void BasilApp::kill() {
     if (!processController) {
