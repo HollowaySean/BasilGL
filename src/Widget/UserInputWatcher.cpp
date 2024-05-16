@@ -2,11 +2,13 @@
 
 namespace basil {
 
-UserInputWatcher::UserInputWatcher()
-        : IBasilWidget(ProcessOrdinal::EARLY,
-            ProcessPrivilege::LOW,
-            "UserInputWatcher") {
-    window = BasilContext::getGLFWWindow();
+UserInputWatcher::UserInputWatcher() : IBasilWidget({
+        "ShadertoyUniformPublisher",
+        ProcessOrdinal::EARLY,
+        ProcessPrivilege::LOW,
+        WidgetPubSubPrefs::PUBLISH_ONLY
+    }) {
+        window = BasilContext::getGLFWWindow();
 }
 
 void UserInputWatcher::onStart() {

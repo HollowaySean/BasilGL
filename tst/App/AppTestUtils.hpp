@@ -10,7 +10,12 @@ namespace basil {
 class TestWidget :  public TestProcess,
                     public IBasilWidget {
  public:
-    TestWidget() = default;
+    TestWidget() : IBasilWidget({
+        "TestWidget",
+        ProcessOrdinal::MAIN,
+        ProcessPrivilege::NONE,
+        WidgetPubSubPrefs::ALL
+    }) {}
     void onLoop() override { TestProcess::onLoop(); }
 };
 

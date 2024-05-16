@@ -8,7 +8,6 @@
 
 #include <Basil/Builder.hpp>
 #include <Basil/Process.hpp>
-#include <Basil/Window.hpp>
 
 namespace basil {
 
@@ -35,11 +34,6 @@ class BasilApp : public IBuildable<BasilApp> {
         this->processController = controller;
     }
 
-    /** @brief Sets pointer to WindowView for app. */
-    void setWindow(std::shared_ptr<WindowView> window) {
-        this->windowView = window;
-    }
-
     void addWidget(std::shared_ptr<IBasilWidget> widget);
 
     /** @brief Builder pattern for BasilApp. */
@@ -47,9 +41,6 @@ class BasilApp : public IBuildable<BasilApp> {
      public:
         /** @brief Sets ProcessController */
         Builder& withController(std::shared_ptr<ProcessController> controller);
-
-        /** @brief Sets WindowView */
-        Builder& withWindow(std::shared_ptr<WindowView> window);
 
         /** @brief Adds IBasilWidget to App */
         Builder& withWidget(std::shared_ptr<IBasilWidget> widget);
@@ -79,7 +70,6 @@ class BasilApp : public IBuildable<BasilApp> {
         = std::make_shared<IDataPassThrough>();
 
     std::shared_ptr<ProcessController> processController;
-    std::shared_ptr<WindowView> windowView;
 };
 
 }  // namespace basil

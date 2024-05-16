@@ -4,14 +4,17 @@
 #include <Basil/Window.hpp>
 
 #include "GLTestUtils.hpp"
+#include "PubSub/PubSubTestUtils.hpp"
 
 using basil::BasilContext;
 using basil::BasilContextLock;
+using basil::DataMessage;
 using basil::Logger;
 using basil::LogLevel;
 using basil::IPane;
 using basil::PaneProps;
 using basil::ProcessState;
+using basil::TestSubscriber;
 using basil::WindowProps;
 using basil::WindowView;
 
@@ -178,6 +181,22 @@ TEST_CASE("Window_WindowView_onStart") { BASIL_LOCK_TEST
         window.onStart();
         visible = glfwGetWindowAttrib(window.glfwWindow, GLFW_VISIBLE);
         CHECK(visible == GLFW_TRUE);
+    }
+}
+
+TEST_CASE("Window_WindowView_receiveData") { BASIL_LOCK_TEST
+    SECTION("Passes data on to subscriber") {
+        WindowView window = WindowView();
+        auto message = DataMessage(15);
+        std::shared_ptr<TestSubscriber> subscriber
+            = std::make_shared<TestSubscriber>();
+
+        CHECK_FALSE(subscriber->hasReceivedData);
+
+        window.subscribe(subscriber);
+        window.receiveData(message);
+
+        CHECK(subscriber->hasReceivedData);
     }
 }
 

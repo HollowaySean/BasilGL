@@ -12,8 +12,6 @@
 
 namespace basil {
 
-// TODO(sholloway): Builder patterns
-
 /** @brief IBasilWidget that reads and publishes common shader uniforms
  *  used by Shadertoy shaders */
 class ShadertoyUniformPublisher : public IBasilWidget,
