@@ -2,10 +2,12 @@
 
 namespace basil {
 
-UniformJSONFileWatcher::UniformJSONFileWatcher() : IBasilWidget(
-    ProcessOrdinal::EARLY,
-    ProcessPrivilege::NONE,
-    "UniformJSONFileWatcher") {}
+UniformJSONFileWatcher::UniformJSONFileWatcher() : IBasilWidget({
+        "UniformJSONFileWatcher",
+        ProcessOrdinal::EARLY,
+        ProcessPrivilege::NONE,
+        WidgetPubSubPrefs::PUBLISH_ONLY
+    }) {}
 
 UniformJSONFileWatcher::UniformJSONFileWatcher(std::filesystem::path filePath)
         : UniformJSONFileWatcher() {

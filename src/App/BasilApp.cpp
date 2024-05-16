@@ -43,24 +43,9 @@ void BasilApp::logControllerMissing() {
 }
 
 void BasilApp::autoWire() {
-    autoWireWindowProcess();
-
     for (auto widget : widgets) {
         autoWireWidget(widget);
     }
-}
-
-void BasilApp::autoWireWindowProcess() {
-    if (!(this->processController && this->windowView)) return;
-
-    if (!(publisher->hasSubscriber(windowView))) {
-        publisher->subscribe(windowView);
-    }
-
-    if (this->processController->hasProcess(windowView)) return;
-
-    this->processController->addProcess(
-        windowView, ProcessPrivilege::HIGH);
 }
 
 void BasilApp::autoWireWidgetProcess(
@@ -73,11 +58,21 @@ void BasilApp::autoWireWidgetProcess(
 
 void BasilApp::autoWireWidgetPublisher(
         std::shared_ptr<IBasilWidget> widget) {
-    if (widget && !publisher->hasSubscriber(widget)) {
+    bool shouldSubscribe =
+        widget
+        && !publisher->hasSubscriber(widget)
+        && widget->shouldSubscribeToApp();
+
+    if (shouldSubscribe) {
         publisher->subscribe(widget);
     }
 
-    if (widget && !widget->hasSubscriber(publisher)) {
+    bool shouldPublish =
+        widget
+        && !widget->hasSubscriber(publisher)
+        && widget->shouldPublishToApp();
+
+    if (shouldPublish) {
         widget->subscribe(publisher);
     }
 }
@@ -89,23 +84,12 @@ void BasilApp::autoWireWidget(
     if (processController) {
         autoWireWidgetProcess(widget);
     }
-
-    if (windowView) {
-        autoWireWidgetPublisher(widget);
-    }
 }
 
 BasilApp::Builder&
 BasilApp::Builder::withController(
         std::shared_ptr<ProcessController> controller) {
     impl->setController(controller);
-    return *this;
-}
-
-BasilApp::Builder&
-BasilApp::Builder::withWindow(
-        std::shared_ptr<WindowView> window) {
-    impl->setWindow(window);
     return *this;
 }
 

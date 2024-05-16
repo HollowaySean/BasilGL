@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <Basil/App.hpp>
+#include <Basil/Data.hpp>
 
 namespace basil {
 

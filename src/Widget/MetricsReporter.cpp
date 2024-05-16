@@ -2,10 +2,12 @@
 
 namespace basil {
 
-MetricsReporter::MetricsReporter() : IBasilWidget(
-    ProcessOrdinal::LATE,
-    ProcessPrivilege::NONE,
-    "MetricsReporter") {}
+MetricsReporter::MetricsReporter() : IBasilWidget({
+        "MetricsReporter",
+        ProcessOrdinal::LATE,
+        ProcessPrivilege::NONE,
+        WidgetPubSubPrefs::NONE
+    }) {}
 
 void MetricsReporter::onLoop() {
     if (controller == nullptr) return;

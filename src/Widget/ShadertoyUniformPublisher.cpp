@@ -2,10 +2,12 @@
 
 namespace basil {
 
-ShadertoyUniformPublisher::ShadertoyUniformPublisher() : IBasilWidget(
-    ProcessOrdinal::EARLY,
-    ProcessPrivilege::NONE,
-    "ShadertoyUniformPublisher") {}
+ShadertoyUniformPublisher::ShadertoyUniformPublisher() : IBasilWidget({
+        "ShadertoyUniformPublisher",
+        ProcessOrdinal::EARLY,
+        ProcessPrivilege::NONE,
+        WidgetPubSubPrefs::PUBLISH_ONLY
+    }) {}
 
 void ShadertoyUniformPublisher::onStart() {
     timeWatcher.onStart();

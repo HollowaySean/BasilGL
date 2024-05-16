@@ -5,6 +5,7 @@
 #include <utility>
 
 #include <Basil/App.hpp>
+#include <Basil/Context.hpp>
 
 #include "Data/UserInputModel.hpp"
 

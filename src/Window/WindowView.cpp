@@ -9,14 +9,17 @@
 
 namespace basil {
 
-WindowView::WindowView(std::optional<WindowProps> windowProps) {
+WindowView::WindowView(std::optional<WindowProps> windowProps) : IBasilWidget({
+        "WindowView",
+        ProcessOrdinal::MAIN,
+        ProcessPrivilege::HIGH,
+        WidgetPubSubPrefs::SUBSCRIBE_ONLY
+    }) {
     this->windowProps = windowProps.value_or(WindowProps());
-
-    // Set process name for IProcess
-    IProcess::setProcessName("WindowView");
 
     // Create window
     glfwWindow = BasilContext::getGLFWWindow();
+    windowIsOpen = true;
 
     // Set window properties
     setWindowSize(this->windowProps.width, this->windowProps.height);
@@ -46,6 +49,10 @@ void WindowView::onStart() {
     glfwIconifyWindow(glfwWindow);
     #endif
     glfwShowWindow(glfwWindow);
+}
+
+void WindowView::receiveData(const DataMessage& message) {
+    publishData(message);
 }
 
 void WindowView::setTopPane(std::shared_ptr<IPane> newTopPane) {
@@ -116,9 +123,10 @@ void WindowView::draw() {
 void WindowView::closeWindow() {
     setCurrentState(ProcessState::REQUEST_STOP);
 
-    glfwDestroyWindow(glfwWindow);
-
-    BasilContext::terminate();
+    if (windowIsOpen) {
+        glfwDestroyWindow(glfwWindow);
+        windowIsOpen = false;
+    }
 }
 
 void WindowView::setCallbacks() {

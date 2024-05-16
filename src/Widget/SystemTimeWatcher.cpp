@@ -2,10 +2,12 @@
 
 namespace basil {
 
-SystemTimeWatcher::SystemTimeWatcher() : IBasilWidget(
-    ProcessOrdinal::EARLY,
-    ProcessPrivilege::NONE,
-    "SystemTimeWatcher") {}
+SystemTimeWatcher::SystemTimeWatcher() : IBasilWidget({
+        "SystemTimeWatcher",
+        ProcessOrdinal::EARLY,
+        ProcessPrivilege::NONE,
+        WidgetPubSubPrefs::PUBLISH_ONLY
+    }) {}
 
 void SystemTimeWatcher::onStart() {
     startTime = FrameClock::now();

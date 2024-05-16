@@ -10,6 +10,7 @@
 #include <string>
 #include <vector>
 
+#include <Basil/App.hpp>
 #include <Basil/Builder.hpp>
 #include <Basil/Context.hpp>
 #include <Basil/Process.hpp>
@@ -49,13 +50,14 @@ struct WindowProps {
  * @brief Outer window containing all UI elements and providing simple
  * public facade.
  */
-class WindowView :  public IProcess,
-                    public IDataPassThrough,
+class WindowView :  public IBasilWidget,
                     public IBuildable<WindowView>,
-                    private IBasilContextDependency {
+                    private IBasilContextConsumer {
  public:
     /** @param windowProps Optional struct containing window options. */
     explicit WindowView(std::optional<WindowProps> windowProps = std::nullopt);
+
+    /** @brief Deconstructor which destroys GLFW window. */
     ~WindowView();
 
     /** @brief Makes window visible. */
@@ -63,6 +65,9 @@ class WindowView :  public IProcess,
 
     /** @brief Main loop function for IProcess parent class. */
     void onLoop() override;
+
+    /** @brief Passthrough override for PubSub. */
+    void receiveData(const DataMessage& message) override;
 
     /** @brief Sets top-level pane for window. */
     void setTopPane(std::shared_ptr<IPane> newTopPane);
@@ -112,6 +117,8 @@ class WindowView :  public IProcess,
 
     BasilContext& context = BasilContext::get();
     Logger& logger = Logger::get();
+
+    bool windowIsOpen = false;
 };
 
 }  // namespace basil
