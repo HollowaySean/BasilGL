@@ -5,6 +5,7 @@
 #include "Widget/ShadertoyUniformPublisher.hpp"
 #include "Widget/UniformJSONFileWatcher.hpp"
 #include "Widget/UserInputWatcher.hpp"
+#include "Widget/StopAfterTime.hpp"
 #include "Widget/SystemTimeWatcher.hpp"
 
 #endif  // INCLUDE_BASIL_WIDGET_HPP_

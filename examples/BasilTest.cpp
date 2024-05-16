@@ -29,10 +29,13 @@ int main(int argc, char** argv) {
             .withFilePath(jsonPath)
             .build())
         .withWidget(basil::MetricsReporter::Builder()
-            .withRegularity(120)
+            .withRegularity(50)
             .withLogLevel(basil::LogLevel::INFO)
             .build())
         .withWidget(basil::ShadertoyUniformPublisher::Builder()
+            .build())
+        .withWidget(basil::StopAfterTime::Builder()
+            .setTimeUntilStop(5)
             .build())
         .build();
 
