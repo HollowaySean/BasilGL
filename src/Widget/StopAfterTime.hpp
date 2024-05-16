@@ -5,58 +5,42 @@
 
 namespace basil {
 
-// TODO(sholloway): Documentation
 // TODO(sholloway): Test
+
+/** @brief Widget which kills ProcessController after a set number
+ *  of frames or after a set amount of time. */
 class StopAfterTime : public IBasilWidget,
                       public IBuildable<StopAfterTime> {
  public:
-    StopAfterTime() : IBasilWidget({
-        "StopAfterTime",
-        ProcessOrdinal::LATE,
-        ProcessPrivilege::HIGH,
-        WidgetPubSubPrefs::NONE
-    }) {}
+    /** @brief Initializes StopAfterTime widget */
+    StopAfterTime();
 
-    void setFramesUntilStop(unsigned int numberOfFrames) {
-        framesToRun = numberOfFrames;
-    }
+    /** @brief Set number of frames to run before stopping */
+    void setFramesUntilStop(unsigned int numberOfFrames);
 
-    void setTimeUntilStop(float timeUntilStopInSeconds) {
-        timeToRun = std::chrono::milliseconds(
-            static_cast<int>(timeUntilStopInSeconds * 1'000.f));
-    }
+    /** @brief Sets amount of time to run before stopping*/
+    void setTimeUntilStop(float timeUntilStopInSeconds);
 
-    void onStart() override {
-        auto startTime = FrameClock::now();
-        stopTime = startTime + timeToRun;
+    /** @brief IProcess override, initializes start time/frame */
+    void onStart() override;
 
-        stopFrame = currentFrame + framesToRun;
-    }
+    /** @brief IProcess override, checks current time/frame */
+    void onLoop() override;
 
-    void onLoop() override {
-        auto currentTime = FrameClock::now();
-
-        if (currentFrame >= stopFrame || currentTime >= stopTime) {
-            setCurrentState(ProcessState::REQUEST_STOP);
-        }
-
-        currentFrame++;
-    }
-
+    /** @brief Builder pattern for widget */
     class Builder : public IBuilder<StopAfterTime> {
      public:
-        Builder& setTimeUntilStop(float timeUntilStopInSeconds) {
-            this->impl->setTimeUntilStop(timeUntilStopInSeconds);
-            return (*this);
-        }
+        /** @brief Build with time limit */
+        Builder& setTimeUntilStop(float timeUntilStopInSeconds);
 
-        Builder& setFramesUntilStop(unsigned int numberOfFrames) {
-            this->impl->setFramesUntilStop(numberOfFrames);
-            return (*this);
-        }
+        /** @brief Build with frame limit */
+        Builder& setFramesUntilStop(unsigned int numberOfFrames);
     };
 
+#ifndef TEST_BUILD
+
  private:
+#endif
     // Large amount of time but without risk of overflow
     FrameClock::duration timeToRun = std::chrono::years(1);
     FrameClock::time_point stopTime = FrameClock::time_point::max();
