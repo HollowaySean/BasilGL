@@ -29,7 +29,12 @@ struct WidgetPrefs {
 class IBasilWidget : public IProcess,
                      public IDataPublisher,
                      public IDataSubscriber {
+#ifdef TEST_BUILD
+ public:
+#else
  protected:
+#endif
+
     IBasilWidget() = default;
 
     explicit IBasilWidget(const std::string& defaultName) {

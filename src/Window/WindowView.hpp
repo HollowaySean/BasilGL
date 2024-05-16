@@ -57,9 +57,6 @@ class WindowView :  public IBasilWidget,
     /** @param windowProps Optional struct containing window options. */
     explicit WindowView(std::optional<WindowProps> windowProps = std::nullopt);
 
-    /** @brief Deconstructor which destroys GLFW window. */
-    ~WindowView();
-
     /** @brief Makes window visible. */
     void onStart() override;
 
@@ -117,8 +114,6 @@ class WindowView :  public IBasilWidget,
 
     BasilContext& context = BasilContext::get();
     Logger& logger = Logger::get();
-
-    bool windowIsOpen = false;
 };
 
 }  // namespace basil

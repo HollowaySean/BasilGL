@@ -19,7 +19,6 @@ WindowView::WindowView(std::optional<WindowProps> windowProps) : IBasilWidget({
 
     // Create window
     glfwWindow = BasilContext::getGLFWWindow();
-    windowIsOpen = true;
 
     // Set window properties
     setWindowSize(this->windowProps.width, this->windowProps.height);
@@ -28,10 +27,6 @@ WindowView::WindowView(std::optional<WindowProps> windowProps) : IBasilWidget({
     // Set window user pointer
     glfwSetWindowUserPointer(glfwWindow, this);
     setCallbacks();
-}
-
-WindowView::~WindowView() {
-    closeWindow();
 }
 
 void WindowView::onLoop() {
@@ -123,10 +118,7 @@ void WindowView::draw() {
 void WindowView::closeWindow() {
     setCurrentState(ProcessState::REQUEST_STOP);
 
-    if (windowIsOpen) {
-        glfwDestroyWindow(glfwWindow);
-        windowIsOpen = false;
-    }
+    glfwDestroyWindow(glfwWindow);
 }
 
 void WindowView::setCallbacks() {
