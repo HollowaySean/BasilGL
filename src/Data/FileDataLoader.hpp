@@ -1,5 +1,4 @@
-#ifndef SRC_DATA_FILEDATALOADER_HPP_
-#define SRC_DATA_FILEDATALOADER_HPP_
+#pragma once
 
 #include <fmt/core.h>
 
@@ -146,6 +145,4 @@ class FileDataLoader {
         "at position {3} to type {0}";
 };
 
-}  // namespace basil
-
-#endif  // SRC_DATA_FILEDATALOADER_HPP_
+}   // namespace basil

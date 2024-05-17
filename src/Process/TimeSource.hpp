@@ -1,5 +1,4 @@
-#ifndef SRC_PROCESS_TIMESOURCE_HPP_
-#define SRC_PROCESS_TIMESOURCE_HPP_
+#pragma once
 
 #include <chrono>
 #include <thread>
@@ -65,6 +64,4 @@ class TimeSource {
     TimeSource() = delete;
 };
 
-}  // namespace basil
-
-#endif  // SRC_PROCESS_TIMESOURCE_HPP_
+}   // namespace basil

@@ -1,5 +1,4 @@
-#ifndef INCLUDE_BASIL_WIDGET_HPP_
-#define INCLUDE_BASIL_WIDGET_HPP_
+#pragma once
 
 #include "Widget/MetricsReporter.hpp"
 #include "Widget/ShadertoyUniformPublisher.hpp"
@@ -8,4 +7,4 @@
 #include "Widget/StopAfterTime.hpp"
 #include "Widget/SystemTimeWatcher.hpp"
 
-#endif  // INCLUDE_BASIL_WIDGET_HPP_
+

@@ -1,5 +1,4 @@
-#ifndef SRC_LOGGING_LOGGER_HPP_
-#define SRC_LOGGING_LOGGER_HPP_
+#pragma once
 
 #include <iostream>
 #include <map>
@@ -101,6 +100,4 @@ class Logger {
     void operator=(Logger const&);
 };
 
-}  // namespace basil
-
-#endif  // SRC_LOGGING_LOGGER_HPP_
+}   // namespace basil

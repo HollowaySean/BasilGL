@@ -1,5 +1,4 @@
-#ifndef SRC_CONTEXT_BASILCONTEXTLOCK_HPP_
-#define SRC_CONTEXT_BASILCONTEXTLOCK_HPP_
+#pragma once
 
 #include <mutex>
 #include <string>
@@ -26,6 +25,4 @@ class BasilContextLock {
     static inline std::mutex lockMutex = std::mutex();
 };
 
-}  // namespace basil
-
-#endif  // SRC_CONTEXT_BASILCONTEXTLOCK_HPP_
+}   // namespace basil

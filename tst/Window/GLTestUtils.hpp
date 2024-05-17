@@ -1,5 +1,4 @@
-#ifndef TST_WINDOW_GLTESTUTILS_HPP_
-#define TST_WINDOW_GLTESTUTILS_HPP_
+#pragma once
 
 #include <filesystem>
 #include <string>
@@ -38,4 +37,4 @@ inline const PaneProps testPaneProps = {
     .yOffset = 2
 };
 
-#endif  // TST_WINDOW_GLTESTUTILS_HPP_
+

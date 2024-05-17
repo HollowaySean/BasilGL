@@ -1,5 +1,4 @@
-#ifndef INCLUDE_BASIL_DATA_HPP_
-#define INCLUDE_BASIL_DATA_HPP_
+#pragma once
 
 #include "Data/FileDataLoader.hpp"
 #include "Data/FileTextureSource.hpp"
@@ -11,4 +10,4 @@
 #include "Data/GLTextureFormat.hpp"
 #include "Data/UserInputModel.hpp"
 
-#endif  // INCLUDE_BASIL_DATA_HPP_
+

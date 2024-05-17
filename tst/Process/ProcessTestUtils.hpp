@@ -1,5 +1,4 @@
-#ifndef TST_PROCESS_PROCESSTESTUTILS_HPP_
-#define TST_PROCESS_PROCESSTESTUTILS_HPP_
+#pragma once
 
 #include <Basil/Process.hpp>
 
@@ -52,4 +51,4 @@ class TestProcess : public IProcess {
     }
 };
 
-#endif  // TST_PROCESS_PROCESSTESTUTILS_HPP_
+

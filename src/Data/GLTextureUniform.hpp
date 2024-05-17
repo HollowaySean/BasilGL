@@ -1,5 +1,4 @@
-#ifndef SRC_DATA_GLTEXTUREUNIFORM_HPP_
-#define SRC_DATA_GLTEXTUREUNIFORM_HPP_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -32,6 +31,4 @@ struct GLTextureUniform {
     const unsigned int uniformID;
 };
 
-}  // namespace basil
-
-#endif  // SRC_DATA_GLTEXTUREUNIFORM_HPP_
+}   // namespace basil

@@ -1,5 +1,4 @@
-#ifndef SRC_WINDOW_GLSHADERPROGRAM_HPP_
-#define SRC_WINDOW_GLSHADERPROGRAM_HPP_
+#pragma once
 
 #include <fmt/core.h>
 #include <GL/glew.h>
@@ -304,6 +303,4 @@ class GLShaderProgram : public IDataSubscriber,
         "with name \"{}\".";
 };
 
-}  // namespace basil
-
-#endif  // SRC_WINDOW_GLSHADERPROGRAM_HPP_
+}   // namespace basil

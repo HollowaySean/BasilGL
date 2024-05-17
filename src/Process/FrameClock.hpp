@@ -1,5 +1,4 @@
-#ifndef SRC_PROCESS_FRAMECLOCK_HPP_
-#define SRC_PROCESS_FRAMECLOCK_HPP_
+#pragma once
 
 #include <chrono>
 #include "TimeSource.hpp"
@@ -20,6 +19,4 @@ namespace basil {
 
 using FrameTimer = TimeSource<FrameClock>;
 
-}  // namespace basil
-
-#endif  // SRC_PROCESS_FRAMECLOCK_HPP_
+}   // namespace basil

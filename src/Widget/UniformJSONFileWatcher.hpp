@@ -1,5 +1,4 @@
-#ifndef SRC_WIDGET_UNIFORMJSONFILEWATCHER_HPP_
-#define SRC_WIDGET_UNIFORMJSONFILEWATCHER_HPP_
+#pragma once
 
 #include <filesystem>
 #include <memory>
@@ -46,6 +45,4 @@ class UniformJSONFileWatcher : public IBasilWidget,
         = std::filesystem::file_time_type::min();
 };
 
-}  // namespace basil
-
-#endif  // SRC_WIDGET_UNIFORMJSONFILEWATCHER_HPP_
+}   // namespace basil

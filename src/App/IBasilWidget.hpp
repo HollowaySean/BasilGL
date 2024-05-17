@@ -1,5 +1,4 @@
-#ifndef SRC_APP_IBASILWIDGET_HPP_
-#define SRC_APP_IBASILWIDGET_HPP_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -69,6 +68,4 @@ class IBasilWidget : public IProcess,
     WidgetPubSubPrefs pubSubPrefs = WidgetPubSubPrefs::NONE;
 };
 
-}  // namespace basil
-
-#endif  // SRC_APP_IBASILWIDGET_HPP_
+}   // namespace basil

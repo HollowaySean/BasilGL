@@ -1,5 +1,4 @@
-#ifndef SRC_WIDGET_SYSTEMTIMEWATCHER_HPP_
-#define SRC_WIDGET_SYSTEMTIMEWATCHER_HPP_
+#pragma once
 
 #include <Basil/App.hpp>
 #include <Basil/Data.hpp>
@@ -34,6 +33,4 @@ class SystemTimeWatcher : public IBasilWidget,
     FrameClock::time_point lastFrameTime;
 };
 
-}  // namespace basil
-
-#endif  // SRC_WIDGET_SYSTEMTIMEWATCHER_HPP_
+}   // namespace basil

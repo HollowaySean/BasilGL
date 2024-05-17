@@ -1,5 +1,4 @@
-#ifndef SRC_WINDOW_WINDOWVIEW_HPP_
-#define SRC_WINDOW_WINDOWVIEW_HPP_
+#pragma once
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -116,6 +115,4 @@ class WindowView :  public IBasilWidget,
     Logger& logger = Logger::get();
 };
 
-}  // namespace basil
-
-#endif  // SRC_WINDOW_WINDOWVIEW_HPP_
+}   // namespace basil

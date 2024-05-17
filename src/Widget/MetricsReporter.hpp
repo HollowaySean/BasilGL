@@ -1,5 +1,4 @@
-#ifndef SRC_WIDGET_METRICSREPORTER_HPP_
-#define SRC_WIDGET_METRICSREPORTER_HPP_
+#pragma once
 
 #include <fmt/core.h>
 
@@ -64,6 +63,4 @@ class MetricsReporter : public IBasilWidget,
         "Process \'{}\': {:.3f}ms";
 };
 
-}  // namespace basil
-
-#endif  // SRC_WIDGET_METRICSREPORTER_HPP_
+}   // namespace basil

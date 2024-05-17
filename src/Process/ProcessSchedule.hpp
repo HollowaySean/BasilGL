@@ -1,5 +1,4 @@
-#ifndef SRC_PROCESS_PROCESSSCHEDULE_HPP_
-#define SRC_PROCESS_PROCESSSCHEDULE_HPP_
+#pragma once
 
 #include <list>
 #include <memory>
@@ -54,6 +53,4 @@ class ProcessSchedule {
     void rectifySchedule();
 };
 
-}  // namespace basil
-
-#endif  // SRC_PROCESS_PROCESSSCHEDULE_HPP_
+}   // namespace basil

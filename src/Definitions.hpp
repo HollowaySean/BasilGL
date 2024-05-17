@@ -1,5 +1,4 @@
-#ifndef SRC_DEFINITIONS_HPP_
-#define SRC_DEFINITIONS_HPP_
+#pragma once
 
 // GLFW window hints
 
@@ -75,4 +74,4 @@
 #endif
 
 
-#endif  // SRC_DEFINITIONS_HPP_
+

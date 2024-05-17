@@ -1,5 +1,4 @@
-#ifndef SRC_DATA_SPANTEXTURESOURCE_HPP_
-#define SRC_DATA_SPANTEXTURESOURCE_HPP_
+#pragma once
 
 #include <span>
 
@@ -62,6 +61,4 @@ class SpanTextureSource : public ITextureSource<dimension>,
     std::span<T> source;
 };
 
-}  // namespace basil
-
-#endif  // SRC_DATA_SPANTEXTURESOURCE_HPP_
+}   // namespace basil

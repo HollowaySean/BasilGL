@@ -1,5 +1,4 @@
-#ifndef SRC_DATA_SYSTEMTIMEMODEL_HPP_
-#define SRC_DATA_SYSTEMTIMEMODEL_HPP_
+#pragma once
 
 #include <Basil/Process.hpp>
 
@@ -24,6 +23,4 @@ struct SystemTimeModel {
     }
 };
 
-}  // namespace basil
-
-#endif  // SRC_DATA_SYSTEMTIMEMODEL_HPP_
+}   // namespace basil

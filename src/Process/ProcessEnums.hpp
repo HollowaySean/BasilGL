@@ -1,5 +1,4 @@
-#ifndef SRC_PROCESS_PROCESSENUMS_HPP_
-#define SRC_PROCESS_PROCESSENUMS_HPP_
+#pragma once
 
 namespace basil {
 
@@ -33,6 +32,4 @@ enum class ProcessControllerState {
     READY, STARTING, RUNNING, STOPPING, STOPPED, KILLED
 };
 
-}  // namespace basil
-
-#endif  // SRC_PROCESS_PROCESSENUMS_HPP_
+}   // namespace basil

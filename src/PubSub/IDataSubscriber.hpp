@@ -1,5 +1,4 @@
-#ifndef SRC_PUBSUB_IDATASUBSCRIBER_HPP_
-#define SRC_PUBSUB_IDATASUBSCRIBER_HPP_
+#pragma once
 
 #include <any>
 
@@ -14,6 +13,4 @@ class IDataSubscriber {
     virtual void receiveData(const DataMessage& message) {}
 };
 
-}  // namespace basil
-
-#endif  // SRC_PUBSUB_IDATASUBSCRIBER_HPP_
+}   // namespace basil

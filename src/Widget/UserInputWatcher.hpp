@@ -1,5 +1,4 @@
-#ifndef SRC_WIDGET_USERINPUTWATCHER_HPP_
-#define SRC_WIDGET_USERINPUTWATCHER_HPP_
+#pragma once
 
 #include <map>
 #include <utility>
@@ -63,6 +62,4 @@ class UserInputWatcher : public  IBasilWidget,
     #endif
 };
 
-}  // namespace basil
-
-#endif  // SRC_WIDGET_USERINPUTWATCHER_HPP_
+}   // namespace basil

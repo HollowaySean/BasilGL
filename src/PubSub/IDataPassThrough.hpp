@@ -1,5 +1,4 @@
-#ifndef SRC_PUBSUB_IDATAPASSTHROUGH_HPP_
-#define SRC_PUBSUB_IDATAPASSTHROUGH_HPP_
+#pragma once
 
 #include <vector>
 
@@ -18,6 +17,4 @@ class IDataPassThrough : public IDataSubscriber,
     }
 };
 
-}  // namespace basil
-
-#endif  // SRC_PUBSUB_IDATAPASSTHROUGH_HPP_
+}   // namespace basil

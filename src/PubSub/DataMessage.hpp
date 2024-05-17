@@ -1,5 +1,4 @@
-#ifndef SRC_PUBSUB_DATAMESSAGE_HPP_
-#define SRC_PUBSUB_DATAMESSAGE_HPP_
+#pragma once
 
 #include <any>
 #include <optional>
@@ -29,6 +28,4 @@ class DataMessage {
     std::any data;
 };
 
-}  // namespace basil
-
-#endif  // SRC_PUBSUB_DATAMESSAGE_HPP_
+}   // namespace basil

@@ -1,5 +1,4 @@
-#ifndef SRC_PROCESS_IPROCESS_HPP_
-#define SRC_PROCESS_IPROCESS_HPP_
+#pragma once
 
 #include <memory>
 #include <optional>
@@ -71,6 +70,4 @@ class IProcess {
     std::optional<std::string> processName = std::nullopt;
 };
 
-}  // namespace basil
-
-#endif  // SRC_PROCESS_IPROCESS_HPP_
+}   // namespace basil

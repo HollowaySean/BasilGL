@@ -1,5 +1,4 @@
-#ifndef SRC_DATA_GLUNIFORM_HPP_
-#define SRC_DATA_GLUNIFORM_HPP_
+#pragma once
 
 #include <span>
 #include <string>
@@ -45,6 +44,4 @@ struct GLUniform {
     const unsigned int uniformID;
 };
 
-}  // namespace basil
-
-#endif  // SRC_DATA_GLUNIFORM_HPP_
+}   // namespace basil

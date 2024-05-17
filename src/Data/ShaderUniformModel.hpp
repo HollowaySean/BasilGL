@@ -1,5 +1,4 @@
-#ifndef SRC_DATA_SHADERUNIFORMMODEL_HPP_
-#define SRC_DATA_SHADERUNIFORMMODEL_HPP_
+#pragma once
 
 #include <map>
 #include <memory>
@@ -95,6 +94,4 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
     static inline unsigned int nextID = 0;
 };
 
-}  // namespace basil
-
-#endif  // SRC_DATA_SHADERUNIFORMMODEL_HPP_
+}   // namespace basil
