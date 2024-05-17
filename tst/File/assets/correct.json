@@ -13,5 +13,8 @@
             "test6":[10],
             "test7": -1
         }
+    },
+    "textures" : {
+        "testTexture": "test-img.jpg"
     }
 }

@@ -18,16 +18,15 @@ using json = nlohmann::json;
 
 namespace basil {
 
-// TODO(sholloway): Testing
-// TODO(sholloway): Update documentation
-
 /** @brief Static class which loads ShaderUniformModel from JSON file */
 class FileDataLoader {
  public:
     /** @brief Generates a ShaderUniformModel object from JSON file
      *
-     *  @details File must contain "uniforms" field, which has
-     *  subfields indexed by uniform type.
+     *  @details File reads from the "uniforms" and "textures" field.
+     *  Uniforms subfields are indexed by type, then are in key value pairs
+     *  with format "[uniform name]" : [value]
+     *  Textures are key-value pairs with format "[uniform name]" : "[file path]"
      *  <br><br> Example:
      *  <pre>
      *  {
@@ -40,6 +39,10 @@ class FileDataLoader {
      *              "uniformName3": true,
      *              "uniformName4": false
      *          }
+     *      },
+     *      "textures" : {
+     *          "textureName1": "file-name.jpg",
+     *          "textureName2": "/absolute/path/file-name.jpg"
      *      }
      *  }
      *  </pre>
