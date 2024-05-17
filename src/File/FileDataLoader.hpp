@@ -2,7 +2,7 @@
 
 #include <errno.h>
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 #include <memory>
 #include <string>
@@ -17,6 +17,9 @@ using json = nlohmann::json;
 #include "Data/ShaderUniformModel.hpp"
 
 namespace basil {
+
+// TODO(sholloway): Testing
+// TODO(sholloway): Update documentation
 
 /** @brief Static class which loads ShaderUniformModel from JSON file */
 class FileDataLoader {
@@ -120,6 +123,12 @@ class FileDataLoader {
         return model;
     }
 
+    static std::shared_ptr<ShaderUniformModel>
+    addTexture(
+        std::shared_ptr<ShaderUniformModel> model,
+        json json,
+        std::filesystem::path basePath);
+
     LOGGER_FORMAT LOG_FILE_MISSING =
         "File not found at path: {0}";
     LOGGER_FORMAT LOG_READ_SUCCESS =
@@ -130,6 +139,8 @@ class FileDataLoader {
     LOGGER_FORMAT LOG_PARSE_FAILURE =
         "Could not parse JSON at bit {1} in file {0}\n"
         "\t See error description: ";
+    LOGGER_FORMAT LOG_JSON_EMPTY =
+        "Empty JSON found in file {0}";
     LOGGER_FORMAT LOG_UNIFORMS_MISSING =
         "No field with key \"uniforms\" found in file {0}";
     LOGGER_FORMAT LOG_VECTOR_ADDED =
@@ -141,6 +152,8 @@ class FileDataLoader {
     LOGGER_FORMAT LOG_VECTOR_TYPE_ERROR =
         "Could not coerce value \"{2}\" from key \"{1}\" "
         "at position {3} to type {0}";
+    LOGGER_FORMAT LOG_TEXTURE_ADDED =
+        "Adding texture with name {0} from file {1}";
 };
 
 }   // namespace basil

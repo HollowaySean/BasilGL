@@ -63,6 +63,8 @@ class IGLTexture {
         "Texture (ID{:02}) - Unable to update, data source not found.";
     LOGGER_FORMAT LOG_TEXTURE_CREATED =
         "Texture (ID{:02}) - Created {} texture with offset {}.";
+    LOGGER_FORMAT LOG_TEXTURE_DELETED =
+        "Texture (ID{:02}) - Texture deleted.";
 
     static inline const std::unordered_map<GLenum, std::string_view>
         NAME_LOOKUP = {

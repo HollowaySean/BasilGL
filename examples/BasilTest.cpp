@@ -11,7 +11,7 @@
  */
 int main(int argc, char** argv) {
     auto exPath = std::filesystem::path(EXAMPLE_DIR);
-    auto fragmentPath = exPath / "shaders/test.shadertoy";
+    auto fragmentPath = exPath / "shaders/test.frag";
     auto jsonPath =     exPath / "assets/test.json";
 
     auto basilApp = basil::BasilApp::Builder()
@@ -29,13 +29,10 @@ int main(int argc, char** argv) {
             .withFilePath(jsonPath)
             .build())
         .withWidget(basil::MetricsReporter::Builder()
-            .withRegularity(50)
+            .withRegularity(300)
             .withLogLevel(basil::LogLevel::INFO)
             .build())
         .withWidget(basil::ShadertoyUniformPublisher::Builder()
-            .build())
-        .withWidget(basil::StopAfterTime::Builder()
-            .setTimeUntilStop(5)
             .build())
         .build();
 
