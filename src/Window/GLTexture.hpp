@@ -1,5 +1,4 @@
-#ifndef SRC_WINDOW_GLTEXTURE_HPP_
-#define SRC_WINDOW_GLTEXTURE_HPP_
+#pragma once
 
 #include <fmt/core.h>
 #include <GL/glew.h>
@@ -132,6 +131,4 @@ using GLTexture1D = GLTexture<1>;
 using GLTexture2D = GLTexture<2>;
 using GLTexture3D = GLTexture<3>;
 
-}  // namespace basil
-
-#endif  // SRC_WINDOW_GLTEXTURE_HPP_
+}   // namespace basil

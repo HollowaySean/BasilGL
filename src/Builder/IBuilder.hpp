@@ -1,5 +1,4 @@
-#ifndef SRC_BUILDER_IBUILDER_HPP_
-#define SRC_BUILDER_IBUILDER_HPP_
+#pragma once
 
 #include <memory>
 #include <utility>
@@ -22,6 +21,4 @@ class IBuilder {
     std::unique_ptr<T> impl;
 };
 
-}  // namespace basil
-
-#endif  // SRC_BUILDER_IBUILDER_HPP_
+}   // namespace basil

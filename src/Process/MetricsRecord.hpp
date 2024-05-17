@@ -1,5 +1,4 @@
-#ifndef SRC_PROCESS_METRICSRECORD_HPP_
-#define SRC_PROCESS_METRICSRECORD_HPP_
+#pragma once
 
 #include <map>
 #include <memory>
@@ -41,6 +40,4 @@ struct MetricsRecord {
     bool isEqual(const MetricsRecord& comparison);
 };
 
-}  // namespace basil
-
-#endif  // SRC_PROCESS_METRICSRECORD_HPP_
+}   // namespace basil

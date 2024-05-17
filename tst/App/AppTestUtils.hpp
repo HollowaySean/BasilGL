@@ -1,5 +1,4 @@
-#ifndef TST_APP_APPTESTUTILS_HPP_
-#define TST_APP_APPTESTUTILS_HPP_
+#pragma once
 
 #include "App/IBasilWidget.hpp"
 #include "PubSub/PubSubTestUtils.hpp"
@@ -19,6 +18,4 @@ class TestWidget :  public TestProcess,
     void onLoop() override { TestProcess::onLoop(); }
 };
 
-}  // namespace basil
-
-#endif  // TST_APP_APPTESTUTILS_HPP_
+}   // namespace basil

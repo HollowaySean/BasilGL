@@ -1,5 +1,4 @@
-#ifndef SRC_DATA_GLTEXTUREFORMAT_HPP_
-#define SRC_DATA_GLTEXTUREFORMAT_HPP_
+#pragma once
 
 #include <GL/glew.h>
 
@@ -141,6 +140,4 @@ template<> constexpr GLenum
     GLTextureFormat::getInternalFormat<u_char, 4>()   { return GL_RGBA8;    }
 
 
-}  // namespace basil
-
-#endif  // SRC_DATA_GLTEXTUREFORMAT_HPP_
+}   // namespace basil

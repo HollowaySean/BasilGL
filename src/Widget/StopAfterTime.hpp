@@ -1,11 +1,8 @@
-#ifndef SRC_WIDGET_STOPAFTERTIME_HPP_
-#define SRC_WIDGET_STOPAFTERTIME_HPP_
+#pragma once
 
 #include <Basil/App.hpp>
 
 namespace basil {
-
-// TODO(sholloway): Test
 
 /** @brief Widget which kills ProcessController after a set number
  *  of frames or after a set amount of time. */
@@ -50,6 +47,4 @@ class StopAfterTime : public IBasilWidget,
     unsigned int currentFrame = 0;
 };
 
-}  // namespace basil
-
-#endif  // SRC_WIDGET_STOPAFTERTIME_HPP_
+}   // namespace basil

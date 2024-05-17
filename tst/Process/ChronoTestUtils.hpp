@@ -1,5 +1,4 @@
-#ifndef TST_PROCESS_CHRONOTESTUTILS_HPP_
-#define TST_PROCESS_CHRONOTESTUTILS_HPP_
+#pragma once
 
 #include <chrono>
 #include <unordered_map>
@@ -46,4 +45,4 @@ class TestClock {
         std::thread::id, unsigned int> nextTimeStamp;
 };
 
-#endif  // TST_PROCESS_CHRONOTESTUTILS_HPP_
+

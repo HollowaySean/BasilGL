@@ -1,5 +1,4 @@
-#ifndef SRC_APP_BASILAPP_HPP_
-#define SRC_APP_BASILAPP_HPP_
+#pragma once
 
 #include <memory>
 #include <vector>
@@ -72,6 +71,4 @@ class BasilApp : public IBuildable<BasilApp> {
     std::shared_ptr<ProcessController> processController;
 };
 
-}  // namespace basil
-
-#endif  // SRC_APP_BASILAPP_HPP_
+}   // namespace basil

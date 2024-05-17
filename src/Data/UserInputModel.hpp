@@ -1,5 +1,4 @@
-#ifndef SRC_DATA_USERINPUTMODEL_HPP_
-#define SRC_DATA_USERINPUTMODEL_HPP_
+#pragma once
 
 #include <utility>
 #include <array>
@@ -127,6 +126,4 @@ class UserInputModel {
     WindowSize windowSize = { 0, 0 };
 };
 
-}  // namespace basil
-
-#endif  // SRC_DATA_USERINPUTMODEL_HPP_
+}   // namespace basil

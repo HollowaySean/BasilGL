@@ -1,5 +1,4 @@
-#ifndef SRC_DATA_ITEXTURESOURCE_HPP_
-#define SRC_DATA_ITEXTURESOURCE_HPP_
+#pragma once
 
 #include <GL/glew.h>
 
@@ -54,6 +53,4 @@ using ITextureSource1D = ITextureSource<1>;
 using ITextureSource2D = ITextureSource<2>;
 using ITextureSource3D = ITextureSource<3>;
 
-}  // namespace basil
-
-#endif  // SRC_DATA_ITEXTURESOURCE_HPP_
+}   // namespace basil

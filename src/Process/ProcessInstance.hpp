@@ -1,5 +1,4 @@
-#ifndef SRC_PROCESS_PROCESSINSTANCE_HPP_
-#define SRC_PROCESS_PROCESSINSTANCE_HPP_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -63,6 +62,4 @@ struct ProcessInstance {
     inline static unsigned int NEXT_ID = 0;
 };
 
-}  // namespace basil
-
-#endif  // SRC_PROCESS_PROCESSINSTANCE_HPP_
+}   // namespace basil

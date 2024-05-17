@@ -1,5 +1,4 @@
-#ifndef SRC_WINDOW_IPANE_HPP_
-#define SRC_WINDOW_IPANE_HPP_
+#pragma once
 
 #include <Basil/PubSub.hpp>
 
@@ -42,6 +41,4 @@ class IPane : public IDataPassThrough {
     PaneProps paneProps;
 };
 
-}  // namespace basil
-
-#endif  // SRC_WINDOW_IPANE_HPP_
+}   // namespace basil

@@ -1,5 +1,4 @@
-#ifndef SRC_WINDOW_GLSHADERPANE_HPP_
-#define SRC_WINDOW_GLSHADERPANE_HPP_
+#pragma once
 
 #include <GL/glew.h>
 
@@ -78,6 +77,4 @@ class GLShaderPane :  public IPane,
     std::shared_ptr<GLShaderProgram> currentShaderProgram = nullptr;
 };
 
-}  // namespace basil
-
-#endif  // SRC_WINDOW_GLSHADERPANE_HPP_
+}   // namespace basil

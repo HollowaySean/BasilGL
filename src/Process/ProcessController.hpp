@@ -1,5 +1,4 @@
-#ifndef SRC_PROCESS_PROCESSCONTROLLER_HPP_
-#define SRC_PROCESS_PROCESSCONTROLLER_HPP_
+#pragma once
 
 #include <functional>
 #include <memory>
@@ -153,6 +152,4 @@ class ProcessController : private IBuildable<ProcessController> {
     FrameClock::duration frameTime = std::chrono::seconds(0);
 };
 
-}  // namespace basil
-
-#endif  // SRC_PROCESS_PROCESSCONTROLLER_HPP_
+}   // namespace basil

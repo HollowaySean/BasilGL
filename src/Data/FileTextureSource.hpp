@@ -1,5 +1,4 @@
-#ifndef SRC_DATA_FILETEXTURESOURCE_HPP_
-#define SRC_DATA_FILETEXTURESOURCE_HPP_
+#pragma once
 
 #include <filesystem>
 
@@ -40,6 +39,4 @@ class FileTextureSource : public ITextureSource2D,
     Logger& logger = Logger::get();
 };
 
-}  // namespace basil
-
-#endif  // SRC_DATA_FILETEXTURESOURCE_HPP_
+}   // namespace basil

@@ -1,5 +1,4 @@
-#ifndef SRC_CONTEXT_BASILCONTEXT_HPP_
-#define SRC_CONTEXT_BASILCONTEXT_HPP_
+#pragma once
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -118,6 +117,4 @@ class BasilContext {
     void operator=(BasilContext const&);
 };
 
-}  // namespace basil
-
-#endif  // SRC_CONTEXT_BASILCONTEXT_HPP_
+}   // namespace basil

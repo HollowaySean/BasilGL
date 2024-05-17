@@ -1,5 +1,4 @@
-#ifndef INCLUDE_BASIL_PROCESS_HPP_
-#define INCLUDE_BASIL_PROCESS_HPP_
+#pragma once
 
 #include "Process/FrameClock.hpp"
 #include "Process/IProcess.hpp"
@@ -12,4 +11,4 @@
 #include "Process/ProcessSchedule.hpp"
 #include "Process/TimeSource.hpp"
 
-#endif  // INCLUDE_BASIL_PROCESS_HPP_
+

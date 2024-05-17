@@ -1,5 +1,4 @@
-#ifndef SRC_PROCESS_LAMBDAPROCESS_HPP_
-#define SRC_PROCESS_LAMBDAPROCESS_HPP_
+#pragma once
 
 #include <functional>
 
@@ -20,6 +19,4 @@ class LambdaProcess : public IProcess {
     const std::function<void()>& lambda;
 };
 
-}  // namespace basil
-
-#endif  // SRC_PROCESS_LAMBDAPROCESS_HPP_
+}   // namespace basil

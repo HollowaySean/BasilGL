@@ -1,5 +1,4 @@
-#ifndef SRC_WINDOW_GLSHADER_HPP_
-#define SRC_WINDOW_GLSHADER_HPP_
+#pragma once
 
 #include <GL/glew.h>
 
@@ -158,6 +157,4 @@ class GLFragmentShader : public GLShader {
     void setShader(const std::string& shaderCode) override;
 };
 
-}  // namespace basil
-
-#endif  // SRC_WINDOW_GLSHADER_HPP_
+}   // namespace basil

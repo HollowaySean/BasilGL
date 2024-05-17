@@ -1,5 +1,4 @@
-#ifndef SRC_WIDGET_SHADERTOYUNIFORMPUBLISHER_HPP_
-#define SRC_WIDGET_SHADERTOYUNIFORMPUBLISHER_HPP_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -70,6 +69,4 @@ class ShadertoyUniformPublisher : public IBasilWidget,
     static inline const std::string FRAMERATE_UNIFORM_NAME = "iFrameRate";
 };
 
-}  // namespace basil
-
-#endif  // SRC_WIDGET_SHADERTOYUNIFORMPUBLISHER_HPP_
+}   // namespace basil

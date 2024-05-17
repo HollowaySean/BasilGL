@@ -1,5 +1,4 @@
-#ifndef SRC_PROCESS_METRICSOBSERVER_HPP_
-#define SRC_PROCESS_METRICSOBSERVER_HPP_
+#pragma once
 
 #include <chrono>
 #include <map>
@@ -67,6 +66,4 @@ class MetricsObserver {
     void popFrameFromBuffer();
 };
 
-}  // namespace basil
-
-#endif  // SRC_PROCESS_METRICSOBSERVER_HPP_
+}   // namespace basil

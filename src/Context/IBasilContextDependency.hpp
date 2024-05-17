@@ -1,5 +1,4 @@
-#ifndef SRC_CONTEXT_IBASILCONTEXTDEPENDENCY_HPP_
-#define SRC_CONTEXT_IBASILCONTEXTDEPENDENCY_HPP_
+#pragma once
 
 #include "BasilContext.hpp"
 
@@ -13,6 +12,4 @@ class IBasilContextDependency : private IBasilContextConsumer {
     }
 };
 
-}  // namespace basil
-
-#endif  // SRC_CONTEXT_IBASILCONTEXTDEPENDENCY_HPP_
+}   // namespace basil

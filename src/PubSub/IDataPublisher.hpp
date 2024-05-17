@@ -1,5 +1,4 @@
-#ifndef SRC_PUBSUB_IDATAPUBLISHER_HPP_
-#define SRC_PUBSUB_IDATAPUBLISHER_HPP_
+#pragma once
 
 #include <memory>
 #include <set>
@@ -42,6 +41,4 @@ class IDataPublisher {
     std::set<std::shared_ptr<IDataSubscriber>> subscriptions;
 };
 
-}  // namespace basil
-
-#endif  // SRC_PUBSUB_IDATAPUBLISHER_HPP_
+}   // namespace basil

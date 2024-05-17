@@ -1,5 +1,4 @@
-#ifndef SRC_WINDOW_HOTRELOADSHADERPANE_HPP_
-#define SRC_WINDOW_HOTRELOADSHADERPANE_HPP_
+#pragma once
 
 #include <memory>
 #include <filesystem>
@@ -50,6 +49,4 @@ class HotReloadShaderPane : public GLShaderPane,
         = GLFragmentShader::debugShader();
 };
 
-}  // namespace basil
-
-#endif  // SRC_WINDOW_HOTRELOADSHADERPANE_HPP_
+}   // namespace basil

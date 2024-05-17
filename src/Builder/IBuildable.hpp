@@ -1,5 +1,4 @@
-#ifndef SRC_BUILDER_IBUILDABLE_HPP_
-#define SRC_BUILDER_IBUILDABLE_HPP_
+#pragma once
 
 #include "IBuilder.hpp"
 
@@ -13,6 +12,4 @@ class IBuildable {
     class Builder : public IBuilder<T> {};
 };
 
-}  // namespace basil
-
-#endif  // SRC_BUILDER_IBUILDABLE_HPP_
+}   // namespace basil

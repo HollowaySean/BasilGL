@@ -1,5 +1,4 @@
-#ifndef SRC_WINDOW_SPLITPANE_HPP_
-#define SRC_WINDOW_SPLITPANE_HPP_
+#pragma once
 
 #include <memory>
 
@@ -106,6 +105,4 @@ class SplitPane :   public IPane,
     int gapWidth = 0;
 };
 
-}  // namespace basil
-
-#endif  // SRC_WINDOW_SPLITPANE_HPP_
+}   // namespace basil

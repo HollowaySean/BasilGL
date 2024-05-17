@@ -1,5 +1,4 @@
-#ifndef TST_PUBSUB_PUBSUBTESTUTILS_HPP_
-#define TST_PUBSUB_PUBSUBTESTUTILS_HPP_
+#pragma once
 
 #include "PubSub/DataMessage.hpp"
 #include "PubSub/IDataPublisher.hpp"
@@ -28,6 +27,4 @@ class TestSubscriber : public IDataSubscriber {
     bool hasReceivedData = false;
 };
 
-}  // namespace basil
-
-#endif  // TST_PUBSUB_PUBSUBTESTUTILS_HPP_
+}   // namespace basil
