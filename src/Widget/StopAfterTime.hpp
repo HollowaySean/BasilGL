@@ -1,6 +1,7 @@
 #pragma once
 
-#include <Basil/App.hpp>
+#include <Basil/Packages/App.hpp>
+#include <Basil/Packages/Builder.hpp>
 
 namespace basil {
 

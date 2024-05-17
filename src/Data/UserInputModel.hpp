@@ -1,6 +1,5 @@
 #pragma once
 
-#include <utility>
 #include <array>
 
 namespace basil {

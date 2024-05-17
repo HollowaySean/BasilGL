@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Basil/PubSub.hpp>
+#include <Basil/Packages/PubSub.hpp>
 
 namespace basil {
 

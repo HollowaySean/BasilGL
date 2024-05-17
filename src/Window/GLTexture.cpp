@@ -1,3 +1,7 @@
+#include <fmt/format.h>
+
+#include "Data/FileTextureSource.hpp"
+
 #include "GLTexture.hpp"
 
 namespace basil {

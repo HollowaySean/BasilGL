@@ -4,11 +4,8 @@
 #include <memory>
 #include <optional>
 #include <string>
-#include <utility>
-#include <variant>
-#include <vector>
 
-#include <Basil/Builder.hpp>
+#include <Basil/Packages/Builder.hpp>
 
 #include "GLUniform.hpp"
 #include "GLTextureUniform.hpp"

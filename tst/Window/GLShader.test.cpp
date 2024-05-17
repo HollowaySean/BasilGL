@@ -2,9 +2,9 @@
 
 #include <catch.hpp>
 
-#include <Basil/Window.hpp>
+#include "Window/GLShader.hpp"
 
-#include "GLTestUtils.hpp"
+#include "Window/GLTestUtils.hpp"
 
 using basil::BasilContextLock;
 using basil::GLShader;

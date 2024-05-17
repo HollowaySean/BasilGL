@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasilContext.hpp"
+#include "IBasilContextConsumer.hpp"
 
 namespace basil {
 

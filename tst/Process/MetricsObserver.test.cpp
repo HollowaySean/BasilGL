@@ -1,9 +1,11 @@
 #include <catch.hpp>
 
-#include <Basil/Process.hpp>
+#include "Chrono/ChronoTestUtils.hpp"
+#include "Process/ProcessTestUtils.hpp"
 
-#include "ProcessTestUtils.hpp"
+#include "Process/MetricsObserver.hpp"
 
+using basil::FrameClock;
 using basil::MetricsObserver;
 using basil::MetricsRecord;
 using basil::ProcessInstance;

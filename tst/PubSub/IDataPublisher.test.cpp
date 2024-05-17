@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include "PubSubTestUtils.hpp"
+#include "PubSub/PubSubTestUtils.hpp"
 
 using basil::DataMessage;
 using basil::TestPublisher;

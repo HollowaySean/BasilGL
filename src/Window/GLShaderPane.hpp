@@ -1,14 +1,15 @@
 #pragma once
 
-#include <GL/glew.h>
-
+#include <filesystem>
 #include <memory>
 #include <string>
-#include <utility>
-#include <vector>
 
-#include "GLShaderProgram.hpp"
+#include <Basil/Packages/Builder.hpp>
+#include <Basil/Packages/Context.hpp>
+
 #include "IPane.hpp"
+#include "GLShader.hpp"
+#include "GLShaderProgram.hpp"
 
 namespace basil {
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <fmt/core.h>
 #include <GL/glew.h>
 
 #include <map>
@@ -9,13 +8,14 @@
 #include <string>
 #include <vector>
 
-#include "GLTexture.hpp"
-#include "GLShader.hpp"
+#include <Basil/Packages/Builder.hpp>
+#include <Basil/Packages/Context.hpp>
+#include <Basil/Packages/PubSub.hpp>
 
-#include <Basil/Builder.hpp>
-#include <Basil/Context.hpp>
-#include <Basil/Data.hpp>
-#include <Basil/PubSub.hpp>
+#include "Data/GLUniform.hpp"
+
+#include "GLShader.hpp"
+#include "GLTexture.hpp"
 
 namespace basil {
 

@@ -1,7 +1,6 @@
 #include <catch.hpp>
 
-#include <Basil/Data.hpp>
-#include <Basil/Window.hpp>
+#include "Window/GLTexture.hpp"
 
 #include "GLTestUtils.hpp"
 

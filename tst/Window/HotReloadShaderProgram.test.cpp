@@ -1,8 +1,8 @@
 #include <catch.hpp>
 
-#include "GLTestUtils.hpp"
-
 #include "Window/HotReloadShaderPane.hpp"
+
+#include "Window/GLTestUtils.hpp"
 
 using basil::HotReloadShaderPane;
 using basil::PaneProps;

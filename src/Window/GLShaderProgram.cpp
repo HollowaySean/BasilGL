@@ -1,4 +1,8 @@
+#include <fmt/format.h>
+
 #include "GLShaderProgram.hpp"
+
+#include "Data/ShaderUniformModel.hpp"
 
 namespace basil {
 

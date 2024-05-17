@@ -3,7 +3,8 @@
 #include <map>
 #include <memory>
 
-#include "FrameClock.hpp"
+#include <Basil/Packages/Chrono.hpp>
+
 #include "ProcessInstance.hpp"
 
 namespace basil {

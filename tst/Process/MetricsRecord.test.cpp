@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include <Basil/Process.hpp>
+#include "Process/MetricsRecord.hpp"
 
 #include "ProcessTestUtils.hpp"
 

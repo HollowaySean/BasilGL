@@ -1,8 +1,9 @@
 #include <catch.hpp>
 
-#include <Basil/Window.hpp>
+#include "Data/ShaderUniformModel.hpp"
+#include "Window/GLShaderProgram.hpp"
 
-#include "GLTestUtils.hpp"
+#include "Window/GLTestUtils.hpp"
 
 using basil::BasilContextLock;
 using basil::DataMessage;

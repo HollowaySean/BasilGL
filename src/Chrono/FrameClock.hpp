@@ -5,7 +5,7 @@
 
 // Include stubbed clock source for test build
 #ifdef TEST_BUILD
-    #include "Process/ChronoTestUtils.hpp"
+    #include "Chrono/ChronoTestUtils.hpp"
 
 namespace basil {
     using FrameClock = TestClock;

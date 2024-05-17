@@ -2,10 +2,10 @@
 
 #include <filesystem>
 
-#include <Basil/Builder.hpp>
-#include <Basil/Logging.hpp>
-
-#include "ITextureSource.hpp"
+#include "Builder/IBuildable.hpp"
+#include "Builder/IBuilder.hpp"
+#include "Data/ITextureSource.hpp"
+#include "Logging/Logger.hpp"
 
 namespace basil {
 

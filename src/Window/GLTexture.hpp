@@ -1,19 +1,20 @@
 #pragma once
 
-#include <fmt/core.h>
+#include <span>
+
 #include <GL/glew.h>
 
+#include <filesystem>
 #include <memory>
-#include <string>
 #include <unordered_map>
 
-#include <Basil/Builder.hpp>
-#include <Basil/Context.hpp>
-#include <Basil/Logging.hpp>
+#include <Basil/Packages/Builder.hpp>
+#include <Basil/Packages/Context.hpp>
+#include <Basil/Packages/Logging.hpp>
 
 #include "Data/ITextureSource.hpp"
-#include "Data/FileTextureSource.hpp"
 #include "Data/SpanTextureSource.hpp"
+
 
 namespace basil {
 

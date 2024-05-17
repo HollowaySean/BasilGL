@@ -1,3 +1,7 @@
+#include <optional>
+#include <fstream>
+#include <utility>
+
 #include "FileDataLoader.hpp"
 
 namespace basil {

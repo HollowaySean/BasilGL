@@ -1,6 +1,8 @@
 #pragma once
 
-#include <Basil/Process.hpp>
+#include "Process/IProcess.hpp"
+#include "Process/ProcessController.hpp"
+#include "Process/ProcessEnums.hpp"
 
 using basil::IProcess;
 using basil::ProcessController;

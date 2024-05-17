@@ -1,22 +1,18 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
-#include <vector>
 
-#include <Basil/App.hpp>
-#include <Basil/Builder.hpp>
-#include <Basil/Context.hpp>
-#include <Basil/Process.hpp>
+#include <Basil/Packages/Builder.hpp>
+#include <Basil/Packages/Context.hpp>
+#include <Basil/Packages/PubSub.hpp>
+
+#include "App/IBasilWidget.hpp"
+
+#include "IPane.hpp"
 
 #include "Definitions.hpp"
-#include "SplitPane.hpp"
-#include "GLShaderPane.hpp"
 
 namespace basil {
 

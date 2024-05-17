@@ -1,10 +1,11 @@
 #include <catch.hpp>
 
-#include <Basil/Process.hpp>
-
 #include "ProcessTestUtils.hpp"
+#include "Process/IProcess.hpp"
+#include "Process/ProcessController.hpp"
 
 using basil::IProcess;
+using basil::ProcessController;
 using basil::ProcessState;
 
 TEST_CASE("Process_IProcess_onRegister") {

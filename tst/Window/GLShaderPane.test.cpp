@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include <Basil/Window.hpp>
+#include "Window/GLShaderPane.hpp"
 
 #include "GLTestUtils.hpp"
 

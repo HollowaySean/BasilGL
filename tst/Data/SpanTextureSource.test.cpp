@@ -1,5 +1,8 @@
 #include <span>
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
 #include <catch.hpp>
 
 #include "Data/SpanTextureSource.hpp"

@@ -1,10 +1,9 @@
 #include <catch.hpp>
 
-#include <Basil/Context.hpp>
-#include <Basil/Window.hpp>
+#include "Window/WindowView.hpp"
 
-#include "GLTestUtils.hpp"
 #include "PubSub/PubSubTestUtils.hpp"
+#include "Window/GLTestUtils.hpp"
 
 using basil::BasilContext;
 using basil::BasilContextLock;

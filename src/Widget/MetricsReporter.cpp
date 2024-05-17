@@ -1,5 +1,9 @@
 #include "MetricsReporter.hpp"
 
+#include <fmt/format.h>
+
+#include <string>
+
 namespace basil {
 
 MetricsReporter::MetricsReporter() : IBasilWidget({

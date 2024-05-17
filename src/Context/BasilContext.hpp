@@ -7,8 +7,9 @@
 #include <memory>
 #include <vector>
 
+#include <Basil/Packages/Logging.hpp>
+
 #include "Definitions.hpp"
-#include <Basil/Logging.hpp>
 
 namespace basil {
 

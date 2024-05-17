@@ -5,8 +5,10 @@
 
 #include "IBasilWidget.hpp"
 
-#include <Basil/Builder.hpp>
-#include <Basil/Process.hpp>
+#include <Basil/Packages/Builder.hpp>
+#include <Basil/Packages/Logging.hpp>
+#include <Basil/Packages/Process.hpp>
+#include <Basil/Packages/PubSub.hpp>
 
 namespace basil {
 

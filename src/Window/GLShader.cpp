@@ -1,12 +1,8 @@
-#include "GLShader.hpp"
-
-#include <errno.h>
-#include <string.h>
-
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 #include <fstream>
-#include <iostream>
+
+#include "GLShader.hpp"
 
 using filepath = std::filesystem::path;
 
