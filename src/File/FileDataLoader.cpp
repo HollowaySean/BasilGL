@@ -4,6 +4,8 @@
 
 #include "FileDataLoader.hpp"
 
+#include "OpenGL/GLTexture.hpp"
+
 namespace basil {
 
 template<> const std::string_view
@@ -65,25 +67,78 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
         return std::nullopt;
     }
 
+    auto model = std::make_shared<ShaderUniformModel>();
+
+    if (data.empty()) {
+        logger.log(
+            fmt::format(LOG_JSON_EMPTY, filePath.c_str()),
+            LogLevel::WARN);
+
+        return std::nullopt;
+    }
+
     // Check if uniform definition exists
-    if (data.empty() || !data.contains("uniforms")) {
+    if (data.contains("uniforms")) {
+        // Read data into model
+        logger.log("Reading shader uniforms from JSON file.", LogLevel::DEBUG);
+        auto uniformData = data.at("uniforms");
+
+        model = addUniforms<float>(model, uniformData);
+        model = addUniforms<int>(model, uniformData);
+        model = addUniforms<unsigned int>(model, uniformData);
+        model = addUniforms<bool>(model, uniformData);
+
+    } else {
         logger.log(
             fmt::format(LOG_UNIFORMS_MISSING, filePath.c_str()),
             LogLevel::WARN);
-        return std::nullopt;
     }
-    logger.log("Reading shader uniforms from JSON file.", LogLevel::DEBUG);
 
-    // Read data into model
-    data = data.at("uniforms");
-    auto model = std::make_shared<ShaderUniformModel>();
 
-    model = addUniforms<float>(model, data);
-    model = addUniforms<int>(model, data);
-    model = addUniforms<unsigned int>(model, data);
-    model = addUniforms<bool>(model, data);
+    // Check if texture definition exists
+    if (data.contains("textures")) {
+        // Read data into model
+        logger.log("Reading texture paths from JSON file.", LogLevel::DEBUG);
+        auto textureData = data.at("textures");
+
+        auto basePath = filePath.parent_path();
+        model = addTexture(model, textureData, basePath);
+
+    } else {
+        logger.log(
+            fmt::format(LOG_UNIFORMS_MISSING, filePath.c_str()),
+            LogLevel::WARN);
+    }
 
     return std::optional(std::move(*model));
+}
+
+std::shared_ptr<ShaderUniformModel>
+FileDataLoader::addTexture(
+        std::shared_ptr<ShaderUniformModel> model,
+        json json,
+        std::filesystem::path basePath) {
+    for (auto& [key, value] : json.items()) {
+        if (value.is_string()) {
+            std::filesystem::path path = value;
+
+            if (path.is_relative()) {
+                path = basePath / value;
+            }
+
+            logger.log(
+                fmt::format(LOG_TEXTURE_ADDED,
+                    key.c_str(), path.c_str()),
+                LogLevel::DEBUG);
+
+            auto texture = GLTexture2D::Builder()
+                .fromFile(path)
+                .build();
+            model->addTexture(texture, key);
+        }
+    }
+
+    return model;
 }
 
 }  // namespace basil

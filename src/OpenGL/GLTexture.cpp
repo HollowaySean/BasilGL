@@ -108,6 +108,10 @@ template<int N>
 GLTexture<N>::~GLTexture() {
     GLuint textureArray[] = { textureId };
     glDeleteTextures(1, textureArray);
+
+    logger.log(
+        fmt::format(LOG_TEXTURE_DELETED, textureId),
+        LogLevel::DEBUG);
 }
 
 template<int N>

@@ -1,7 +1,10 @@
 {
     "uniforms" : {
         "float" : {
-            "testValue": 0.8
+            "testValue": 0.01
         }
+    },
+    "textures" : {
+        "testTexture" : "test-image.jpg"
     }
 }
