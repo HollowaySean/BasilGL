@@ -40,6 +40,10 @@ class FileDataLoader {
      *              "uniformName3": true,
      *              "uniformName4": false
      *          }
+     *      },
+     *      "textures" : {
+     *          "textureName1": "file-name.jpg",
+     *          "textureName2": "/absolute/path/file-name.jpg"
      *      }
      *  }
      *  </pre>

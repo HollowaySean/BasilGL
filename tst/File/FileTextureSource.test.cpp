@@ -8,7 +8,7 @@ using basil::LogLevel;
 
 TEST_CASE("File_FileTextureSource_FileTextureSource") {
     auto testImagePath =
-        std::filesystem::path(TEST_DIR) / "Data/assets/test-img.jpg";
+        std::filesystem::path(TEST_DIR) / "File/assets/test-img.jpg";
 
     SECTION("Loads image file") {
         auto source = FileTextureSource(testImagePath);
@@ -37,7 +37,7 @@ TEST_CASE("File_FileTextureSource_FileTextureSource") {
 
 TEST_CASE("File_FileTextureSource_Builder") {
     auto testImagePath =
-        std::filesystem::path(TEST_DIR) / "Data/assets/test-img.jpg";
+        std::filesystem::path(TEST_DIR) / "File/assets/test-img.jpg";
 
     SECTION("Builds from file path") {
         auto source =

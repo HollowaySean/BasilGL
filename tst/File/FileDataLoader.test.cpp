@@ -10,7 +10,7 @@ using GLU = basil::GLUniformType;
 
 TEST_CASE("File_FileDataLoader_modelFromJSON") {
     Logger& logger = Logger::get();
-    auto basePath = std::filesystem::path(TEST_DIR) / "Data/assets";
+    auto basePath = std::filesystem::path(TEST_DIR) / "File/assets";
 
     SECTION("Fails if file does not exist") {
         auto filePath = basePath / "missing.json";
@@ -28,11 +28,21 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
         CHECK(logger.getLastLevel() == LogLevel::ERROR);
     }
 
-    SECTION("Fails quietly if file does not contain uniforms list") {
-        auto filePath = basePath / "missing-uniforms.json";
+    SECTION("Fails quietly if file is empty") {
+        auto filePath = basePath / "empty.json";
 
         auto result = FileDataLoader::modelFromJSON(filePath);
         CHECK_FALSE(result.has_value());
+        CHECK(logger.getLastLevel() == LogLevel::WARN);
+    }
+
+    SECTION("Fails quietly if file does not contain related fields list") {
+        auto filePath = basePath / "missing-fields.json";
+
+        auto result = FileDataLoader::modelFromJSON(filePath);
+        CHECK(result.has_value());
+        CHECK(result.value().getUniforms().size() == 0);
+        CHECK(result.value().getTextures().size() == 0);
         CHECK(logger.getLastLevel() == LogLevel::WARN);
     }
 
@@ -57,6 +67,9 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
             == GLU(std::vector<uint>({ 10 })));
 
         CHECK_FALSE(model.getUniform("test7").has_value());
+
+        CHECK(model.getTexture("testTexture").value().texture);
+        CHECK(model.getTexture("testTexture").has_value());
     }
 }
 
