@@ -5,8 +5,8 @@
 
 #include <catch.hpp>
 
-#include <Basil/Context.hpp>
-#include <Basil/Window.hpp>
+#include "Context/BasilContextLock.hpp"
+#include "Window/IPane.hpp"
 
 using basil::BasilContextLock;
 using basil::PaneProps;

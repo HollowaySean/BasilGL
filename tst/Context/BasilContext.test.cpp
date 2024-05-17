@@ -1,7 +1,7 @@
 #include <catch.hpp>
 
-#include <Basil/Context.hpp>
-
+#include "Context/BasilContext.hpp"
+#include "Context/BasilContextLock.hpp"
 #include "Window/GLTestUtils.hpp"
 
 using basil::BasilContextLock;

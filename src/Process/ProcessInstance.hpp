@@ -3,8 +3,6 @@
 #include <memory>
 #include <string>
 
-#include <Basil/Builder.hpp>
-
 #include "Definitions.hpp"
 #include "IProcess.hpp"
 #include "ProcessEnums.hpp"

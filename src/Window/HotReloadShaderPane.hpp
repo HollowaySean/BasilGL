@@ -1,10 +1,12 @@
 #pragma once
 
-#include <memory>
 #include <filesystem>
-#include <utility>
+#include <memory>
+
+#include <Basil/Packages/Builder.hpp>
 
 #include "GLShaderPane.hpp"
+#include "IPane.hpp"
 
 namespace basil {
 

@@ -1,8 +1,8 @@
 #include <catch.hpp>
 
-#include "GLTestUtils.hpp"
+#include "Window/SplitPane.hpp"
 
-#include <Basil/Window.hpp>
+#include "Window/GLTestUtils.hpp"
 
 using basil::PaneProps;
 using basil::IPane;

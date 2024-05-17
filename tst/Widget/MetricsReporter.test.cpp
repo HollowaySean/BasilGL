@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include <Basil/Widget.hpp>
+#include "Widget/MetricsReporter.hpp"
 
 #include "Process/ProcessTestUtils.hpp"
 

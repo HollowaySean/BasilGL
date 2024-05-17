@@ -1,8 +1,8 @@
 #include <catch.hpp>
 
-#include <Basil/Process.hpp>
+#include "Process/ProcessController.hpp"
 
-#include "ProcessTestUtils.hpp"
+#include "Process/ProcessTestUtils.hpp"
 
 using basil::ProcessController;
 using basil::ProcessControllerState;

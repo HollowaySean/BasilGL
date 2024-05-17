@@ -3,8 +3,8 @@
 #include <memory>
 #include <string>
 
-#include <Basil/Process.hpp>
-#include <Basil/PubSub.hpp>
+#include <Basil/Packages/Process.hpp>
+#include <Basil/Packages/PubSub.hpp>
 
 namespace basil {
 

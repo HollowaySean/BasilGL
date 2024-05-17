@@ -1,5 +1,10 @@
 #include "ShadertoyUniformPublisher.hpp"
 
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+
+#include <vector>
+
 namespace basil {
 
 ShadertoyUniformPublisher::ShadertoyUniformPublisher() : IBasilWidget({

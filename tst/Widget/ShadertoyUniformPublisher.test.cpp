@@ -1,8 +1,8 @@
 #include <catch.hpp>
 
-#include "PubSub/PubSubTestUtils.hpp"
-
 #include "Widget/ShadertoyUniformPublisher.hpp"
+
+#include "PubSub/PubSubTestUtils.hpp"
 
 using basil::GLUniformType;
 using basil::ShadertoyUniformPublisher;

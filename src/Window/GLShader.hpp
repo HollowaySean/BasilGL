@@ -1,14 +1,11 @@
 #pragma once
 
-#include <GL/glew.h>
-
-#include <iostream>
 #include <filesystem>
 #include <memory>
 #include <string>
 
-#include <Basil/Context.hpp>
-#include <Basil/Logging.hpp>
+#include <Basil/Packages/Context.hpp>
+#include <Basil/Packages/Logging.hpp>
 
 namespace basil {
 

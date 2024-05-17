@@ -1,4 +1,9 @@
+#include <optional>
+
 #include "UniformJSONFileWatcher.hpp"
+
+#include "Data/ShaderUniformModel.hpp"
+#include "Data/FileDataLoader.hpp"
 
 namespace basil {
 

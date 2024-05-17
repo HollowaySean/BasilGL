@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <Basil/Builder.hpp>
-#include <Basil/Logging.hpp>
+#include <Basil/Packages/Builder.hpp>
+#include <Basil/Packages/Logging.hpp>
 
 #include "IPane.hpp"
 

@@ -2,7 +2,7 @@
 
 #include <catch.hpp>
 
-#include <Basil/Logging.hpp>
+#include "Logging/Logger.hpp"
 
 using basil::Logger;
 using basil::LogLevel;

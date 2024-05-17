@@ -1,8 +1,9 @@
-#include "FileTextureSource.hpp"
-
 #include <memory>
 #include <string>
 
+#include "FileTextureSource.hpp"
+
+// TODO(Sholloway): Move elsewhere
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"  // NOLINT
 

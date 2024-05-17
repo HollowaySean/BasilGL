@@ -1,8 +1,8 @@
 #include <catch.hpp>
 
-#include <Basil/Process.hpp>
+#include "Process/ProcessInstance.hpp"
 
-#include "ProcessTestUtils.hpp"
+#include "Process/ProcessTestUtils.hpp"
 
 using basil::IProcess;
 using basil::ProcessInstance;

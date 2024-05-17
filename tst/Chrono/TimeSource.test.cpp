@@ -2,8 +2,7 @@
 
 #include <catch.hpp>
 
-#include <Basil/Process.hpp>
-
+#include "Chrono/TimeSource.hpp"
 #include "ChronoTestUtils.hpp"
 
 using basil::TimeSource;

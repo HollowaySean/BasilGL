@@ -1,6 +1,6 @@
+#include <filesystem>
+
 #include <Basil/App.hpp>
-#include <Basil/Widget.hpp>
-#include <Basil/Window.hpp>
 
 /**
  * @brief Entry point function.

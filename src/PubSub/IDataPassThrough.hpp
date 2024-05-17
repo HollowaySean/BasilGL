@@ -1,7 +1,6 @@
 #pragma once
 
-#include <vector>
-
+#include "DataMessage.hpp"
 #include "IDataPublisher.hpp"
 #include "IDataSubscriber.hpp"
 

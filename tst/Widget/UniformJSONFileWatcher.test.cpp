@@ -1,7 +1,8 @@
 #include <catch.hpp>
 
-#include "PubSub/PubSubTestUtils.hpp"
 #include "Widget/UniformJSONFileWatcher.hpp"
+
+#include "PubSub/PubSubTestUtils.hpp"
 
 using basil::TestSubscriber;
 using basil::UniformJSONFileWatcher;

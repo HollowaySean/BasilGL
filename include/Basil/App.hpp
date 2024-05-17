@@ -1,6 +1,6 @@
 #pragma once
 
-#include "App/BasilApp.hpp"
-#include "App/IBasilWidget.hpp"
+#include "Core.hpp"
 
-
+#include "Packages/App.hpp"
+#include "Packages/Widget.hpp"

@@ -1,18 +1,14 @@
 #pragma once
 
-#include <chrono>
-#include <map>
 #include <memory>
 #include <queue>
 
+#include <Basil/Packages/Chrono.hpp>
+
 #include "MetricsRecord.hpp"
-#include "ProcessInstance.hpp"
 
 #ifdef TEST_BUILD
-#include "Process/ChronoTestUtils.hpp"
-using FrameClock = TestClock;
-#else
-using FrameClock = std::chrono::steady_clock;
+#include "Chrono/ChronoTestUtils.hpp"
 #endif
 
 namespace basil {

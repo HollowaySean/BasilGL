@@ -1,10 +1,3 @@
-#include <stdio.h>
-
-#include <chrono>
-#include <thread>
-#include <cmath>
-#include <vector>
-
 #include "WindowView.hpp"
 
 namespace basil {

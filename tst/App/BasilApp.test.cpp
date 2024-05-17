@@ -1,7 +1,6 @@
 #include <catch.hpp>
 
-#include <Basil/App.hpp>
-
+#include "App/BasilApp.hpp"
 #include "AppTestUtils.hpp"
 
 using basil::BasilApp;
