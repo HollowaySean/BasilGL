@@ -5,8 +5,9 @@
 
 #include <Basil/Packages/Builder.hpp>
 
+#include "Window/IPane.hpp"
+
 #include "GLShaderPane.hpp"
-#include "IPane.hpp"
 
 namespace basil {
 

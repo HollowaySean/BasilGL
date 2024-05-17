@@ -2,8 +2,8 @@
 
 #include "Window/WindowView.hpp"
 
+#include "OpenGL/GLTestUtils.hpp"
 #include "PubSub/PubSubTestUtils.hpp"
-#include "Window/GLTestUtils.hpp"
 
 using basil::BasilContext;
 using basil::BasilContextLock;

@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include "Window/GLTexture.hpp"
+#include "OpenGL/GLTexture.hpp"
 
 #include "GLTestUtils.hpp"
 
@@ -14,7 +14,7 @@ using basil::Logger;
 using basil::LogLevel;
 using basil::SpanTextureSource;
 
-TEST_CASE("Window_GLTexture_GLTexture") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLTexture_GLTexture") { BASIL_LOCK_TEST
     SECTION("Initializes 1D texture") {
         GLTexture1D texture = GLTexture1D();
 
@@ -40,7 +40,7 @@ TEST_CASE("Window_GLTexture_GLTexture") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLTexture_update") { BASIL_LOCK_TEST
     SECTION("Logs error if missing texture source") {
         GLTexture2D texture = GLTexture2D();
         texture.update();
@@ -117,7 +117,7 @@ TEST_CASE("Window_GLTexture_update") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLTexture_Builder") {
+TEST_CASE("OpenGL_GLTexture_Builder") {
     SECTION("Builds from file path") {
         auto path = std::filesystem::path(TEST_DIR)
             / "Data/assets/test-img.jpg";

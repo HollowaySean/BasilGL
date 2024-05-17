@@ -7,7 +7,8 @@
 #include <Basil/Packages/Builder.hpp>
 #include <Basil/Packages/Context.hpp>
 
-#include "IPane.hpp"
+#include "Window/IPane.hpp"
+
 #include "GLShader.hpp"
 #include "GLShaderProgram.hpp"
 

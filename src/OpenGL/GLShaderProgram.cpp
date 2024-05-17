@@ -3,6 +3,7 @@
 #include "GLShaderProgram.hpp"
 
 #include "Data/ShaderUniformModel.hpp"
+#include "File/FileTextureSource.hpp"
 
 namespace basil {
 

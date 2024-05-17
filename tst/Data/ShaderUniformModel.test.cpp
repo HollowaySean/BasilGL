@@ -1,10 +1,10 @@
 #include <catch.hpp>
 
-#include "Data/GLUniform.hpp"
 #include "Data/ShaderUniformModel.hpp"
-#include "Data/SpanTextureSource.hpp"
 
-#include "Window/GLTexture.hpp"
+#include "OpenGL/SpanTextureSource.hpp"
+#include "OpenGL/GLUniform.hpp"
+#include "OpenGL/GLTexture.hpp"
 
 using basil::GLUniformType;
 using basil::IGLTexture;

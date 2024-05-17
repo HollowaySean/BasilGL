@@ -1,9 +1,9 @@
 #include <catch.hpp>
 
 #include "Data/ShaderUniformModel.hpp"
-#include "Window/GLShaderProgram.hpp"
+#include "OpenGL/GLShaderProgram.hpp"
 
-#include "Window/GLTestUtils.hpp"
+#include "OpenGL/GLTestUtils.hpp"
 
 using basil::BasilContextLock;
 using basil::DataMessage;
@@ -77,7 +77,7 @@ template<unsigned int N> void getUniform(
     glGetUniformfv(ID, location, returnValue);
 }
 
-TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
 
     SECTION("Does not compile for default contruction") {
@@ -117,7 +117,7 @@ TEST_CASE("Window_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_use") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_use") { BASIL_LOCK_TEST
     auto vertexShader =
         std::make_shared<GLVertexShader>(vertexPath);
     auto fragmentShader =
@@ -136,7 +136,7 @@ TEST_CASE("Window_GLShaderProgram_use") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_addTexture") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_addTexture") { BASIL_LOCK_TEST
     auto vertexShader =
         std::make_shared<GLVertexShader>(vertexPath);
     auto fragmentShader =
@@ -158,7 +158,7 @@ TEST_CASE("Window_GLShaderProgram_addTexture") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
     auto vertexShader =
         std::make_shared<GLVertexShader>(vertexPath);
     auto secondVertexShader =
@@ -228,7 +228,7 @@ TEST_CASE("Window_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_getUniformLocation") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_getUniformLocation") { BASIL_LOCK_TEST
     auto program = GLShaderProgram::Builder()
         .withFragmentShaderFromFile(fragmentPath)
         .withDefaultVertexShader()
@@ -248,7 +248,7 @@ TEST_CASE("Window_GLShaderProgram_getUniformLocation") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_setUniform") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_setUniform") { BASIL_LOCK_TEST
     SECTION("Sets uniform in shader program") {
         auto vertexShader =
             std::make_shared<GLVertexShader>(vertexPath);
@@ -270,7 +270,7 @@ TEST_CASE("Window_GLShaderProgram_setUniform") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_setUniformVector") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_setUniformVector") { BASIL_LOCK_TEST
     SECTION("Sets uniform vector in shader program") {
         auto vertexShader =
             std::make_shared<GLVertexShader>(vertexPath);
@@ -348,7 +348,7 @@ void verifyDataModelVector(
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_receiveData") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_receiveData") { BASIL_LOCK_TEST
     SECTION("Sets uniforms from model") {
         auto vertexShader =
             std::make_shared<GLVertexShader>(vertexPath);
@@ -427,7 +427,7 @@ TEST_CASE("Window_GLShaderProgram_receiveData") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLShaderProgram_Builder") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_Builder") { BASIL_LOCK_TEST
     SECTION("Builds shaders from objects") {
         auto vertexShader =
             std::make_shared<GLVertexShader>(vertexPath);

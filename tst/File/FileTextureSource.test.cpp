@@ -1,12 +1,12 @@
 #include <catch.hpp>
 
-#include "Data/FileTextureSource.hpp"
+#include "File/FileTextureSource.hpp"
 
 using basil::FileTextureSource;
 using basil::Logger;
 using basil::LogLevel;
 
-TEST_CASE("Data_FileTextureSource_FileTextureSource") {
+TEST_CASE("File_FileTextureSource_FileTextureSource") {
     auto testImagePath =
         std::filesystem::path(TEST_DIR) / "Data/assets/test-img.jpg";
 
@@ -35,7 +35,7 @@ TEST_CASE("Data_FileTextureSource_FileTextureSource") {
     }
 }
 
-TEST_CASE("Data_FileTextureSource_Builder") {
+TEST_CASE("File_FileTextureSource_Builder") {
     auto testImagePath =
         std::filesystem::path(TEST_DIR) / "Data/assets/test-img.jpg";
 

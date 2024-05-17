@@ -12,7 +12,7 @@
 #include <Basil/Packages/Context.hpp>
 #include <Basil/Packages/PubSub.hpp>
 
-#include "Data/GLUniform.hpp"
+#include "OpenGL/GLUniform.hpp"
 
 #include "GLShader.hpp"
 #include "GLTexture.hpp"
