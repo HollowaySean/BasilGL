@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include "Window/GLShaderPane.hpp"
+#include "OpenGL/GLShaderPane.hpp"
 
 #include "GLTestUtils.hpp"
 
@@ -15,7 +15,7 @@ using basil::IPane;
 template<class T>
 using s_p = std::shared_ptr<T>;
 
-TEST_CASE("Window_GLShaderPane_GLShaderPane") {
+TEST_CASE("OpenGL_GLShaderPane_GLShaderPane") {
     SECTION("Creates pane from shader program") { BASIL_LOCK_TEST
         s_p<GLVertexShader> vertexShader =
             std::make_shared<GLVertexShader>(vertexPath);
@@ -48,7 +48,7 @@ TEST_CASE("Window_GLShaderPane_GLShaderPane") {
     }
 }
 
-TEST_CASE("Window_GLShaderPane_setShaderProgram") {
+TEST_CASE("OpenGL_GLShaderPane_setShaderProgram") {
     SECTION("Does nothing if input is null") {
         GLShaderPane pane = GLShaderPane();
         pane.setShaderProgram(nullptr);
@@ -126,7 +126,7 @@ TEST_CASE("Window_GLShaderPane_setShaderProgram") {
     }
 }
 
-TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderPane_draw") { BASIL_LOCK_TEST
     s_p<GLVertexShader> vertexShader =
         std::make_shared<GLVertexShader>(vertexPath);
     s_p<GLFragmentShader> fragmentShader =
@@ -169,7 +169,7 @@ TEST_CASE("Window_GLShaderPane_draw") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_GLShaderPane_Builder") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderPane_Builder") { BASIL_LOCK_TEST
     SECTION("Builds from fragment shader") {
         auto fragmentShader =
             std::make_shared<GLFragmentShader>(fragmentPath);

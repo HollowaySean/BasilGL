@@ -7,8 +7,8 @@
 
 #include <Basil/Packages/Builder.hpp>
 
-#include "GLUniform.hpp"
-#include "GLTextureUniform.hpp"
+#include "OpenGL/GLUniform.hpp"
+#include "OpenGL/GLTextureUniform.hpp"
 
 namespace basil {
 

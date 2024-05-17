@@ -2,7 +2,7 @@
 
 #include "Context/BasilContext.hpp"
 #include "Context/BasilContextLock.hpp"
-#include "Window/GLTestUtils.hpp"
+#include "OpenGL/GLTestUtils.hpp"
 
 using basil::BasilContextLock;
 using basil::BasilContext;

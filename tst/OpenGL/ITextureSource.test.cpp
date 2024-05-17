@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include "Data/ITextureSource.hpp"
+#include "OpenGL/ITextureSource.hpp"
 
 using basil::ITextureSource;
 
@@ -10,7 +10,7 @@ class TestTextureSource: public ITextureSource<N> {
     const void* data() override { return 0; }
 };
 
-TEST_CASE("Data_ITextureSource_setDimensions") {
+TEST_CASE("OpenGL_ITextureSource_setDimensions") {
     auto source = TestTextureSource<3>();
 
     SECTION("Sets dimensions correctly with variadic input") {

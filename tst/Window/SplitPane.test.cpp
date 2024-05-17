@@ -2,7 +2,7 @@
 
 #include "Window/SplitPane.hpp"
 
-#include "Window/GLTestUtils.hpp"
+#include "OpenGL/GLTestUtils.hpp"
 
 using basil::PaneProps;
 using basil::IPane;

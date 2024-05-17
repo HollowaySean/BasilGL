@@ -1,6 +1,6 @@
 #include <catch.hpp>
 
-#include "Data/FileDataLoader.hpp"
+#include "File/FileDataLoader.hpp"
 
 using basil::FileDataLoader;
 using basil::Logger;
@@ -8,7 +8,7 @@ using basil::LogLevel;
 
 using GLU = basil::GLUniformType;
 
-TEST_CASE("Data_FileDataLoader_modelFromJSON") {
+TEST_CASE("File_FileDataLoader_modelFromJSON") {
     Logger& logger = Logger::get();
     auto basePath = std::filesystem::path(TEST_DIR) / "Data/assets";
 
@@ -60,7 +60,7 @@ TEST_CASE("Data_FileDataLoader_modelFromJSON") {
     }
 }
 
-TEST_CASE("Data_FileDataLoader_TypeMap") {
+TEST_CASE("File_FileDataLoader_TypeMap") {
     SECTION("Returns correct type keys") {
         CHECK(FileDataLoader::TypeMap<float>::key == "float");
         CHECK(FileDataLoader::TypeMap<int>::key == "int");

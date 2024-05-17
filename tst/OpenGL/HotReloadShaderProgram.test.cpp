@@ -1,13 +1,13 @@
 #include <catch.hpp>
 
-#include "Window/HotReloadShaderPane.hpp"
+#include "OpenGL/HotReloadShaderPane.hpp"
 
-#include "Window/GLTestUtils.hpp"
+#include "OpenGL/GLTestUtils.hpp"
 
 using basil::HotReloadShaderPane;
 using basil::PaneProps;
 
-TEST_CASE("Window_HotReloadShaderPane_HotReloadShaderPane") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_HotReloadShaderPane_HotReloadShaderPane") { BASIL_LOCK_TEST
     SECTION("Loads shader from file if compilable") {
         auto pane = HotReloadShaderPane(testPaneProps, fragmentPath);
 
@@ -30,7 +30,7 @@ TEST_CASE("Window_HotReloadShaderPane_HotReloadShaderPane") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_HotReloadShaderPane_draw") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_HotReloadShaderPane_draw") { BASIL_LOCK_TEST
     auto pane = HotReloadShaderPane(testPaneProps, invalidPath);
 
     SECTION("Updates the shader if modified") {
@@ -46,7 +46,7 @@ TEST_CASE("Window_HotReloadShaderPane_draw") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_HotReloadShaderPane_Builder") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_HotReloadShaderPane_Builder") { BASIL_LOCK_TEST
     SECTION("Builds from file path") {
         auto pane = HotReloadShaderPane::Builder()
             .fromFilePath(fragmentPath)

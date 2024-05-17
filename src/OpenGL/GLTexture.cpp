@@ -1,6 +1,6 @@
 #include <fmt/format.h>
 
-#include "Data/FileTextureSource.hpp"
+#include "File/FileTextureSource.hpp"
 
 #include "GLTexture.hpp"
 

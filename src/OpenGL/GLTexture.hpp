@@ -12,8 +12,8 @@
 #include <Basil/Packages/Context.hpp>
 #include <Basil/Packages/Logging.hpp>
 
-#include "Data/ITextureSource.hpp"
-#include "Data/SpanTextureSource.hpp"
+#include "OpenGL/ITextureSource.hpp"
+#include "OpenGL/SpanTextureSource.hpp"
 
 
 namespace basil {

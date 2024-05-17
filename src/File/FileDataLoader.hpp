@@ -14,7 +14,7 @@ using json = nlohmann::json;
 #include <Basil/Packages/Logging.hpp>
 #include <Basil/Packages/PubSub.hpp>
 
-#include "ShaderUniformModel.hpp"
+#include "Data/ShaderUniformModel.hpp"
 
 namespace basil {
 
