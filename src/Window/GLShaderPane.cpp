@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "GLShaderPane.hpp"
 
 namespace basil {
