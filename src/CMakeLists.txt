@@ -13,7 +13,8 @@ file(GLOB_RECURSE PUBLIC_HEADER_LIST CONFIGURE_DEPENDS
 
 ## Create library
 add_library(${LIB_TARGET_NAME} STATIC
-    ${SOURCE_LIST})
+    ${SOURCE_LIST}
+    ${BASIL_DEPENDENCY_SOURCES})
 
 ## Export variables
 set(BASIL_LIBRARIES
@@ -25,16 +26,28 @@ set(BASIL_INCLUDE_DIRS
     ${BASIL_DEPENDENCY_INCLUDE_DIRS}
     PARENT_SCOPE)
 
+
 ## Preprocessor directives
 target_compile_definitions(
     ${LIB_TARGET_NAME} PRIVATE
     SOURCE_DIR="${SRC_DIR}"
-)
+    "$<$<CONFIG:Debug>:DEBUG_BUILD>")
+
+# Build options
+if (${BASIL_INCLUDE_IMGUI})
+    target_compile_definitions(
+        ${LIB_TARGET_NAME} PRIVATE
+        BASIL_INCLUDE_IMGUI=1)
+else()
+    target_compile_definitions(
+        ${LIB_TARGET_NAME} PRIVATE
+        BASIL_INCLUDE_IMGUI=0)
+endif()
 
 ## Link libraries and include directories
 target_link_libraries(${LIB_TARGET_NAME}
     PRIVATE
-    ${BASIL_DEPENDENCY_LIBRARIES})
+        ${BASIL_DEPENDENCY_LIBRARIES})
 
 target_include_directories(${LIB_TARGET_NAME}
     PUBLIC

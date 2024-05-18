@@ -14,6 +14,16 @@ int main(int argc, char** argv) {
     auto fragmentPath = exPath / "shaders/test.frag";
     auto jsonPath =     exPath / "assets/test.json";
 
+    #if BASIL_INCLUDE_IMGUI
+    class MyImGuiPane : public basil::ImGuiPane,
+                        public basil::IBuildable<MyImGuiPane> {
+     public:
+        const void drawImGuiContent() override {
+            ImGui::Text("Child of ImGuiPane!");
+        }
+    };
+    #endif
+
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()
             .withFrameCap(60)
@@ -21,8 +31,16 @@ int main(int argc, char** argv) {
         .withWidget(basil::WindowView::Builder()
             .withTitle("My window")
             .withDimensions(400, 400)
-            .withTopPane(basil::HotReloadShaderPane::Builder()
-                .fromFilePath(fragmentPath)
+            .withTopPane(basil::SplitPane::Builder()
+                .withFirstPane(basil::HotReloadShaderPane::Builder()
+                    .fromFilePath(fragmentPath)
+                    .build())
+
+                #if BASIL_INCLUDE_IMGUI
+                .withSecondPane(MyImGuiPane::Builder()
+                    .build())
+                #endif
+
                 .build())
             .build())
         .withWidget(basil::UniformJSONFileWatcher::Builder()

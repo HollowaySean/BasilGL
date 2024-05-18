@@ -10,7 +10,8 @@ file(GLOB_RECURSE TEST_LIST CONFIGURE_DEPENDS
 ## Create executable
 add_executable(${TEST_TARGET_NAME}
     ${SOURCE_LIST}
-    ${TEST_LIST})
+    ${TEST_LIST}
+    ${BASIL_DEPENDENCY_SOURCES})
 
 ## Link and build
 target_include_directories(${TEST_TARGET_NAME} PRIVATE
@@ -32,7 +33,18 @@ target_compile_definitions(
     TEST_BUILD
     SOURCE_DIR="${SRC_DIR}"
     TEST_DIR="${TST_DIR}"
-)
+    "$<$<CONFIG:Debug>:DEBUG_BUILD>")
+
+# Build options
+if (${BASIL_INCLUDE_IMGUI})
+    target_compile_definitions(
+        ${TEST_TARGET_NAME} PRIVATE
+        BASIL_INCLUDE_IMGUI=1)
+else()
+    target_compile_definitions(
+        ${TEST_TARGET_NAME} PRIVATE
+        BASIL_INCLUDE_IMGUI=0)
+endif()
 
 ## Code coverage
 # Only run in Debug build

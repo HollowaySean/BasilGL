@@ -1,10 +1,10 @@
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb_image.h>
+
 #include <memory>
 #include <string>
 
 #include "FileTextureSource.hpp"
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"  // NOLINT
 
 namespace basil {
 

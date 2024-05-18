@@ -1,5 +1,10 @@
 #pragma once
 
+// Include file directives
+#ifndef BASIL_INCLUDE_IMGUI
+    #define BASIL_INCLUDE_IMGUI 1
+#endif
+
 // GLFW window hints
 
 #ifndef BASIL_GLFW_VERSION_MAJOR

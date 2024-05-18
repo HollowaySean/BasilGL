@@ -46,6 +46,9 @@ void SplitPane::updateSize() {
 
         firstPane->paneProps.xOffset = this->paneProps.xOffset;
         firstPane->paneProps.yOffset = this->paneProps.yOffset;
+
+        firstPane->onResize(
+            firstPane->paneProps.width, firstPane->paneProps.height);
     }
 
     if (secondPane) {
@@ -72,6 +75,9 @@ void SplitPane::updateSize() {
                     this->paneProps.yOffset + firstPaneExtent + gapWidth;
                 break;
         }
+
+        secondPane->onResize(
+            secondPane->paneProps.width, secondPane->paneProps.height);
     }
 }
 
