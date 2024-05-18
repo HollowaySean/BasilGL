@@ -10,16 +10,19 @@ namespace basil {
 // TODO(sholloway): Documentation
 // TODO(sholloway): Test coverage
 // TODO(sholloway): Way to watch pane? Other options?
-// TODO(sholloway): Find a way to deregister callbacks
 class ScreenshotTool : public IBasilWidget,
                        public IBuildable<ScreenshotTool>,
                        private IBasilContextConsumer {
  public:
     ScreenshotTool();
 
+    ~ScreenshotTool();
+
     void onStart() override;
 
     void onLoop() override;
+
+    void onStop() override;
 
     void requestCapture() {
         this->readyToCapture = true;
@@ -41,6 +44,7 @@ class ScreenshotTool : public IBasilWidget,
 
     int triggerKey = GLFW_KEY_UNKNOWN;
     bool readyToCapture = false;
+    unsigned int callbackID = -1;
 
     Logger& logger = Logger::get();
 };

@@ -11,6 +11,10 @@ ScreenshotTool::ScreenshotTool() : IBasilWidget({
     WidgetPubSubPrefs::NONE
 }) {}
 
+ScreenshotTool::~ScreenshotTool() {
+    BasilContext::removeGLFWKeyCallback(callbackID);
+}
+
 void ScreenshotTool::onStart() {
     if (savePath == "") {
         savePath = std::filesystem::temp_directory_path();
@@ -23,8 +27,8 @@ void ScreenshotTool::onStart() {
     using std::placeholders::_2;
     using std::placeholders::_3;
     using std::placeholders::_4;
-    BasilContext::setGLFWKeyCallback(std::bind(
-        &ScreenshotTool::onKeyPress, this, _1, _2, _3, _4));
+    callbackID = BasilContext::setGLFWKeyCallback(
+        std::bind(&ScreenshotTool::onKeyPress, this, _1, _2, _3, _4));
 }
 
 void ScreenshotTool::onLoop() {
@@ -44,6 +48,10 @@ void ScreenshotTool::onLoop() {
             "Unable to capture screenshot.",
             LogLevel::WARN);
     }
+}
+
+void ScreenshotTool::onStop() {
+    BasilContext::removeGLFWKeyCallback(callbackID);
 }
 
 void ScreenshotTool::onKeyPress(
