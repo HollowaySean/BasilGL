@@ -14,7 +14,6 @@ int main(int argc, char** argv) {
     auto fragmentPath = exPath / "shaders/test.frag";
     auto jsonPath =     exPath / "assets/test.json";
 
-    #if BASIL_INCLUDE_IMGUI
     class MyImGuiPane : public basil::ImGuiPane,
                         public basil::IBuildable<MyImGuiPane> {
      public:
@@ -22,7 +21,10 @@ int main(int argc, char** argv) {
             ImGui::Text("Child of ImGuiPane!");
         }
     };
-    #endif
+
+    auto screenshot = std::make_shared<basil::ScreenshotTool>();
+    screenshot->setTriggerKey(GLFW_KEY_S);
+    screenshot->setSaveDirectory(exPath / "../build/screenshots");
 
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()
@@ -30,17 +32,13 @@ int main(int argc, char** argv) {
             .build())
         .withWidget(basil::WindowView::Builder()
             .withTitle("My window")
-            .withDimensions(400, 400)
+            .withDimensions(1000, 1000)
             .withTopPane(basil::SplitPane::Builder()
                 .withFirstPane(basil::HotReloadShaderPane::Builder()
                     .fromFilePath(fragmentPath)
                     .build())
-
-                #if BASIL_INCLUDE_IMGUI
                 .withSecondPane(MyImGuiPane::Builder()
                     .build())
-                #endif
-
                 .build())
             .build())
         .withWidget(basil::UniformJSONFileWatcher::Builder()
@@ -52,6 +50,7 @@ int main(int argc, char** argv) {
             .build())
         .withWidget(basil::ShadertoyUniformPublisher::Builder()
             .build())
+        .withWidget(screenshot)
         .build();
 
     basilApp->run();
