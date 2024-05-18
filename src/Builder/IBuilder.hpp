@@ -5,6 +5,8 @@
 
 namespace basil {
 
+// TODO(sholloway): Side effect to create additional shared ptr
+
 /** @brief Interface which creates Builder
  *  pattern for a given class. */
 template<class T>
