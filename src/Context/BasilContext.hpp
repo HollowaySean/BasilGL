@@ -3,6 +3,12 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#if BASIL_INCLUDE_IMGUI
+#include <imgui.h>
+#include <backends/imgui_impl_glfw.h>
+#include <backends/imgui_impl_opengl3.h>
+#endif
+
 #include <functional>
 #include <memory>
 #include <vector>
@@ -71,6 +77,12 @@ class BasilContext {
 #else
 
  private:
+#endif
+
+
+#if BASIL_INCLUDE_IMGUI
+    static void initializeImGuiContext();
+    static void terminateImGuiContext();
 #endif
 
     inline static const int GLFW_MAJOR_VERSION

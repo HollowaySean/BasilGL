@@ -12,9 +12,19 @@ void BasilContext::initialize() {
     hasInitialized = true;
     instance.initializeGLFWContext();
     instance.initializeGLEWContext();
+
+    #if BASIL_INCLUDE_IMGUI
+    initializeImGuiContext();
+    #endif
 }
 
 void BasilContext::terminate() {
+    if (!hasInitialized) return;
+
+    #if BASIL_INCLUDE_IMGUI
+    terminateImGuiContext();
+    #endif
+
     glfwTerminate();
     hasInitialized = false;
 }
@@ -159,5 +169,32 @@ void BasilContext::setGLFWCursorEnterCallback(
         const BasilCursorEnterFunc& callback) {
     cursorEnterCallbacks.push_back(callback);
 }
+
+#if BASIL_INCLUDE_IMGUI
+
+void BasilContext::initializeImGuiContext() {
+        // Create ImGui context
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+
+        // Set default I/O configurations
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+        io.IniFilename = NULL;
+        io.LogFilename = NULL;
+
+        // Attach to GLFW context
+        GLFWwindow* window = getGLFWWindow();
+        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplOpenGL3_Init();
+}
+
+void BasilContext::terminateImGuiContext() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}
+
+#endif  // BASIL_INCLUDE_IMGUI
 
 }  // namespace basil

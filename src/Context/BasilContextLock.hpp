@@ -11,13 +11,13 @@ class BasilContextLock {
  public:
     /** @brief Locks BasilContext global object. */
     BasilContextLock() {
-      lockMutex.lock();
+        lockMutex.lock();
     }
 
     /** @brief Unlock and terminate context. */
     ~BasilContextLock() {
-      lockMutex.unlock();
-      BasilContext::terminate();
+        lockMutex.unlock();
+        BasilContext::terminate();
     }
 
  private:

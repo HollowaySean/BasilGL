@@ -18,7 +18,7 @@ function(install_dependency
 
         # Search for submodule directory
         set("SUBMODULE_DIR" "${EXTERN_DIR}/${DEP_SUBMODULE_PATH}")
-        if(NOT EXISTS "${SUBMODULE_DIR}/CMakeLists.txt")
+        if(NOT EXISTS "${SUBMODULE_DIR}/.git")
             message("Could not find ${DEP_PACKAGE_NAME}. Installing from local source.")
             find_package(Git REQUIRED)
             execute_process(COMMAND ${GIT_EXECUTABLE}
@@ -63,11 +63,25 @@ install_dependency("JSON" "nlohmann_json" "nlohmann_json" "nlohmann_json::nlohma
 install_dependency("GLEW" "GLEW" "glew" "GLEW::GLEW" "libglew_static" "include")
 
 # GLFW
-set( GLFW_BUILD_X11 ON CACHE BOOL "Build for X11 Unix")
-set( GLFW_BUILD_WAYLAND OFF CACHE BOOL "Do not build for Wayland Unix")
-set( GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only")
-set( GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only")
+set(GLFW_BUILD_X11 ON CACHE BOOL "Build for X11 Unix")
+set(GLFW_BUILD_WAYLAND OFF CACHE BOOL "Do not build for Wayland Unix")
+set(GLFW_BUILD_DOCS OFF CACHE BOOL  "GLFW lib only")
+set(GLFW_INSTALL OFF CACHE BOOL  "GLFW lib only")
 install_dependency("GLFW" "glfw3" "glfw" "glfw" "glfw" "include")
+
+# ImGui
+if(BASIL_INCLUDE_IMGUI)
+    install_dependency("IMGUI" "ImGui" "imgui" "" "" "")
+    file(GLOB IMGUI_SOURCES CONFIGURE_DEPENDS
+        "${EXTERN_DIR}/imgui/*.cpp")
+    list(APPEND IMGUI_SOURCES
+        "${EXTERN_DIR}/imgui/backends/imgui_impl_glfw.cpp"
+        "${EXTERN_DIR}/imgui/backends/imgui_impl_opengl3.cpp")
+
+else()
+    message("Omitting ImGui from build.")
+endif()
+
 
 # Catch2
 install_dependency("CATCH2" "Catch2" "catch2" "Catch2::Catch2" "Catch2::Catch2" "single_include/catch2")
@@ -86,6 +100,11 @@ set(BASIL_DEPENDENCY_INCLUDE_DIRS
     ${GLEW_INCLUDE_DIRS}
     ${GLFW_INCLUDE_DIRS}
     ${JSON_INCLUDE_DIRS}
+    ${IMGUI_INCLUDE_DIRS}
+    PARENT_SCOPE)
+
+set(BASIL_DEPENDENCY_SOURCES
+    ${IMGUI_SOURCES}
     PARENT_SCOPE)
 
 set(BASIL_TEST_DEPENDENCY_LIBRARIES

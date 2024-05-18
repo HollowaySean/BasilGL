@@ -14,4 +14,15 @@ target_include_directories(${EXEC_TARGET_NAME} PRIVATE ${BASIL_INCLUDE_DIRS})
 target_compile_definitions(
     ${EXEC_TARGET_NAME} PRIVATE
     EXAMPLE_DIR="${EXAMPLE_DIR}"
-)
+    "$<$<CONFIG:Debug>:DEBUG_BUILD>")
+
+# Build options
+if (${BASIL_INCLUDE_IMGUI})
+    target_compile_definitions(
+        ${EXEC_TARGET_NAME} PRIVATE
+        BASIL_INCLUDE_IMGUI=1)
+else()
+    target_compile_definitions(
+        ${EXEC_TARGET_NAME} PRIVATE
+        BASIL_INCLUDE_IMGUI=0)
+endif()

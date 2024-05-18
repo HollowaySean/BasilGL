@@ -21,22 +21,18 @@ endif()
 ## Add CMake scripts
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 
-## Debug build preprocessor options
-if (CMAKE_BUILD_TYPE MATCHES "^[Dd]ebug")
-    add_compile_definitions(DEBUG_BUILD)
-endif()
-
 ## Testing options
-# TODO(sholloway): Understand these and put them in the right place
 include(Catch)
 include(CTest)
-enable_testing()
+
+## Build options
+option(BASIL_INCLUDE_IMGUI "Build support for ImGui" ON)
 
 ## Set paths
-set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
-set(SRC_DIR "${CMAKE_SOURCE_DIR}/src")
-set(TST_DIR "${CMAKE_SOURCE_DIR}/tst")
-set(EXTERN_DIR "${CMAKE_SOURCE_DIR}/extern")
+set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include" )
+set(SRC_DIR     "${CMAKE_SOURCE_DIR}/src"     )
+set(TST_DIR     "${CMAKE_SOURCE_DIR}/tst"     )
+set(EXTERN_DIR  "${CMAKE_SOURCE_DIR}/extern"  )
 set(EXAMPLE_DIR "${CMAKE_SOURCE_DIR}/examples")
 
 ## Add subdirectories
