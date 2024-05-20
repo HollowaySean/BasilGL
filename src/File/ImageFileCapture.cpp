@@ -12,7 +12,9 @@ namespace basil {
 
 ImageFileCapture::ImageFileCapture() {
     glGenBuffers(1, &pixelBufferID);
-    // TODO(sholloway): logging
+    logger.log(
+        fmt::format(LOG_BUFFER_CREATED, pixelBufferID),
+        LogLevel::DEBUG);
 
     GLFWwindow* window = BasilContext::getGLFWWindow();
     glfwGetFramebufferSize(window, &width, &height);
@@ -25,7 +27,9 @@ ImageFileCapture::ImageFileCapture() {
 
 ImageFileCapture::~ImageFileCapture() {
     glDeleteBuffers(1, &pixelBufferID);
-    // TODO(sholloway): logging
+    logger.log(
+        fmt::format(LOG_BUFFER_DELETED, pixelBufferID),
+        LogLevel::DEBUG);
 }
 
 void ImageFileCapture::updateBufferSize(int newWidth, int newHeight) {
@@ -41,16 +45,19 @@ void ImageFileCapture::updateBufferSize(int newWidth, int newHeight) {
 bool ImageFileCapture::capture(
         std::filesystem::path savePath,
         std::optional<ImageCaptureArea> captureArea ) {
-    // Obtain window size if capture area not provided
     auto area = captureArea.value_or(
         ImageCaptureArea { width, height, 0, 0 });
 
-    // Move pixel data into PBO
-    auto pixelDataPointer = copyFrameToBuffer();
+    auto pixelDataPointer = copyFrameToBuffer(area);
 
-    // Write to PNG
+    if (!pixelDataPointer) {
+        logger.log(
+            fmt::format(LOG_COPY_FAILURE),
+            LogLevel::ERROR);
+        return false;
+    }
+
     bool success = saveBufferToFile(pixelDataPointer, area, savePath);
-
     return success;
 }
 
@@ -60,23 +67,31 @@ std::future<bool> ImageFileCapture::captureAsync(
     auto area = captureArea.value_or(
         ImageCaptureArea { width, height, 0, 0 });
 
-    // Move pixel data into PBO
-    auto pixelDataPointer = copyFrameToBuffer();
+    auto pixelDataPointer = copyFrameToBuffer(area);
 
-    // Dispatch write-to-file process
+    if (!pixelDataPointer) {
+        logger.log(
+            fmt::format(LOG_COPY_FAILURE),
+            LogLevel::ERROR);
+        auto failedPromise = std::promise<bool>();
+        failedPromise.set_value(false);
+
+        return failedPromise.get_future();
+    }
+
     auto saveProcess = [this, pixelDataPointer, area, savePath] {
         return saveBufferToFile(pixelDataPointer, area, savePath);
     };
     auto future = std::async(std::launch::async, saveProcess);
-
     return future;
 }
 
-GLubyte* ImageFileCapture::copyFrameToBuffer() {
-    // Bind buffer and copy
+GLubyte* ImageFileCapture::copyFrameToBuffer(ImageCaptureArea area) {
     glReadBuffer(GL_FRONT);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferID);
-    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, 0);
+    glReadPixels(
+        area.xOffset, area.yOffset, area.width, area.height,
+        GL_RGB, GL_UNSIGNED_BYTE, 0);
 
     GLubyte* pixelDataPointer = static_cast<GLubyte*>(
         glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
@@ -93,22 +108,11 @@ bool ImageFileCapture::saveBufferToFile(
     GLsizei bufferSize = stride * area.height;
 
     // Write to PNG
-    bool success = false;
-    if (dataPointer) {
-        stbi_flip_vertically_on_write(true);
-        int result = stbi_write_png(
-            savePath.c_str(), area.width, area.height,
-            channels, dataPointer, stride);
-        success = result != 0;
-
-        // TODO(sholloway): Move this to a cleanup function
-        // glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
-    } else {
-        logger.log("ERROR HERE");
-        // TODO(sholloway): logging
-    }
-    // TODO(sholloway): Move this to a cleanup function
-    // glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+    stbi_flip_vertically_on_write(true);
+    int result = stbi_write_png(
+        savePath.c_str(), area.width, area.height,
+        channels, dataPointer, stride);
+    bool success = result != 0;
 
     if (success) {
         logger.log(

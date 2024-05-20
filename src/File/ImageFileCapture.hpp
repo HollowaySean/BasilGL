@@ -16,8 +16,7 @@ struct ImageCaptureArea {
 
 // TODO(sholloway): Test coverage
 // TODO(sholloway): Documentation
-// TODO(sholloway): Cleanup & logging
-// TODO(sholloway): Resizing logic
+// TODO(sholloway): Branch on filetype
 class ImageFileCapture : private IBasilContextConsumer {
  public:
     ImageFileCapture();
@@ -36,11 +35,19 @@ class ImageFileCapture : private IBasilContextConsumer {
     bool saveBufferToFile(
         GLubyte* dataPointer, ImageCaptureArea area,
         std::filesystem::path savePath);
-    GLubyte* copyFrameToBuffer();
+    GLubyte* copyFrameToBuffer(
+        ImageCaptureArea area);
 
     GLint width = 0, height = 0;
     unsigned int pixelBufferID = -1;
 
+    LOGGER_FORMAT LOG_BUFFER_CREATED =
+        "Pixel Buffer (ID{:02}) - Pixel buffer created.";
+    LOGGER_FORMAT LOG_BUFFER_DELETED =
+        "Pixel Buffer (ID{:02}) - Pixel buffer deleted.";
+
+    LOGGER_FORMAT LOG_COPY_FAILURE =
+        "Could not copy screen data to buffer.";
     LOGGER_FORMAT LOG_CAPTURE_SUCCESS =
         "Successfully saved capture to file: {}";
     LOGGER_FORMAT LOG_CAPTURE_FAILURE =

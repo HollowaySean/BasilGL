@@ -26,6 +26,11 @@ int main(int argc, char** argv) {
     screenshot->setTriggerKey(GLFW_KEY_S);
     screenshot->setSaveDirectory(exPath / "../build/screenshots");
 
+    auto mainPane = basil::HotReloadShaderPane::Builder()
+        .fromFilePath(fragmentPath)
+        .build();
+    screenshot->watchPane(mainPane);
+
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()
             .withFrameCap(0)
@@ -34,9 +39,7 @@ int main(int argc, char** argv) {
             .withTitle("My window")
             .withDimensions(600, 400)
             .withTopPane(basil::SplitPane::Builder()
-                .withFirstPane(basil::HotReloadShaderPane::Builder()
-                    .fromFilePath(fragmentPath)
-                    .build())
+                .withFirstPane(mainPane)
                 .withSecondPane(MyImGuiPane::Builder()
                     .build())
                 .build())

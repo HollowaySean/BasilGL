@@ -39,10 +39,19 @@ void ScreenshotTool::onLoop() {
             return;
 
         case CaptureState::READY:
-            taskFuture = fileCapture.captureAsync(getSaveFilePath());
+        {
+            std::optional<ImageCaptureArea> paneArea = std::nullopt;
+            if (paneToWatch) {
+                paneArea = std::optional(
+                    areaFromPane(paneToWatch->paneProps));
+            }
+
+            taskFuture = fileCapture.captureAsync(
+                getSaveFilePath(), paneArea);
 
             state = CaptureState::CAPTURING;
             return;
+        }
         case CaptureState::CAPTURING:
             auto status = taskFuture.wait_for(std::chrono::milliseconds(0));
 
@@ -67,6 +76,13 @@ void ScreenshotTool::onLoop() {
 
 void ScreenshotTool::onStop() {
     BasilContext::removeGLFWKeyCallback(callbackID);
+}
+
+ImageCaptureArea ScreenshotTool::areaFromPane(PaneProps paneProps) {
+    return ImageCaptureArea {
+        paneProps.width, paneProps.height,
+        paneProps.xOffset, paneProps.yOffset
+    };
 }
 
 void ScreenshotTool::onKeyPress(
