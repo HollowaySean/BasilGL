@@ -15,13 +15,25 @@ struct ImageCaptureArea {
 
 // TODO(sholloway): Test coverage
 // TODO(sholloway): Documentation
+// TODO(sholloway): Better handling of framebuffer
+// TODO(sholloway): Make non-static
 class ImageFileCapture {
  public:
-    static bool capture(std::filesystem::path savePath,
+    bool capture(std::filesystem::path savePath,
         std::optional<ImageCaptureArea> captureArea = std::nullopt);
 
+    ImageFileCapture() {
+        initializeFramebuffer();
+    }
+
  private:
-    static ImageCaptureArea getWindowCaptureArea();
+    ImageCaptureArea getWindowCaptureArea();
+
+    void initializeFramebuffer();
+
+    unsigned int framebufferID = -1;
+    unsigned int renderbufferID = -1;
+    unsigned int textureID = -1;
 
     LOGGER_FORMAT LOG_CAPTURE_SUCCESS =
         "Successfully saved capture to file: {}";

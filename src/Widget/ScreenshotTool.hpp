@@ -1,5 +1,7 @@
 #pragma once
 
+#include <future>
+
 #include "File/ImageFileCapture.hpp"
 
 #include <Basil/Packages/App.hpp>
@@ -25,7 +27,9 @@ class ScreenshotTool : public IBasilWidget,
     void onStop() override;
 
     void requestCapture() {
-        this->readyToCapture = true;
+        if (state < CaptureState::READY) {
+            state = CaptureState::READY;
+        }
     }
 
     void setTriggerKey(int keyCode) {
@@ -39,11 +43,21 @@ class ScreenshotTool : public IBasilWidget,
  private:
     void onKeyPress(int keyCode, int scancode, int action, int mods);
 
+    ImageFileCapture fileCapture;
+
     std::filesystem::path savePath;
     std::filesystem::path saveName = "image.png";
 
     int triggerKey = GLFW_KEY_UNKNOWN;
-    bool readyToCapture = false;
+
+    enum class CaptureState {
+        IDLE, READY, CAPTURING
+    };
+    CaptureState state = CaptureState::IDLE;
+
+    std::future<bool> taskFuture;
+    std::thread captureThread;
+
     unsigned int callbackID = -1;
 
     Logger& logger = Logger::get();

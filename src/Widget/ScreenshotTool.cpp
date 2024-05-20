@@ -2,6 +2,9 @@
 
 #include <fmt/format.h>
 
+#include <thread>
+#include <utility>
+
 namespace basil {
 
 ScreenshotTool::ScreenshotTool() : IBasilWidget({
@@ -9,7 +12,7 @@ ScreenshotTool::ScreenshotTool() : IBasilWidget({
     ProcessOrdinal::LATE,
     ProcessPrivilege::NONE,
     WidgetPubSubPrefs::NONE
-}) {}
+}), fileCapture(ImageFileCapture()) {}
 
 ScreenshotTool::~ScreenshotTool() {
     BasilContext::removeGLFWKeyCallback(callbackID);
@@ -32,21 +35,41 @@ void ScreenshotTool::onStart() {
 }
 
 void ScreenshotTool::onLoop() {
-    if (!readyToCapture) return;
-    readyToCapture = false;
+    // TODO(sholloway): Move to functions
+    switch (state) {
+        case CaptureState::IDLE:
+            return;
 
-    std::filesystem::path fullPath = savePath / saveName;
-    bool result =
-        ImageFileCapture::capture(fullPath);
+        case CaptureState::READY:
+        {
+            std::filesystem::path fullPath = savePath / saveName;
+            auto captureTask = std::packaged_task<bool()>(
+                [this, fullPath] { return fileCapture.capture(fullPath); });
+            taskFuture = captureTask.get_future();
 
-    if (result) {
-        logger.log(
-            fmt::format("Capture saved to {}", fullPath.c_str()),
-            LogLevel::INFO);
-    } else {
-        logger.log(
-            "Unable to capture screenshot.",
-            LogLevel::WARN);
+            captureThread = std::thread(std::move(captureTask));
+
+            state = CaptureState::CAPTURING;
+            return;
+        }
+        case CaptureState::CAPTURING:
+            auto status = taskFuture.wait_for(std::chrono::milliseconds(0));
+            if (status == std::future_status::ready) {
+                bool result = taskFuture.get();
+
+                if (result) {
+                    logger.log(
+                        fmt::format("Capture saved to {}", saveName.c_str()),
+                        LogLevel::INFO);
+                } else {
+                    logger.log(
+                        "Unable to capture screenshot.",
+                        LogLevel::WARN);
+                }
+
+                state = CaptureState::IDLE;
+                captureThread.join();
+            }
     }
 }
 

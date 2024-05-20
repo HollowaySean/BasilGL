@@ -35,9 +35,22 @@ bool ImageFileCapture::capture(
     // Allocate space for image read
     std::vector<char> buffer(bufferSize);
 
+    GLFWwindow* window = BasilContext::getGLFWWindow();
+    GLint width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+
+    // TODO(sholloway): Use pixel buffer object instead
+
+    // Bind framebuffers and copy
+    glBlitNamedFramebuffer(
+        0, framebufferID,
+        0, 0, width, height,
+        0, 0, width, height,
+        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+
     // Read from framebuffer
     glPixelStorei(GL_PACK_ALIGNMENT, 4);
-    glReadBuffer(GL_FRONT);
+    glNamedFramebufferReadBuffer(framebufferID, GL_COLOR_ATTACHMENT0);
     glReadPixels(
         area.xOffset, area.yOffset, area.width, area.height,
         GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
@@ -68,6 +81,37 @@ ImageCaptureArea ImageFileCapture::getWindowCaptureArea() {
     glfwGetFramebufferSize(window, &width, &height);
 
     return { width, height, 0, 0 };
+}
+
+void ImageFileCapture::initializeFramebuffer() {
+    glGenFramebuffers(1, &framebufferID);
+    // glBindFramebuffer(GL_FRAMEBUFFER, framebufferID);
+
+    // glGenTextures(1, &textureID);
+    // glBindTexture(GL_TEXTURE_2D, textureID);
+
+    GLFWwindow* window = BasilContext::getGLFWWindow();
+    GLint width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
+    //     0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+    //     GL_TEXTURE_2D, textureID, 0);
+
+    glGenRenderbuffers(1, &renderbufferID);
+    glBindRenderbuffer(GL_RENDERBUFFER, renderbufferID);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB8, width, height);
+
+    glFramebufferRenderbuffer(
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+        GL_RENDERBUFFER, renderbufferID);
+
+    // if(glCheckFramebufferStatus(GL_FRAMEBUFFER))
 }
 
 }  // namespace basil
