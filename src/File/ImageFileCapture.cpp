@@ -12,8 +12,15 @@ namespace basil {
 
 ImageFileCapture::ImageFileCapture() {
     glGenBuffers(1, &pixelBufferID);
-    updateBufferSize();
     // TODO(sholloway): logging
+
+    GLFWwindow* window = BasilContext::getGLFWWindow();
+    glfwGetFramebufferSize(window, &width, &height);
+    updateBufferSize(width, height);
+
+    using std::placeholders::_1, std::placeholders::_2;
+    BasilContext::setGLFWFramebufferSizeCallback(
+        std::bind(&ImageFileCapture::updateBufferSize, this, _1, _2));
 }
 
 ImageFileCapture::~ImageFileCapture() {
@@ -21,9 +28,9 @@ ImageFileCapture::~ImageFileCapture() {
     // TODO(sholloway): logging
 }
 
-void ImageFileCapture::updateBufferSize() {
-    GLFWwindow* window = BasilContext::getGLFWWindow();
-    glfwGetFramebufferSize(window, &width, &height);
+void ImageFileCapture::updateBufferSize(int newWidth, int newHeight) {
+    width = newWidth;
+    height = newHeight;
     int bytes = 3 * width * height;
 
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferID);
@@ -35,12 +42,8 @@ bool ImageFileCapture::capture(
         std::filesystem::path savePath,
         std::optional<ImageCaptureArea> captureArea ) {
     // Obtain window size if capture area not provided
-    ImageCaptureArea area;
-    if (captureArea.has_value()) {
-        area = captureArea.value();
-    } else {
-        area = getWindowCaptureArea();
-    }
+    auto area = captureArea.value_or(
+        ImageCaptureArea { width, height, 0, 0 });
 
     // Move pixel data into PBO
     auto pixelDataPointer = copyFrameToBuffer();
@@ -54,12 +57,8 @@ bool ImageFileCapture::capture(
 std::future<bool> ImageFileCapture::captureAsync(
         std::filesystem::path savePath,
         std::optional<ImageCaptureArea> captureArea) {
-    ImageCaptureArea area;
-    if (captureArea.has_value()) {
-        area = captureArea.value();
-    } else {
-        area = getWindowCaptureArea();
-    }
+    auto area = captureArea.value_or(
+        ImageCaptureArea { width, height, 0, 0 });
 
     // Move pixel data into PBO
     auto pixelDataPointer = copyFrameToBuffer();
@@ -122,14 +121,6 @@ bool ImageFileCapture::saveBufferToFile(
     }
 
     return success;
-}
-
-ImageCaptureArea ImageFileCapture::getWindowCaptureArea() {
-    GLFWwindow* window = BasilContext::getGLFWWindow();
-    GLint width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-
-    return { width, height, 0, 0 };
 }
 
 }  // namespace basil

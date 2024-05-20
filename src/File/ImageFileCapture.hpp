@@ -31,10 +31,8 @@ class ImageFileCapture : private IBasilContextConsumer {
         std::optional<ImageCaptureArea> captureArea = std::nullopt);
 
  private:
-    ImageCaptureArea getWindowCaptureArea();
-
-    void updateBufferSize();
-
+    void updateBufferSize(
+        int width, int height);
     bool saveBufferToFile(
         GLubyte* dataPointer, ImageCaptureArea area,
         std::filesystem::path savePath);
