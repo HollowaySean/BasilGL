@@ -16,10 +16,14 @@ struct ImageCaptureArea {
 
 // TODO(sholloway): Test coverage
 // TODO(sholloway): Documentation
-// TODO(sholloway): Better handling of framebuffer
-// TODO(sholloway): Make non-static
-class ImageFileCapture {
+// TODO(sholloway): Cleanup & logging
+// TODO(sholloway): Resizing logic
+class ImageFileCapture : private IBasilContextConsumer {
  public:
+    ImageFileCapture();
+
+    ~ImageFileCapture();
+
     bool capture(std::filesystem::path savePath,
         std::optional<ImageCaptureArea> captureArea = std::nullopt);
 
@@ -29,15 +33,15 @@ class ImageFileCapture {
  private:
     ImageCaptureArea getWindowCaptureArea();
 
-    void initializeBuffer();
+    void updateBufferSize();
+
     bool saveBufferToFile(
         GLubyte* dataPointer, ImageCaptureArea area,
         std::filesystem::path savePath);
-    void copyFrameToBuffer();
+    GLubyte* copyFrameToBuffer();
 
+    GLint width = 0, height = 0;
     unsigned int pixelBufferID = -1;
-    unsigned int renderbufferID = -1;
-    unsigned int textureID = -1;
 
     LOGGER_FORMAT LOG_CAPTURE_SUCCESS =
         "Successfully saved capture to file: {}";

@@ -26,10 +26,8 @@ void ScreenshotTool::onStart() {
             LogLevel::INFO);
     }
 
-    using std::placeholders::_1;
-    using std::placeholders::_2;
-    using std::placeholders::_3;
-    using std::placeholders::_4;
+    using std::placeholders::_1, std::placeholders::_2,
+          std::placeholders::_3, std::placeholders::_4;
     callbackID = BasilContext::setGLFWKeyCallback(
         std::bind(&ScreenshotTool::onKeyPress, this, _1, _2, _3, _4));
 }
@@ -41,13 +39,10 @@ void ScreenshotTool::onLoop() {
             return;
 
         case CaptureState::READY:
-        {
-            std::filesystem::path fullPath = savePath / saveName;
-            taskFuture = fileCapture.captureAsync(fullPath);
+            taskFuture = fileCapture.captureAsync(getSaveFilePath());
 
             state = CaptureState::CAPTURING;
             return;
-        }
         case CaptureState::CAPTURING:
             auto status = taskFuture.wait_for(std::chrono::milliseconds(0));
 
@@ -56,7 +51,8 @@ void ScreenshotTool::onLoop() {
 
                 if (result) {
                     logger.log(
-                        fmt::format("Capture saved to {}", saveName.c_str()),
+                        fmt::format("Capture saved to {}",
+                            getSaveFilePath().c_str()),
                         LogLevel::INFO);
                 } else {
                     logger.log(

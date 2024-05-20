@@ -40,6 +40,10 @@ class ScreenshotTool : public IBasilWidget,
         this->savePath = savePath;
     }
 
+    std::filesystem::path getSaveFilePath() {
+        return savePath / saveName;
+    }
+
  private:
     void onKeyPress(int keyCode, int scancode, int action, int mods);
 
@@ -56,7 +60,6 @@ class ScreenshotTool : public IBasilWidget,
     CaptureState state = CaptureState::IDLE;
 
     std::future<bool> taskFuture;
-    std::thread captureThread;
 
     unsigned int callbackID = -1;
 
