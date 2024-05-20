@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <future>
 #include <optional>
 #include <vector>
 
@@ -22,16 +23,19 @@ class ImageFileCapture {
     bool capture(std::filesystem::path savePath,
         std::optional<ImageCaptureArea> captureArea = std::nullopt);
 
-    ImageFileCapture() {
-        initializeFramebuffer();
-    }
+    std::future<bool> captureAsync(std::filesystem::path savePath,
+        std::optional<ImageCaptureArea> captureArea = std::nullopt);
 
  private:
     ImageCaptureArea getWindowCaptureArea();
 
-    void initializeFramebuffer();
+    void initializeBuffer();
+    bool saveBufferToFile(
+        GLubyte* dataPointer, ImageCaptureArea area,
+        std::filesystem::path savePath);
+    void copyFrameToBuffer();
 
-    unsigned int framebufferID = -1;
+    unsigned int pixelBufferID = -1;
     unsigned int renderbufferID = -1;
     unsigned int textureID = -1;
 

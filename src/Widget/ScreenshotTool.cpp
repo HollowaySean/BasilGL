@@ -43,17 +43,14 @@ void ScreenshotTool::onLoop() {
         case CaptureState::READY:
         {
             std::filesystem::path fullPath = savePath / saveName;
-            auto captureTask = std::packaged_task<bool()>(
-                [this, fullPath] { return fileCapture.capture(fullPath); });
-            taskFuture = captureTask.get_future();
-
-            captureThread = std::thread(std::move(captureTask));
+            taskFuture = fileCapture.captureAsync(fullPath);
 
             state = CaptureState::CAPTURING;
             return;
         }
         case CaptureState::CAPTURING:
             auto status = taskFuture.wait_for(std::chrono::milliseconds(0));
+
             if (status == std::future_status::ready) {
                 bool result = taskFuture.get();
 
@@ -68,7 +65,6 @@ void ScreenshotTool::onLoop() {
                 }
 
                 state = CaptureState::IDLE;
-                captureThread.join();
             }
     }
 }

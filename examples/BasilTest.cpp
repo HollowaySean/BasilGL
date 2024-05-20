@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
 
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()
-            .withFrameCap(60)
+            .withFrameCap(1)
             .build())
         .withWidget(basil::WindowView::Builder()
             .withTitle("My window")
@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
             .withFilePath(jsonPath)
             .build())
         .withWidget(basil::MetricsReporter::Builder()
-            .withRegularity(300)
+            .withRegularity(1)
             .withLogLevel(basil::LogLevel::INFO)
             .build())
         .withWidget(basil::ShadertoyUniformPublisher::Builder()

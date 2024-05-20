@@ -32,35 +32,123 @@ bool ImageFileCapture::capture(
     stride += (stride % 4) ? (4 - stride % 4) : 0;
     GLsizei bufferSize = stride * area.height;
 
-    // Allocate space for image read
-    std::vector<char> buffer(bufferSize);
+    GLFWwindow* window = BasilContext::getGLFWWindow();
+    GLint width, height;
+    glfwGetFramebufferSize(window, &width, &height);
+
+    if (pixelBufferID == -1) {
+        initializeBuffer();
+    }
+
+    // Bind buffer and copy
+    glReadBuffer(GL_FRONT);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferID);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, 0);
+
+    GLubyte* pixelDataPointer = static_cast<GLubyte*>(
+        glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
+
+
+
+    // Write to PNG
+    bool success = false;
+    if (pixelDataPointer) {
+        stbi_flip_vertically_on_write(true);
+        int result = stbi_write_png(
+            savePath.c_str(), area.width, area.height,
+            channels, pixelDataPointer, stride);
+        success = result != 0;
+
+        glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+    } else {
+        logger.log("ERROR HERE");
+    }
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+
+    if (success) {
+        logger.log(
+            fmt::format(LOG_CAPTURE_SUCCESS, savePath.c_str()),
+            LogLevel::INFO);
+    } else {
+        logger.log(
+            fmt::format(LOG_CAPTURE_FAILURE),
+            LogLevel::ERROR);
+    }
+
+    return success;
+}
+
+std::future<bool> ImageFileCapture::captureAsync(
+        std::filesystem::path savePath,
+        std::optional<ImageCaptureArea> captureArea) {
+    // Verify that a rendering context exists already
+    if (!BasilContext::isInitialized()) {
+        auto promise = std::promise<bool>();
+        promise.set_value(false);
+        return promise.get_future();
+    }
+
+    // Obtain window size if capture area not provided
+    ImageCaptureArea area;
+    if (captureArea.has_value()) {
+        area = captureArea.value();
+    } else {
+        area = getWindowCaptureArea();
+    }
+
+    if (pixelBufferID == -1) {
+        initializeBuffer();
+    }
 
     GLFWwindow* window = BasilContext::getGLFWWindow();
     GLint width, height;
     glfwGetFramebufferSize(window, &width, &height);
 
-    // TODO(sholloway): Use pixel buffer object instead
+    if (pixelBufferID == -1) {
+        initializeBuffer();
+    }
 
-    // Bind framebuffers and copy
-    glBlitNamedFramebuffer(
-        0, framebufferID,
-        0, 0, width, height,
-        0, 0, width, height,
-        GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    // Bind buffer and copy
+    glReadBuffer(GL_FRONT);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferID);
+    glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, 0);
 
-    // Read from framebuffer
-    glPixelStorei(GL_PACK_ALIGNMENT, 4);
-    glNamedFramebufferReadBuffer(framebufferID, GL_COLOR_ATTACHMENT0);
-    glReadPixels(
-        area.xOffset, area.yOffset, area.width, area.height,
-        GL_RGB, GL_UNSIGNED_BYTE, buffer.data());
+    GLubyte* pixelDataPointer = static_cast<GLubyte*>(
+        glMapBuffer(GL_PIXEL_PACK_BUFFER, GL_READ_ONLY));
+
+    auto saveProcess = [this, pixelDataPointer, area, savePath] {
+        return saveBufferToFile(pixelDataPointer, area, savePath);
+    };
+    auto future = std::async(std::launch::async, saveProcess);
+
+    return future;
+}
+
+bool ImageFileCapture::saveBufferToFile(
+        GLubyte* dataPointer,
+        ImageCaptureArea area,
+        std::filesystem::path savePath ) {
+    GLsizei channels = 3;
+    GLsizei stride = channels * area.width;
+    stride += (stride % 4) ? (4 - stride % 4) : 0;
+    GLsizei bufferSize = stride * area.height;
 
     // Write to PNG
-    stbi_flip_vertically_on_write(true);
-    int result = stbi_write_png(
-        savePath.c_str(), area.width, area.height,
-        channels, buffer.data(), stride);
-    bool success = result != 0;
+    bool success = false;
+    if (dataPointer) {
+        stbi_flip_vertically_on_write(true);
+        int result = stbi_write_png(
+            savePath.c_str(), area.width, area.height,
+            channels, dataPointer, stride);
+        success = result != 0;
+
+        // TODO(sholloway): Move this to a cleanup function
+        // glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+    } else {
+        logger.log("ERROR HERE");
+    }
+    // TODO(sholloway): Move this to a cleanup function
+    // glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 
     if (success) {
         logger.log(
@@ -83,35 +171,17 @@ ImageCaptureArea ImageFileCapture::getWindowCaptureArea() {
     return { width, height, 0, 0 };
 }
 
-void ImageFileCapture::initializeFramebuffer() {
-    glGenFramebuffers(1, &framebufferID);
-    // glBindFramebuffer(GL_FRAMEBUFFER, framebufferID);
-
-    // glGenTextures(1, &textureID);
-    // glBindTexture(GL_TEXTURE_2D, textureID);
+void ImageFileCapture::initializeBuffer() {
+    glGenBuffers(1, &pixelBufferID);
 
     GLFWwindow* window = BasilContext::getGLFWWindow();
     GLint width, height;
     glfwGetFramebufferSize(window, &width, &height);
+    int bytes = 3 * width * height;
 
-    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height,
-    //     0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-    //     GL_TEXTURE_2D, textureID, 0);
-
-    glGenRenderbuffers(1, &renderbufferID);
-    glBindRenderbuffer(GL_RENDERBUFFER, renderbufferID);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB8, width, height);
-
-    glFramebufferRenderbuffer(
-        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-        GL_RENDERBUFFER, renderbufferID);
-
-    // if(glCheckFramebufferStatus(GL_FRAMEBUFFER))
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferID);
+    glBufferData(GL_PIXEL_PACK_BUFFER, bytes, NULL, GL_STREAM_READ);
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
 }  // namespace basil
