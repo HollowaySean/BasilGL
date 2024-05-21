@@ -23,7 +23,7 @@ ImageFileCapture::ImageFileCapture() {
     updateBufferSize(width, height);
 
     using std::placeholders::_1, std::placeholders::_2;
-    BasilContext::setGLFWFramebufferSizeCallback(
+    callbackID = BasilContext::setGLFWFramebufferSizeCallback(
         std::bind(&ImageFileCapture::updateBufferSize, this, _1, _2));
 }
 
@@ -32,6 +32,8 @@ ImageFileCapture::~ImageFileCapture() {
     logger.log(
         fmt::format(LOG_BUFFER_DELETED, pixelBufferID),
         LogLevel::DEBUG);
+
+    BasilContext::removeGLFWFramebufferSizeCallback(callbackID);
 }
 
 void ImageFileCapture::updateBufferSize(int newWidth, int newHeight) {

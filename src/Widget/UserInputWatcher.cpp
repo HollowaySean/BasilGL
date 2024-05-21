@@ -11,6 +11,10 @@ UserInputWatcher::UserInputWatcher() : IBasilWidget({
         window = BasilContext::getGLFWWindow();
 }
 
+UserInputWatcher::~UserInputWatcher() {
+    removeCallbacks();
+}
+
 void UserInputWatcher::onStart() {
     initializeState();
     setCallbacks();
@@ -20,6 +24,10 @@ void UserInputWatcher::onLoop() {
     checkMousePosition();
 
     this->IDataPublisher::publishData(DataMessage(model));
+}
+
+void UserInputWatcher::onStop() {
+    removeCallbacks();
 }
 
 void UserInputWatcher::initializeState() {
@@ -96,14 +104,21 @@ void UserInputWatcher::setCallbacks() {
     using std::placeholders::_3;
     using std::placeholders::_4;
 
-    BasilContext::setGLFWMouseButtonCallback(
+    mouseCallbackID = BasilContext::setGLFWMouseButtonCallback(
         std::bind(&UserInputWatcher::onMouseButtonChange, this, _1, _2, _3));
-    BasilContext::setGLFWKeyCallback(
+    keyCallbackID = BasilContext::setGLFWKeyCallback(
         std::bind(&UserInputWatcher::onKeyChange, this, _1, _2, _3, _4));
-    BasilContext::setGLFWCursorEnterCallback(
+    cursorCallbackID = BasilContext::setGLFWCursorEnterCallback(
         std::bind(&UserInputWatcher::onCursorEnter, this, _1));
-    BasilContext::setGLFWFramebufferSizeCallback(
+    resizeCallbackID = BasilContext::setGLFWFramebufferSizeCallback(
         std::bind(&UserInputWatcher::onResize, this, _1, _2));
+}
+
+void UserInputWatcher::removeCallbacks() {
+    BasilContext::removeGLFWMouseButtonCallback(mouseCallbackID);
+    BasilContext::removeGLFWKeyCallback(keyCallbackID);
+    BasilContext::removeGLFWCursorEnterCallback(cursorCallbackID);
+    BasilContext::removeGLFWFramebufferSizeCallback(resizeCallbackID);
 }
 
 void UserInputWatcher::onMouseButtonChange(

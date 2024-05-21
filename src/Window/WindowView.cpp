@@ -110,6 +110,7 @@ void WindowView::draw() {
 
 void WindowView::closeWindow() {
     setCurrentState(ProcessState::REQUEST_STOP);
+    removeCallbacks();
 
     glfwDestroyWindow(glfwWindow);
 }
@@ -120,7 +121,12 @@ void WindowView::setCallbacks() {
 
     BasilContext::BasilFrameBufferSizeFunc func =
         std::bind(&WindowView::onResize, this, _1, _2);
-    BasilContext::setGLFWFramebufferSizeCallback(func);
+    resizeCallbackID =
+        BasilContext::setGLFWFramebufferSizeCallback(func);
+}
+
+void WindowView::removeCallbacks() {
+    BasilContext::removeGLFWFramebufferSizeCallback(resizeCallbackID);
 }
 
 WindowView::Builder&

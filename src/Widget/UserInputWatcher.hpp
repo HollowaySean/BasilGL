@@ -19,11 +19,17 @@ class UserInputWatcher : public  IBasilWidget,
     /** @brief Initialize UserInputWatcher */
     UserInputWatcher();
 
+    /** @brief Deinitialize UserInputWatcher */
+    ~UserInputWatcher();
+
     /** @brief Initialize input state model */
     void onStart() override;
 
     /** @brief Update mouse position and publish state */
     void onLoop() override;
+
+    /** @brief De-register callbacks. */
+    void onStop() override;
 
     /** @returns Reference to UserInputModel */
     UserInputModel& getModel() { return model; }
@@ -39,6 +45,7 @@ class UserInputWatcher : public  IBasilWidget,
 
     void initializeState();
     void setCallbacks();
+    void removeCallbacks();
     void checkMousePosition();
     void checkIsMouseInWindow();
     void checkWindowSize();
@@ -47,12 +54,16 @@ class UserInputWatcher : public  IBasilWidget,
 
     void onMouseButtonChange(
         int button, int action, int mods);
+    unsigned int mouseCallbackID = -1;
     void onKeyChange(
         int button, int scancode, int action, int mods);
+    unsigned int keyCallbackID = -1;
     void onCursorEnter(
         int entered);
+    unsigned int cursorCallbackID = -1;
     void onResize(
         int width, int height);
+    unsigned int resizeCallbackID = -1;
 
     #ifdef TEST_BUILD
     static inline const double TEST_MOUSE_X_POSITION = 1;
