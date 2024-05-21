@@ -11,7 +11,7 @@ class FileTestUtils {
         auto fullPath = tmpDir / fileName;
 
         if (!std::filesystem::exists(tmpDir)) {
-            std::filesystem::create_directory(tmpDir);
+            std::filesystem::create_directories(tmpDir);
         } else {
             std::filesystem::remove(fullPath);
         }
