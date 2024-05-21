@@ -50,7 +50,10 @@ class ImageFileCapture : private IBasilContextConsumer {
         pngCompression = compression;
     }
 
+#ifndef TEST_BUILD
+
  private:
+#endif
     void updateBufferSize(
         int width, int height);
     bool saveBufferToFile(
