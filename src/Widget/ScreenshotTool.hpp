@@ -10,9 +10,6 @@
 
 namespace basil {
 
-// TODO(sholloway): Test coverage
-// TODO(sholloway): (semi-related) De-register callbacks in all places
-
 /** @brief Basil widget to asynchronously take screenshots on key press. */
 class ScreenshotTool : public IBasilWidget,
                        public IBuildable<ScreenshotTool> {
@@ -87,7 +84,10 @@ class ScreenshotTool : public IBasilWidget,
         Builder& withFocusPane(std::shared_ptr<IPane> pane);
     };
 
+#ifndef TEST_BUILD
+
  private:
+#endif
     void readyState();
     void workingState();
     void onKeyPress(int keyCode, int scancode, int action, int mods);
