@@ -5,6 +5,7 @@
 #include "OpenGL/GLTestUtils.hpp"
 #include "PubSub/PubSubTestUtils.hpp"
 
+using basil::BasilContext;
 using basil::UserInputWatcher;
 using basil::TestSubscriber;
 
@@ -51,6 +52,32 @@ TEST_CASE("Widget_UserInputWatcher_onLoop") {
     }
 }
 
+TEST_CASE("Widget_UserInputWatcher_onStop") {
+    auto widget = UserInputWatcher();
+
+    SECTION("De-registers callbacks") {
+        widget.onStart();
+        CHECK(BasilContext::mouseButtonCallbacks
+            .contains(widget.mouseCallbackID));
+        CHECK(BasilContext::keyCallbacks
+            .contains(widget.keyCallbackID));
+        CHECK(BasilContext::cursorEnterCallbacks
+            .contains(widget.cursorCallbackID));
+        CHECK(BasilContext::framebufferCallbacks
+            .contains(widget.resizeCallbackID));
+
+        widget.onStop();
+        CHECK_FALSE(BasilContext::mouseButtonCallbacks
+            .contains(widget.mouseCallbackID));
+        CHECK_FALSE(BasilContext::keyCallbacks
+            .contains(widget.keyCallbackID));
+        CHECK_FALSE(BasilContext::cursorEnterCallbacks
+            .contains(widget.cursorCallbackID));
+        CHECK_FALSE(BasilContext::framebufferCallbacks
+            .contains(widget.resizeCallbackID));
+    }
+}
+
 TEST_CASE("Widget_UserInputWatcher_onMouseButtonChange") {
     auto widget = UserInputWatcher();
     auto& model = widget.getModel();
@@ -79,7 +106,6 @@ TEST_CASE("Widget_UserInputWatcher_onKeyChange") {
     }
 }
 
-
 TEST_CASE("Widget_UserInputWatcher_onCursorEnter") {
     auto widget = UserInputWatcher();
     auto& model = widget.getModel();
@@ -88,5 +114,17 @@ TEST_CASE("Widget_UserInputWatcher_onCursorEnter") {
         widget.onCursorEnter(GLFW_TRUE);
 
         CHECK(model.getIsMouseInWindow());
+    }
+}
+
+TEST_CASE("Widget_UserInputWatcher_onResize") {
+    auto widget = UserInputWatcher();
+    auto& model = widget.getModel();
+
+    SECTION("Updates window size in model") {
+        widget.onResize(15, 20);
+
+        CHECK(model.getWindowSize().width == 15);
+        CHECK(model.getWindowSize().height == 20);
     }
 }

@@ -4,6 +4,7 @@
 
 #include "OpenGL/GLTestUtils.hpp"
 #include "PubSub/PubSubTestUtils.hpp"
+#include "Window/WindowTestUtils.hpp"
 
 using basil::BasilContext;
 using basil::BasilContextLock;
@@ -19,16 +20,6 @@ using basil::WindowView;
 
 template<class T>
 using s_pt = std::shared_ptr<T>;
-
-class TestPane : public IPane {
- public:
-    explicit TestPane(PaneProps paneProps):
-        IPane(paneProps) {}
-    void const draw() override {
-        didDraw = true;
-    }
-    bool didDraw = false;
-};
 
 TEST_CASE("Window_WindowView_WindowView") { BASIL_LOCK_TEST
     SECTION("Initializes GLFW context") {

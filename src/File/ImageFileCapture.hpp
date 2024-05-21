@@ -14,8 +14,6 @@ struct ImageCaptureArea {
     int width, height, xOffset, yOffset;
 };
 
-// TODO(sholloway): Test coverage
-
 /** @brief Utility class which captures portion or entirety of
  *  window, and saves to an image file. */
 class ImageFileCapture : private IBasilContextConsumer {
