@@ -8,6 +8,8 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include <stb_image_write.h>
 
+#include <string>
+
 namespace basil {
 
 ImageFileCapture::ImageFileCapture() {
@@ -114,14 +116,41 @@ bool ImageFileCapture::saveBufferToFile(
     stride += (stride % 4) ? (4 - stride % 4) : 0;
     GLsizei bufferSize = stride * area.height;
 
-    // Write to PNG
+    // Write to file
     stbi_flip_vertically_on_write(true);
-    int result = stbi_write_png(
-        savePath.c_str(), area.width, area.height,
-        channels, dataPointer, stride);
-    bool success = result != 0;
+    const std::string extension = savePath.extension();
 
-    if (success) {
+    int result;
+    if (extension == ".jpg") {
+        result = stbi_write_jpg(savePath.c_str(), area.width, area.height,
+            channels, dataPointer, jpegQuality);
+
+    } else if (extension == ".bmp") {
+        result = stbi_write_bmp(savePath.c_str(), area.width, area.height,
+            channels, dataPointer);
+
+    } else if (extension == ".png") {
+        stbi_write_png_compression_level = pngCompression;
+        result = stbi_write_png(savePath.c_str(), area.width, area.height,
+            channels, dataPointer, stride);
+
+    } else if (extension.empty()) {
+        logger.log(
+            fmt::format(LOG_EMPTY_EXTENSION),
+            LogLevel::INFO);
+
+        stbi_write_png_compression_level = pngCompression;
+        result = stbi_write_png(savePath.c_str(), area.width, area.height,
+            channels, dataPointer, stride);
+
+    } else {
+        result = 0;
+        logger.log(
+            fmt::format(LOG_BAD_EXTENSION, extension),
+            LogLevel::ERROR);
+    }
+
+    if (result != 0) {
         logger.log(
             fmt::format(LOG_CAPTURE_SUCCESS, savePath.c_str()),
             LogLevel::INFO);
@@ -131,7 +160,7 @@ bool ImageFileCapture::saveBufferToFile(
             LogLevel::ERROR);
     }
 
-    return success;
+    return result != 0;
 }
 
 }  // namespace basil

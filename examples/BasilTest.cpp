@@ -22,16 +22,7 @@ int main(int argc, char** argv) {
         }
     };
 
-    auto screenshot = std::make_shared<basil::ScreenshotTool>();
-    screenshot->setTriggerKey(GLFW_KEY_S);
-    screenshot->setSaveDirectory(exPath / "../build/screenshots");
-    screenshot->setSaveFileName("image_{index}_{time:%y%m%d_%H%M%S}.jpg");
-
-    auto mainPane = basil::HotReloadShaderPane::Builder()
-        .fromFilePath(fragmentPath)
-        .build();
-    screenshot->setFocusPane(mainPane);
-
+    std::shared_ptr<basil::IPane> screenshotFocus;
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()
             .withFrameCap(0)
@@ -40,7 +31,10 @@ int main(int argc, char** argv) {
             .withTitle("My window")
             .withDimensions(600, 400)
             .withTopPane(basil::SplitPane::Builder()
-                .withFirstPane(mainPane)
+                .withFirstPane(screenshotFocus =
+                    basil::HotReloadShaderPane::Builder()
+                    .fromFilePath(fragmentPath)
+                    .build())
                 .withSecondPane(MyImGuiPane::Builder()
                     .build())
                 .build())
@@ -54,7 +48,12 @@ int main(int argc, char** argv) {
             .build())
         .withWidget(basil::ShadertoyUniformPublisher::Builder()
             .build())
-        .withWidget(screenshot)
+        .withWidget(basil::ScreenshotTool::Builder()
+            .withTriggerKey(GLFW_KEY_S)
+            .withSaveDirectory(exPath / "../build/screenshots")
+            .withSaveFileName("image_{index}_{time:%y%m%d_%H%M%S}.png")
+            .withFocusPane(screenshotFocus)
+            .build())
         .build();
 
     basilApp->run();

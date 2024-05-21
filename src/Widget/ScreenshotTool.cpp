@@ -48,6 +48,10 @@ void ScreenshotTool::onLoop() {
     }
 }
 
+void ScreenshotTool::onStop() {
+    BasilContext::removeGLFWKeyCallback(callbackID);
+}
+
 void ScreenshotTool::readyState() {
     std::optional<ImageCaptureArea> paneArea = std::nullopt;
     if (focusPane) {
@@ -80,10 +84,6 @@ void ScreenshotTool::workingState() {
     }
 }
 
-void ScreenshotTool::onStop() {
-    BasilContext::removeGLFWKeyCallback(callbackID);
-}
-
 void ScreenshotTool::requestCapture() {
     if (state < CaptureState::READY) {
         state = CaptureState::READY;
@@ -102,6 +102,30 @@ void ScreenshotTool::onKeyPress(
     if (keyCode == triggerKey && action == GLFW_PRESS) {
         requestCapture();
     }
+}
+
+ScreenshotTool::Builder&
+ScreenshotTool::Builder::withTriggerKey(int keyCode) {
+    this->impl->setTriggerKey(keyCode);
+    return (*this);
+}
+
+ScreenshotTool::Builder&
+ScreenshotTool::Builder::withSaveDirectory(std::filesystem::path savePath) {
+    this->impl->setSaveDirectory(savePath);
+    return (*this);
+}
+
+ScreenshotTool::Builder&
+ScreenshotTool::Builder::withSaveFileName(std::filesystem::path saveName) {
+    this->impl->setSaveFileName(saveName);
+    return (*this);
+}
+
+ScreenshotTool::Builder&
+ScreenshotTool::Builder::withFocusPane(std::shared_ptr<IPane> pane) {
+    this->impl->setFocusPane(pane);
+    return (*this);
 }
 
 }  // namespace basil
