@@ -42,6 +42,11 @@ void ImageFileCapture::updateBufferSize(int newWidth, int newHeight) {
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
+void ImageFileCapture::clearBuffer() {
+    glUnmapBuffer(GL_PIXEL_PACK_BUFFER);
+    glBindBuffer(GL_PIXEL_UNPACK_BUFFER, 0);
+}
+
 bool ImageFileCapture::capture(
         std::filesystem::path savePath,
         std::optional<ImageCaptureArea> captureArea ) {
@@ -58,6 +63,8 @@ bool ImageFileCapture::capture(
     }
 
     bool success = saveBufferToFile(pixelDataPointer, area, savePath);
+
+    clearBuffer();
     return success;
 }
 

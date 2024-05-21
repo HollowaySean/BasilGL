@@ -1,7 +1,8 @@
 #include "ScreenshotTool.hpp"
 
-#include <fmt/format.h>
+#include <fmt/chrono.h>
 
+#include <string>
 #include <thread>
 #include <utility>
 
@@ -33,49 +34,60 @@ void ScreenshotTool::onStart() {
 }
 
 void ScreenshotTool::onLoop() {
-    // TODO(sholloway): Move to functions
     switch (state) {
         case CaptureState::IDLE:
             return;
 
         case CaptureState::READY:
-        {
-            std::optional<ImageCaptureArea> paneArea = std::nullopt;
-            if (paneToWatch) {
-                paneArea = std::optional(
-                    areaFromPane(paneToWatch->paneProps));
-            }
-
-            taskFuture = fileCapture.captureAsync(
-                getSaveFilePath(), paneArea);
-
-            state = CaptureState::CAPTURING;
+            readyState();
             return;
-        }
+
         case CaptureState::CAPTURING:
-            auto status = taskFuture.wait_for(std::chrono::milliseconds(0));
+            workingState();
+            return;
+    }
+}
 
-            if (status == std::future_status::ready) {
-                bool result = taskFuture.get();
+void ScreenshotTool::readyState() {
+    std::optional<ImageCaptureArea> paneArea = std::nullopt;
+    if (focusPane) {
+        paneArea = std::optional(
+            areaFromPane(focusPane->paneProps));
+    }
 
-                if (result) {
-                    logger.log(
-                        fmt::format("Capture saved to {}",
-                            getSaveFilePath().c_str()),
-                        LogLevel::INFO);
-                } else {
-                    logger.log(
-                        "Unable to capture screenshot.",
-                        LogLevel::WARN);
-                }
+    auto runtimeName = fmt::runtime(saveName.c_str());
+    auto timeStamp = std::chrono::round<std::chrono::seconds>(
+        std::chrono::system_clock::now());
+    std::filesystem::path formattedName = fmt::format(runtimeName,
+        fmt::arg("index", captureIndex++),
+        fmt::arg("time", timeStamp));
 
-                state = CaptureState::IDLE;
-            }
+    auto formattedPath = savePath / formattedName;
+
+    taskFuture = fileCapture.captureAsync(
+        formattedPath, paneArea);
+
+    state = CaptureState::CAPTURING;
+}
+
+void ScreenshotTool::workingState() {
+    auto status = taskFuture.wait_for(
+        FrameClock::duration::zero());
+
+    if (status == std::future_status::ready) {
+        state = CaptureState::IDLE;
+        fileCapture.clearBuffer();
     }
 }
 
 void ScreenshotTool::onStop() {
     BasilContext::removeGLFWKeyCallback(callbackID);
+}
+
+void ScreenshotTool::requestCapture() {
+    if (state < CaptureState::READY) {
+        state = CaptureState::READY;
+    }
 }
 
 ImageCaptureArea ScreenshotTool::areaFromPane(PaneProps paneProps) {

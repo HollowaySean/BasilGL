@@ -41,11 +41,6 @@ class IProcess {
         return processName;
     }
 
-    /** @brief Set default name for process instance. */
-    void setProcessName(const std::string& processName) {
-        this->processName = processName;
-    }
-
     /** @return Pointer to controller that process is registered to. */
     ProcessController* getController() { return controller; }
 
@@ -53,6 +48,11 @@ class IProcess {
 
  protected:
 #endif
+    /** @brief Set default name for process instance. */
+    void setProcessName(const std::string& processName) {
+        this->processName = processName;
+    }
+
     /** @brief Sets state of process. */
     void setCurrentState(ProcessState newState) {
         currentState = newState;

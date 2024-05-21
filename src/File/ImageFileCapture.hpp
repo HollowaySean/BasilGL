@@ -29,6 +29,8 @@ class ImageFileCapture : private IBasilContextConsumer {
     std::future<bool> captureAsync(std::filesystem::path savePath,
         std::optional<ImageCaptureArea> captureArea = std::nullopt);
 
+    void clearBuffer();
+
  private:
     void updateBufferSize(
         int width, int height);

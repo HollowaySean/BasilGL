@@ -25,11 +25,12 @@ int main(int argc, char** argv) {
     auto screenshot = std::make_shared<basil::ScreenshotTool>();
     screenshot->setTriggerKey(GLFW_KEY_S);
     screenshot->setSaveDirectory(exPath / "../build/screenshots");
+    screenshot->setSaveFileName("image_{index}_{time:%y%m%d_%H%M%S}.jpg");
 
     auto mainPane = basil::HotReloadShaderPane::Builder()
         .fromFilePath(fragmentPath)
         .build();
-    screenshot->watchPane(mainPane);
+    screenshot->setFocusPane(mainPane);
 
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()

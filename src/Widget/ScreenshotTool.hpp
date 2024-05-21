@@ -12,8 +12,10 @@ namespace basil {
 
 // TODO(sholloway): Documentation
 // TODO(sholloway): Test coverage
-// TODO(sholloway): Cleanup logging
-// TODO(sholloway): Filename support
+// TODO(sholloway): (semi-related) De-register callbacks in all places
+// TODO(sholloway): (semi-related) Try out using builder
+// output in multiple parts of builder
+// TODO(sholloway): Builder
 class ScreenshotTool : public IBasilWidget,
                        public IBuildable<ScreenshotTool> {
  public:
@@ -27,11 +29,7 @@ class ScreenshotTool : public IBasilWidget,
 
     void onStop() override;
 
-    void requestCapture() {
-        if (state < CaptureState::READY) {
-            state = CaptureState::READY;
-        }
-    }
+    void requestCapture();
 
     void setTriggerKey(int keyCode) {
         this->triggerKey = keyCode;
@@ -41,24 +39,36 @@ class ScreenshotTool : public IBasilWidget,
         this->savePath = savePath;
     }
 
-    std::filesystem::path getSaveFilePath() {
-        return savePath / saveName;
+    std::filesystem::path getSaveDirectory() {
+        return savePath;
     }
 
-    void watchPane(std::shared_ptr<IPane> pane) {
-        this->paneToWatch = pane;
+    void setSaveFileName(std::filesystem::path saveName) {
+        this->saveName = saveName;
+    }
+
+    std::filesystem::path getFileName() {
+        return saveName;
+    }
+
+    void setFocusPane(std::shared_ptr<IPane> pane) {
+        this->focusPane = pane;
     }
 
  private:
-    std::shared_ptr<IPane> paneToWatch = nullptr;
+    void readyState();
+    void workingState();
+    void onKeyPress(int keyCode, int scancode, int action, int mods);
     ImageCaptureArea areaFromPane(PaneProps paneProps);
 
-    void onKeyPress(int keyCode, int scancode, int action, int mods);
-
+    std::shared_ptr<IPane> focusPane = nullptr;
     ImageFileCapture fileCapture;
+    std::future<bool> taskFuture;
 
+    static inline const std::filesystem::path DEFAULT_SAVE_NAME
+        = "image.png";
     std::filesystem::path savePath;
-    std::filesystem::path saveName = "image.png";
+    std::filesystem::path saveName = DEFAULT_SAVE_NAME;
 
     int triggerKey = GLFW_KEY_UNKNOWN;
 
@@ -67,9 +77,8 @@ class ScreenshotTool : public IBasilWidget,
     };
     CaptureState state = CaptureState::IDLE;
 
-    std::future<bool> taskFuture;
-
     unsigned int callbackID = -1;
+    static inline unsigned int captureIndex = 0;
 
     Logger& logger = Logger::get();
 };
