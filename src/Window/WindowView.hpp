@@ -103,7 +103,10 @@ class WindowView :  public IBasilWidget,
     void draw();
     void closeWindow();
     void setCallbacks();
+    void removeCallbacks();
     void onResize(int width, int height);
+
+    unsigned int resizeCallbackID = -1;
 
     std::shared_ptr<IPane> topPane;
 

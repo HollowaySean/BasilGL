@@ -124,50 +124,90 @@ void BasilContext::setGLFWCallbacks() {
 
 void BasilContext::onFrameBufferResize(
         GLFWwindow* window, int width, int height) {
-    for (auto callback : framebufferCallbacks) {
-        callback(width, height);
+    for (const auto& callback : framebufferCallbacks) {
+        callback.second(width, height);
     }
 }
 
 void BasilContext::onMouseButton(
         GLFWwindow* window, int button, int action, int mods) {
-    for (auto callback : mouseButtonCallbacks) {
-        callback(button, action, mods);
+    for (const auto& callback : mouseButtonCallbacks) {
+        callback.second(button, action, mods);
     }
 }
 
 void BasilContext::onKeyAction(
         GLFWwindow* window, int key, int scancode, int action, int mods) {
-    for (auto callback : keyCallbacks) {
-        callback(key, scancode, action, mods);
+    for (const auto& callback : keyCallbacks) {
+        callback.second(key, scancode, action, mods);
     }
 }
 
 void BasilContext::onCursorEnter(
         GLFWwindow* window, int entered) {
-    for (auto callback : cursorEnterCallbacks) {
-        callback(entered);
+    for (const auto& callback : cursorEnterCallbacks) {
+        callback.second(entered);
     }
 }
 
-void BasilContext::setGLFWFramebufferSizeCallback(
+unsigned int BasilContext::setGLFWFramebufferSizeCallback(
         const BasilFrameBufferSizeFunc& callback) {
-    framebufferCallbacks.push_back(callback);
+    framebufferCallbacks.emplace(nextFrameBufferID, callback);
+    return nextFrameBufferID++;
 }
 
-void BasilContext::setGLFWMouseButtonCallback(
+bool BasilContext::removeGLFWFramebufferSizeCallback(unsigned int ID) {
+    if (framebufferCallbacks.contains(ID)) {
+        framebufferCallbacks.erase(ID);
+        return true;
+    }
+
+    return false;
+}
+
+unsigned int BasilContext::setGLFWMouseButtonCallback(
         const BasilMouseButtonFunc& callback) {
-    mouseButtonCallbacks.push_back(callback);
+    mouseButtonCallbacks.emplace(nextMouseButtonID, callback);
+    return nextMouseButtonID++;
 }
 
-void BasilContext::setGLFWKeyCallback(
+bool BasilContext::removeGLFWMouseButtonCallback(unsigned int ID) {
+    if (mouseButtonCallbacks.contains(ID)) {
+        mouseButtonCallbacks.erase(ID);
+        return true;
+    }
+
+    return false;
+}
+
+unsigned int BasilContext::setGLFWKeyCallback(
         const BasilKeyFunc& callback) {
-    keyCallbacks.push_back(callback);
+    keyCallbacks.emplace(nextKeyID, callback);
+    return nextKeyID++;
 }
 
-void BasilContext::setGLFWCursorEnterCallback(
+bool BasilContext::removeGLFWKeyCallback(unsigned int ID) {
+    if (keyCallbacks.contains(ID)) {
+        keyCallbacks.erase(ID);
+        return true;
+    }
+
+    return false;
+}
+
+unsigned int BasilContext::setGLFWCursorEnterCallback(
         const BasilCursorEnterFunc& callback) {
-    cursorEnterCallbacks.push_back(callback);
+    cursorEnterCallbacks.emplace(nextCursorID, callback);
+    return nextCursorID++;
+}
+
+bool BasilContext::removeGLFWCursorEnterCallback(unsigned int ID) {
+    if (cursorEnterCallbacks.contains(ID)) {
+        cursorEnterCallbacks.erase(ID);
+        return true;
+    }
+
+    return false;
 }
 
 #if BASIL_INCLUDE_IMGUI

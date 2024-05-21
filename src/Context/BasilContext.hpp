@@ -10,8 +10,8 @@
 #endif
 
 #include <functional>
+#include <map>
 #include <memory>
-#include <vector>
 
 #include <Basil/Packages/Logging.hpp>
 
@@ -47,29 +47,45 @@ class BasilContext {
     using BasilFrameBufferSizeFunc = std::function<void(int, int)>;
 
     /** @brief Add GLFW framebuffer size callback to list */
-    static void setGLFWFramebufferSizeCallback(
+    static unsigned int setGLFWFramebufferSizeCallback(
         const BasilFrameBufferSizeFunc& callback);
+
+    /** @brief   Remove callback with ID
+     *  @returns Boolean whether callback was found */
+    static bool removeGLFWFramebufferSizeCallback(unsigned int ID);
 
     /** @brief Shorthand type for mouse button callback */
     using BasilMouseButtonFunc = std::function<void(int, int, int)>;
 
     /** @brief Add GLFW mouse button callback to list */
-    static void setGLFWMouseButtonCallback(
+    static unsigned int setGLFWMouseButtonCallback(
         const BasilMouseButtonFunc& callback);
+
+    /** @brief   Remove callback with ID
+     *  @returns Boolean whether callback was found */
+    static bool removeGLFWMouseButtonCallback(unsigned int ID);
 
     /** @brief Shorthand type for keyboard callback */
     using BasilKeyFunc = std::function<void(int, int, int, int)>;
 
     /** @brief Add GLFW keyboard callback to list */
-    static void setGLFWKeyCallback(
+    static unsigned int setGLFWKeyCallback(
         const BasilKeyFunc& callback);
+
+    /** @brief   Remove callback with ID
+     *  @returns Boolean whether callback was found */
+    static bool removeGLFWKeyCallback(unsigned int ID);
 
     /** @brief Shorthand type for cursor enter/exit callback */
     using BasilCursorEnterFunc = std::function<void(int)>;
 
     /** @brief Add GLFW cursor enter/exit callback to list */
-    static void setGLFWCursorEnterCallback(
+    static unsigned int setGLFWCursorEnterCallback(
         const BasilCursorEnterFunc& callback);
+
+    /** @brief   Remove callback with ID
+     *  @returns Boolean whether callback was found */
+    static bool removeGLFWCursorEnterCallback(unsigned int ID);
 
 #ifdef TEST_BUILD
 
@@ -96,14 +112,23 @@ class BasilContext {
 
     GLFWwindow* glfwWindow = nullptr;
 
-    static inline std::vector<BasilFrameBufferSizeFunc>
-        framebufferCallbacks = std::vector<BasilFrameBufferSizeFunc>();
-    static inline std::vector<BasilMouseButtonFunc>
-        mouseButtonCallbacks = std::vector<BasilMouseButtonFunc>();
-    static inline std::vector<BasilKeyFunc>
-        keyCallbacks = std::vector<BasilKeyFunc>();
-    static inline std::vector<BasilCursorEnterFunc>
-        cursorEnterCallbacks = std::vector<BasilCursorEnterFunc>();
+    static inline std::map<unsigned int, BasilFrameBufferSizeFunc>
+        framebufferCallbacks =
+            std::map<unsigned int, BasilFrameBufferSizeFunc>();
+    static inline std::map<unsigned int, BasilMouseButtonFunc>
+        mouseButtonCallbacks =
+            std::map<unsigned int, BasilMouseButtonFunc>();
+    static inline std::map<unsigned int, BasilKeyFunc>
+        keyCallbacks =
+            std::map<unsigned int, BasilKeyFunc>();
+    static inline std::map<unsigned int, BasilCursorEnterFunc>
+        cursorEnterCallbacks =
+            std::map<unsigned int, BasilCursorEnterFunc>();
+
+    static inline unsigned int nextFrameBufferID = 0;
+    static inline unsigned int nextMouseButtonID = 0;
+    static inline unsigned int nextKeyID = 0;
+    static inline unsigned int nextCursorID = 0;
 
     void initializeGLFWContext();
     void initializeGLEWContext();
