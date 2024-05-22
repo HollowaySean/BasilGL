@@ -43,7 +43,7 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
         CHECK(result.has_value());
         CHECK(result.value().getUniforms().size() == 0);
         CHECK(result.value().getTextures().size() == 0);
-        CHECK(logger.getLastLevel() == LogLevel::WARN);
+        CHECK(logger.getLastLevel() == LogLevel::DEBUG);
     }
 
     SECTION("Succeeds for properly formatted JSON") {

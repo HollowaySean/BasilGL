@@ -8,6 +8,13 @@ SplitPane::SplitPane(SplitPaneOrientation orientation) {
     setPaneSizeAsPercentage(50.f);
 }
 
+SplitPane::SplitPane(PaneProps paneProps,
+        SplitPaneOrientation orientation) : IPane(paneProps) {
+    settings.orientation = orientation;
+
+    setPaneSizeAsPercentage(50.f);
+}
+
 void const SplitPane::draw() {
     if (firstPane) {
         firstPane->draw();
@@ -166,8 +173,8 @@ void SplitPane::updateSizeByAspect() {
 
     unsigned int fixedPaneExtent =
         (settings.orientation == SplitPaneOrientation::HORIZONTAL)
-            ? aspectRatio * getOffAxisExtent()
-            : aspectRatio / getOffAxisExtent();
+            ? getOffAxisExtent() * aspectRatio
+            : getOffAxisExtent() / aspectRatio;
     unsigned int nonFixedPaneExtent =
         getOnAxisExtent() - settings.gapWidth - fixedPaneExtent;
 
@@ -243,11 +250,11 @@ void SplitPane::updateExtents(
 }
 
 float SplitPane::getFirstPaneSizeAsPercentage() {
-    return static_cast<float>(firstPaneExtent) / getOnAxisExtent();
+    return 100. * static_cast<float>(firstPaneExtent) / getOnAxisExtent();
 }
 
 float SplitPane::getSecondPaneSizeAsPercentage() {
-    return 100. - getFirstPaneSizeAsPercentage();
+    return 100. * static_cast<float>(secondPaneExtent) / getOnAxisExtent();
 }
 
 unsigned int SplitPane::getOnAxisExtent() {
@@ -269,6 +276,12 @@ unsigned int SplitPane::getOffAxisExtent() {
 float SplitPane::getTotalAspect() {
     return static_cast<float>(paneProps.width)
          / static_cast<float>(paneProps.height);
+}
+
+SplitPane::Builder&
+SplitPane::Builder::withPaneProps(PaneProps paneProps) {
+    impl->setPaneProps(paneProps);
+    return (*this);
 }
 
 SplitPane::Builder&

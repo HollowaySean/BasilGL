@@ -44,6 +44,8 @@ class SplitPane :   public IPane,
  public:
     explicit SplitPane(
         SplitPaneOrientation orientation = SplitPaneOrientation::HORIZONTAL);
+    SplitPane(PaneProps paneProps,
+        SplitPaneOrientation orientation = SplitPaneOrientation::HORIZONTAL);
 
     /** @brief Calls draw on contained panes. */
     void const draw() override;
@@ -99,6 +101,9 @@ class SplitPane :   public IPane,
     /** @brief Builder pattern for SplitPane. */
     class Builder : public IBuilder<SplitPane> {
      public:
+        /** @brief Set paneProps struct. */
+        Builder& withPaneProps(PaneProps paneProps);
+
         /** @brief Sets top/left pane. */
         Builder& withFirstPane(std::shared_ptr<IPane> firstPane);
 
