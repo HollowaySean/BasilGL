@@ -1,0 +1,11 @@
+{
+    "uniforms" : {
+        "float" : {
+            "maximumValue": 0.8,
+            "textureVisibility": 0.1
+        }
+    },
+    "textures" : {
+        "testTexture" : "test-image.jpg"
+    }
+}

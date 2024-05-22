@@ -91,7 +91,7 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
     } else {
         logger.log(
             fmt::format(LOG_UNIFORMS_MISSING, filePath.c_str()),
-            LogLevel::WARN);
+            LogLevel::DEBUG);
     }
 
 
@@ -106,8 +106,8 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
 
     } else {
         logger.log(
-            fmt::format(LOG_UNIFORMS_MISSING, filePath.c_str()),
-            LogLevel::WARN);
+            fmt::format(LOG_TEXTURES_MISSING, filePath.c_str()),
+            LogLevel::DEBUG);
     }
 
     return std::optional(std::move(*model));

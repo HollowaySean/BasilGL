@@ -2,6 +2,8 @@
 
 #include <Basil/App.hpp>
 
+#include "ShadertoyImGuiPane.hpp"
+
 /**
  * @brief Entry point function.
  *
@@ -10,33 +12,36 @@
  * @return Success code
  */
 int main(int argc, char** argv) {
-    auto exPath = std::filesystem::path(EXAMPLE_DIR);
-    auto fragmentPath = exPath / "shaders/test.frag";
-    auto jsonPath =     exPath / "assets/test.json";
+    auto currentPath = std::filesystem::path(__FILE__).parent_path();
+    auto shaderPath = currentPath / "shaders/test.shadertoy";
+    auto jsonPath =   currentPath / "assets/test.json";
 
-    class MyImGuiPane : public basil::ImGuiPane,
-                        public basil::IBuildable<MyImGuiPane> {
-     public:
-        const void drawImGuiContent() override {
-            ImGui::Text("Child of ImGuiPane!");
-        }
-    };
+    auto screenshotPath = std::filesystem::path(BUILD_DIR)
+        / "output/screenshots";
+    if (!std::filesystem::exists(screenshotPath)) {
+        std::filesystem::create_directories(screenshotPath);
+    }
+
+    // TODO(sholloway): Fix iResolution not being specific to pane
+    // TODO(sholloway): Fix SplitPane pixel extent from builder not persisting
 
     std::shared_ptr<basil::IPane> screenshotFocus;
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()
-            .withFrameCap(0)
+            .withFrameCap(60)
             .build())
         .withWidget(basil::WindowView::Builder()
-            .withTitle("My window")
-            .withDimensions(600, 400)
+            .withTitle("BasilGL Shadertoy Demo")
+            .withDimensions(1000, 750)
             .withTopPane(basil::SplitPane::Builder()
-                .withFirstPane(screenshotFocus =
-                    basil::HotReloadShaderPane::Builder()
-                    .fromFilePath(fragmentPath)
+                .withFirstPane(
+                    screenshotFocus =
+                        basil::HotReloadShaderPane::Builder()
+                    .fromFilePath(shaderPath)
                     .build())
-                .withSecondPane(MyImGuiPane::Builder()
+                .withSecondPane(ShadertoyImGuiPane::Builder()
                     .build())
+                .withPaneExtentInPercent(75)
                 .build())
             .build())
         .withWidget(basil::UniformJSONFileWatcher::Builder()
@@ -50,7 +55,7 @@ int main(int argc, char** argv) {
             .build())
         .withWidget(basil::ScreenshotTool::Builder()
             .withTriggerKey(GLFW_KEY_S)
-            .withSaveDirectory(exPath / "../build/screenshots")
+            .withSaveDirectory(screenshotPath)
             .withSaveFileName("image_{index}_{time:%y%m%d_%H%M%S}.png")
             .withFocusPane(screenshotFocus)
             .build())

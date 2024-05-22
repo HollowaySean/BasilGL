@@ -26,7 +26,9 @@ include(Catch)
 include(CTest)
 
 ## Build options
-option(BASIL_INCLUDE_IMGUI "Build support for ImGui" ON)
+option(BASIL_INCLUDE_IMGUI  "Build Basil with ImGui"        ON)
+option(BASIL_BUILD_EXAMPLES "Build example Basil projects"  ON)
+option(BASIL_BUILD_TESTS    "Build unit tests"              ON)
 
 ## Set paths
 set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include" )
