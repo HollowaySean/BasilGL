@@ -2,6 +2,8 @@
 
 #include <Basil/App.hpp>
 
+// TODO(sholloway): Do something different with this. Maybe .gitignore it?
+
 /**
  * @brief Entry point function.
  *
