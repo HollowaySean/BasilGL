@@ -12,7 +12,7 @@ class ShadertoyImGuiPane : public ImGuiPane,
                            public IBuildable<ShadertoyImGuiPane> {
  public:
     ShadertoyImGuiPane() {
-        windowTitle = "Overview";
+        windowTitle = "Info";
     }
 
     const void drawImGuiContent() override {
@@ -25,18 +25,23 @@ class ShadertoyImGuiPane : public ImGuiPane,
         ImGui::Bullet();
         ImGui::TextWrapped(
             "Automatic translation of shadertoy "
-            "formatted shaders into GLSL format");
+            "formatted shaders into GLSL format (Try replacing "
+            "\"test.frag\" with \"test.shadertoy\")");
         ImGui::Bullet();
         ImGui::TextWrapped(
             "Built-in support for simple shadertoy uniforms: "
             "iResolution, iMouse, iTime, "
-            "iDeltaTime, iFrame, and iFrameRate");
+            "iTimeDelta, iFrame, and iFrameRate");
         ImGui::Bullet();
         ImGui::TextWrapped(
-            "Hot reloading of shader code (Try editing \"test.shadertoy\")");
+            "Hot reloading of shader code (Try editing \"test.frag\")");
         ImGui::Bullet();
         ImGui::TextWrapped(
             "Automatic propagation of shader uniforms "
+            "from JSON file, with hot reloading");
+        ImGui::Bullet();
+        ImGui::TextWrapped(
+            "Automatic loading of images into textures "
             "from JSON file, with hot reloading");
         ImGui::Bullet();
         ImGui::TextWrapped(

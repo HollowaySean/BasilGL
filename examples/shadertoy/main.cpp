@@ -14,7 +14,7 @@
 int main(int argc, char** argv) {
     auto currentPath = std::filesystem::path(__FILE__).parent_path();
     auto shaderPath = currentPath / "shaders/test.shadertoy";
-    auto jsonPath =   currentPath / "assets/test.json";
+    auto jsonPath =   currentPath /  "assets/test.json";
 
     auto screenshotPath = std::filesystem::path(BUILD_DIR)
         / "output/screenshots";
@@ -23,7 +23,6 @@ int main(int argc, char** argv) {
     }
 
     // TODO(sholloway): Fix iResolution not being specific to pane
-    // TODO(sholloway): Fix SplitPane pixel extent from builder not persisting
 
     std::shared_ptr<basil::IPane> screenshotFocus;
     auto basilApp = basil::BasilApp::Builder()
@@ -41,7 +40,8 @@ int main(int argc, char** argv) {
                     .build())
                 .withSecondPane(ShadertoyImGuiPane::Builder()
                     .build())
-                .withPaneExtentInPercent(75)
+                .withPaneExtentInPixels(200)
+                .withFixedPane(basil::SplitPaneFixedPane::SECOND)
                 .build())
             .build())
         .withWidget(basil::UniformJSONFileWatcher::Builder()

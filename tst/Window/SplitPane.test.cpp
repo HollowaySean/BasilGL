@@ -7,9 +7,9 @@
 using basil::PaneProps;
 using basil::IPane;
 using basil::SplitPane;
-using basil::PaneOrientation;
-using basil::PaneOrientation::HORIZONTAL;
-using basil::PaneOrientation::VERTICAL;
+using basil::SplitPaneOrientation;
+using basil::SplitPaneOrientation::HORIZONTAL;
+using basil::SplitPaneOrientation::VERTICAL;
 using basil::Logger;
 using basil::LogLevel;
 
@@ -55,12 +55,12 @@ TEST_CASE("Window_SplitPane_onResize") {
 
     SECTION("Maintains relative extent for horizontal layout") {
         SplitPane splitPane = SplitPane(testPaneProps,
-            PaneOrientation::HORIZONTAL);
+            SplitPaneOrientation::HORIZONTAL);
 
         TestPane firstPane = TestPane(testPaneProps);
         TestPane secondPane = TestPane(testPaneProps);
 
-        splitPane.resizeToPixelValue(5);
+        splitPane.setPaneSizeInPixels(5);
 
         float firstPercentage =
             splitPane.getFirstPaneSizeAsPercentage();
@@ -77,12 +77,12 @@ TEST_CASE("Window_SplitPane_onResize") {
 
     SECTION("Maintains relative extent for vertical layout") {
         SplitPane splitPane = SplitPane(testPaneProps,
-            PaneOrientation::VERTICAL);
+            SplitPaneOrientation::VERTICAL);
 
         TestPane firstPane = TestPane(testPaneProps);
         TestPane secondPane = TestPane(testPaneProps);
 
-        splitPane.resizeToPixelValue(2);
+        splitPane.setPaneSizeInPixels(2);
 
         float firstPercentage =
             splitPane.getFirstPaneSizeAsPercentage();
@@ -104,7 +104,7 @@ TEST_CASE("Window_SplitPane_setFirstPane") {
 
     SECTION("Sets props of child pane for horizontal orientation") {
         SplitPane splitPane = SplitPane(
-            testPaneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, SplitPaneOrientation::HORIZONTAL);
         splitPane.setFirstPane(childPane);
 
         CHECK(childPane->paneProps.height == testPaneProps.height);
@@ -115,7 +115,7 @@ TEST_CASE("Window_SplitPane_setFirstPane") {
 
     SECTION("Sets props of child pane for vertical orientation") {
         s_pt<SplitPane> splitPane = std::make_shared<SplitPane>(
-            testPaneProps, PaneOrientation::VERTICAL);
+            testPaneProps, SplitPaneOrientation::VERTICAL);
         splitPane->setFirstPane(childPane);
 
         CHECK(childPane->paneProps.height == testPaneProps.height / 2);
@@ -155,7 +155,7 @@ TEST_CASE("Window_SplitPane_setSecondPane") {
 
     SECTION("Sets props of child pane for horizontal orientation") {
         s_pt<SplitPane> splitPane = std::make_shared<SplitPane>(
-            testPaneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, SplitPaneOrientation::HORIZONTAL);
         splitPane->setSecondPane(childPane);
 
         CHECK(childPane->paneProps.height == testPaneProps.height);
@@ -167,7 +167,7 @@ TEST_CASE("Window_SplitPane_setSecondPane") {
 
     SECTION("Sets props of child pane for vertical orientation") {
         s_pt<SplitPane> splitPane = std::make_shared<SplitPane>(
-            testPaneProps, PaneOrientation::VERTICAL);
+            testPaneProps, SplitPaneOrientation::VERTICAL);
         splitPane->setSecondPane(childPane);
 
         CHECK(childPane->paneProps.height == testPaneProps.height / 2);
@@ -208,7 +208,7 @@ TEST_CASE("Window_SplitPane_draw") {
 
     SECTION("Calls draw on child panes") {
         SplitPane splitPane = SplitPane(
-            testPaneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, SplitPaneOrientation::HORIZONTAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -229,12 +229,12 @@ TEST_CASE("Window_SplitPane_resizeToPixelValue") {
 
     SECTION("Updates sizes of child panes for horizontal orientation") {
         SplitPane splitPane = SplitPane(
-            testPaneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, SplitPaneOrientation::HORIZONTAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
 
-        splitPane.resizeToPixelValue(5);
+        splitPane.setPaneSizeInPixels(5);
 
         CHECK(firstPane->paneProps.width == 5);
         CHECK(firstPane->paneProps.height == 10);
@@ -252,12 +252,12 @@ TEST_CASE("Window_SplitPane_resizeToPixelValue") {
 
     SECTION("Updates sizes of child panes for vertical orientation") {
         SplitPane splitPane = SplitPane(
-            testPaneProps, PaneOrientation::VERTICAL);
+            testPaneProps, SplitPaneOrientation::VERTICAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
 
-        splitPane.resizeToPixelValue(2);
+        splitPane.setPaneSizeInPixels(2);
 
         CHECK(firstPane->paneProps.width == 20);
         CHECK(firstPane->paneProps.height == 2);
@@ -280,12 +280,12 @@ TEST_CASE("Window_SplitPane_resizeToPercentage") {
 
     SECTION("Updates sizes of child panes for horizontal orientation") {
         SplitPane splitPane = SplitPane(
-            testPaneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, SplitPaneOrientation::HORIZONTAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
 
-        splitPane.resizeToPercentage(25.f);
+        splitPane.setPaneSizeAsPercentage(25.f);
 
         CHECK(firstPane->paneProps.width == 5);
         CHECK(firstPane->paneProps.height == 10);
@@ -303,12 +303,12 @@ TEST_CASE("Window_SplitPane_resizeToPercentage") {
 
     SECTION("Updates sizes of child panes for vertical orientation") {
         SplitPane splitPane = SplitPane(
-            testPaneProps, PaneOrientation::VERTICAL);
+            testPaneProps, SplitPaneOrientation::VERTICAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
 
-        splitPane.resizeToPercentage(25.f);
+        splitPane.setPaneSizeAsPercentage(25.f);
 
         CHECK(firstPane->paneProps.width == 20);
         CHECK(firstPane->paneProps.height == 2);
@@ -326,15 +326,15 @@ TEST_CASE("Window_SplitPane_resizeToPercentage") {
 
     SECTION("Clamps value if extent out of bounds") {
         SplitPane splitPane = SplitPane(
-            testPaneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, SplitPaneOrientation::HORIZONTAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
 
-        splitPane.resizeToPercentage(-5.f);
+        splitPane.setPaneSizeAsPercentage(-5.f);
         CHECK(firstPane->paneProps.width == 0);
 
-        splitPane.resizeToPercentage(120.f);
+        splitPane.setPaneSizeAsPercentage(120.f);
         CHECK(firstPane->paneProps.width == testPaneProps.width);
     }
 }
@@ -345,7 +345,7 @@ TEST_CASE("Window_SplitPane_setGapWidth") {
 
     SECTION("Resizes to include gap, for horizontal orientation") {
         SplitPane splitPane = SplitPane(
-            testPaneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, SplitPaneOrientation::HORIZONTAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -365,7 +365,7 @@ TEST_CASE("Window_SplitPane_setGapWidth") {
 
     SECTION("Resizes to include gap, for vertical orientation") {
         SplitPane splitPane = SplitPane(
-            testPaneProps, PaneOrientation::VERTICAL);
+            testPaneProps, SplitPaneOrientation::VERTICAL);
 
         splitPane.setFirstPane(firstPane);
         splitPane.setSecondPane(secondPane);
@@ -387,11 +387,11 @@ TEST_CASE("Window_SplitPane_setGapWidth") {
 TEST_CASE("Window_SplitPane_setOrientation") {
     SECTION("Resizes to include gap") {
         SplitPane splitPane = SplitPane(
-            testPaneProps, PaneOrientation::HORIZONTAL);
+            testPaneProps, SplitPaneOrientation::HORIZONTAL);
 
-        splitPane.setOrientation(PaneOrientation::VERTICAL);
+        splitPane.setOrientation(SplitPaneOrientation::VERTICAL);
 
-        CHECK(splitPane.getOrientation() == PaneOrientation::VERTICAL);
+        CHECK(splitPane.getOrientation() == SplitPaneOrientation::VERTICAL);
     }
 }
 
@@ -405,14 +405,14 @@ TEST_CASE("Window_SplitPane_Builder") {
             .withSecondPane(secondPane)
             .withPaneExtentInPercent(30.)
             .withGapWidth(3)
-            .withOrientation(PaneOrientation::VERTICAL)
+            .withOrientation(SplitPaneOrientation::VERTICAL)
             .build();
 
         CHECK(splitPane->firstPane == firstPane);
         CHECK(splitPane->secondPane == secondPane);
         CHECK(splitPane->gapWidth == 3);
         CHECK(splitPane->getFirstPaneSizeAsPercentage() == 30.);
-        CHECK(splitPane->getOrientation() == PaneOrientation::VERTICAL);
+        CHECK(splitPane->getOrientation() == SplitPaneOrientation::VERTICAL);
 
         splitPane = SplitPane::Builder()
             .withPaneExtentInPixels(15)
@@ -422,6 +422,6 @@ TEST_CASE("Window_SplitPane_Builder") {
         CHECK(splitPane->secondPane == nullptr);
         CHECK(splitPane->gapWidth == 0);
         CHECK(splitPane->getFirstPaneSizeInPixels() == 15);
-        CHECK(splitPane->getOrientation() == PaneOrientation::HORIZONTAL);
+        CHECK(splitPane->getOrientation() == SplitPaneOrientation::HORIZONTAL);
     }
 }

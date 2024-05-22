@@ -10,8 +10,31 @@
 namespace basil {
 
 /** @brief Enum to set SplitPane orientation. */
-enum class PaneOrientation {
+enum class SplitPaneOrientation {
     HORIZONTAL, VERTICAL
+};
+
+/** @brief Enum to set SplitPane invariant. */
+enum class SplitPaneInvariant {
+    PIXELS, PERCENTAGE, ASPECT
+};
+
+/** @brief Enum to set pane invariant. */
+enum class SplitPaneFixedPane {
+    FIRST, SECOND
+};
+
+/** @brief Struct to hold SplitPane settings. */
+// TODO(sholloway): Document fields?
+// TODO(sholloway): Move into class?
+struct SplitPaneSettings {
+    SplitPaneInvariant invariant = SplitPaneInvariant::PERCENTAGE;
+    SplitPaneOrientation orientation = SplitPaneOrientation::HORIZONTAL;
+    SplitPaneFixedPane fixedPane = SplitPaneFixedPane::FIRST;
+    unsigned int gapWidth = 0;
+    unsigned int fixedPixels = 0;
+    float fixedPercentage = 50.f;
+    float fixedAspect = 1.f;
 };
 
 /** @brief IPane implementation which displays two panes inside.
@@ -19,9 +42,8 @@ enum class PaneOrientation {
 class SplitPane :   public IPane,
                     public IBuildable<SplitPane> {
  public:
-    SplitPane();
-    SplitPane(PaneProps paneProps,
-        PaneOrientation orientation = PaneOrientation::HORIZONTAL);
+    explicit SplitPane(
+        SplitPaneOrientation orientation = SplitPaneOrientation::HORIZONTAL);
 
     /** @brief Calls draw on contained panes. */
     void const draw() override;
@@ -35,11 +57,26 @@ class SplitPane :   public IPane,
     /** @param pane Sets lower/right pane. */
     void setSecondPane(std::shared_ptr<IPane> pane);
 
-    /** @param extent Size of first pane, in pixels. */
-    void resizeToPixelValue(int extent);
+    /** @param fixedPane Sets which pane remains invariant. */
+    void setFixedPane(SplitPaneFixedPane fixedPane);
 
-    /** @param extent Size of first pane, as a percentage. */
-    void resizeToPercentage(float extent);
+    /** @param extent Size of fixed pane, in pixels. */
+    void setPaneSizeInPixels(int extent,
+        std::optional<SplitPaneFixedPane> paneToSet = std::nullopt);
+
+    /** @param extent Size of fixed pane, as a percentage. */
+    void setPaneSizeAsPercentage(float extent,
+        std::optional<SplitPaneFixedPane> paneToSet = std::nullopt);
+
+    /** @param aspectRatio Aspect ratio of fixed pane, as ratio. */
+    void setPaneAspectRatio(float aspectRatio,
+        std::optional<SplitPaneFixedPane> paneToSet = std::nullopt);
+
+    /** @param extent Size of gap between panes, in pixels. */
+    void setGapWidth(int extent);
+
+    /** @param orientation Set orientation of split. */
+    void setOrientation(SplitPaneOrientation orientation);
 
     /** @returns Size of first pane, in pixels. */
     int getFirstPaneSizeInPixels() { return firstPaneExtent; }
@@ -53,17 +90,11 @@ class SplitPane :   public IPane,
     /** @returns Size of first pane, as a percentage. */
     float getSecondPaneSizeAsPercentage();
 
-    /** @param extent Size of gap between panes, in pixels. */
-    void setGapWidth(int extent);
-
     /** @returns Size of gap between panels, in pixels. */
-    int getGapWidth() { return gapWidth; }
-
-    /** @param orientation Set orientation of split. */
-    void setOrientation(PaneOrientation orientation);
+    int getGapWidth() { return settings.gapWidth; }
 
     /** @returns Orientation of split. */
-    PaneOrientation getOrientation() { return orientation; }
+    SplitPaneOrientation getOrientation() { return settings.orientation; }
 
     /** @brief Builder pattern for SplitPane. */
     class Builder : public IBuilder<SplitPane> {
@@ -75,16 +106,22 @@ class SplitPane :   public IPane,
         Builder& withSecondPane(std::shared_ptr<IPane> secondPane);
 
         /** @brief Sets vertical vs. horizontal split. */
-        Builder& withOrientation(PaneOrientation orientation);
+        Builder& withOrientation(SplitPaneOrientation orientation);
+
+        /** @brief Sets which pane is fixed at a given size/aspect ratio. */
+        Builder& withFixedPane(SplitPaneFixedPane fixedPane);
 
         /** @brief Sets gap between panes, in pixels. */
         Builder& withGapWidth(int gapWidth);
 
-        /** @brief Sets size of top/left pane, in pixels. */
+        /** @brief Sets size of fixed pane, in pixels. */
         Builder& withPaneExtentInPixels(int extent);
 
-        /** @brief Sets size of top/left pane, as a percentage. */
+        /** @brief Sets size of fixed pane, as a percentage. */
         Builder& withPaneExtentInPercent(float extent);
+
+        /** @brief Sets size of fixed pane, as a percentage. */
+        Builder& withPaneAspectRatio(float aspectRatio);
     };
 
 #ifndef TEST_BUILD
@@ -92,17 +129,29 @@ class SplitPane :   public IPane,
  private:
 #endif
     void updateSize();
+    void updateSizeByPixels();
+    void updateSizeByPercentage();
+    void updateSizeByAspect();
+
+    void updateExtents(
+        unsigned int fixedPaneExtent,
+        unsigned int nonFixedPaneExtent);
+
+    void setPanePropsFromSizes();
+
+    unsigned int getOnAxisExtent();
+    unsigned int getOffAxisExtent();
+    float getTotalAspect();
+
+    unsigned int firstPaneExtent;
+    unsigned int secondPaneExtent;
 
     Logger& logger = Logger::get();
 
-    PaneOrientation orientation = PaneOrientation::HORIZONTAL;
     std::shared_ptr<IPane> firstPane = nullptr;
     std::shared_ptr<IPane> secondPane = nullptr;
 
-    int firstPaneExtent;
-    int secondPaneExtent;
-    float percentageExtent;
-    int gapWidth = 0;
+    SplitPaneSettings settings = SplitPaneSettings();
 };
 
 }   // namespace basil
