@@ -36,6 +36,7 @@ void WindowView::onStart() {
     glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
     glfwIconifyWindow(glfwWindow);
     #endif
+
     glfwShowWindow(glfwWindow);
 }
 

@@ -134,8 +134,8 @@ class SplitPane :   public IPane,
         SplitPane::Invariant invariant = SplitPane::Invariant::PERCENTAGE;
         SplitPane::Orientation orientation = SplitPane::Orientation::HORIZONTAL;
         SplitPane::FixedPane fixedPane = SplitPane::FixedPane::FIRST;
-        unsigned int gapWidth = 0;
-        unsigned int fixedPixels = 0;
+        int gapWidth = 0;
+        int fixedPixels = 0;
         float fixedPercentage = 50.f;
         float fixedAspect = 1.f;
     };
@@ -145,18 +145,16 @@ class SplitPane :   public IPane,
     void updateSizeByPercentage();
     void updateSizeByAspect();
 
-    void updateExtents(
-        unsigned int fixedPaneExtent,
-        unsigned int nonFixedPaneExtent);
+    void updateExtents(int fixedPaneExtent, int nonFixedPaneExtent);
 
     void setPanePropsFromSizes();
 
-    unsigned int getOnAxisExtent();
-    unsigned int getOffAxisExtent();
+    int getOnAxisExtent();
+    int getOffAxisExtent();
     float getTotalAspect();
 
-    unsigned int firstPaneExtent;
-    unsigned int secondPaneExtent;
+    int firstPaneExtent;
+    int secondPaneExtent;
 
     Logger& logger = Logger::get();
 

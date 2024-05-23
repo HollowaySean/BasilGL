@@ -153,9 +153,10 @@ void SplitPane::updateSizeByPixels() {
     extent = (extent < 0) ? 0 : extent;
     extent = (extent > totalExtent) ? totalExtent : extent;
 
-    unsigned int fixedPaneExtent = extent;
-    unsigned int nonFixedPaneExtent =
+    int fixedPaneExtent = extent;
+    int nonFixedPaneExtent =
         getOnAxisExtent() - settings.gapWidth - fixedPaneExtent;
+    nonFixedPaneExtent = (nonFixedPaneExtent < 0) ? 0 : nonFixedPaneExtent;
 
     updateExtents(fixedPaneExtent, nonFixedPaneExtent);
     setPanePropsFromSizes();
@@ -166,10 +167,11 @@ void SplitPane::updateSizeByPercentage() {
     extent = (extent < 0)   ? 0     : extent;
     extent = (extent > 100) ? 100   : extent;
 
-    unsigned int fixedPaneExtent =
+    int fixedPaneExtent =
         getOnAxisExtent() * extent / 100.f;
-    unsigned int nonFixedPaneExtent =
+    int nonFixedPaneExtent =
         getOnAxisExtent() - settings.gapWidth - fixedPaneExtent;
+    nonFixedPaneExtent = (nonFixedPaneExtent < 0) ? 0 : nonFixedPaneExtent;
 
     updateExtents(fixedPaneExtent, nonFixedPaneExtent);
     setPanePropsFromSizes();
@@ -191,12 +193,13 @@ void SplitPane::updateSizeByAspect() {
             break;
     }
 
-    unsigned int fixedPaneExtent =
+    int fixedPaneExtent =
         (settings.orientation == Orientation::HORIZONTAL)
             ? getOffAxisExtent() * aspectRatio
             : getOffAxisExtent() / aspectRatio;
-    unsigned int nonFixedPaneExtent =
+    int nonFixedPaneExtent =
         getOnAxisExtent() - settings.gapWidth - fixedPaneExtent;
+    nonFixedPaneExtent = (nonFixedPaneExtent < 0) ? 0 : nonFixedPaneExtent;
 
     updateExtents(fixedPaneExtent, nonFixedPaneExtent);
     setPanePropsFromSizes();
@@ -256,7 +259,7 @@ void SplitPane::setPanePropsFromSizes() {
 }
 
 void SplitPane::updateExtents(
-        unsigned int fixedPaneExtent, unsigned int nonFixedPaneExtent) {
+        int fixedPaneExtent, int nonFixedPaneExtent) {
     switch (settings.fixedPane) {
         case SplitPane::FixedPane::FIRST:
             firstPaneExtent = fixedPaneExtent;
@@ -269,16 +272,16 @@ void SplitPane::updateExtents(
     }
 }
 
-unsigned int SplitPane::getOnAxisExtent() {
-    unsigned int extent =
+int SplitPane::getOnAxisExtent() {
+    int extent =
         settings.orientation == Orientation::HORIZONTAL
             ? viewArea.width
             : viewArea.height;
     return extent;
 }
 
-unsigned int SplitPane::getOffAxisExtent() {
-    unsigned int extent =
+int SplitPane::getOffAxisExtent() {
+    int extent =
         settings.orientation == Orientation::HORIZONTAL
             ? viewArea.height
             : viewArea.width;
