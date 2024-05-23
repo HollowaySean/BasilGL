@@ -114,4 +114,12 @@ void ShadertoyUniformPublisher::setTime() {
     uniformModel.setUniformValue(iFrameRate, frameRateID);
 }
 
+ShadertoyUniformPublisher::Builder&
+ShadertoyUniformPublisher::Builder::withFocusPane(
+        std::shared_ptr<IPane> focusPane) {
+    this->impl->setFocusPane(focusPane);
+    return (*this);
+}
+
+
 }  // namespace basil

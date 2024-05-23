@@ -22,25 +22,23 @@ int main(int argc, char** argv) {
         std::filesystem::create_directories(screenshotPath);
     }
 
-    // TODO(sholloway): Fix iResolution not being specific to pane
-
-    std::shared_ptr<basil::IPane> screenshotFocus;
+    std::shared_ptr<basil::IPane> shaderPane;
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()
             .withFrameCap(60)
             .build())
         .withWidget(basil::WindowView::Builder()
             .withTitle("BasilGL Shadertoy Demo")
-            .withDimensions(1000, 750)
+            .withDimensions(1000, 700)
             .withTopPane(basil::SplitPane::Builder()
                 .withFirstPane(
-                    screenshotFocus =
+                    shaderPane =
                         basil::HotReloadShaderPane::Builder()
                     .fromFilePath(shaderPath)
                     .build())
                 .withSecondPane(ShadertoyImGuiPane::Builder()
                     .build())
-                .withPaneExtentInPixels(200)
+                .withPaneExtentInPixels(300)
                 .withFixedPane(basil::SplitPane::FixedPane::SECOND)
                 .build())
             .build())
@@ -52,12 +50,13 @@ int main(int argc, char** argv) {
             .withLogLevel(basil::LogLevel::INFO)
             .build())
         .withWidget(basil::ShadertoyUniformPublisher::Builder()
+            .withFocusPane(shaderPane)
             .build())
         .withWidget(basil::ScreenshotTool::Builder()
             .withTriggerKey(GLFW_KEY_S)
             .withSaveDirectory(screenshotPath)
             .withSaveFileName("image_{index}_{time:%y%m%d_%H%M%S}.png")
-            .withFocusPane(screenshotFocus)
+            .withFocusPane(shaderPane)
             .build())
         .build();
 

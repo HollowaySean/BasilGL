@@ -42,6 +42,7 @@ class ShadertoyUniformPublisher : public IBasilWidget,
 
     /** @brief Builder pattern for ShadertoyUniformPublisher */
     class Builder : public IBuilder<ShadertoyUniformPublisher> {
+     public:
         /** @brief Set focus pane pointer in builder. */
         Builder& withFocusPane(
             std::shared_ptr<IPane> focusPane);

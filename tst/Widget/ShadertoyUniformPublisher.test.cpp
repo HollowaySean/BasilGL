@@ -75,3 +75,14 @@ TEST_CASE("Widget_ShadertoyUniformPublisher_setFocusPane") {
         })));
     }
 }
+
+TEST_CASE("Widget_ShadertoyUniformPublisher_Builder") {
+    SECTION("Builds correctly") {
+        auto focus = std::make_shared<TestPane>(testViewArea);
+        auto widget = ShadertoyUniformPublisher::Builder()
+            .withFocusPane(focus)
+            .build();
+
+        CHECK(widget->focusPane == focus);
+    }
+}
