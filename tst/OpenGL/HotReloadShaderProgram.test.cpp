@@ -3,6 +3,7 @@
 #include "OpenGL/HotReloadShaderPane.hpp"
 
 #include "OpenGL/GLTestUtils.hpp"
+#include "Window/WindowTestUtils.hpp"
 
 using basil::HotReloadShaderPane;
 using basil::ViewArea;

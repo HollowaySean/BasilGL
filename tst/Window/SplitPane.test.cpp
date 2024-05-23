@@ -2,23 +2,13 @@
 
 #include "Window/SplitPane.hpp"
 
-#include "OpenGL/GLTestUtils.hpp"
+#include "Window/WindowTestUtils.hpp"
 
 using basil::ViewArea;
 using basil::IPane;
 using basil::SplitPane;
 using basil::Logger;
 using basil::LogLevel;
-
-class TestPane : public IPane {
- public:
-    explicit TestPane(ViewArea viewArea):
-        IPane(viewArea) {}
-    void const draw() override {
-        didDraw = true;
-    }
-    bool didDraw = false;
-};
 
 TEST_CASE("Window_SplitPane_draw") {
     auto firstPane = std::make_shared<TestPane>(testViewArea);

@@ -14,3 +14,10 @@ class TestPane : public IPane {
     }
     bool didDraw = false;
 };
+
+inline const ViewArea testViewArea = {
+    .width = 200,
+    .height = 100,
+    .xOffset = 5,
+    .yOffset = 2
+};
