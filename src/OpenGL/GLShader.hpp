@@ -69,11 +69,11 @@ class GLShader : private IBasilContextConsumer {
         "out vec4 st_translate_fragColor;\n"
         "uniform vec3 iResolution;\n"
         "uniform vec4 iMouse;\n"
+        "uniform float iTime;\n"
+        "uniform float iTimeDelta;\n"
+        "uniform float iFrame;\n"
+        "uniform float iFrameRate;\n"
         "#line 1\n";
-        // "uniform float iTime;\n"
-        // "uniform float iTimeDelta;\n"
-        // "uniform float iFrame;\n"
-        // "uniform vec4 iDate;\n"
 
     static inline const std::string SHADERTOY_SUFFIX =
         "void main() { mainImage(st_translate_fragColor, gl_FragCoord.xy); }";

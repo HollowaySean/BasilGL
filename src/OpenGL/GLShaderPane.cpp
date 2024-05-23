@@ -68,10 +68,10 @@ void GLShaderPane::createElementBuffer() {
 void const GLShaderPane::draw() {
     // Set current viewport
     glViewport(
-        paneProps.xOffset,
-        paneProps.yOffset,
-        paneProps.width,
-        paneProps.height);
+        viewArea.xOffset,
+        viewArea.yOffset,
+        viewArea.width,
+        viewArea.height);
 
     // Use shader
     if (currentShaderProgram) {

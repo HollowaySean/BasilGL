@@ -9,7 +9,7 @@
 #include "Window/IPane.hpp"
 
 using basil::BasilContextLock;
-using basil::PaneProps;
+using basil::ViewArea;
 
 // Preprocessor definition to lock test
 #define BASIL_LOCK_TEST auto lock = BasilContextLock();
@@ -29,12 +29,5 @@ inline std::filesystem::path invalidPath =
     std::filesystem::path(TEST_DIR) / "OpenGL/assets/missing-file.txt";
 
 inline const char* validShaderCode = "#version 330 core\nvoid main() {}\0";
-
-inline const PaneProps testPaneProps = {
-    .width = 20,
-    .height = 10,
-    .xOffset = 5,
-    .yOffset = 2
-};
 
 

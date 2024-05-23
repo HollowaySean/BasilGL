@@ -46,10 +46,16 @@ void ShadertoyUniformPublisher::onLoop() {
 }
 
 void ShadertoyUniformPublisher::setResolution() {
-    auto windowSize = inputModel.getWindowSize();
+    ViewArea viewArea;
+    if (focusPane) {
+        viewArea = focusPane->viewArea;
+    } else {
+        auto windowSize = inputModel.getWindowSize();
+        viewArea = ViewArea { windowSize.width, windowSize.height, 0, 0 };
+    }
 
-    resolution_x = static_cast<float>(windowSize.width);
-    resolution_y = static_cast<float>(windowSize.height);
+    resolution_x = static_cast<float>(viewArea.width);
+    resolution_y = static_cast<float>(viewArea.height);
 
     std::vector<float> iResolution =
         { resolution_x, resolution_y, PIXEL_ASPECT_RATIO };
@@ -107,5 +113,13 @@ void ShadertoyUniformPublisher::setTime() {
     float iFrameRate = timeModel.frameRate();
     uniformModel.setUniformValue(iFrameRate, frameRateID);
 }
+
+ShadertoyUniformPublisher::Builder&
+ShadertoyUniformPublisher::Builder::withFocusPane(
+        std::shared_ptr<IPane> focusPane) {
+    this->impl->setFocusPane(focusPane);
+    return (*this);
+}
+
 
 }  // namespace basil

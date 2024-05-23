@@ -8,11 +8,9 @@
 #include <Basil/Packages/Context.hpp>
 #include <Basil/Packages/Logging.hpp>
 
-namespace basil {
+#include "Window/IPane.hpp"
 
-struct ImageCaptureArea {
-    int width, height, xOffset, yOffset;
-};
+namespace basil {
 
 /** @brief Utility class which captures portion or entirety of
  *  window, and saves to an image file. */
@@ -26,14 +24,14 @@ class ImageFileCapture : private IBasilContextConsumer {
 
     /** @brief Synchronously capture screen as image file. */
     bool capture(std::filesystem::path savePath,
-        std::optional<ImageCaptureArea> captureArea = std::nullopt);
+        std::optional<ViewArea> captureArea = std::nullopt);
 
     /** @brief Asynchronously capture screen as image file.
      *  @note  Buffer unmapping must be done within context-owning
      *  thread. If captureAsync is used, call clearBuffer method
      *  after capture is complete. */
     std::future<bool> captureAsync(std::filesystem::path savePath,
-        std::optional<ImageCaptureArea> captureArea = std::nullopt);
+        std::optional<ViewArea> captureArea = std::nullopt);
 
     /** @brief Unmaps pixel buffer object and binds default buffer. */
     void clearBuffer();
@@ -55,10 +53,10 @@ class ImageFileCapture : private IBasilContextConsumer {
     void updateBufferSize(
         int width, int height);
     bool saveBufferToFile(
-        GLubyte* dataPointer, ImageCaptureArea area,
+        GLubyte* dataPointer, ViewArea area,
         std::filesystem::path savePath);
     GLubyte* copyFrameToBuffer(
-        ImageCaptureArea area);
+        ViewArea area);
 
     GLint width = 0, height = 0;
     unsigned int pixelBufferID = -1;

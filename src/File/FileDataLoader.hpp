@@ -157,6 +157,8 @@ class FileDataLoader {
         "at position {3} to type {0}";
     LOGGER_FORMAT LOG_TEXTURE_ADDED =
         "Adding texture with name {0} from file {1}";
+    LOGGER_FORMAT LOG_TEXTURES_MISSING =
+        "No field with key \"textures\" found in file {0}";
 };
 
 }   // namespace basil

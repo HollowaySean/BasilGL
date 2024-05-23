@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 #include <Basil/Packages/App.hpp>
@@ -8,6 +9,7 @@
 #include "Data/ShaderUniformModel.hpp"
 #include "Data/SystemTimeModel.hpp"
 #include "Data/UserInputModel.hpp"
+#include "Window/IPane.hpp"
 
 #include "UserInputWatcher.hpp"
 #include "SystemTimeWatcher.hpp"
@@ -33,8 +35,18 @@ class ShadertoyUniformPublisher : public IBasilWidget,
         return uniformModel;
     }
 
+    /** @brief Set specific IPane to focus for iResolution. */
+    void setFocusPane(std::shared_ptr<IPane> focusPane) {
+        this->focusPane = focusPane;
+    }
+
     /** @brief Builder pattern for ShadertoyUniformPublisher */
-    class Builder : public IBuilder<ShadertoyUniformPublisher> {};
+    class Builder : public IBuilder<ShadertoyUniformPublisher> {
+     public:
+        /** @brief Set focus pane pointer in builder. */
+        Builder& withFocusPane(
+            std::shared_ptr<IPane> focusPane);
+    };
 
 #ifndef TEST_BUILD
 
@@ -45,6 +57,8 @@ class ShadertoyUniformPublisher : public IBasilWidget,
     void setResolution();
     void setMouse();
     void setTime();
+
+    std::shared_ptr<IPane> focusPane = nullptr;
 
     UserInputWatcher inputWatcher = UserInputWatcher();
     UserInputModel& inputModel = inputWatcher.getModel();

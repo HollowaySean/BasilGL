@@ -34,6 +34,9 @@
 # Build artifacts
 build
 
+# Scratch folder
+examples/scratch
+
 # Visual Studio Code settings
 .vscode/*
 !.vscode/extensions.json

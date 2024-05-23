@@ -25,12 +25,12 @@ class GLShaderPane :  public IPane,
     /**
      * @brief Creates GLShaderPane from existing GLShaderProgram.
      *
-     * @param paneProps     Pane size properties
+     * @param viewArea     Pane size properties
      * @param shaderProgram GLShaderProgram object to render
     */
-    GLShaderPane(PaneProps paneProps,
+    GLShaderPane(ViewArea viewArea,
         std::shared_ptr<GLShaderProgram> shaderProgram)
-          : IPane(paneProps) {
+          : IPane(viewArea) {
       setShaderProgram(shaderProgram);
     }
 

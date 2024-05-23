@@ -1,28 +1,16 @@
 ## Set variables
-set(EXEC_TARGET_NAME Basil_example)
 set(EXAMPLE_DIR "${CMAKE_SOURCE_DIR}/examples/")
 
-## Create executable
-add_executable(${EXEC_TARGET_NAME} "${EXAMPLE_DIR}/BasilTest.cpp")
+## Add subdirectories
+if(${BASIL_BUILD_EXAMPLES})
 
-## Link with library
-target_link_libraries(${EXEC_TARGET_NAME} PRIVATE ${BASIL_LIBRARIES})
-target_include_directories(${EXEC_TARGET_NAME} PRIVATE ${BASIL_INCLUDE_DIRS})
+add_subdirectory("${EXAMPLE_DIR}/panes")
+add_subdirectory("${EXAMPLE_DIR}/raytracer")
+add_subdirectory("${EXAMPLE_DIR}/shadertoy")
 
-# Temporary: Pass in source directory
-## Pass in compiler definitions
-target_compile_definitions(
-    ${EXEC_TARGET_NAME} PRIVATE
-    EXAMPLE_DIR="${EXAMPLE_DIR}"
-    "$<$<CONFIG:Debug>:DEBUG_BUILD>")
+## Subdirectory for gitignore'd scratch file
+if(EXISTS "${EXAMPLE_DIR}/scratch" AND EXISTS "${EXAMPLE_DIR}/scratch/CMakeLists.txt")
+    add_subdirectory("${EXAMPLE_DIR}/scratch")
+endif()
 
-# Build options
-if (${BASIL_INCLUDE_IMGUI})
-    target_compile_definitions(
-        ${EXEC_TARGET_NAME} PRIVATE
-        BASIL_INCLUDE_IMGUI=1)
-else()
-    target_compile_definitions(
-        ${EXEC_TARGET_NAME} PRIVATE
-        BASIL_INCLUDE_IMGUI=0)
 endif()

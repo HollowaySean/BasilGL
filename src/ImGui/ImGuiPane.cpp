@@ -17,8 +17,8 @@ void ImGuiPane::startFrame() {
     ImGui::NewFrame();
 
     // Fixes ImGui window to pane size & position
-    ImVec2 position = ImVec2(paneProps.xOffset, paneProps.yOffset);
-    ImVec2 size = ImVec2(paneProps.width, paneProps.height);
+    ImVec2 position = ImVec2(viewArea.xOffset, viewArea.yOffset);
+    ImVec2 size = ImVec2(viewArea.width, viewArea.height);
     ImGui::SetNextWindowPos(position, ImGuiCond_Always);
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
 

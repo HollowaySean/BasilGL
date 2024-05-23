@@ -1,7 +1,8 @@
 {
     "uniforms" : {
         "float" : {
-            "testValue": 0.01
+            "maximumValue": 0.8,
+            "textureVisibility": 0.1
         }
     },
     "textures" : {

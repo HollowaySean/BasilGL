@@ -6,7 +6,7 @@
 #include "OpenGL/GLTestUtils.hpp"
 
 using basil::BasilContext;
-using basil::ImageCaptureArea;
+using basil::ViewArea;
 using basil::ImageFileCapture;
 
 TEST_CASE("File_ImageFileCapture_ImageFileCapture") { BASIL_LOCK_TEST
@@ -46,7 +46,7 @@ TEST_CASE("File_ImageFileCapture_saveBufferToFile") {
         = std::vector<unsigned char>({ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 });
     GLubyte* dataPointer = static_cast<GLubyte*>(data.data());
 
-    ImageCaptureArea area = { 2, 2, 0, 0 };
+    ViewArea area = { 2, 2, 0, 0 };
     auto capture = ImageFileCapture();
 
     SECTION("Saves JPG to file") {
@@ -91,7 +91,7 @@ TEST_CASE("File_ImageFileCapture_saveBufferToFile") {
 }
 
 TEST_CASE("File_ImageFileCapture_capture") { BASIL_LOCK_TEST
-    ImageCaptureArea area = { 1, 1, 0, 0 };
+    ViewArea area = { 1, 1, 0, 0 };
     auto capture = ImageFileCapture();
 
     SECTION("Returns true on successful capture") {
@@ -115,7 +115,7 @@ TEST_CASE("File_ImageFileCapture_capture") { BASIL_LOCK_TEST
 }
 
 TEST_CASE("File_ImageFileCapture_captureAsync") { BASIL_LOCK_TEST
-    ImageCaptureArea area = { 1, 1, 0, 0 };
+    ViewArea area = { 1, 1, 0, 0 };
     auto capture = ImageFileCapture();
 
     SECTION("Returns true on successful capture") {

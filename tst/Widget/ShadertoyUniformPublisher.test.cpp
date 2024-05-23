@@ -3,6 +3,7 @@
 #include "Widget/ShadertoyUniformPublisher.hpp"
 
 #include "PubSub/PubSubTestUtils.hpp"
+#include "Window/WindowTestUtils.hpp"
 
 using basil::GLUniformType;
 using basil::ShadertoyUniformPublisher;
@@ -51,5 +52,37 @@ TEST_CASE("Widget_ShadertoyUniformPublisher_onLoop") {
         CHECK_FALSE(subscriber->hasReceivedData);
         widget.onLoop();
         CHECK(subscriber->hasReceivedData);
+    }
+}
+
+TEST_CASE("Widget_ShadertoyUniformPublisher_setFocusPane") {
+    auto widget = ShadertoyUniformPublisher();
+    auto pane = std::make_shared<TestPane>(testViewArea);
+
+    SECTION("Uses focus pane for resolution") {
+        widget.setFocusPane(pane);
+        widget.onStart();
+        widget.onLoop();
+
+        auto uniformOpt = widget.uniformModel.getUniform("iResolution");
+        REQUIRE(uniformOpt.has_value());
+
+        GLUniformType iResolution = uniformOpt.value().value;
+        CHECK(iResolution == GLUniformType(std::vector<float>({
+            static_cast<float>(testViewArea.width),
+            static_cast<float>(testViewArea.height),
+            BASIL_PIXEL_ASPECT_RATIO
+        })));
+    }
+}
+
+TEST_CASE("Widget_ShadertoyUniformPublisher_Builder") {
+    SECTION("Builds correctly") {
+        auto focus = std::make_shared<TestPane>(testViewArea);
+        auto widget = ShadertoyUniformPublisher::Builder()
+            .withFocusPane(focus)
+            .build();
+
+        CHECK(widget->focusPane == focus);
     }
 }

@@ -5,7 +5,7 @@
 namespace basil {
 
 /** @brief Struct containing pane size & offset. */
-struct PaneProps {
+struct ViewArea {
     int width = 0;
     int height = 0;
     int xOffset = 0;
@@ -17,28 +17,28 @@ struct PaneProps {
  */
 class IPane : public IDataPassThrough {
  public:
-    /** @param paneProps Struct containing pane size & offset. */
-    explicit IPane(PaneProps paneProps): paneProps(paneProps) {}
+    /** @param viewArea Struct containing pane size & offset. */
+    explicit IPane(ViewArea viewArea): viewArea(viewArea) {}
 
-    /** @brief Returns IPane with default paneProps. */
-    IPane(): paneProps(PaneProps()) {}
+    /** @brief Returns IPane with default viewArea. */
+    IPane(): viewArea(ViewArea()) {}
 
     /** @brief Render contents of pane. */
     virtual void const draw() = 0;
 
-    /** @brief Update PaneProps. */
-    virtual void setPaneProps(PaneProps paneProps) {
-        this->paneProps = paneProps;
-        onResize(paneProps.width, paneProps.height);
+    /** @brief Update ViewArea. */
+    virtual void setPaneProps(ViewArea viewArea) {
+        this->viewArea = viewArea;
+        onResize(viewArea.width, viewArea.height);
     }
 
     /** @brief Callback for frame resize. */
     virtual void onResize(int newWidth, int newHeight) {
-        paneProps.width = newWidth;
-        paneProps.height = newHeight;
+        viewArea.width = newWidth;
+        viewArea.height = newHeight;
     }
 
-    PaneProps paneProps;
+    ViewArea viewArea;
 };
 
 }   // namespace basil

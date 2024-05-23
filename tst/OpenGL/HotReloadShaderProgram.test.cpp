@@ -3,27 +3,28 @@
 #include "OpenGL/HotReloadShaderPane.hpp"
 
 #include "OpenGL/GLTestUtils.hpp"
+#include "Window/WindowTestUtils.hpp"
 
 using basil::HotReloadShaderPane;
-using basil::PaneProps;
+using basil::ViewArea;
 
 TEST_CASE("OpenGL_HotReloadShaderPane_HotReloadShaderPane") { BASIL_LOCK_TEST
     SECTION("Loads shader from file if compilable") {
-        auto pane = HotReloadShaderPane(testPaneProps, fragmentPath);
+        auto pane = HotReloadShaderPane(testViewArea, fragmentPath);
 
         CHECK(pane.currentShaderProgram->fragmentShader
              != pane.defaultFrag);
     }
 
     SECTION("Loads debug shader if file can not be compiled") {
-        auto pane = HotReloadShaderPane(testPaneProps, badFragmentPath);
+        auto pane = HotReloadShaderPane(testViewArea, badFragmentPath);
 
         CHECK(pane.currentShaderProgram->fragmentShader
              == pane.defaultFrag);
     }
 
     SECTION("Loads debug shader if file is not found") {
-        auto pane = HotReloadShaderPane(testPaneProps, invalidPath);
+        auto pane = HotReloadShaderPane(testViewArea, invalidPath);
 
         CHECK(pane.currentShaderProgram->fragmentShader
              == pane.defaultFrag);
@@ -31,7 +32,7 @@ TEST_CASE("OpenGL_HotReloadShaderPane_HotReloadShaderPane") { BASIL_LOCK_TEST
 }
 
 TEST_CASE("OpenGL_HotReloadShaderPane_draw") { BASIL_LOCK_TEST
-    auto pane = HotReloadShaderPane(testPaneProps, invalidPath);
+    auto pane = HotReloadShaderPane(testViewArea, invalidPath);
 
     SECTION("Updates the shader if modified") {
         CHECK(pane.currentShaderProgram->getFragmentShader()
