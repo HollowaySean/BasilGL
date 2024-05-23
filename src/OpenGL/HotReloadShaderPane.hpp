@@ -17,7 +17,7 @@ class HotReloadShaderPane : public GLShaderPane,
  public:
     /** @brief Initialize from file path. */
     HotReloadShaderPane(
-        PaneProps paneProps, std::filesystem::path shaderFilePath);
+        ViewArea viewArea, std::filesystem::path shaderFilePath);
 
     /** @brief Set path of shader file. */
     void setFilePath(std::filesystem::path shaderFilePath);

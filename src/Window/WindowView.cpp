@@ -48,7 +48,7 @@ void WindowView::setTopPane(std::shared_ptr<IPane> newTopPane) {
         IDataPublisher::unsubscribe(topPane);
     }
 
-    PaneProps propsFromWindow = getTopPaneProps();
+    ViewArea propsFromWindow = getTopPaneProps();
     newTopPane->setPaneProps(propsFromWindow);
 
     this->topPane = newTopPane;
@@ -56,8 +56,8 @@ void WindowView::setTopPane(std::shared_ptr<IPane> newTopPane) {
     IDataPublisher::subscribe(topPane);
 }
 
-PaneProps WindowView::getTopPaneProps() {
-    return PaneProps {
+ViewArea WindowView::getTopPaneProps() {
+    return ViewArea {
         .width = windowProps.width,
         .height = windowProps.height,
         .xOffset = 0,

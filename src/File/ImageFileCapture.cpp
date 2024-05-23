@@ -53,9 +53,9 @@ void ImageFileCapture::clearBuffer() {
 
 bool ImageFileCapture::capture(
         std::filesystem::path savePath,
-        std::optional<ImageCaptureArea> captureArea ) {
+        std::optional<ViewArea> captureArea ) {
     auto area = captureArea.value_or(
-        ImageCaptureArea { width, height, 0, 0 });
+        ViewArea { width, height, 0, 0 });
 
     auto pixelDataPointer = copyFrameToBuffer(area);
 
@@ -74,9 +74,9 @@ bool ImageFileCapture::capture(
 
 std::future<bool> ImageFileCapture::captureAsync(
         std::filesystem::path savePath,
-        std::optional<ImageCaptureArea> captureArea) {
+        std::optional<ViewArea> captureArea) {
     auto area = captureArea.value_or(
-        ImageCaptureArea { width, height, 0, 0 });
+        ViewArea { width, height, 0, 0 });
 
     auto pixelDataPointer = copyFrameToBuffer(area);
 
@@ -97,7 +97,7 @@ std::future<bool> ImageFileCapture::captureAsync(
     return future;
 }
 
-GLubyte* ImageFileCapture::copyFrameToBuffer(ImageCaptureArea area) {
+GLubyte* ImageFileCapture::copyFrameToBuffer(ViewArea area) {
     glReadBuffer(GL_FRONT);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferID);
     glReadPixels(
@@ -111,7 +111,7 @@ GLubyte* ImageFileCapture::copyFrameToBuffer(ImageCaptureArea area) {
 
 bool ImageFileCapture::saveBufferToFile(
         GLubyte* dataPointer,
-        ImageCaptureArea area,
+        ViewArea area,
         std::filesystem::path savePath ) {
     GLsizei channels = 3;
     GLsizei stride = channels * area.width;

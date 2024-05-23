@@ -8,8 +8,8 @@ SplitPane::SplitPane(Orientation orientation) {
     secondPaneExtent = 0;
 }
 
-SplitPane::SplitPane(PaneProps paneProps,
-        Orientation orientation) : IPane(paneProps) {
+SplitPane::SplitPane(ViewArea viewArea,
+        Orientation orientation) : IPane(viewArea) {
     settings.orientation = orientation;
     firstPaneExtent = 0;
     secondPaneExtent = 0;
@@ -122,14 +122,14 @@ float SplitPane::getSecondPaneSizeAsPercentage() {
 
 float SplitPane::getFirstPaneAspectRatio() {
     return settings.orientation == Orientation::HORIZONTAL
-        ? static_cast<float>(firstPaneExtent) / paneProps.height
-        : static_cast<float>(paneProps.width) / firstPaneExtent;
+        ? static_cast<float>(firstPaneExtent) / viewArea.height
+        : static_cast<float>(viewArea.width) / firstPaneExtent;
 }
 
 float SplitPane::getSecondPaneAspectRatio() {
     return settings.orientation == Orientation::HORIZONTAL
-        ? static_cast<float>(secondPaneExtent) / paneProps.height
-        : static_cast<float>(paneProps.width) / secondPaneExtent;
+        ? static_cast<float>(secondPaneExtent) / viewArea.height
+        : static_cast<float>(viewArea.width) / secondPaneExtent;
 }
 
 void SplitPane::updateSize() {
@@ -206,52 +206,52 @@ void SplitPane::setPanePropsFromSizes() {
     if (firstPane) {
         switch (settings.orientation) {
             case Orientation::HORIZONTAL:
-                firstPane->paneProps.width = firstPaneExtent;
-                firstPane->paneProps.height = this->paneProps.height;
+                firstPane->viewArea.width = firstPaneExtent;
+                firstPane->viewArea.height = this->viewArea.height;
                 break;
 
             case Orientation::VERTICAL:
-                firstPane->paneProps.width = this->paneProps.width;
-                firstPane->paneProps.height = firstPaneExtent;
+                firstPane->viewArea.width = this->viewArea.width;
+                firstPane->viewArea.height = firstPaneExtent;
                 break;
         }
 
-        firstPane->paneProps.xOffset = this->paneProps.xOffset;
-        firstPane->paneProps.yOffset = this->paneProps.yOffset;
+        firstPane->viewArea.xOffset = this->viewArea.xOffset;
+        firstPane->viewArea.yOffset = this->viewArea.yOffset;
 
         firstPane->onResize(
-            firstPane->paneProps.width, firstPane->paneProps.height);
+            firstPane->viewArea.width, firstPane->viewArea.height);
     }
 
     if (secondPane) {
         switch (settings.orientation) {
             case Orientation::HORIZONTAL:
-                secondPane->paneProps.width =
+                secondPane->viewArea.width =
                     secondPaneExtent;
-                secondPane->paneProps.height =
-                    this->paneProps.height;
-                secondPane->paneProps.xOffset =
-                    this->paneProps.xOffset
+                secondPane->viewArea.height =
+                    this->viewArea.height;
+                secondPane->viewArea.xOffset =
+                    this->viewArea.xOffset
                         + firstPaneExtent + settings.gapWidth;
-                secondPane->paneProps.yOffset =
-                    this->paneProps.yOffset;
+                secondPane->viewArea.yOffset =
+                    this->viewArea.yOffset;
                 break;
 
             case Orientation::VERTICAL:
-                secondPane->paneProps.width =
-                    this->paneProps.width;
-                secondPane->paneProps.height =
+                secondPane->viewArea.width =
+                    this->viewArea.width;
+                secondPane->viewArea.height =
                     secondPaneExtent;
-                secondPane->paneProps.xOffset =
-                    this->paneProps.xOffset;
-                secondPane->paneProps.yOffset =
-                    this->paneProps.yOffset
+                secondPane->viewArea.xOffset =
+                    this->viewArea.xOffset;
+                secondPane->viewArea.yOffset =
+                    this->viewArea.yOffset
                         + firstPaneExtent + settings.gapWidth;
                 break;
         }
 
         secondPane->onResize(
-            secondPane->paneProps.width, secondPane->paneProps.height);
+            secondPane->viewArea.width, secondPane->viewArea.height);
     }
 }
 
@@ -272,27 +272,27 @@ void SplitPane::updateExtents(
 unsigned int SplitPane::getOnAxisExtent() {
     unsigned int extent =
         settings.orientation == Orientation::HORIZONTAL
-            ? paneProps.width
-            : paneProps.height;
+            ? viewArea.width
+            : viewArea.height;
     return extent;
 }
 
 unsigned int SplitPane::getOffAxisExtent() {
     unsigned int extent =
         settings.orientation == Orientation::HORIZONTAL
-            ? paneProps.height
-            : paneProps.width;
+            ? viewArea.height
+            : viewArea.width;
     return extent;
 }
 
 float SplitPane::getTotalAspect() {
-    return static_cast<float>(paneProps.width)
-         / static_cast<float>(paneProps.height);
+    return static_cast<float>(viewArea.width)
+         / static_cast<float>(viewArea.height);
 }
 
 SplitPane::Builder&
-SplitPane::Builder::withPaneProps(PaneProps paneProps) {
-    impl->setPaneProps(paneProps);
+SplitPane::Builder::withPaneProps(ViewArea viewArea) {
+    impl->setPaneProps(viewArea);
     return (*this);
 }
 

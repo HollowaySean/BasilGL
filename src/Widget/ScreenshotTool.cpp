@@ -53,10 +53,9 @@ void ScreenshotTool::onStop() {
 }
 
 void ScreenshotTool::readyState() {
-    std::optional<ImageCaptureArea> paneArea = std::nullopt;
+    std::optional<ViewArea> paneArea = std::nullopt;
     if (focusPane) {
-        paneArea = std::optional(
-            areaFromPane(focusPane->paneProps));
+        paneArea = std::optional(focusPane->viewArea);
     }
 
     auto runtimeName = fmt::runtime(saveName.c_str());
@@ -88,13 +87,6 @@ void ScreenshotTool::requestCapture() {
     if (state < CaptureState::READY) {
         state = CaptureState::READY;
     }
-}
-
-ImageCaptureArea ScreenshotTool::areaFromPane(PaneProps paneProps) {
-    return ImageCaptureArea {
-        paneProps.width, paneProps.height,
-        paneProps.xOffset, paneProps.yOffset
-    };
 }
 
 void ScreenshotTool::onKeyPress(

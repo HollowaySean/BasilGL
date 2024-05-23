@@ -12,7 +12,7 @@ using basil::DataMessage;
 using basil::Logger;
 using basil::LogLevel;
 using basil::IPane;
-using basil::PaneProps;
+using basil::ViewArea;
 using basil::ProcessState;
 using basil::TestSubscriber;
 using basil::WindowProps;
@@ -50,16 +50,16 @@ TEST_CASE("Window_WindowView_WindowView") { BASIL_LOCK_TEST
 }
 
 TEST_CASE("Window_WindowView_getTopPaneProps") {
-    SECTION("Returns PaneProps with window size.") {
+    SECTION("Returns ViewArea with window size.") {
         WindowView window = WindowView();
 
-        PaneProps paneProps = window.getTopPaneProps();
+        ViewArea viewArea = window.getTopPaneProps();
         WindowProps windowProps = window.windowProps;
 
-        CHECK(paneProps.width == windowProps.width);
-        CHECK(paneProps.height == windowProps.height);
-        CHECK(paneProps.xOffset == 0);
-        CHECK(paneProps.yOffset == 0);
+        CHECK(viewArea.width == windowProps.width);
+        CHECK(viewArea.height == windowProps.height);
+        CHECK(viewArea.xOffset == 0);
+        CHECK(viewArea.yOffset == 0);
     }
 }
 
@@ -122,8 +122,8 @@ TEST_CASE("Window_WindowView_draw") {
     SECTION("Calls draw function on top pane") {
         WindowView window = WindowView();
 
-        PaneProps paneProps = window.getTopPaneProps();
-        s_pt<TestPane> testPane = std::make_shared<TestPane>(paneProps);
+        ViewArea viewArea = window.getTopPaneProps();
+        s_pt<TestPane> testPane = std::make_shared<TestPane>(viewArea);
 
         window.draw();
         CHECK_FALSE(testPane->didDraw);
@@ -137,8 +137,8 @@ TEST_CASE("Window_WindowView_onLoop") {
     SECTION("Calls draw function") {
         WindowView window = WindowView();
 
-        PaneProps paneProps = window.getTopPaneProps();
-        s_pt<TestPane> testPane = std::make_shared<TestPane>(paneProps);
+        ViewArea viewArea = window.getTopPaneProps();
+        s_pt<TestPane> testPane = std::make_shared<TestPane>(viewArea);
 
         CHECK_FALSE(testPane->didDraw);
         window.setTopPane(testPane);
@@ -218,14 +218,14 @@ TEST_CASE("Window_WindowView_onResize") {
     SECTION("Calls resize function on top pane") {
         WindowView window = WindowView();
 
-        PaneProps paneProps = window.getTopPaneProps();
-        s_pt<TestPane> testPane = std::make_shared<TestPane>(paneProps);
+        ViewArea viewArea = window.getTopPaneProps();
+        s_pt<TestPane> testPane = std::make_shared<TestPane>(viewArea);
 
         window.setTopPane(testPane);
 
         window.onResize(50, 25);
-        CHECK(testPane->paneProps.width == 50);
-        CHECK(testPane->paneProps.height == 25);
+        CHECK(testPane->viewArea.width == 50);
+        CHECK(testPane->viewArea.height == 25);
     }
 }
 
@@ -234,7 +234,7 @@ TEST_CASE("Window_WindowView_Builder") { BASIL_LOCK_TEST
         std::string title = "testTitle";
         int width = 54;
         int height = 23;
-        auto pane = std::make_shared<TestPane>(PaneProps());
+        auto pane = std::make_shared<TestPane>(ViewArea());
 
         auto window = WindowView::Builder()
             .withDimensions(width, height)

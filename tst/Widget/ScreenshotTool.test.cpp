@@ -34,7 +34,7 @@ TEST_CASE("Widget_ScreenshotTool_onLoop") { BASIL_LOCK_TEST
 
     SECTION("Dispatches screen capture and returns to idle if ready") {
         auto path = FileTestUtils::setUpTempDir("ScreenshotTool_onLoop_1");
-        std::shared_ptr<IPane> pane = std::make_shared<TestPane>(PaneProps());
+        std::shared_ptr<IPane> pane = std::make_shared<TestPane>(ViewArea());
 
         widget.setSaveDirectory(path.parent_path());
         widget.setSaveFileName(path.stem());
@@ -85,7 +85,7 @@ TEST_CASE("Widget_ScreenshotTool_onKeyPress") {
 }
 
 TEST_CASE("Widget_ScreenshotTool_Builder") {
-    std::shared_ptr<IPane> pane = std::make_shared<TestPane>(PaneProps());
+    std::shared_ptr<IPane> pane = std::make_shared<TestPane>(ViewArea());
 
     auto widget = ScreenshotTool::Builder()
         .withTriggerKey(GLFW_KEY_9)

@@ -91,7 +91,6 @@ class ScreenshotTool : public IBasilWidget,
     void readyState();
     void workingState();
     void onKeyPress(int keyCode, int scancode, int action, int mods);
-    ImageCaptureArea areaFromPane(PaneProps paneProps);
 
     std::shared_ptr<IPane> focusPane = nullptr;
     ImageFileCapture fileCapture;

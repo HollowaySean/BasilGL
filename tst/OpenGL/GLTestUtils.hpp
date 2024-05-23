@@ -9,7 +9,7 @@
 #include "Window/IPane.hpp"
 
 using basil::BasilContextLock;
-using basil::PaneProps;
+using basil::ViewArea;
 
 // Preprocessor definition to lock test
 #define BASIL_LOCK_TEST auto lock = BasilContextLock();
@@ -30,7 +30,7 @@ inline std::filesystem::path invalidPath =
 
 inline const char* validShaderCode = "#version 330 core\nvoid main() {}\0";
 
-inline const PaneProps testPaneProps = {
+inline const ViewArea testViewArea = {
     .width = 200,
     .height = 100,
     .xOffset = 5,

@@ -33,8 +33,8 @@ class SplitPane :   public IPane,
         SplitPane::Orientation orientation
             = SplitPane::Orientation::HORIZONTAL);
 
-    /** @brief Initialize SplitPane with PaneProps and optional orientation. */
-    SplitPane(PaneProps paneProps,
+    /** @brief Initialize SplitPane with ViewArea and optional orientation. */
+    SplitPane(ViewArea viewArea,
         SplitPane::Orientation orientation
             = SplitPane::Orientation::HORIZONTAL);
 
@@ -98,8 +98,8 @@ class SplitPane :   public IPane,
     /** @brief Builder pattern for SplitPane. */
     class Builder : public IBuilder<SplitPane> {
      public:
-        /** @brief Set paneProps struct. */
-        Builder& withPaneProps(PaneProps paneProps);
+        /** @brief Set viewArea struct. */
+        Builder& withPaneProps(ViewArea viewArea);
 
         /** @brief Sets top/left pane. */
         Builder& withFirstPane(std::shared_ptr<IPane> firstPane);

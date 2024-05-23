@@ -9,7 +9,7 @@ using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
 using basil::GLShaderPane;
-using basil::PaneProps;
+using basil::ViewArea;
 using basil::IPane;
 
 template<class T>
@@ -24,7 +24,7 @@ TEST_CASE("OpenGL_GLShaderPane_GLShaderPane") {
         s_p<GLShaderProgram> shaderProgram =
             std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
-        PaneProps props = {
+        ViewArea props = {
             .width = 200,
             .height = 100,
             .xOffset = 10,
@@ -134,7 +134,7 @@ TEST_CASE("OpenGL_GLShaderPane_draw") { BASIL_LOCK_TEST
     s_p<GLShaderProgram> shaderProgram =
         std::make_shared<GLShaderProgram>(vertexShader, fragmentShader);
 
-    PaneProps paneProps = {
+    ViewArea viewArea = {
         .width = 20,
         .height = 40,
         .xOffset = 10,
@@ -142,16 +142,16 @@ TEST_CASE("OpenGL_GLShaderPane_draw") { BASIL_LOCK_TEST
     };
 
     GLShaderPane pane = GLShaderPane(
-        paneProps, shaderProgram);
+        viewArea, shaderProgram);
     pane.draw();
 
     SECTION("Sets viewport size and position") {
         GLint props[4];
         glGetIntegerv(GL_VIEWPORT, props);
-        CHECK(props[0] == paneProps.xOffset);
-        CHECK(props[1] == paneProps.yOffset);
-        CHECK(props[2] == paneProps.width);
-        CHECK(props[3] == paneProps.height);
+        CHECK(props[0] == viewArea.xOffset);
+        CHECK(props[1] == viewArea.yOffset);
+        CHECK(props[2] == viewArea.width);
+        CHECK(props[3] == viewArea.height);
     }
 
     SECTION("Sets current shader active") {

@@ -23,7 +23,6 @@ int main(int argc, char** argv) {
     }
 
     // TODO(sholloway): Fix iResolution not being specific to pane
-    // TODO(sholloway): Standardize PaneProps into ViewArea
 
     std::shared_ptr<basil::IPane> screenshotFocus;
     auto basilApp = basil::BasilApp::Builder()

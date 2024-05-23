@@ -64,8 +64,8 @@ class WindowView :  public IBasilWidget,
     /** @brief Sets top-level pane for window. */
     void setTopPane(std::shared_ptr<IPane> newTopPane);
 
-    /** @returns PaneProps object for top pane. */
-    PaneProps getTopPaneProps();
+    /** @returns ViewArea object for top pane. */
+    ViewArea getTopPaneProps();
 
     /** @brief Update window size & title. */
     void setWindowProps(WindowProps newWindowProps);

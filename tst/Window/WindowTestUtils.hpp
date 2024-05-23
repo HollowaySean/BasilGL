@@ -3,12 +3,12 @@
 #include "Window/IPane.hpp"
 
 using basil::IPane;
-using basil::PaneProps;
+using basil::ViewArea;
 
 class TestPane : public IPane {
  public:
-    explicit TestPane(PaneProps paneProps):
-        IPane(paneProps) {}
+    explicit TestPane(ViewArea viewArea):
+        IPane(viewArea) {}
     void const draw() override {
         didDraw = true;
     }
