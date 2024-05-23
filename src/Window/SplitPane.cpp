@@ -2,17 +2,17 @@
 
 namespace basil {
 
-SplitPane::SplitPane(SplitPaneOrientation orientation) {
+SplitPane::SplitPane(Orientation orientation) {
     settings.orientation = orientation;
-
-    setPaneSizeAsPercentage(50.f);
+    firstPaneExtent = 0;
+    secondPaneExtent = 0;
 }
 
 SplitPane::SplitPane(PaneProps paneProps,
-        SplitPaneOrientation orientation) : IPane(paneProps) {
+        Orientation orientation) : IPane(paneProps) {
     settings.orientation = orientation;
-
-    setPaneSizeAsPercentage(50.f);
+    firstPaneExtent = 0;
+    secondPaneExtent = 0;
 }
 
 void const SplitPane::draw() {
@@ -62,16 +62,16 @@ void SplitPane::setSecondPane(std::shared_ptr<IPane> pane) {
     this->IDataPublisher::subscribe(pane);
 }
 
-void SplitPane::setFixedPane(SplitPaneFixedPane fixedPane) {
+void SplitPane::setFixedPane(SplitPane::FixedPane fixedPane) {
     settings.fixedPane = fixedPane;
     updateSize();
 }
 
 void SplitPane::setPaneSizeInPixels(int extent,
-        std::optional<SplitPaneFixedPane> paneToSet) {
+        std::optional<SplitPane::FixedPane> paneToSet) {
     auto setPane = paneToSet.value_or(settings.fixedPane);
 
-    settings.invariant = SplitPaneInvariant::PIXELS;
+    settings.invariant = SplitPane::Invariant::PIXELS;
     settings.fixedPane = setPane;
     settings.fixedPixels = extent;
 
@@ -79,10 +79,10 @@ void SplitPane::setPaneSizeInPixels(int extent,
 }
 
 void SplitPane::setPaneSizeAsPercentage(float extent,
-        std::optional<SplitPaneFixedPane> paneToSet) {
+        std::optional<SplitPane::FixedPane> paneToSet) {
     auto setPane = paneToSet.value_or(settings.fixedPane);
 
-    settings.invariant = SplitPaneInvariant::PERCENTAGE;
+    settings.invariant = SplitPane::Invariant::PERCENTAGE;
     settings.fixedPane = setPane;
     settings.fixedPercentage = extent;
 
@@ -90,10 +90,10 @@ void SplitPane::setPaneSizeAsPercentage(float extent,
 }
 
 void SplitPane::setPaneAspectRatio(float aspectRatio,
-        std::optional<SplitPaneFixedPane> paneToSet) {
+        std::optional<SplitPane::FixedPane> paneToSet) {
     auto setPane = paneToSet.value_or(settings.fixedPane);
 
-    settings.invariant = SplitPaneInvariant::ASPECT;
+    settings.invariant = SplitPane::Invariant::ASPECT;
     settings.fixedPane = setPane;
     settings.fixedAspect = aspectRatio;
 
@@ -106,21 +106,41 @@ void SplitPane::setGapWidth(int extent) {
     updateSize();
 }
 
-void SplitPane::setOrientation(SplitPaneOrientation orientation) {
+void SplitPane::setOrientation(Orientation orientation) {
     settings.orientation = orientation;
 
     updateSize();
 }
 
+float SplitPane::getFirstPaneSizeAsPercentage() {
+    return 100. * static_cast<float>(firstPaneExtent) / getOnAxisExtent();
+}
+
+float SplitPane::getSecondPaneSizeAsPercentage() {
+    return 100. * static_cast<float>(secondPaneExtent) / getOnAxisExtent();
+}
+
+float SplitPane::getFirstPaneAspectRatio() {
+    return settings.orientation == Orientation::HORIZONTAL
+        ? static_cast<float>(firstPaneExtent) / paneProps.height
+        : static_cast<float>(paneProps.width) / firstPaneExtent;
+}
+
+float SplitPane::getSecondPaneAspectRatio() {
+    return settings.orientation == Orientation::HORIZONTAL
+        ? static_cast<float>(secondPaneExtent) / paneProps.height
+        : static_cast<float>(paneProps.width) / secondPaneExtent;
+}
+
 void SplitPane::updateSize() {
     switch (settings.invariant) {
-        case SplitPaneInvariant::PIXELS:
+        case SplitPane::Invariant::PIXELS:
             updateSizeByPixels();
             break;
-        case SplitPaneInvariant::PERCENTAGE:
+        case SplitPane::Invariant::PERCENTAGE:
             updateSizeByPercentage();
             break;
-        case SplitPaneInvariant::ASPECT:
+        case SplitPane::Invariant::ASPECT:
             updateSizeByAspect();
             break;
     }
@@ -161,18 +181,18 @@ void SplitPane::updateSizeByAspect() {
 
     float totalAspectRatio = getTotalAspect();
     switch (settings.orientation) {
-        case SplitPaneOrientation::HORIZONTAL:
+        case Orientation::HORIZONTAL:
             aspectRatio = (aspectRatio > totalAspectRatio)
                 ? totalAspectRatio : aspectRatio;
             break;
-        case SplitPaneOrientation::VERTICAL:
+        case Orientation::VERTICAL:
             aspectRatio = (aspectRatio < totalAspectRatio)
                 ? totalAspectRatio : aspectRatio;
             break;
     }
 
     unsigned int fixedPaneExtent =
-        (settings.orientation == SplitPaneOrientation::HORIZONTAL)
+        (settings.orientation == Orientation::HORIZONTAL)
             ? getOffAxisExtent() * aspectRatio
             : getOffAxisExtent() / aspectRatio;
     unsigned int nonFixedPaneExtent =
@@ -185,12 +205,12 @@ void SplitPane::updateSizeByAspect() {
 void SplitPane::setPanePropsFromSizes() {
     if (firstPane) {
         switch (settings.orientation) {
-            case SplitPaneOrientation::HORIZONTAL:
+            case Orientation::HORIZONTAL:
                 firstPane->paneProps.width = firstPaneExtent;
                 firstPane->paneProps.height = this->paneProps.height;
                 break;
 
-            case SplitPaneOrientation::VERTICAL:
+            case Orientation::VERTICAL:
                 firstPane->paneProps.width = this->paneProps.width;
                 firstPane->paneProps.height = firstPaneExtent;
                 break;
@@ -205,7 +225,7 @@ void SplitPane::setPanePropsFromSizes() {
 
     if (secondPane) {
         switch (settings.orientation) {
-            case SplitPaneOrientation::HORIZONTAL:
+            case Orientation::HORIZONTAL:
                 secondPane->paneProps.width =
                     secondPaneExtent;
                 secondPane->paneProps.height =
@@ -217,7 +237,7 @@ void SplitPane::setPanePropsFromSizes() {
                     this->paneProps.yOffset;
                 break;
 
-            case SplitPaneOrientation::VERTICAL:
+            case Orientation::VERTICAL:
                 secondPane->paneProps.width =
                     this->paneProps.width;
                 secondPane->paneProps.height =
@@ -238,28 +258,20 @@ void SplitPane::setPanePropsFromSizes() {
 void SplitPane::updateExtents(
         unsigned int fixedPaneExtent, unsigned int nonFixedPaneExtent) {
     switch (settings.fixedPane) {
-        case SplitPaneFixedPane::FIRST:
+        case SplitPane::FixedPane::FIRST:
             firstPaneExtent = fixedPaneExtent;
             secondPaneExtent = nonFixedPaneExtent;
             break;
-        case SplitPaneFixedPane::SECOND:
+        case SplitPane::FixedPane::SECOND:
             firstPaneExtent = nonFixedPaneExtent;
             secondPaneExtent = fixedPaneExtent;
             break;
     }
 }
 
-float SplitPane::getFirstPaneSizeAsPercentage() {
-    return 100. * static_cast<float>(firstPaneExtent) / getOnAxisExtent();
-}
-
-float SplitPane::getSecondPaneSizeAsPercentage() {
-    return 100. * static_cast<float>(secondPaneExtent) / getOnAxisExtent();
-}
-
 unsigned int SplitPane::getOnAxisExtent() {
     unsigned int extent =
-        settings.orientation == SplitPaneOrientation::HORIZONTAL
+        settings.orientation == Orientation::HORIZONTAL
             ? paneProps.width
             : paneProps.height;
     return extent;
@@ -267,7 +279,7 @@ unsigned int SplitPane::getOnAxisExtent() {
 
 unsigned int SplitPane::getOffAxisExtent() {
     unsigned int extent =
-        settings.orientation == SplitPaneOrientation::HORIZONTAL
+        settings.orientation == Orientation::HORIZONTAL
             ? paneProps.height
             : paneProps.width;
     return extent;
@@ -297,13 +309,13 @@ SplitPane::Builder::withSecondPane(std::shared_ptr<IPane> secondPane) {
 }
 
 SplitPane::Builder&
-SplitPane::Builder::withOrientation(SplitPaneOrientation orientation) {
+SplitPane::Builder::withOrientation(Orientation orientation) {
     impl->setOrientation(orientation);
     return (*this);
 }
 
 SplitPane::Builder&
-SplitPane::Builder::withFixedPane(SplitPaneFixedPane fixedPane) {
+SplitPane::Builder::withFixedPane(SplitPane::FixedPane fixedPane) {
     impl->setFixedPane(fixedPane);
     return (*this);
 }

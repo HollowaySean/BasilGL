@@ -31,8 +31,8 @@ inline std::filesystem::path invalidPath =
 inline const char* validShaderCode = "#version 330 core\nvoid main() {}\0";
 
 inline const PaneProps testPaneProps = {
-    .width = 20,
-    .height = 10,
+    .width = 200,
+    .height = 100,
     .xOffset = 5,
     .yOffset = 2
 };

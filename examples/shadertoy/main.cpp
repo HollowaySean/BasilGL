@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
     }
 
     // TODO(sholloway): Fix iResolution not being specific to pane
+    // TODO(sholloway): Standardize PaneProps into ViewArea
 
     std::shared_ptr<basil::IPane> screenshotFocus;
     auto basilApp = basil::BasilApp::Builder()
@@ -41,7 +42,7 @@ int main(int argc, char** argv) {
                 .withSecondPane(ShadertoyImGuiPane::Builder()
                     .build())
                 .withPaneExtentInPixels(200)
-                .withFixedPane(basil::SplitPaneFixedPane::SECOND)
+                .withFixedPane(basil::SplitPane::FixedPane::SECOND)
                 .build())
             .build())
         .withWidget(basil::UniformJSONFileWatcher::Builder()
