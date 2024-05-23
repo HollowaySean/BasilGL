@@ -18,7 +18,7 @@ jobs:
             - name: Configure CMake targets
               run: |
                 echo "Configuring CMake" && \
-                    mkdir build && cd build && cmake ..
+                    mkdir build && cd build && cmake .. && cmake --build . --target Basil_test
             - name: Build target binaries
               run: |
                 echo "Building targets" && \
