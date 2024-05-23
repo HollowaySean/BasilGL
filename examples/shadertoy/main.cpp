@@ -5,11 +5,10 @@
 #include "ShadertoyImGuiPane.hpp"
 
 /**
- * @brief Entry point function.
- *
- * @param argc Argument count
- * @param argv Argument value
- * @return Success code
+ * @brief BasilGL example project which implements a simple version of
+ * Shadertoy, and demonstrates the usage of some of Basil's more useful
+ * widgets. Overview of features can be seen in sidebar upon building and
+ * running the executable.
  */
 int main(int argc, char** argv) {
     auto currentPath = std::filesystem::path(__FILE__).parent_path();
