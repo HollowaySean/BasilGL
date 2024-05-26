@@ -96,10 +96,16 @@ ShaderUniformModel::getTextureSource(const std::string& name) const {
     return std::nullopt;
 }
 
-
 ShaderUniformModel::Builder&
 ShaderUniformModel::Builder::withUniform(GLUniform uniform) {
     this->impl->addUniform(uniform);
+    return (*this);
+}
+
+ShaderUniformModel::Builder&
+ShaderUniformModel::Builder::withTexture(std::shared_ptr<IGLTexture> texture,
+        const std::string& name) {
+    this->impl->addTexture(texture, name);
     return (*this);
 }
 

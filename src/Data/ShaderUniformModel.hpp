@@ -103,6 +103,10 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
      public:
         /** @brief Adds uniform to model */
         Builder& withUniform(GLUniform uniform);
+
+        /** @brief Adds texture to model */
+        Builder& withTexture(std::shared_ptr<IGLTexture> texture,
+            const std::string& name);
     };
 
  private:

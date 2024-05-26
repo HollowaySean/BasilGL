@@ -3,10 +3,9 @@
 #include "File/FileDataLoader.hpp"
 
 using basil::FileDataLoader;
+using basil::GLUniformVector;
 using basil::Logger;
 using basil::LogLevel;
-
-using GLU = basil::GLUniformScalarType;
 
 TEST_CASE("File_FileDataLoader_modelFromJSON") {
     Logger& logger = Logger::get();
@@ -54,22 +53,22 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
 
         auto model = result.value();
         CHECK(model.getUniform("test1").value().value
-            == GLU(0.8f));
+            == GLUniformVector(std::vector<float>({0.8f})));
         CHECK(model.getUniform("test2").value().value
-            == GLU(std::vector<float>({ 0.0f, 456.789f })));
+            == GLUniformVector(std::vector<float>({ 0.0f, 456.789f })));
         CHECK(model.getUniform("test3").value().value
-            == GLU(true));
+            == GLUniformVector(std::vector<bool>({true})));
         CHECK(model.getUniform("test4").value().value
-            == GLU(std::vector<bool>({ false, true })));
+            == GLUniformVector(std::vector<bool>({ false, true })));
         CHECK(model.getUniform("test5").value().value
-            == GLU((unsigned int)(9)));
+            == GLUniformVector(std::vector<uint>({ 9 })));
         CHECK(model.getUniform("test6").value().value
-            == GLU(std::vector<uint>({ 10 })));
+            == GLUniformVector(std::vector<uint>({ 10 })));
 
         CHECK_FALSE(model.getUniform("test7").has_value());
 
-        CHECK(model.getTexture("testTexture").value().texture);
-        CHECK(model.getTexture("testTexture").has_value());
+        REQUIRE(model.getTextureSource("testTexture").has_value());
+        CHECK(model.getTextureSource("testTexture").value());
     }
 }
 

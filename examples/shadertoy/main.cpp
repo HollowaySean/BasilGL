@@ -11,7 +11,6 @@
  * running the executable.
  */
 int main(int argc, char** argv) {
-    basil::Logger::get().setLevel(basil::LogLevel::DEBUG);
     auto currentPath = std::filesystem::path(__FILE__).parent_path();
     auto shaderPath = currentPath / "shaders/test.shadertoy";
     auto jsonPath =   currentPath /  "assets/test.json";
@@ -21,6 +20,8 @@ int main(int argc, char** argv) {
     if (!std::filesystem::exists(screenshotPath)) {
         std::filesystem::create_directories(screenshotPath);
     }
+
+    // TODO(sholloway): Add some effect that uses the mouse
 
     std::shared_ptr<basil::IPane> shaderPane;
     auto basilApp = basil::BasilApp::Builder()
