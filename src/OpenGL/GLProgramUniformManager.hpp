@@ -12,20 +12,28 @@
 
 namespace basil {
 
-// TODO(sholloway): Documentation
+/** @brief Class which manages the caching and setting of OpenGL uniform
+ *  values within a shader program. */
 class GLProgramUniformManager : private IBasilContextConsumer {
  public:
+    /** @brief Initialize GLProgramUniformManager */
     GLProgramUniformManager() : programID(0) {}
 
+    /** @brief Set ID attached to GLShaderProgram */
     void setProgramID(unsigned int programID) {
         this->programID = programID;
     }
 
+    /** @brief Add or change a uniform */
     void setUniform(const GLUniform& uniform);
 
+    /** @brief Add or change a texture uniform
+     *  @note  Pointers to IGLTexture are saved to map to
+     *         prevent easily falling out of scope. */
     void setTextureSource(std::shared_ptr<IGLTexture> texture,
         const GLUniform& uniform);
 
+    /** @brief Update uniforms in shader program based on cache */
     void applyCachedUniforms();
 
 #ifndef TEST_BUILD

@@ -94,7 +94,7 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
     std::optional<std::shared_ptr<IGLTexture>> getTextureSource(
         unsigned int textureID) const;
 
-    // TODO(sholloway): Update documentation
+    /** @brief Returns map of IDs to textures */
     const std::map<unsigned int, std::shared_ptr<IGLTexture>>& getTextures()
         const { return textures; }
 

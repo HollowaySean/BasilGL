@@ -64,11 +64,12 @@ class GLShaderProgram : public IDataSubscriber,
     /** @returns Boolean indicating linking success. */
     bool hasLinkedSuccessfully() { return hasLinked; }
 
-    // TODO(sholloway): Documentation
+    /** @brief Set uniform value in shader. */
     void setUniform(const GLUniform& uniform) {
         uniformManager.setUniform(uniform);
     }
 
+    /** @brief Set texture in shader. */
     void setTextureUniform(std::shared_ptr<IGLTexture> texture,
             const std::string& name) {
         auto uniform = GLUniform(texture, name);
@@ -76,6 +77,7 @@ class GLShaderProgram : public IDataSubscriber,
         uniformManager.setTextureSource(texture, uniform);
     }
 
+    /** @brief Set scalar uniform value in shader. */
     template<GLUniformScalarType T>
     void setScalarUniform(T value, const std::string& name) {
         setUniform(GLUniform(value, name));

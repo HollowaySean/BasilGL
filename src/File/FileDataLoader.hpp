@@ -98,8 +98,7 @@ class FileDataLoader {
             if (value.is_array()) {
                 // Array of values
                 std::vector<T> vector = vectorFromJSONArray<T>(key, value);
-                // TODO(sholloway): Update uniform logic to
-                // match vector/matrix forms
+
                 auto uniform = GLUniform(vector, key);
                 model->addUniform(uniform);
 
