@@ -22,6 +22,8 @@ void GLShaderProgram::compile() {
         ID = glCreateProgram();
         attachShader(vertexShader->getID());
         attachShader(fragmentShader->getID());
+
+        uniformManager.setProgramID(ID);
     }
 
     glLinkProgram(ID);
@@ -47,7 +49,7 @@ void GLShaderProgram::compile() {
         hasLinked = true;
 
         // Restore any previously-applied uniforms
-        applyCachedUniforms();
+        uniformManager.applyCachedUniforms();
     }
 }
 
@@ -95,146 +97,6 @@ void GLShaderProgram::detachShader(GLint shaderID) {
         LogLevel::DEBUG);
 }
 
-GLint GLShaderProgram::getUniformLocation(const std::string& name) {
-    GLint location = glGetUniformLocation(ID, name.c_str());
-    if (location > -1) {
-        errorHistory.erase(name);
-        return location;
-    }
-
-    if (errorHistory.contains(name)) return -1;
-
-    errorHistory.insert(name);
-    logger.log(
-        fmt::format(LOG_UNIFORM_FAILURE, ID, name),
-        LogLevel::DEBUG);
-    return -1;
-}
-
-template<>
-void GLShaderProgram::setUniformAt<bool>(GLint location, bool value) {
-    glProgramUniform1i(ID, location, static_cast<int>(value));
-}
-
-template<>
-void GLShaderProgram::setUniformAt<int>(GLint location, int value) {
-    glProgramUniform1i(ID, location, value);
-}
-
-template<>
-void GLShaderProgram::setUniformAt<uint>(GLint location, uint value) {
-    glProgramUniform1ui(ID, location, value);
-}
-
-template<>
-void GLShaderProgram::setUniformAt<float>(GLint location, float value) {
-    glProgramUniform1f(ID, location, value);
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        bool value1, bool value2) {
-    glProgramUniform2i(ID, location,
-        static_cast<int>(value1), static_cast<int>(value2));
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        bool value1, bool value2, bool value3) {
-    glProgramUniform3i(ID, location, static_cast<int>(value1),
-        static_cast<int>(value2), static_cast<int>(value3));
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        bool value1, bool value2, bool value3, bool value4) {
-    glProgramUniform4i(ID, location,
-        static_cast<int>(value1), static_cast<int>(value2),
-        static_cast<int>(value3), static_cast<int>(value4));
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        int value1, int value2) {
-    glProgramUniform2i(ID, location, value1, value2);
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        int value1, int value2, int value3) {
-    glProgramUniform3i(ID, location, value1, value2, value3);
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        int value1, int value2, int value3, int value4) {
-    glProgramUniform4i(ID, location, value1, value2, value3, value4);
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        uint value1, uint value2) {
-    glProgramUniform2ui(ID, location, value1, value2);
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        uint value1, uint value2, uint value3) {
-    glProgramUniform3ui(ID, location, value1, value2, value3);
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        uint value1, uint value2, uint value3, uint value4) {
-    glProgramUniform4ui(ID, location, value1, value2, value3, value4);
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        float value1, float value2) {
-    glProgramUniform2f(ID, location, value1, value2);
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        float value1, float value2, float value3) {
-    glProgramUniform3f(ID, location, value1, value2, value3);
-}
-
-template<>
-void GLShaderProgram::setUniformAt(GLint location,
-        float value1, float value2, float value3, float value4) {
-    glProgramUniform4f(ID, location, value1, value2, value3, value4);
-}
-
-void GLShaderProgram::addTexture(const std::string& name,
-        std::shared_ptr<IGLTexture> texture) {
-    int textureLocation = texture->getUniformLocation();
-    cacheUniform(name, std::vector({ textureLocation }));
-
-    GLint location = getUniformLocation(name);
-    if (location == -1) return;
-
-    setUniformAt(location, textureLocation);
-
-    // Add texture to vector to prevent it from falling out of scope
-    textures.push_back(texture);
-}
-
-void GLShaderProgram::cacheUniform(
-        const std::string& name, GLUniformVector values) {
-    if (uniformCache.contains(name)) {
-        uniformCache.at(name) = values;
-    } else {
-        uniformCache.emplace(name, values);
-    }
-}
-
-void GLShaderProgram::applyCachedUniforms() {
-    for (auto uniformRecord : uniformCache) {
-        visitUniform(uniformRecord.first, uniformRecord.second);
-    }
-}
 
 void GLShaderProgram::receiveData(const DataMessage& message) {
     auto data = message.getData<ShaderUniformModel>();
@@ -242,30 +104,21 @@ void GLShaderProgram::receiveData(const DataMessage& message) {
     auto model = data.value();
 
     auto uniforms = model.getUniforms();
+    auto textures = model.getTextures();
+
     for (auto pair : uniforms) {
+        auto uniformID = pair.first;
         auto uniform = pair.second;
-        const std::string& name = uniform.name;
 
-        std::visit([&](const auto& value){
-                visitUniform(name, value);
-            }, uniform.value);
+        uniformManager.setUniform(uniform);
+
+        // If uniform is attached to a texture, pass into manager
+        // to keep pointer to texture alive
+        if (textures.contains(uniformID)) {
+            auto texture = textures.at(uniformID);
+            uniformManager.setTextureSource(texture, uniform);
+        }
     }
-
-    auto modelTextures = model.getTextures();
-    for (auto pair : modelTextures) {
-        auto texture = pair.second;
-        addTexture(texture.name, texture.texture);
-    }
-}
-
-void GLShaderProgram::visitUniform(
-        const std::string& name, GLUniformScalar value) {
-    std::visit([&](const auto& value){ setUniform(name, value); }, value);
-}
-
-void GLShaderProgram::visitUniform(
-        const std::string& name, GLUniformVector value) {
-    std::visit([&](const auto& value){ setUniformVector(name, value); }, value);
 }
 
 void GLShaderProgram::destroyShaderProgram() {
@@ -330,41 +183,6 @@ GLShaderProgram::Builder::withVertexShaderFromCode(
 GLShaderProgram::Builder&
 GLShaderProgram::Builder::withDefaultVertexShader() {
     impl->setVertexShader(GLVertexShader::noOpShader());
-    return (*this);
-}
-
-GLShaderProgram::Builder&
-GLShaderProgram::Builder::withTexture(const std::string& name,
-        std::shared_ptr<IGLTexture> texture) {
-    impl->addTexture(name, texture);
-    return (*this);
-}
-
-template<>
-GLShaderProgram::Builder&
-GLShaderProgram::Builder::withUniform(const std::string& name, bool value) {
-    impl->setUniform(name, value);
-    return (*this);
-}
-
-template<>
-GLShaderProgram::Builder&
-GLShaderProgram::Builder::withUniform(const std::string& name, int value) {
-    impl->setUniform(name, value);
-    return (*this);
-}
-
-template<>
-GLShaderProgram::Builder&
-GLShaderProgram::Builder::withUniform(const std::string& name, uint value) {
-    impl->setUniform(name, value);
-    return (*this);
-}
-
-template<>
-GLShaderProgram::Builder&
-GLShaderProgram::Builder::withUniform(const std::string& name, float value) {
-    impl->setUniform(name, value);
     return (*this);
 }
 

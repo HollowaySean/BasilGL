@@ -12,10 +12,9 @@
 #include <Basil/Packages/Context.hpp>
 #include <Basil/Packages/PubSub.hpp>
 
-#include "OpenGL/GLUniform.hpp"
-
+#include "GLProgramUniformManager.hpp"
 #include "GLShader.hpp"
-#include "GLTexture.hpp"
+#include "GLUniform.hpp"
 
 namespace basil {
 
@@ -65,89 +64,19 @@ class GLShaderProgram : public IDataSubscriber,
     /** @returns Boolean indicating linking success. */
     bool hasLinkedSuccessfully() { return hasLinked; }
 
-    /** @brief Adds reference to texture in shader.
-     *
-     *  @param name    Name of texture within shader.
-     *  @param texture Pointer to IGLTexture object */
-    void addTexture(const std::string& name,
-        std::shared_ptr<IGLTexture> texture);
-
-    /** @brief Sets a 1D uniform in shader program.
-     *
-     *  @param name   Name of uniform within shader.
-     *  @param value  Value of uniform. */
-    template<class T>
-    void setUniform(const std::string& name, T value)  {
-        cacheUniform(name, std::vector({ value }));
-
-        GLint location = getUniformLocation(name);
-        if (location == -1) return;
-
-        setUniformAt(location, value);
+    // TODO(sholloway): Documentation
+    void setUniform(const GLUniform& uniform) {
+        uniformManager.setUniform(uniform);
     }
 
-    /** @brief Sets a 2D uniform in shader program.
-     *
-     *  @param name   Name of uniform within shader.
-     *  @param value1 x-value
-     *  @param value2 y-value */
-    template<class T>
-    void setUniform(const std::string& name,
-            T value1, T value2)  {
-        cacheUniform(name, std::vector({ value1, value2 }));
-
-        GLint location = getUniformLocation(name);
-        if (location == -1) return;
-
-        setUniformAt(location, value1, value2);
+    void setTextureUniform(std::shared_ptr<IGLTexture> texture,
+            const std::string& name) {
+        setUniform(GLUniform(texture, name));
     }
 
-    /** @brief Sets a 3D uniform in shader program.
-     *
-     *  @param name   Name of uniform within shader.
-     *  @param value1 x-value
-     *  @param value2 y-value
-     *  @param value3 z-value */
-    template<class T>
-    void setUniform(const std::string& name,
-            T value1, T value2, T value3)  {
-        cacheUniform(name, std::vector({ value1, value2, value3 }));
-
-        GLint location = getUniformLocation(name);
-        if (location == -1) return;
-
-        setUniformAt(location, value1, value2, value3);
-    }
-
-    /** @brief Sets a 4D uniform in shader program.
-     *
-     *  @param name   Name of uniform within shader.
-     *  @param value1 x-value
-     *  @param value2 y-value
-     *  @param value3 z-value
-     *  @param value4 w-value */
-    template<class T>
-    void setUniform(const std::string& name,
-            T value1, T value2, T value3, T value4)  {
-        cacheUniform(name, std::vector({ value1, value2, value3, value4 }));
-
-        GLint location = getUniformLocation(name);
-        if (location == -1) return;
-
-        setUniformAt(location, value1, value2, value3, value4);
-    }
-
-    /** @brief Sets a uniform of 1-4 dimensions in shader program.
-     *
-     *  @param name   Name of uniform within shader.
-     *  @param values Vector of values. */
-    template<class T>
-    void setUniformVector(const std::string& name, std::vector<T> values) {
-        GLint location = getUniformLocation(name);
-        if (location == -1) return;
-
-        cacheUniform(name, static_cast<GLUniformVector>(values));
-        setUniformVectorAt(location, values);
+    template<GLUniformScalarType T>
+    void setScalarUniform(T value, const std::string& name) {
+        setUniform(GLUniform(value, name));
     }
 
     /** @brief Updates shaders and textures from ShaderUniformModel object.
@@ -184,42 +113,23 @@ class GLShaderProgram : public IDataSubscriber,
         Builder& withDefaultVertexShader();
 
         /** @brief Add texture to program. */
-        Builder& withTexture(const std::string& name,
-          std::shared_ptr<IGLTexture> texture);
-
-        /** @brief Set 1D uniform value. */
-        template<class T>
-        Builder& withUniform(const std::string& name, T value);
-
-        /** @brief Set 2D uniform value. */
-        template<class T>
-        Builder& withUniform(const std::string& name,
-                T value1, T value2) {
-            this->impl->setUniform(name, value1, value2);
+        Builder& withTexture(std::shared_ptr<IGLTexture> texture,
+                const std::string& name) {
+            this->impl->setTextureUniform(texture, name);
             return (*this);
         }
 
-        /** @brief Set 3D uniform value. */
-        template<class T>
-        Builder& withUniform(const std::string& name,
-                T value1, T value2, T value3) {
-            this->impl->setUniform(name, value1, value2, value3);
+        /** @brief Set scalar uniform value. */
+        template<GLUniformScalarType T>
+        Builder& withScalarUniform(T value,
+                const std::string& name) {
+            this->impl->setScalarUniform(value, name);
             return (*this);
         }
 
-        /** @brief Set 4D uniform value. */
-        template<class T>
-        Builder& withUniform(const std::string& name,
-                T value1, T value2, T value3, T value4) {
-            this->impl->setUniform(name, value1, value2, value3, value4);
-            return (*this);
-        }
-
-        /** @brief Set 1D-4D uniform value. */
-        template<class T>
-        Builder& withUniformVector(const std::string& name,
-                std::vector<T> values) {
-            this->impl->setUniformVector(name, values);
+        /** @brief Set uniform value. */
+        Builder& withUniform(const GLUniform& uniform) {
+            this->impl->setUniform(uniform);
             return (*this);
         }
     };
@@ -237,52 +147,14 @@ class GLShaderProgram : public IDataSubscriber,
 
     void destroyShaderProgram();
 
-    GLint getUniformLocation(const std::string& name);
-
-    template<class T>
-    void setUniformAt(GLint location, T value);
-    template<class T>
-    void setUniformAt(GLint location, T value1, T value2);
-    template<class T>
-    void setUniformAt(GLint location, T value1, T value2, T value3);
-    template<class T>
-    void setUniformAt(GLint location, T value1, T value2, T value3, T value4);
-    template<class T>
-    void setUniformVectorAt(GLint location, std::vector<T> values) {
-        switch (values.size()) {
-            case 1:
-                setUniformAt<T>(location, values[0]);
-                break;
-            case 2:
-                setUniformAt<T>(
-                    location, values[0], values[1]);
-                break;
-            case 3:
-                setUniformAt<T>(
-                    location, values[0], values[1], values[2]);
-                break;
-            default:
-                setUniformAt<T>(
-                    location, values[0], values[1], values[2], values[3]);
-        }
-  }
-
-    void visitUniform(const std::string& name, GLUniformScalar value);
-    void visitUniform(const std::string& name, GLUniformVector value);
-
-    void cacheUniform(const std::string& name, GLUniformVector values);
-    void applyCachedUniforms();
-    std::map<std::string, GLUniformVector> uniformCache;
-    std::set<std::string> errorHistory;
-
     GLuint ID = 0;
+
+    GLProgramUniformManager uniformManager;
 
     std::shared_ptr<GLVertexShader> vertexShader = nullptr;
     std::shared_ptr<GLFragmentShader> fragmentShader = nullptr;
 
     bool hasLinked = false;
-
-    std::vector<std::shared_ptr<IGLTexture>> textures;
 
     LOGGER_FORMAT LOG_LINK_SUCCESS =
         "Shader Program (ID{:02}) - Program linked successfully.";

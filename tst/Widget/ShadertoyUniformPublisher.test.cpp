@@ -5,7 +5,7 @@
 #include "PubSub/PubSubTestUtils.hpp"
 #include "Window/WindowTestUtils.hpp"
 
-using basil::GLUniformType;
+using basil::GLUniformScalarType;
 using basil::ShadertoyUniformPublisher;
 using basil::TestSubscriber;
 using basil::UserInputWatcher;
@@ -40,7 +40,7 @@ TEST_CASE("Widget_ShadertoyUniformPublisher_onLoop") {
             ShadertoyUniformPublisher::MOUSE_UNIFORM_NAME);
 
         CHECK(iMouse.has_value());
-        CHECK(iMouse.value().value == GLUniformType(std::vector<float>({
+        CHECK(iMouse.value().value == GLUniformScalarType(std::vector<float>({
             UserInputWatcher::TEST_MOUSE_X_POSITION,
             UserInputWatcher::TEST_MOUSE_Y_POSITION,
             UserInputWatcher::TEST_MOUSE_X_POSITION,
@@ -67,8 +67,8 @@ TEST_CASE("Widget_ShadertoyUniformPublisher_setFocusPane") {
         auto uniformOpt = widget.uniformModel.getUniform("iResolution");
         REQUIRE(uniformOpt.has_value());
 
-        GLUniformType iResolution = uniformOpt.value().value;
-        CHECK(iResolution == GLUniformType(std::vector<float>({
+        GLUniformScalarType iResolution = uniformOpt.value().value;
+        CHECK(iResolution == GLUniformScalarType(std::vector<float>({
             static_cast<float>(testViewArea.width),
             static_cast<float>(testViewArea.height),
             BASIL_PIXEL_ASPECT_RATIO

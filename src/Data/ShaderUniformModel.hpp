@@ -4,11 +4,11 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 
 #include <Basil/Packages/Builder.hpp>
 
 #include "OpenGL/GLUniform.hpp"
-#include "OpenGL/GLTextureUniform.hpp"
 
 namespace basil {
 
@@ -17,20 +17,48 @@ namespace basil {
 class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
  public:
     /** @brief Add uniform to model
-     *  @param value        Value of uniform
-     *  @param uniformName  Name to use in shader
+     *  @param uniform      GLUniform struct
      *  @returns            UID for string-less lookup */
-    unsigned int addUniformValue(
-        GLUniformType value,
-        const std::string& uniformName);
+    unsigned int addUniform(GLUniform uniform);
+
+    /** @brief Updates uniform in model
+     *  @param uniform      New GLUniform
+     *  @param uniformID    ID of uniform to set
+     *  @returns            Whether uniform with ID was found */
+    bool setUniform(
+        GLUniform uniform, unsigned int uniformID);
 
     /** @brief Updates uniform in model
      *  @param value        New value
      *  @param uniformID    ID of uniform to set
      *  @returns            Whether uniform with ID was found */
+    template<GLUniformVectorType T>
     bool setUniformValue(
-        GLUniformType value,
-        unsigned int uniformID);
+            T value, unsigned int uniformID) {
+        if (uniforms.contains(uniformID)) {
+            uniforms.at(uniformID).value = value;
+            uniforms.at(uniformID).length = value.size();
+            return true;
+        }
+
+        return false;
+    }
+
+    /** @brief Updates uniform in model
+     *  @param value        New value
+     *  @param uniformID    ID of uniform to set
+     *  @returns            Whether uniform with ID was found */
+    template<GLUniformScalarType T>
+    bool setUniformValue(
+            T value, unsigned int uniformID) {
+        if (uniforms.contains(uniformID)) {
+            uniforms.at(uniformID).value = std::vector<T>({value});
+            uniforms.at(uniformID).length = 1;
+            return true;
+        }
+
+        return false;
+    }
 
     /** @brief Gets value of uniform with identifier, if found */
     std::optional<GLUniform> getUniform(
@@ -58,36 +86,30 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
     bool setTextureSource(std::shared_ptr<IGLTexture> texture,
         unsigned int textureID);
 
-    /** @brief Gets value of texture with identifier, if found */
-    std::optional<GLTextureUniform> getTexture(
+    /** @brief Gets texture object with name, if found */
+    std::optional<std::shared_ptr<IGLTexture>> getTextureSource(
         const std::string& textureName) const;
 
-    /** @brief Gets value of texture with ID, if found */
-    std::optional<GLTextureUniform> getTexture(
+    /** @brief Gets texture object with ID, if found */
+    std::optional<std::shared_ptr<IGLTexture>> getTextureSource(
         unsigned int textureID) const;
 
-    /** @returns Reference to map containing all textures in model */
-    const std::map<unsigned int, GLTextureUniform>& getTextures()
+    // TODO(sholloway): Update documentation
+    const std::map<unsigned int, std::shared_ptr<IGLTexture>>& getTextures()
         const { return textures; }
 
     /** @brief Builder pattern for ShaderUniformModel */
     class Builder : public IBuilder<ShaderUniformModel> {
      public:
         /** @brief Adds uniform to model */
-        Builder& withUniform(
-            GLUniformType value, const std::string& name);
-
-        /** @brief Adds texture to model */
-        Builder& withTexture(
-            std::shared_ptr<IGLTexture> texture, const std::string& name);
+        Builder& withUniform(GLUniform uniform);
     };
 
  private:
     std::map<std::string, unsigned int> uniformIDs;
     std::map<unsigned int, GLUniform> uniforms;
+    std::map<unsigned int, std::shared_ptr<IGLTexture>> textures;
 
-    std::map<std::string, unsigned int> textureIDs;
-    std::map<unsigned int, GLTextureUniform> textures;
     static inline unsigned int nextID = 0;
 };
 

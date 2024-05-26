@@ -6,7 +6,7 @@ using basil::FileDataLoader;
 using basil::Logger;
 using basil::LogLevel;
 
-using GLU = basil::GLUniformType;
+using GLU = basil::GLUniformScalarType;
 
 TEST_CASE("File_FileDataLoader_modelFromJSON") {
     Logger& logger = Logger::get();

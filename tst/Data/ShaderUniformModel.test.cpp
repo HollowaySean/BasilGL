@@ -6,7 +6,7 @@
 #include "OpenGL/GLUniform.hpp"
 #include "OpenGL/GLTexture.hpp"
 
-using basil::GLUniformType;
+using basil::GLUniformScalarType;
 using basil::IGLTexture;
 using basil::GLTexture1D;
 using basil::GLTexture2D;
@@ -25,13 +25,13 @@ TEST_CASE("Data_ShaderUniformModel_addUniformValue") {
         CHECK(dataModel.getUniforms().size() == 4);
 
         CHECK(dataModel.getUniform("myBool").value().value
-            == GLUniformType(true));
+            == GLUniformScalarType(true));
         CHECK(dataModel.getUniform("myFloat").value().value
-            == GLUniformType(1.5f));
+            == GLUniformScalarType(1.5f));
         CHECK(dataModel.getUniform("myInt").value().value
-            == GLUniformType(-15));
+            == GLUniformScalarType(-15));
         CHECK(dataModel.getUniform("myUint").value().value
-            == GLUniformType(2));
+            == GLUniformScalarType(2));
     }
 }
 
@@ -49,13 +49,13 @@ TEST_CASE("Data_ShaderUniformModel_setUniformValue") {
 
     SECTION("Updates uniform values") {
         CHECK(dataModel.getUniform(boolID).value().value
-            == GLUniformType(true));
+            == GLUniformScalarType(true));
         CHECK(dataModel.getUniform(floatID).value().value
-            == GLUniformType(1.5f));
+            == GLUniformScalarType(1.5f));
         CHECK(dataModel.getUniform(intID).value().value
-            == GLUniformType(-15));
+            == GLUniformScalarType(-15));
         CHECK(dataModel.getUniform(uintID).value().value
-            == GLUniformType(2));
+            == GLUniformScalarType(2));
     }
 
     SECTION("Returns true if uniform exists") {
@@ -162,6 +162,6 @@ TEST_CASE("Data_ShaderUniformModel_Builder") {
 
         CHECK(model->getUniform("myFloat").has_value());
         CHECK(model->getUniform("myFloat").value().value
-            == GLUniformType(1.5f));
+            == GLUniformScalarType(1.5f));
     }
 }

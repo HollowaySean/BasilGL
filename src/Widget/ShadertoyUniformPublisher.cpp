@@ -22,16 +22,16 @@ void ShadertoyUniformPublisher::onStart() {
 }
 
 void ShadertoyUniformPublisher::initializeUniforms() {
-    resolutionID =  uniformModel.addUniformValue(
-        std::vector<float>({0., 0., 0.}), RESOLUTION_UNIFORM_NAME);
-    mouseID =       uniformModel.addUniformValue(
-        std::vector<float>({0., 0., 0., 0.}), MOUSE_UNIFORM_NAME);
-    timeID =        uniformModel.addUniformValue(
-        0.f, TIME_UNIFORM_NAME);
-    deltaTimeID =   uniformModel.addUniformValue(
-        0.f, DELTATIME_UNIFORM_NAME);
-    frameRateID =   uniformModel.addUniformValue(
-        0, FRAMERATE_UNIFORM_NAME);
+    resolutionID =  uniformModel.addUniform(
+        GLUniform(std::vector<float>({0., 0., 0.}), RESOLUTION_UNIFORM_NAME));
+    mouseID =       uniformModel.addUniform(
+        GLUniform(std::vector<float>({0., 0., 0., 0.}), MOUSE_UNIFORM_NAME));
+    timeID =        uniformModel.addUniform(
+        GLUniform(0.f, TIME_UNIFORM_NAME));
+    deltaTimeID =   uniformModel.addUniform(
+        GLUniform(0.f, DELTATIME_UNIFORM_NAME));
+    frameRateID =   uniformModel.addUniform(
+        GLUniform(0, FRAMERATE_UNIFORM_NAME));
 }
 
 void ShadertoyUniformPublisher::onLoop() {

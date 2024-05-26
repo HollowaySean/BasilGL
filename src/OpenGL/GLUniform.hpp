@@ -1,8 +1,11 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <variant>
 #include <vector>
+
+#include "GLTexture.hpp"
 
 namespace basil {
 
@@ -11,36 +14,61 @@ using GLUniformScalar = std::variant<bool, float, int, uint>;
 
 /** @brief Supported vector types for OpenGL uniforms */
 using GLUniformVector = std::variant<
-        std::vector<bool>, std::vector<float>,
-        std::vector<int>,  std::vector<uint>
+        std::vector<bool>,
+        std::vector<float>,
+        std::vector<int>,
+        std::vector<uint>
     >;
 
-/** @brief Union of supported types for OpenGL uniforms */
-using GLUniformType = std::variant<
-        bool, float, int, uint,
-        std::vector<bool>, std::vector<float>,
-        std::vector<int>,  std::vector<uint>
-    >;
+template<typename T>
+concept GLUniformScalarType =
+    std::is_convertible_v<std::vector<T>, GLUniformVector>;
 
-/** @brief Struct which contains value and name of OpenGL uniform */
+template<typename T>
+concept GLUniformVectorType =
+    std::is_convertible_v<T, GLUniformVector>;
+
+template<typename T>
+concept GLUniformType =
+    GLUniformScalarType<T> || GLUniformVectorType<T>;
+
+// TODO(sholloway): Documentation
+// TODO(sholloway): Refactor to include matrix dimensions
+// TODO(sholloway): Refactor GLShaderProgram
 struct GLUniform {
- public:
-    /** @brief Create new struct with data for OpenGL uniform */
-    GLUniform(
-        GLUniformType value, const std::string& name, unsigned int ID)
-            : value(value), name(name), uniformID(ID) {}
+    template<GLUniformVectorType T>
+    GLUniform(T vectorValue,
+            const std::string& name,
+            unsigned int count = 1,
+            unsigned int length = 0,
+            unsigned int width = 1) :
+                value(vectorValue),
+                name(name),
+                count(count),
+                length(length),
+                width(width) {
+        if (length == 0) {
+            length = vectorValue.size();
+        }
+    }
 
-    /** @brief Data type which can be used in OpenGL uniform */
-    GLUniformType value;
+    template<GLUniformScalarType T>
+    GLUniform(T scalarValue,
+        const std::string& name)
+        : GLUniform(std::vector<T>({scalarValue}), name, 1, 1, 1) {}
+
+    GLUniform(std::shared_ptr<IGLTexture> texture,
+        const std::string& name)
+        : GLUniform(texture->getUniformLocation(), name) {}
+
+    GLUniformVector value;
 
     /** @brief Name used in OpenGL shader program */
     std::string name;
 
-    /** @returns UID of uniform, assigned by ShaderUniformModel */
-    unsigned int getID() { return uniformID; }
-
- private:
-    const unsigned int uniformID;
+    unsigned int length;
+    unsigned int width;
+    unsigned int count;
 };
 
 }   // namespace basil
