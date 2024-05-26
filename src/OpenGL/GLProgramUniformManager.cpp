@@ -7,11 +7,7 @@ namespace basil {
 void GLProgramUniformManager::setUniform(
         const GLUniform& uniform) {
     cacheUniform(uniform);
-
-    int location = getUniformLocation(uniform.name);
-    if (location == -1) return;
-
-    setUniformAt(uniform, location);
+    setUniformWithoutCache(uniform);
 }
 
 void GLProgramUniformManager::setTextureSource(
@@ -26,8 +22,16 @@ void GLProgramUniformManager::setTextureSource(
 
 void GLProgramUniformManager::applyCachedUniforms() {
     for (auto uniform : uniformCache) {
-        setUniform(uniform.second);
+        setUniformWithoutCache(uniform.second);
     }
+}
+
+void GLProgramUniformManager::setUniformWithoutCache(
+        const GLUniform& uniform) {
+    int location = getUniformLocation(uniform.name);
+    if (location == -1) return;
+
+    setUniformAt(uniform, location);
 }
 
 int GLProgramUniformManager::getUniformLocation(
@@ -96,14 +100,6 @@ void GLProgramUniformManager::setUniformVectorOrMatrix<std::vector<float>>(
             glProgramUniformMatrix4fv(
                 programID, location, count, false, value.data());
             break;
-        default:
-        case 5:   // width: 2, length 1
-        case 9:   // width: 3, length 1
-        case 10:  // width: 3, length 2
-        case 13:  // width: 4, length 1
-        case 14:  // width: 4, length 2
-        case 15:  // width: 4, length 3
-            break;
     }
 }
 
@@ -127,8 +123,6 @@ void GLProgramUniformManager::setUniformVectorOrMatrix<std::vector<int>>(
         case 4:
             glProgramUniform4iv(
                 programID, location, count, value.data());
-            break;
-        default:
             break;
     }
 }
@@ -155,8 +149,6 @@ void GLProgramUniformManager::setUniformVectorOrMatrix
             glProgramUniform4uiv(
                 programID, location, count, value.data());
             break;
-        default:
-            break;
     }
 }
 
@@ -181,8 +173,6 @@ void GLProgramUniformManager::setUniformVectorOrMatrix<std::vector<bool>>(
         case 4:
             glProgramUniform4iv(
                 programID, location, count, intValue.data());
-            break;
-        default:
             break;
     }
 }

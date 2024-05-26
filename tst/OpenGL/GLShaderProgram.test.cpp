@@ -10,73 +10,13 @@ using basil::DataMessage;
 using basil::IGLTexture;
 using basil::Logger;
 using basil::LogLevel;
+using basil::GLProgramUniformManager;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;
 using basil::GLTexture2D;
+using basil::GLUniform;
 using basil::ShaderUniformModel;
-
-// TODO(sholloway): Move to test for new helper class
-// bool    testBool[4]  =  { true, false, true, true };
-// int     testInt[4]   =  { -10, 0, 10, 55 };
-// uint    testUint[4]  =  { 5, 87, 0, 1 };
-// float   testFloat[4] =  { 1.5, 10, 1.876, 0 };
-
-// template<class T, unsigned int N>
-// void verifyUniforms(GLShaderProgram shaderProgram,
-//         const std::string& name, T values[N]) {
-//     switch (N) {
-//         case 1:
-//             shaderProgram.setUniform(name, values[0]);
-//             break;
-//         case 2:
-//             shaderProgram.setUniform(name,
-//                 values[0], values[1]);
-//             break;
-//         case 3:
-//             shaderProgram.setUniform(name,
-//                 values[0], values[1], values[2]);
-//             break;
-//         case 4:
-//             shaderProgram.setUniform(name,
-//                 values[0], values[1], values[2], values[3]);
-//             break;
-//     }
-
-//     GLint location =
-//         glGetUniformLocation(shaderProgram.getID(), name.c_str());
-
-//     T setValue[N];
-//     getUniform<N>(shaderProgram.getID(), location, setValue);
-
-//     for (int i = 0; i < N; i++) {
-//         CHECK(setValue[i] == values[i]);
-//     }
-// }
-
-// template<unsigned int N> void getUniform(
-//         GLint ID, GLint location, bool* returnValue) {
-//     GLint returnValueInt[N];
-//     glGetUniformiv(ID, location, returnValueInt);
-//     for (int i = 0; i < N; i++) {
-//         returnValue[i] = static_cast<bool>(returnValueInt[i]);
-//     }
-// }
-
-// template<unsigned int N> void getUniform(
-//         GLint ID, GLint location, int* returnValue) {
-//     glGetUniformiv(ID, location, returnValue);
-// }
-
-// template<unsigned int N> void getUniform(
-//         GLint ID, GLint location, uint* returnValue) {
-//     glGetUniformuiv(ID, location, returnValue);
-// }
-
-// template<unsigned int N> void getUniform(
-//         GLint ID, GLint location, float* returnValue) {
-//     glGetUniformfv(ID, location, returnValue);
-// }
 
 TEST_CASE("OpenGL_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
     Logger& logger = Logger::get();
@@ -137,27 +77,40 @@ TEST_CASE("OpenGL_GLShaderProgram_use") { BASIL_LOCK_TEST
     }
 }
 
-// TEST_CASE("OpenGL_GLShaderProgram_addTexture") { BASIL_LOCK_TEST
-//     auto vertexShader =
-//         std::make_shared<GLVertexShader>(vertexPath);
-//     auto fragmentShader =
-//         std::make_shared<GLFragmentShader>(fragmentPath);
-//     auto program =
-//         GLShaderProgram(vertexShader, fragmentShader);
+TEST_CASE("OpenGL_GLShaderProgram_setUniform") {
+    auto program = GLShaderProgram();
+    auto uniform = GLUniform(15.5f, "myFloat");
+    GLProgramUniformManager& manager = program.uniformManager;
 
-//     auto texture = std::make_shared<GLTexture2D>();
+    SECTION("Adds uniform to uniform manager") {
+        CHECK(manager.uniformCache.size() == 0);
+        program.setUniform(uniform);
+        CHECK(manager.uniformCache.size() == 1);
+    }
+}
 
-//     SECTION("Sets correct uniform location") {
-//         program.addTexture("testTex", texture);
+TEST_CASE("OpenGL_GLShaderProgram_setScalarUniform") {
+    auto program = GLShaderProgram();
+    GLProgramUniformManager& manager = program.uniformManager;
 
-//         GLint location = glGetUniformLocation(program.getID(), "testTex");
+    SECTION("Adds uniform to uniform manager") {
+        CHECK(manager.uniformCache.size() == 0);
+        program.setScalarUniform(15.5f, "myFloat");
+        CHECK(manager.uniformCache.size() == 1);
+    }
+}
 
-//         GLint result;
-//         glGetUniformiv(program.getID(), location, &result);
+TEST_CASE("OpenGL_GLShaderProgram_setTextureUniform") {
+    auto program = GLShaderProgram();
+    auto texture = std::make_shared<GLTexture2D>();
+    GLProgramUniformManager& manager = program.uniformManager;
 
-//         CHECK(result == texture->getUniformLocation());
-//     }
-// }
+    SECTION("Adds texture to uniform manager") {
+        CHECK(manager.textureMap.size() == 0);
+        program.setTextureUniform(texture, "testTex");
+        CHECK(manager.textureMap.size() == 1);
+    }
+}
 
 TEST_CASE("OpenGL_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
     auto vertexShader =
@@ -349,85 +302,33 @@ TEST_CASE("OpenGL_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
 //     }
 // }
 
-// TEST_CASE("OpenGL_GLShaderProgram_receiveData") { BASIL_LOCK_TEST
-//     SECTION("Sets uniforms from model") {
-//         auto vertexShader =
-//             std::make_shared<GLVertexShader>(vertexPath);
-//         auto fragmentShader =
-//             std::make_shared<GLFragmentShader>(fragmentPath);
+TEST_CASE("OpenGL_GLShaderProgram_receiveData") {
+    auto shaderProgram = GLShaderProgram();
+    auto dataModel = ShaderUniformModel();
+    GLProgramUniformManager& manager = shaderProgram.uniformManager;
 
-//         auto texture = std::make_shared<GLTexture2D>();
+    SECTION("Sets uniforms from model") {
+        dataModel.addUniform(GLUniform(true, "myBool"));
+        auto message = DataMessage(dataModel);
 
-//         GLShaderProgram shaderProgram =
-//             GLShaderProgram(vertexShader, fragmentShader);
-//         shaderProgram.use();
+        CHECK(manager.uniformCache.size() == 0);
+        shaderProgram.receiveData(message);
+        CHECK(manager.uniformCache.size() == 1);
+    }
 
-//         auto dataModel = ShaderUniformModel();
+    SECTION("Sets textures from model") {
+        auto texture = std::make_shared<GLTexture2D>();
 
-//         verifyDataModelScalar(&shaderProgram, &dataModel,
-//             "myUniformBool", true);
-//         verifyDataModelScalar(&shaderProgram, &dataModel,
-//             "myUniformFloat", 1.5f);
-//         verifyDataModelScalar(&shaderProgram, &dataModel,
-//             "myUniformInt", -15);
-//         verifyDataModelScalar(&shaderProgram, &dataModel,
-//             "myUniformUnsignedInt", static_cast<uint>(2));
+        dataModel.addTexture(texture, "myTexture");
+        auto message = DataMessage(dataModel);
 
-//         verifyDataModelVector<bool,  1>(&shaderProgram, &dataModel,
-//             "myUniformBool", testBool);
-//         verifyDataModelVector<int,   1>(&shaderProgram, &dataModel,
-//             "myUniformInt",  testInt);
-//         verifyDataModelVector<uint,  1>(&shaderProgram, &dataModel,
-//             "myUniformUnsignedInt", testUint);
-//         verifyDataModelVector<float, 1>(&shaderProgram, &dataModel,
-//             "myUniformFloat", testFloat);
-
-//         verifyDataModelVector<bool,  2>(&shaderProgram, &dataModel,
-//             "myUniformBool2", testBool);
-//         verifyDataModelVector<int,   2>(&shaderProgram, &dataModel,
-//             "myUniformInt2",  testInt);
-//         verifyDataModelVector<uint,  2>(&shaderProgram, &dataModel,
-//             "myUniformUnsignedInt2", testUint);
-//         verifyDataModelVector<float, 2>(&shaderProgram, &dataModel,
-//             "myUniformFloat2", testFloat);
-
-//         verifyDataModelVector<bool,  3>(&shaderProgram, &dataModel,
-//             "myUniformBool3", testBool);
-//         verifyDataModelVector<int,   3>(&shaderProgram, &dataModel,
-//             "myUniformInt3",  testInt);
-//         verifyDataModelVector<uint,  3>(&shaderProgram, &dataModel,
-//             "myUniformUnsignedInt3", testUint);
-//         verifyDataModelVector<float, 3>(&shaderProgram, &dataModel,
-//             "myUniformFloat3", testFloat);
-
-//         verifyDataModelVector<bool,  4>(&shaderProgram, &dataModel,
-//             "myUniformBool4", testBool);
-//         verifyDataModelVector<int,   4>(&shaderProgram, &dataModel,
-//             "myUniformInt4",  testInt);
-//         verifyDataModelVector<uint,  4>(&shaderProgram, &dataModel,
-//             "myUniformUnsignedInt4", testUint);
-//         verifyDataModelVector<float, 4>(&shaderProgram, &dataModel,
-//             "myUniformFloat4", testFloat);
-//     }
-
-//     SECTION("Sets textures from model") {
-//         auto vertexShader =
-//             std::make_shared<GLVertexShader>(vertexPath);
-//         auto fragmentShader =
-//             std::make_shared<GLFragmentShader>(fragmentPath);
-//         GLShaderProgram shaderProgram =
-//             GLShaderProgram(vertexShader, fragmentShader);
-
-//         auto model = ShaderUniformModel();
-//         std::shared_ptr<IGLTexture> texture =
-// std::make_shared<GLTexture2D>();
-//         model.addTexture(texture, "testTex");
-//         auto message = DataMessage(model);
-
-//         shaderProgram.receiveData(message);
-//         CHECK(shaderProgram.textures.at(0) == texture);
-//     }
-// }
+        CHECK(manager.textureMap.size() == 0);
+        CHECK(manager.uniformCache.size() == 0);
+        shaderProgram.receiveData(message);
+        CHECK(manager.textureMap.size() == 1);
+        CHECK(manager.uniformCache.size() == 1);
+    }
+}
 
 TEST_CASE("OpenGL_GLShaderProgram_Builder") { BASIL_LOCK_TEST
     SECTION("Builds shaders from objects") {

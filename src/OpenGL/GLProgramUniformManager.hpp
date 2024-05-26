@@ -28,11 +28,15 @@ class GLProgramUniformManager : private IBasilContextConsumer {
 
     void applyCachedUniforms();
 
+#ifndef TEST_BUILD
+
  private:
+#endif
     unsigned int programID;
 
     int getUniformLocation(const std::string& uniform);
     void setUniformAt(const GLUniform& uniform, int location);
+    void setUniformWithoutCache(const GLUniform& uniform);
 
     template<GLUniformVectorType T>
     void setUniformVectorOrMatrix(T value,

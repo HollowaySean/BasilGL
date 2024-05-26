@@ -71,7 +71,9 @@ class GLShaderProgram : public IDataSubscriber,
 
     void setTextureUniform(std::shared_ptr<IGLTexture> texture,
             const std::string& name) {
-        setUniform(GLUniform(texture, name));
+        auto uniform = GLUniform(texture, name);
+        uniformManager.setUniform(uniform);
+        uniformManager.setTextureSource(texture, uniform);
     }
 
     template<GLUniformScalarType T>

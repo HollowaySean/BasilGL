@@ -48,22 +48,26 @@ TEST_CASE("Data_ShaderUniformModel_setUniformValue") {
     dataModel.setUniformValue(-15, intID);
     dataModel.setUniformValue(2, uintID);
 
+    dataModel.setUniform(GLUniform(-25, "myInt"), intID);
+
     SECTION("Updates uniform values") {
         CHECK(dataModel.getUniform(boolID).value().value
             == GLUniformVector(std::vector<bool>({true})));
         CHECK(dataModel.getUniform(floatID).value().value
             == GLUniformVector(std::vector<float>({1.5f})));
         CHECK(dataModel.getUniform(intID).value().value
-            == GLUniformVector(std::vector<int>({-15})));
+            == GLUniformVector(std::vector<int>({-25})));
         CHECK(dataModel.getUniform(uintID).value().value
             == GLUniformVector(std::vector<int>({2})));
     }
 
     SECTION("Returns true if uniform exists") {
+        CHECK(dataModel.setUniform(GLUniform(true, "myBool"), boolID));
         CHECK(dataModel.setUniformValue(true, boolID));
     }
 
     SECTION("Returns false if uniform does not exist") {
+        CHECK_FALSE(dataModel.setUniform(GLUniform(true, "myBool"), -1));
         CHECK_FALSE(dataModel.setUniformValue(true, -1));
     }
 }
