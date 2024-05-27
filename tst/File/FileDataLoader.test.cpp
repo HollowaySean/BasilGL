@@ -3,7 +3,7 @@
 #include "File/FileDataLoader.hpp"
 
 using basil::FileDataLoader;
-using basil::GLUniformVector;
+using basil::GLUniformDirectVector;
 using basil::Logger;
 using basil::LogLevel;
 
@@ -53,17 +53,17 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
 
         auto model = result.value();
         CHECK(model.getUniform("test1").value().value
-            == GLUniformVector(std::vector<float>({0.8f})));
+            == GLUniformDirectVector(std::vector<float>({0.8f})));
         CHECK(model.getUniform("test2").value().value
-            == GLUniformVector(std::vector<float>({ 0.0f, 456.789f })));
+            == GLUniformDirectVector(std::vector<float>({ 0.0f, 456.789f })));
         CHECK(model.getUniform("test3").value().value
-            == GLUniformVector(std::vector<bool>({true})));
+            == GLUniformDirectVector(std::vector<int>({true})));
         CHECK(model.getUniform("test4").value().value
-            == GLUniformVector(std::vector<bool>({ false, true })));
+            == GLUniformDirectVector(std::vector<int>({ false, true })));
         CHECK(model.getUniform("test5").value().value
-            == GLUniformVector(std::vector<uint>({ 9 })));
+            == GLUniformDirectVector(std::vector<uint>({ 9 })));
         CHECK(model.getUniform("test6").value().value
-            == GLUniformVector(std::vector<uint>({ 10 })));
+            == GLUniformDirectVector(std::vector<uint>({ 10 })));
 
         CHECK_FALSE(model.getUniform("test7").has_value());
 

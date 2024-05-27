@@ -52,8 +52,8 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
     bool setUniformValue(
             T value, unsigned int uniformID) {
         if (uniforms.contains(uniformID)) {
-            uniforms.at(uniformID).value = std::vector<T>({value});
-            uniforms.at(uniformID).length = 1;
+            auto setUniform = uniforms.at(uniformID);
+            setUniform.setValue(value);
             return true;
         }
 

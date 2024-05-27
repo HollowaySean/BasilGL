@@ -7,7 +7,7 @@
 #include "OpenGL/GLTexture.hpp"
 
 using basil::GLUniform;
-using basil::GLUniformVector;
+using basil::GLUniformDirectVector;
 using basil::IGLTexture;
 using basil::GLTexture1D;
 using basil::GLTexture2D;
@@ -26,13 +26,13 @@ TEST_CASE("Data_ShaderUniformModel_addUniform") {
         CHECK(dataModel.getUniforms().size() == 4);
 
         CHECK(dataModel.getUniform("myBool").value().value
-            == GLUniformVector(std::vector<bool>({true})));
+            == GLUniformDirectVector(std::vector<int>({true})));
         CHECK(dataModel.getUniform("myFloat").value().value
-            == GLUniformVector(std::vector<float>({1.5f})));
+            == GLUniformDirectVector(std::vector<float>({1.5f})));
         CHECK(dataModel.getUniform("myInt").value().value
-            == GLUniformVector(std::vector<int>({-15})));
+            == GLUniformDirectVector(std::vector<int>({-15})));
         CHECK(dataModel.getUniform("myUint").value().value
-            == GLUniformVector(std::vector<int>({2})));
+            == GLUniformDirectVector(std::vector<int>({2})));
     }
 }
 
@@ -52,13 +52,13 @@ TEST_CASE("Data_ShaderUniformModel_setUniformValue") {
 
     SECTION("Updates uniform values") {
         CHECK(dataModel.getUniform(boolID).value().value
-            == GLUniformVector(std::vector<bool>({true})));
+            == GLUniformDirectVector(std::vector<int>({true})));
         CHECK(dataModel.getUniform(floatID).value().value
-            == GLUniformVector(std::vector<float>({1.5f})));
+            == GLUniformDirectVector(std::vector<float>({1.5f})));
         CHECK(dataModel.getUniform(intID).value().value
-            == GLUniformVector(std::vector<int>({-25})));
+            == GLUniformDirectVector(std::vector<int>({-25})));
         CHECK(dataModel.getUniform(uintID).value().value
-            == GLUniformVector(std::vector<int>({2})));
+            == GLUniformDirectVector(std::vector<int>({2})));
     }
 
     SECTION("Returns true if uniform exists") {
@@ -167,6 +167,6 @@ TEST_CASE("Data_ShaderUniformModel_Builder") {
 
         CHECK(model->getUniform("myFloat").has_value());
         CHECK(model->getUniform("myFloat").value().value
-            == GLUniformVector(std::vector<float>({1.5f})));
+            == GLUniformDirectVector(std::vector<float>({1.5f})));
     }
 }

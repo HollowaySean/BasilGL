@@ -1,7 +1,6 @@
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
-
 #include <Basil/App.hpp>
+
+#include "CameraController.hpp"
 
 #include "SidePanel.hpp"
 
@@ -26,6 +25,8 @@ int main(int argc, char** argv) {
                     .build())
                 .withSecondPane(SidePanel::Builder().build())
                 .build())
+            .build())
+        .withWidget(CameraController::Builder()
             .build())
         .build();
 

@@ -55,135 +55,109 @@ int GLProgramUniformManager::getUniformLocation(
 }
 
 template<>
-void GLProgramUniformManager::setUniformVectorOrMatrix<std::vector<float>>(
-        std::vector<float> value, unsigned int count, int location,
+void GLProgramUniformManager::setUniformVectorOrMatrix<float*>(
+        float* data, unsigned int count, int location,
         unsigned int length, unsigned int width) {
     unsigned int signature = 4*(width - 1) + length;
     switch (signature) {
         case 1:   // width: 1, length 1
             glProgramUniform1fv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
         case 2:   // width: 1, length 2
             glProgramUniform2fv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
         case 3:   // width: 1, length 3
             glProgramUniform3fv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
         case 4:   // width: 1, length 4
             glProgramUniform4fv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
         case 6:   // width: 2, length 2
             glProgramUniformMatrix2fv(
-                programID, location, count, false, value.data());
+                programID, location, count, false, data);
             break;
         case 7:   // width: 2, length 3
             glProgramUniformMatrix2x3fv(
-                programID, location, count, false, value.data());
+                programID, location, count, false, data);
             break;
         case 8:   // width: 2, length 4
             glProgramUniformMatrix2x4fv(
-                programID, location, count, false, value.data());
+                programID, location, count, false, data);
             break;
         case 11:  // width: 3, length 3
             glProgramUniformMatrix3fv(
-                programID, location, count, false, value.data());
+                programID, location, count, false, data);
             break;
         case 12:  // width: 3, length 4
             glProgramUniformMatrix3x4fv(
-                programID, location, count, false, value.data());
+                programID, location, count, false, data);
             break;
         case 16:  // width: 4, length 4
             glProgramUniformMatrix4fv(
-                programID, location, count, false, value.data());
+                programID, location, count, false, data);
             break;
     }
 }
 
 template<>
-void GLProgramUniformManager::setUniformVectorOrMatrix<std::vector<int>>(
-        std::vector<int> value, unsigned int count, int location,
+void GLProgramUniformManager::setUniformVectorOrMatrix<int*>(
+        int* data, unsigned int count, int location,
         unsigned int length, unsigned int width) {
     switch (length) {
         case 1:
             glProgramUniform1iv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
         case 2:
             glProgramUniform2iv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
         case 3:
             glProgramUniform3iv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
         case 4:
             glProgramUniform4iv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
     }
 }
 
 template<>
-void GLProgramUniformManager::setUniformVectorOrMatrix
-            <std::vector<unsigned int>>(
-        std::vector<unsigned int> value, unsigned int count, int location,
+void GLProgramUniformManager::setUniformVectorOrMatrix<unsigned int*>(
+        unsigned int* data, unsigned int count, int location,
         unsigned int length, unsigned int width) {
     switch (length) {
         case 1:
             glProgramUniform1uiv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
         case 2:
             glProgramUniform2uiv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
         case 3:
             glProgramUniform3uiv(
-                programID, location, count, value.data());
+                programID, location, count, data);
             break;
         case 4:
             glProgramUniform4uiv(
-                programID, location, count, value.data());
-            break;
-    }
-}
-
-template<>
-void GLProgramUniformManager::setUniformVectorOrMatrix<std::vector<bool>>(
-        std::vector<bool> value, unsigned int count, int location,
-        unsigned int length, unsigned int width) {
-    std::vector<int> intValue(value.begin(), value.end());
-    switch (length) {
-        case 1:
-            glProgramUniform1iv(
-                programID, location, count, intValue.data());
-            break;
-        case 2:
-            glProgramUniform2iv(
-                programID, location, count, intValue.data());
-            break;
-        case 3:
-            glProgramUniform3iv(
-                programID, location, count, intValue.data());
-            break;
-        case 4:
-            glProgramUniform4iv(
-                programID, location, count, intValue.data());
+                programID, location, count, data);
             break;
     }
 }
 
 void GLProgramUniformManager::setUniformAt(
         const GLUniform& uniform, int location) {
-    std::visit([&](auto value) {
-        setUniformVectorOrMatrix(value,
+    std::visit([&](auto data) {
+        setUniformVectorOrMatrix(data,
             uniform.count, location,
             uniform.length, uniform.width);
-    }, uniform.value);
+    }, uniform.data);
 }
 
 void GLProgramUniformManager::cacheUniform(const GLUniform& uniform) {

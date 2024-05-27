@@ -46,10 +46,10 @@ class GLProgramUniformManager : private IBasilContextConsumer {
     void setUniformAt(const GLUniform& uniform, int location);
     void setUniformWithoutCache(const GLUniform& uniform);
 
-    template<GLUniformVectorType T>
-    void setUniformVectorOrMatrix(T value,
+    template<GLUniformDirectPointerType T>
+    void setUniformVectorOrMatrix(T data,
         unsigned int count, int location,
-        unsigned int length, unsigned int width) {}
+        unsigned int length, unsigned int width);
 
     void cacheUniform(const GLUniform& uniform);
 
