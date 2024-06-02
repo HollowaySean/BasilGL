@@ -5,18 +5,18 @@
 namespace basil {
 
 void GLProgramUniformManager::setUniform(
-        const GLUniform& uniform) {
+        GLUniform uniform) {
     cacheUniform(uniform);
     setUniformWithoutCache(uniform);
 }
 
 void GLProgramUniformManager::setTextureSource(
-        std::shared_ptr<IGLTexture> texture,
-        const GLUniform& uniform) {
-    if (textureMap.contains(uniform.name)) {
-        textureMap.at(uniform.name) = texture;
+        GLUniformTexture uniform) {
+    std::string name = uniform.getName();
+    if (textureMap.contains(name)) {
+        textureMap.at(name) = uniform.getSource();
     } else {
-        textureMap.emplace(uniform.name, texture);
+        textureMap.emplace(name, uniform.getSource());
     }
 }
 
@@ -27,8 +27,8 @@ void GLProgramUniformManager::applyCachedUniforms() {
 }
 
 void GLProgramUniformManager::setUniformWithoutCache(
-        const GLUniform& uniform) {
-    int location = getUniformLocation(uniform.name);
+        GLUniform uniform) {
+    int location = getUniformLocation(uniform.getName());
     if (location == -1) return;
 
     setUniformAt(uniform, location);
@@ -55,10 +55,12 @@ int GLProgramUniformManager::getUniformLocation(
 }
 
 template<>
-void GLProgramUniformManager::setUniformVectorOrMatrix<float*>(
-        float* data, unsigned int count, int location,
-        unsigned int length, unsigned int width) {
+void GLProgramUniformManager::setUniformVectorOrMatrix<float>(
+        GLUniformSource<float> source,
+        unsigned int width, unsigned int length,
+        unsigned int count, int location) {
     unsigned int signature = 4*(width - 1) + length;
+    float* data = source.data();
     switch (signature) {
         case 1:   // width: 1, length 1
             glProgramUniform1fv(
@@ -104,9 +106,12 @@ void GLProgramUniformManager::setUniformVectorOrMatrix<float*>(
 }
 
 template<>
-void GLProgramUniformManager::setUniformVectorOrMatrix<int*>(
-        int* data, unsigned int count, int location,
-        unsigned int length, unsigned int width) {
+void GLProgramUniformManager::setUniformVectorOrMatrix<int>(
+        GLUniformSource<int> source,
+        unsigned int width, unsigned int length,
+        unsigned int count, int location) {
+    unsigned int signature = 4*(width - 1) + length;
+    int* data = source.data();
     switch (length) {
         case 1:
             glProgramUniform1iv(
@@ -128,9 +133,12 @@ void GLProgramUniformManager::setUniformVectorOrMatrix<int*>(
 }
 
 template<>
-void GLProgramUniformManager::setUniformVectorOrMatrix<unsigned int*>(
-        unsigned int* data, unsigned int count, int location,
-        unsigned int length, unsigned int width) {
+void GLProgramUniformManager::setUniformVectorOrMatrix<unsigned int>(
+        GLUniformSource<unsigned int> source,
+        unsigned int length, unsigned int width,
+        unsigned int count, int location) {
+    unsigned int signature = 4*(width - 1) + length;
+    unsigned int* data = source.data();
     switch (length) {
         case 1:
             glProgramUniform1uiv(
@@ -152,19 +160,21 @@ void GLProgramUniformManager::setUniformVectorOrMatrix<unsigned int*>(
 }
 
 void GLProgramUniformManager::setUniformAt(
-        const GLUniform& uniform, int location) {
-    std::visit([&](auto data) {
-        setUniformVectorOrMatrix(data,
-            uniform.count, location,
-            uniform.length, uniform.width);
-    }, uniform.data);
+        GLUniform uniform, int location) {
+    auto uniformSource = uniform.getSource();
+    std::visit([&](auto source) {
+            setUniformVectorOrMatrix(source,
+                uniform.getWidth(), uniform.getLength(),
+                uniform.getCount(), location); },
+        uniformSource);
 }
 
-void GLProgramUniformManager::cacheUniform(const GLUniform& uniform) {
-    if (uniformCache.contains(uniform.name)) {
-        uniformCache.at(uniform.name) = uniform;
+void GLProgramUniformManager::cacheUniform(GLUniform uniform) {
+    std::string name = uniform.getName();
+    if (uniformCache.contains(name)) {
+        uniformCache.at(name) = uniform;
     } else {
-        uniformCache.emplace(uniform.name, uniform);
+        uniformCache.emplace(name, uniform);
     }
 }
 

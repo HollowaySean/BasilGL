@@ -70,17 +70,15 @@ class GLShaderProgram : public IDataSubscriber,
     }
 
     /** @brief Set texture in shader. */
-    void setTextureUniform(std::shared_ptr<IGLTexture> texture,
-            const std::string& name) {
-        auto uniform = GLUniform(texture, name);
-        uniformManager.setUniform(uniform);
-        uniformManager.setTextureSource(texture, uniform);
+    void setTextureUniform(const GLUniformTexture& textureUniform) {
+        uniformManager.setUniform(textureUniform);
+        // uniformManager.setTextureSource(textureUniform);
     }
 
     /** @brief Set scalar uniform value in shader. */
-    template<GLUniformScalarType T>
+    template<class T>
     void setScalarUniform(T value, const std::string& name) {
-        setUniform(GLUniform(value, name));
+        setUniform(GLUniformScalar<T>(value, name));
     }
 
     /** @brief Updates shaders and textures from ShaderUniformModel object.
@@ -117,14 +115,13 @@ class GLShaderProgram : public IDataSubscriber,
         Builder& withDefaultVertexShader();
 
         /** @brief Add texture to program. */
-        Builder& withTexture(std::shared_ptr<IGLTexture> texture,
-                const std::string& name) {
-            this->impl->setTextureUniform(texture, name);
+        Builder& withTexture(const GLUniformTexture& uniform) {
+            this->impl->setTextureUniform(uniform);
             return (*this);
         }
 
         /** @brief Set scalar uniform value. */
-        template<GLUniformScalarType T>
+        template<class T>
         Builder& withScalarUniform(T value,
                 const std::string& name) {
             this->impl->setScalarUniform(value, name);
@@ -132,6 +129,7 @@ class GLShaderProgram : public IDataSubscriber,
         }
 
         /** @brief Set uniform value. */
+        template<class T>
         Builder& withUniform(const GLUniform& uniform) {
             this->impl->setUniform(uniform);
             return (*this);

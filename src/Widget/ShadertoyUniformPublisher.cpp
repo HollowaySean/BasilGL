@@ -23,15 +23,15 @@ void ShadertoyUniformPublisher::onStart() {
 
 void ShadertoyUniformPublisher::initializeUniforms() {
     resolutionID =  uniformModel.addUniform(
-        GLUniform(std::vector<float>({0., 0., 0.}), RESOLUTION_UNIFORM_NAME));
+        GLUniformVector(std::vector<float>({0., 0., 0.}), RESOLUTION_UNIFORM_NAME));
     mouseID =       uniformModel.addUniform(
-        GLUniform(std::vector<float>({0., 0., 0., 0.}), MOUSE_UNIFORM_NAME));
+        GLUniformVector(std::vector<float>({0., 0., 0., 0.}), MOUSE_UNIFORM_NAME));
     timeID =        uniformModel.addUniform(
-        GLUniform(0.f, TIME_UNIFORM_NAME));
+        GLUniformScalar(0.f, TIME_UNIFORM_NAME));
     deltaTimeID =   uniformModel.addUniform(
-        GLUniform(0.f, DELTATIME_UNIFORM_NAME));
+        GLUniformScalar(0.f, DELTATIME_UNIFORM_NAME));
     frameRateID =   uniformModel.addUniform(
-        GLUniform(0, FRAMERATE_UNIFORM_NAME));
+        GLUniformScalar(0, FRAMERATE_UNIFORM_NAME));
 }
 
 void ShadertoyUniformPublisher::onLoop() {
@@ -59,7 +59,9 @@ void ShadertoyUniformPublisher::setResolution() {
 
     std::vector<float> iResolution =
         { resolution_x, resolution_y, PIXEL_ASPECT_RATIO };
-    uniformModel.setUniformValue(iResolution, resolutionID);
+    // TODO(sholloway): Way to set uniform values
+    uniformModel.setUniform(
+        GLUniformVector(iResolution, RESOLUTION_UNIFORM_NAME), resolutionID);
 }
 
 void ShadertoyUniformPublisher::setMouse() {
@@ -98,20 +100,20 @@ void ShadertoyUniformPublisher::setMouse() {
             (isClicking   ? 1 : -1) * lastStart_x,
             (isClickStart ? 1 : -1) * lastStart_y
         };
-    uniformModel.setUniformValue(iMouse, mouseID);
+    uniformModel.setUniform(GLUniformVector(iMouse, MOUSE_UNIFORM_NAME), mouseID);
 }
 
 void ShadertoyUniformPublisher::setTime() {
     float iTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
         timeModel.timeSinceStart).count() / 1'000'000'000.;
-    uniformModel.setUniformValue(iTime, timeID);
+    uniformModel.setUniform(GLUniformScalar(iTime, TIME_UNIFORM_NAME), timeID);
 
     float iDeltaTime = std::chrono::duration_cast<std::chrono::nanoseconds>(
         timeModel.timeSinceFrame).count() / 1'000'000'000.;
-    uniformModel.setUniformValue(iDeltaTime, deltaTimeID);
+    uniformModel.setUniform(GLUniformScalar(iDeltaTime, DELTATIME_UNIFORM_NAME), deltaTimeID);
 
     float iFrameRate = timeModel.frameRate();
-    uniformModel.setUniformValue(iFrameRate, frameRateID);
+    uniformModel.setUniform(GLUniformScalar(iFrameRate, FRAMERATE_UNIFORM_NAME), frameRateID);
 }
 
 ShadertoyUniformPublisher::Builder&

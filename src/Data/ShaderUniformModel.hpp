@@ -19,46 +19,14 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
     /** @brief Add uniform to model
      *  @param uniform      GLUniform struct
      *  @returns            UID for string-less lookup */
-    unsigned int addUniform(GLUniform uniform);
+    unsigned int addUniform(const GLUniform& uniform);
 
     /** @brief Updates uniform in model
      *  @param uniform      New GLUniform
      *  @param uniformID    ID of uniform to set
      *  @returns            Whether uniform with ID was found */
     bool setUniform(
-        GLUniform uniform, unsigned int uniformID);
-
-    /** @brief Updates uniform in model
-     *  @param value        New value
-     *  @param uniformID    ID of uniform to set
-     *  @returns            Whether uniform with ID was found */
-    template<GLUniformVectorType T>
-    bool setUniformValue(
-            T value, unsigned int uniformID) {
-        if (uniforms.contains(uniformID)) {
-            uniforms.at(uniformID).value = value;
-            uniforms.at(uniformID).length = value.size();
-            return true;
-        }
-
-        return false;
-    }
-
-    /** @brief Updates uniform in model
-     *  @param value        New value
-     *  @param uniformID    ID of uniform to set
-     *  @returns            Whether uniform with ID was found */
-    template<GLUniformScalarType T>
-    bool setUniformValue(
-            T value, unsigned int uniformID) {
-        if (uniforms.contains(uniformID)) {
-            auto setUniform = uniforms.at(uniformID);
-            setUniform.setValue(value);
-            return true;
-        }
-
-        return false;
-    }
+        const GLUniform& uniform, unsigned int uniformID);
 
     /** @brief Gets value of uniform with identifier, if found */
     std::optional<GLUniform> getUniform(

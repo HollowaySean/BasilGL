@@ -59,13 +59,13 @@ class FileDataLoader {
 
     static inline Logger& logger = Logger::get();
 
-    template<GLUniformScalarType T>
+    template<GLUniformType T>
     struct TypeMap {
         static const std::string_view key;
         static bool isCorrectType(json json);
     };
 
-    template<GLUniformScalarType T>
+    template<GLUniformType T>
     static std::vector<T> vectorFromJSONArray(
             const std::string& key, json json) {
         const std::string_view typeKey = TypeMap<T>::key;
@@ -85,7 +85,7 @@ class FileDataLoader {
         return vector;
     }
 
-    template<GLUniformScalarType T>
+    template<GLUniformType T>
     static std::shared_ptr<ShaderUniformModel>
     addUniforms(std::shared_ptr<ShaderUniformModel> model, json json) {
         const std::string_view typeKey = TypeMap<T>::key;
@@ -99,7 +99,7 @@ class FileDataLoader {
                 // Array of values
                 std::vector<T> vector = vectorFromJSONArray<T>(key, value);
 
-                auto uniform = GLUniform(vector, key);
+                auto uniform = GLUniformVector<T>(vector, key, vector.size(), 1);
                 model->addUniform(uniform);
 
                 logger.log(
@@ -110,7 +110,7 @@ class FileDataLoader {
             } else if (TypeMap<T>::isCorrectType(value)) {
                 // Scalar value
                 T scalar = value;
-                auto uniform = GLUniform(scalar, key);
+                auto uniform = GLUniformScalar<T>(scalar, key);
                 model->addUniform(uniform);
 
                 logger.log(

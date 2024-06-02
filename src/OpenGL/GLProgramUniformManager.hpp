@@ -25,13 +25,12 @@ class GLProgramUniformManager : private IBasilContextConsumer {
     }
 
     /** @brief Add or change a uniform */
-    void setUniform(const GLUniform& uniform);
+    void setUniform(GLUniform uniform);
 
     /** @brief Add or change a texture uniform
      *  @note  Pointers to IGLTexture are saved to map to
      *         prevent easily falling out of scope. */
-    void setTextureSource(std::shared_ptr<IGLTexture> texture,
-        const GLUniform& uniform);
+    void setTextureSource(GLUniformTexture uniform);
 
     /** @brief Update uniforms in shader program based on cache */
     void applyCachedUniforms();
@@ -43,15 +42,16 @@ class GLProgramUniformManager : private IBasilContextConsumer {
     unsigned int programID;
 
     int getUniformLocation(const std::string& uniform);
-    void setUniformAt(const GLUniform& uniform, int location);
-    void setUniformWithoutCache(const GLUniform& uniform);
+    void setUniformAt(GLUniform uniform, int location);
+    void setUniformWithoutCache(GLUniform uniform);
 
-    template<GLUniformDirectPointerType T>
-    void setUniformVectorOrMatrix(T data,
-        unsigned int count, int location,
-        unsigned int length, unsigned int width);
+    template<GLUniformSourceType T>
+    void setUniformVectorOrMatrix(
+        GLUniformSource<T> source,
+        unsigned int width, unsigned int length,
+        unsigned int count, int location);
 
-    void cacheUniform(const GLUniform& uniform);
+    void cacheUniform(GLUniform uniform);
 
     std::map<std::string, GLUniform> uniformCache;
     std::map<std::string, std::shared_ptr<IGLTexture>> textureMap;

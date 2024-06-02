@@ -2,22 +2,23 @@
 
 namespace basil {
 
-unsigned int ShaderUniformModel::addUniform(GLUniform uniform) {
-    if (uniformIDs.contains(uniform.name)) {
-        unsigned int ID = uniformIDs.at(uniform.name);
+unsigned int ShaderUniformModel::addUniform(const GLUniform& uniform) {
+    const std::string& name = uniform.getName();
+    if (uniformIDs.contains(name)) {
+        unsigned int ID = uniformIDs.at(name);
         setUniform(uniform, ID);
 
         return ID;
     }
 
     uniforms.emplace(nextID, uniform);
-    uniformIDs.emplace(uniform.name, nextID);
+    uniformIDs.emplace(name, nextID);
 
     return nextID++;
 }
 
 bool ShaderUniformModel::setUniform(
-        GLUniform uniform, unsigned int uniformID) {
+        const GLUniform& uniform, unsigned int uniformID) {
     if (uniforms.contains(uniformID)) {
         uniforms.at(uniformID) = uniform;
         return true;
@@ -55,7 +56,7 @@ unsigned int ShaderUniformModel::addTexture(
         return ID;
     }
 
-    auto uniform = GLUniform(texture, name);
+    auto uniform = GLUniformTexture(texture, name);
     uniforms.emplace(nextID, uniform);
     textures.emplace(nextID, texture);
     uniformIDs.emplace(name, nextID);
@@ -67,8 +68,8 @@ bool ShaderUniformModel::setTextureSource(
         std::shared_ptr<IGLTexture> texture,
         unsigned int uniformID) {
     if (uniforms.contains(uniformID)) {
-        uniforms.at(uniformID).value
-            = std::vector<int>({texture->getUniformLocation()});
+        const std::string& name = uniforms.at(uniformID).getName();
+        uniforms.at(uniformID) = GLUniformTexture(texture, name);
         textures.at(uniformID) = texture;
 
         return true;
