@@ -22,6 +22,7 @@ int main(int argc, char** argv) {
     }
 
     // TODO(sholloway): Add some effect that uses the mouse
+    basil::Logger::get().setLevel(basil::LogLevel::DEBUG);
 
     std::shared_ptr<basil::IPane> shaderPane;
     auto basilApp = basil::BasilApp::Builder()

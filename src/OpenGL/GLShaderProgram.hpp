@@ -65,14 +65,14 @@ class GLShaderProgram : public IDataSubscriber,
     bool hasLinkedSuccessfully() { return hasLinked; }
 
     /** @brief Set uniform value in shader. */
-    void setUniform(const GLUniform& uniform) {
+    void setUniform(std::shared_ptr<GLUniform> uniform) {
         uniformManager.setUniform(uniform);
     }
 
     /** @brief Set texture in shader. */
-    void setTextureUniform(const GLUniformTexture& textureUniform) {
+    void setTextureUniform(std::shared_ptr<GLUniformTexture> textureUniform) {
         uniformManager.setUniform(textureUniform);
-        // uniformManager.setTextureSource(textureUniform);
+        uniformManager.setTextureSource(textureUniform);
     }
 
     /** @brief Set scalar uniform value in shader. */
@@ -115,7 +115,7 @@ class GLShaderProgram : public IDataSubscriber,
         Builder& withDefaultVertexShader();
 
         /** @brief Add texture to program. */
-        Builder& withTexture(const GLUniformTexture& uniform) {
+        Builder& withTexture(std::shared_ptr<GLUniformTexture> uniform) {
             this->impl->setTextureUniform(uniform);
             return (*this);
         }
@@ -130,7 +130,7 @@ class GLShaderProgram : public IDataSubscriber,
 
         /** @brief Set uniform value. */
         template<class T>
-        Builder& withUniform(const GLUniform& uniform) {
+        Builder& withUniform(std::shared_ptr<GLUniform> uniform) {
             this->impl->setUniform(uniform);
             return (*this);
         }

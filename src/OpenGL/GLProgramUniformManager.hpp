@@ -25,12 +25,12 @@ class GLProgramUniformManager : private IBasilContextConsumer {
     }
 
     /** @brief Add or change a uniform */
-    void setUniform(GLUniform uniform);
+    void setUniform(std::shared_ptr<GLUniform> uniform);
 
     /** @brief Add or change a texture uniform
      *  @note  Pointers to IGLTexture are saved to map to
      *         prevent easily falling out of scope. */
-    void setTextureSource(GLUniformTexture uniform);
+    void setTextureSource(std::shared_ptr<GLUniformTexture> uniform);
 
     /** @brief Update uniforms in shader program based on cache */
     void applyCachedUniforms();
@@ -42,8 +42,8 @@ class GLProgramUniformManager : private IBasilContextConsumer {
     unsigned int programID;
 
     int getUniformLocation(const std::string& uniform);
-    void setUniformAt(GLUniform uniform, int location);
-    void setUniformWithoutCache(GLUniform uniform);
+    void setUniformAt(std::shared_ptr<GLUniform> uniform, int location);
+    void setUniformWithoutCache(std::shared_ptr<GLUniform> uniform);
 
     template<GLUniformSourceType T>
     void setUniformVectorOrMatrix(
@@ -51,9 +51,9 @@ class GLProgramUniformManager : private IBasilContextConsumer {
         unsigned int width, unsigned int length,
         unsigned int count, int location);
 
-    void cacheUniform(GLUniform uniform);
+    void cacheUniform(std::shared_ptr<GLUniform> uniform);
 
-    std::map<std::string, GLUniform> uniformCache;
+    std::map<std::string, std::shared_ptr<GLUniform>> uniformCache;
     std::map<std::string, std::shared_ptr<IGLTexture>> textureMap;
     std::set<std::string> errorHistory;
 

@@ -93,8 +93,10 @@ template<GLUniformType T>
 class GLUniformScalar : public GLUniform {
  public:
     GLUniformScalar(T uniformValue, const std::string& uniformName)
-        : value(uniformValue),
-          GLUniform(GLUniformSource<T>(&value), uniformName) {}
+            : value(uniformValue),
+            GLUniform(GLUniformSource<T>(nullptr), uniformName) {
+        this->source = GLUniformSource<T>(&(this->value));
+    }
 
  private:
     T value;
@@ -105,7 +107,9 @@ class GLUniformScalar<bool> : public GLUniform {
  public:
     GLUniformScalar(bool uniformValue, const std::string& uniformName)
         : value(static_cast<unsigned int>(uniformValue)),
-          GLUniform(GLUniformSource<unsigned int>(&value), uniformName) {}
+          GLUniform(GLUniformSource<unsigned int>(nullptr), uniformName) {
+        this->source = GLUniformSource<unsigned int>(&(this->value));
+    }
 
  private:
     unsigned int value;
@@ -117,11 +121,17 @@ class GLUniformVector : public GLUniform {
     GLUniformVector(
             std::vector<T> vector,
             const std::string& name,
-            unsigned int length = 1,
+            unsigned int length = -1,
             unsigned int width = 1)
             : sourceVector(vector),
-              GLUniform(GLUniformSource<T>(sourceVector.data()),
-                name, length, width, 0) {}
+              GLUniform(GLUniformSource<T>(nullptr),
+                name, length, width, 0) {
+        if (this->length == -1) {
+            this->length = sourceVector.size();
+        }
+
+        this->source = GLUniformSource<T>(this->sourceVector.data());
+    }
 
     unsigned int getCount() override {
         return sourceVector.size() / (length * width);
@@ -137,11 +147,17 @@ class GLUniformVector<bool> : public GLUniform {
     GLUniformVector(
             std::vector<bool> vector,
             const std::string& name,
-            unsigned int length = 1,
+            unsigned int length = -1,
             unsigned int width = 1)
             : sourceVector(std::vector<unsigned int>(vector.begin(), vector.end())),
-              GLUniform(GLUniformSource<unsigned int>(sourceVector.data()),
-                name, length, width, 0) {}
+              GLUniform(GLUniformSource<unsigned int>(nullptr),
+                name, length, width, 0) {
+        if (this->length == -1) {
+            this->length = sourceVector.size();
+        }
+
+        this->source = GLUniformSource<unsigned int>(this->sourceVector.data());
+    }
 
     unsigned int getCount() override {
         return sourceVector.size() / (length * width);

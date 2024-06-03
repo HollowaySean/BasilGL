@@ -114,10 +114,12 @@ void GLShaderProgram::receiveData(const DataMessage& message) {
 
         // If uniform is attached to a texture, pass into manager
         // to keep pointer to texture alive
-        // if (textures.contains(uniformID)) {
-        //     auto texture = textures.at(uniformID);
-        //     uniformManager.setTextureSource(texture);
-        // }
+        if (textures.contains(uniformID)) {
+            auto texture = textures.at(uniformID);
+            // TODO(sholloway): Figure out if this is still needed
+            uniformManager.setTextureSource(
+                std::make_shared<GLUniformTexture>(texture, uniform->getName()));
+        }
     }
 }
 

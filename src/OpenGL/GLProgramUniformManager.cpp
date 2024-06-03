@@ -5,18 +5,18 @@
 namespace basil {
 
 void GLProgramUniformManager::setUniform(
-        GLUniform uniform) {
+        std::shared_ptr<GLUniform> uniform) {
     cacheUniform(uniform);
     setUniformWithoutCache(uniform);
 }
 
 void GLProgramUniformManager::setTextureSource(
-        GLUniformTexture uniform) {
-    std::string name = uniform.getName();
+        std::shared_ptr<GLUniformTexture> uniform) {
+    std::string name = uniform->getName();
     if (textureMap.contains(name)) {
-        textureMap.at(name) = uniform.getSource();
+        textureMap.at(name) = uniform->getSource();
     } else {
-        textureMap.emplace(name, uniform.getSource());
+        textureMap.emplace(name, uniform->getSource());
     }
 }
 
@@ -27,8 +27,8 @@ void GLProgramUniformManager::applyCachedUniforms() {
 }
 
 void GLProgramUniformManager::setUniformWithoutCache(
-        GLUniform uniform) {
-    int location = getUniformLocation(uniform.getName());
+        std::shared_ptr<GLUniform> uniform) {
+    int location = getUniformLocation(uniform->getName());
     if (location == -1) return;
 
     setUniformAt(uniform, location);
@@ -160,17 +160,17 @@ void GLProgramUniformManager::setUniformVectorOrMatrix<unsigned int>(
 }
 
 void GLProgramUniformManager::setUniformAt(
-        GLUniform uniform, int location) {
-    auto uniformSource = uniform.getSource();
+        std::shared_ptr<GLUniform> uniform, int location) {
+    auto uniformSource = uniform->getSource();
     std::visit([&](auto source) {
             setUniformVectorOrMatrix(source,
-                uniform.getWidth(), uniform.getLength(),
-                uniform.getCount(), location); },
+                uniform->getWidth(), uniform->getLength(),
+                uniform->getCount(), location); },
         uniformSource);
 }
 
-void GLProgramUniformManager::cacheUniform(GLUniform uniform) {
-    std::string name = uniform.getName();
+void GLProgramUniformManager::cacheUniform(std::shared_ptr<GLUniform> uniform) {
+    std::string name = uniform->getName();
     if (uniformCache.contains(name)) {
         uniformCache.at(name) = uniform;
     } else {

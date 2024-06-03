@@ -2,8 +2,8 @@
 
 namespace basil {
 
-unsigned int ShaderUniformModel::addUniform(const GLUniform& uniform) {
-    const std::string& name = uniform.getName();
+unsigned int ShaderUniformModel::addUniform(std::shared_ptr<GLUniform> uniform) {
+    const std::string& name = uniform->getName();
     if (uniformIDs.contains(name)) {
         unsigned int ID = uniformIDs.at(name);
         setUniform(uniform, ID);
@@ -18,7 +18,7 @@ unsigned int ShaderUniformModel::addUniform(const GLUniform& uniform) {
 }
 
 bool ShaderUniformModel::setUniform(
-        const GLUniform& uniform, unsigned int uniformID) {
+        std::shared_ptr<GLUniform> uniform, unsigned int uniformID) {
     if (uniforms.contains(uniformID)) {
         uniforms.at(uniformID) = uniform;
         return true;
@@ -27,7 +27,9 @@ bool ShaderUniformModel::setUniform(
     return false;
 }
 
-std::optional<GLUniform>
+// TODO(sholloway): Update value?
+
+std::optional<std::shared_ptr<GLUniform>>
 ShaderUniformModel::getUniform(const std::string& uniformName) const {
     if (uniformIDs.contains(uniformName)) {
         unsigned int ID = uniformIDs.at(uniformName);
@@ -37,7 +39,7 @@ ShaderUniformModel::getUniform(const std::string& uniformName) const {
     return std::nullopt;
 }
 
-std::optional<GLUniform>
+std::optional<std::shared_ptr<GLUniform>>
 ShaderUniformModel::getUniform(unsigned int uniformID) const {
     if (uniforms.contains(uniformID)) {
         return std::optional(uniforms.at(uniformID));
@@ -56,7 +58,7 @@ unsigned int ShaderUniformModel::addTexture(
         return ID;
     }
 
-    auto uniform = GLUniformTexture(texture, name);
+    auto uniform = std::make_shared<GLUniformTexture>(texture, name);
     uniforms.emplace(nextID, uniform);
     textures.emplace(nextID, texture);
     uniformIDs.emplace(name, nextID);
@@ -68,8 +70,9 @@ bool ShaderUniformModel::setTextureSource(
         std::shared_ptr<IGLTexture> texture,
         unsigned int uniformID) {
     if (uniforms.contains(uniformID)) {
-        const std::string& name = uniforms.at(uniformID).getName();
-        uniforms.at(uniformID) = GLUniformTexture(texture, name);
+        const std::string& name = uniforms.at(uniformID)->getName();
+        // TODO(sholloway): Update value
+        uniforms.at(uniformID) = std::make_shared<GLUniformTexture>(texture, name);
         textures.at(uniformID) = texture;
 
         return true;
@@ -98,7 +101,7 @@ ShaderUniformModel::getTextureSource(const std::string& name) const {
 }
 
 ShaderUniformModel::Builder&
-ShaderUniformModel::Builder::withUniform(GLUniform uniform) {
+ShaderUniformModel::Builder::withUniform(std::shared_ptr<GLUniform> uniform) {
     this->impl->addUniform(uniform);
     return (*this);
 }
