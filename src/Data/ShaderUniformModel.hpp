@@ -110,47 +110,18 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
     const std::map<unsigned int, std::shared_ptr<GLUniform>>& getUniforms()
         const { return uniforms; }
 
-    /** @brief Add texture object to model
-     *  @param texture      IGLTexture pointer
-     *  @param name         Name to use in shader
-     *  @returns            UID for string-less lookup */
-    unsigned int addTexture(std::shared_ptr<IGLTexture> texture,
-        const std::string& name);
-
-    /** @brief Updates texture in model
-     *  @param texture      IGLTexture pointer
-     *  @param textureID    ID of texture to set
-     *  @returns            Whether texture with ID was found */
-    bool setTextureSource(std::shared_ptr<IGLTexture> texture,
-        unsigned int textureID);
-
-    /** @brief Gets texture object with name, if found */
-    std::optional<std::shared_ptr<IGLTexture>> getTextureSource(
-        const std::string& textureName) const;
-
-    /** @brief Gets texture object with ID, if found */
-    std::optional<std::shared_ptr<IGLTexture>> getTextureSource(
-        unsigned int textureID) const;
-
-    /** @brief Returns map of IDs to textures */
-    const std::map<unsigned int, std::shared_ptr<IGLTexture>>& getTextures()
-        const { return textures; }
-
     /** @brief Builder pattern for ShaderUniformModel */
     class Builder : public IBuilder<ShaderUniformModel> {
      public:
         /** @brief Adds uniform to model */
         Builder& withUniform(std::shared_ptr<GLUniform> uniform);
 
-        /** @brief Adds texture to model */
-        Builder& withTexture(std::shared_ptr<IGLTexture> texture,
-            const std::string& name);
+        // TODO(sholloway): Build GLUniform in builder method
     };
 
  private:
     std::map<std::string, unsigned int> uniformIDs;
     std::map<unsigned int, std::shared_ptr<GLUniform>> uniforms;
-    std::map<unsigned int, std::shared_ptr<IGLTexture>> textures;
 
     static inline unsigned int nextID = 0;
 };

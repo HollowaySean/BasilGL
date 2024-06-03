@@ -69,12 +69,6 @@ class GLShaderProgram : public IDataSubscriber,
         uniformManager.setUniform(uniform);
     }
 
-    /** @brief Set texture in shader. */
-    void setTextureUniform(std::shared_ptr<GLUniformTexture> textureUniform) {
-        uniformManager.setUniform(textureUniform);
-        uniformManager.setTextureSource(textureUniform);
-    }
-
     /** @brief Set scalar uniform value in shader. */
     template<class T>
     void setScalarUniform(T value, const std::string& name) {
@@ -113,12 +107,6 @@ class GLShaderProgram : public IDataSubscriber,
 
         /** @brief Add no-op vertex shader. */
         Builder& withDefaultVertexShader();
-
-        /** @brief Add texture to program. */
-        Builder& withTexture(std::shared_ptr<GLUniformTexture> uniform) {
-            this->impl->setTextureUniform(uniform);
-            return (*this);
-        }
 
         /** @brief Set scalar uniform value. */
         template<class T>

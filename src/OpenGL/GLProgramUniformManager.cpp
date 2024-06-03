@@ -10,18 +10,6 @@ void GLProgramUniformManager::setUniform(
     setUniformWithoutCache(uniform);
 }
 
-void GLProgramUniformManager::setTextureSource(
-        std::shared_ptr<GLUniformTexture> uniform) {
-    return;
-
-    std::string name = uniform->getName();
-    if (textureMap.contains(name)) {
-        textureMap.at(name) = uniform->getSource();
-    } else {
-        textureMap.emplace(name, uniform->getSource());
-    }
-}
-
 void GLProgramUniformManager::applyCachedUniforms() {
     for (auto uniform : uniformCache) {
         setUniformWithoutCache(uniform.second);

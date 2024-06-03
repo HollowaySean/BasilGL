@@ -195,13 +195,13 @@ class GLUniformVector<bool> : public GLUniform {
     std::vector<unsigned int> sourceVector;
 };
 
-class GLUniformTexture : public GLUniformScalar<unsigned int> {
+class GLUniformTexture : public GLUniformScalar<int> {
  public:
     GLUniformTexture(
         std::shared_ptr<IGLTexture> texture,
         const std::string& name)
         : sourceTexture(texture),
-          GLUniformScalar<unsigned int>(
+          GLUniformScalar<int>(
             texture->getUniformLocation(), name) {}
 
     GLUniformTexture(

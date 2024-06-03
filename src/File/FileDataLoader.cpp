@@ -134,7 +134,7 @@ FileDataLoader::addTexture(
             auto texture = GLTexture2D::Builder()
                 .fromFile(path)
                 .build();
-            model->addTexture(texture, key);
+            model->addUniform(texture, key);
         }
     }
 

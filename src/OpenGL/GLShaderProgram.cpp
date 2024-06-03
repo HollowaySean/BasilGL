@@ -104,22 +104,12 @@ void GLShaderProgram::receiveData(const DataMessage& message) {
     auto model = data.value();
 
     auto uniforms = model.getUniforms();
-    auto textures = model.getTextures();
 
     for (auto pair : uniforms) {
         auto uniformID = pair.first;
         auto uniform = pair.second;
 
         uniformManager.setUniform(uniform);
-
-        // If uniform is attached to a texture, pass into manager
-        // to keep pointer to texture alive
-        if (textures.contains(uniformID)) {
-            auto texture = textures.at(uniformID);
-            // TODO(sholloway): Figure out if this is still needed
-            uniformManager.setTextureSource(
-                std::make_shared<GLUniformTexture>(texture, uniform->getName()));
-        }
     }
 }
 

@@ -48,68 +48,9 @@ ShaderUniformModel::getUniform(unsigned int uniformID) const {
     return std::nullopt;
 }
 
-unsigned int ShaderUniformModel::addTexture(
-        std::shared_ptr<IGLTexture> texture,
-        const std::string& name) {
-    if (uniformIDs.contains(name)) {
-        unsigned int ID = uniformIDs.at(name);
-        setTextureSource(texture, ID);
-
-        return ID;
-    }
-
-    auto uniform = std::make_shared<GLUniformTexture>(texture, name);
-    uniforms.emplace(nextID, uniform);
-    textures.emplace(nextID, texture);
-    uniformIDs.emplace(name, nextID);
-
-    return nextID++;
-}
-
-bool ShaderUniformModel::setTextureSource(
-        std::shared_ptr<IGLTexture> texture,
-        unsigned int uniformID) {
-    if (uniforms.contains(uniformID)) {
-        const std::string& name = uniforms.at(uniformID)->getName();
-        // TODO(sholloway): Update value
-        uniforms.at(uniformID) = std::make_shared<GLUniformTexture>(texture, name);
-        textures.at(uniformID) = texture;
-
-        return true;
-    }
-
-    return false;
-}
-
-std::optional<std::shared_ptr<IGLTexture>>
-ShaderUniformModel::getTextureSource(unsigned int uniformID) const {
-    if (textures.contains(uniformID)) {
-        return std::optional(textures.at(uniformID));
-    }
-
-    return std::nullopt;
-}
-
-std::optional<std::shared_ptr<IGLTexture>>
-ShaderUniformModel::getTextureSource(const std::string& name) const {
-    if (uniformIDs.contains(name)) {
-        unsigned int ID = uniformIDs.at(name);
-        return std::optional(textures.at(ID));
-    }
-
-    return std::nullopt;
-}
-
 ShaderUniformModel::Builder&
 ShaderUniformModel::Builder::withUniform(std::shared_ptr<GLUniform> uniform) {
     this->impl->addUniform(uniform);
-    return (*this);
-}
-
-ShaderUniformModel::Builder&
-ShaderUniformModel::Builder::withTexture(std::shared_ptr<IGLTexture> texture,
-        const std::string& name) {
-    this->impl->addTexture(texture, name);
     return (*this);
 }
 
