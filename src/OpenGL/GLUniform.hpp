@@ -36,9 +36,9 @@ class GLUniform {
  public:
     std::string getName() const        { return name;   }
 
-    virtual unsigned int getLength()   { return length; }
-    virtual unsigned int getWidth()    { return width;  }
-    virtual unsigned int getCount()    { return count;  }
+    virtual unsigned int getLength() const  { return length; }
+    virtual unsigned int getWidth()  const  { return width;  }
+    virtual unsigned int getCount()  const  { return count;  }
 
     GLUniformSourceGeneric getSource() { return source; }
 
@@ -66,13 +66,18 @@ class GLUniform {
 template<GLUniformType T>
 class GLUniformPointer : public GLUniform {
  public:
-     GLUniformPointer(
+    GLUniformPointer(
         T* pointer,
         const std::string& name,
         unsigned int length = 1,
         unsigned int width = 1,
         unsigned int count = 1)
         : GLUniform(GLUniformSource<T>(pointer), name, length, width, count) {}
+
+    GLUniformPointer(T* pointer, const GLUniform& base)
+        : GLUniformPointer(pointer,
+            base.getName(), base.getLength(),
+            base.getWidth(), base.getCount()) {}
 };
 
 template<>
@@ -87,6 +92,11 @@ class GLUniformPointer<bool> : public GLUniform {
         : GLUniform(GLUniformSource<unsigned int>(
             reinterpret_cast<unsigned int*>(pointer)),
             name, length, width, count) {}
+
+    GLUniformPointer(bool* pointer, const GLUniform& base)
+        : GLUniformPointer(pointer,
+            base.getName(), base.getLength(),
+            base.getWidth(), base.getCount()) {}
 };
 
 template<GLUniformType T>
@@ -97,6 +107,9 @@ class GLUniformScalar : public GLUniform {
             GLUniform(GLUniformSource<T>(nullptr), uniformName) {
         this->source = GLUniformSource<T>(&(this->value));
     }
+
+    GLUniformScalar(T uniformValue, const GLUniform& base)
+        : GLUniformScalar(uniformValue, base.getName()) {}
 
  private:
     T value;
@@ -110,6 +123,9 @@ class GLUniformScalar<bool> : public GLUniform {
           GLUniform(GLUniformSource<unsigned int>(nullptr), uniformName) {
         this->source = GLUniformSource<unsigned int>(&(this->value));
     }
+
+    GLUniformScalar(bool uniformValue, const GLUniform& base)
+        : GLUniformScalar(uniformValue, base.getName()) {}
 
  private:
     unsigned int value;
@@ -133,7 +149,13 @@ class GLUniformVector : public GLUniform {
         this->source = GLUniformSource<T>(this->sourceVector.data());
     }
 
-    unsigned int getCount() override {
+    GLUniformVector(
+        std::vector<T> vector,
+        const GLUniform& base)
+        : GLUniformVector(vector,
+            base.getName(), base.getLength(), base.getWidth()) {}
+
+    unsigned int getCount() const override {
         return sourceVector.size() / (length * width);
     }
 
@@ -159,7 +181,13 @@ class GLUniformVector<bool> : public GLUniform {
         this->source = GLUniformSource<unsigned int>(this->sourceVector.data());
     }
 
-    unsigned int getCount() override {
+    GLUniformVector(
+        std::vector<bool> vector,
+        const GLUniform& base)
+        : GLUniformVector(vector,
+            base.getName(), base.getLength(), base.getWidth()) {}
+
+    unsigned int getCount() const override {
         return sourceVector.size() / (length * width);
     }
 
@@ -175,6 +203,11 @@ class GLUniformTexture : public GLUniformScalar<unsigned int> {
         : sourceTexture(texture),
           GLUniformScalar<unsigned int>(
             texture->getUniformLocation(), name) {}
+
+    GLUniformTexture(
+        std::shared_ptr<IGLTexture> texture,
+        const GLUniform& base)
+        : GLUniformTexture(texture, base.getName()) {}
 
     std::shared_ptr<IGLTexture> getSource() const { return sourceTexture; }
 

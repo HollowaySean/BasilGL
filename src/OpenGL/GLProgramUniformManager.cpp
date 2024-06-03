@@ -12,6 +12,8 @@ void GLProgramUniformManager::setUniform(
 
 void GLProgramUniformManager::setTextureSource(
         std::shared_ptr<GLUniformTexture> uniform) {
+    return;
+
     std::string name = uniform->getName();
     if (textureMap.contains(name)) {
         textureMap.at(name) = uniform->getSource();
