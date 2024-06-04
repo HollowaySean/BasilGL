@@ -16,6 +16,8 @@ using json = nlohmann::json;
 
 #include "Data/ShaderUniformModel.hpp"
 
+// TODO(sholloway): Extend to handle custom size/count of vector
+
 namespace basil {
 
 /** @brief Static class which loads ShaderUniformModel from JSON file */

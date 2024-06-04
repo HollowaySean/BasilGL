@@ -1,9 +1,7 @@
 #include <catch.hpp>
 
 #include "File/FileDataLoader.hpp"
-
 using basil::FileDataLoader;
-using basil::GLUniformDirectVector;
 using basil::Logger;
 using basil::LogLevel;
 
@@ -41,7 +39,6 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
         auto result = FileDataLoader::modelFromJSON(filePath);
         CHECK(result.has_value());
         CHECK(result.value().getUniforms().size() == 0);
-        CHECK(result.value().getTextures().size() == 0);
         CHECK(logger.getLastLevel() == LogLevel::DEBUG);
     }
 
@@ -52,23 +49,26 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
         REQUIRE(result.has_value());
 
         auto model = result.value();
-        CHECK(model.getUniform("test1").value().value
-            == GLUniformDirectVector(std::vector<float>({0.8f})));
-        CHECK(model.getUniform("test2").value().value
-            == GLUniformDirectVector(std::vector<float>({ 0.0f, 456.789f })));
-        CHECK(model.getUniform("test3").value().value
-            == GLUniformDirectVector(std::vector<int>({true})));
-        CHECK(model.getUniform("test4").value().value
-            == GLUniformDirectVector(std::vector<int>({ false, true })));
-        CHECK(model.getUniform("test5").value().value
-            == GLUniformDirectVector(std::vector<uint>({ 9 })));
-        CHECK(model.getUniform("test6").value().value
-            == GLUniformDirectVector(std::vector<uint>({ 10 })));
+        CHECK(*(reinterpret_cast<float*>(model.getUniform("test1").value()->getData()))
+            == 0.8f);
+        CHECK((reinterpret_cast<float*>(model.getUniform("test2").value()->getData()))[0]
+            == 0.0f);
+        CHECK((reinterpret_cast<float*>(model.getUniform("test2").value()->getData()))[1]
+            == 456.789f);
+        CHECK(*(reinterpret_cast<bool*>(model.getUniform("test3").value()->getData()))
+            == true);
+        CHECK((reinterpret_cast<unsigned int*>(model.getUniform("test4").value()->getData()))[0]
+            == false);
+        CHECK((reinterpret_cast<unsigned int*>(model.getUniform("test4").value()->getData()))[1]
+            == true);
+        CHECK(*(reinterpret_cast<unsigned int*>(model.getUniform("test5").value()->getData()))
+            == 9);
+        CHECK(*(reinterpret_cast<unsigned int*>(model.getUniform("test6").value()->getData()))
+            == 10);
 
         CHECK_FALSE(model.getUniform("test7").has_value());
 
-        REQUIRE(model.getTextureSource("testTexture").has_value());
-        CHECK(model.getTextureSource("testTexture").value());
+        CHECK(model.getUniform("testTexture").has_value());
     }
 }
 
