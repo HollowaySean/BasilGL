@@ -27,8 +27,6 @@ bool ShaderUniformModel::setUniform(
     return false;
 }
 
-// TODO(sholloway): Update value?
-
 std::optional<std::shared_ptr<GLUniform>>
 ShaderUniformModel::getUniform(const std::string& uniformName) const {
     if (uniformIDs.contains(uniformName)) {
@@ -46,12 +44,6 @@ ShaderUniformModel::getUniform(unsigned int uniformID) const {
     }
 
     return std::nullopt;
-}
-
-ShaderUniformModel::Builder&
-ShaderUniformModel::Builder::withUniform(std::shared_ptr<GLUniform> uniform) {
-    this->impl->addUniform(uniform);
-    return (*this);
 }
 
 }  // namespace basil

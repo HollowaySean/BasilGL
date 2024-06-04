@@ -42,6 +42,10 @@ class GLUniform {
 
     GLUniformSourceGeneric getSource() { return source; }
 
+    void* getData() {
+        return std::visit([](auto s){ return reinterpret_cast<void*>(s.data()); }, this->source);
+    }
+
  protected:
     GLUniform(
         GLUniformSourceGeneric uniformSource,
