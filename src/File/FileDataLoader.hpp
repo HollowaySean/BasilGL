@@ -101,7 +101,8 @@ class FileDataLoader {
                 // Array of values
                 std::vector<T> vector = vectorFromJSONArray<T>(key, value);
 
-                auto uniform = std::make_shared<GLUniformVector<T>>(vector, key, vector.size(), 1);
+                auto uniform = std::make_shared<GLUniformVector<T>>(
+                    vector, key, vector.size(), 1);
                 model->addUniform(uniform);
 
                 logger.log(
@@ -112,7 +113,8 @@ class FileDataLoader {
             } else if (TypeMap<T>::isCorrectType(value)) {
                 // Scalar value
                 T scalar = value;
-                auto uniform = std::make_shared<GLUniformScalar<T>>(scalar, key);
+                auto uniform = std::make_shared<GLUniformScalar<T>>(
+                    scalar, key);
                 model->addUniform(uniform);
 
                 logger.log(

@@ -2,7 +2,8 @@
 
 namespace basil {
 
-unsigned int ShaderUniformModel::addUniform(std::shared_ptr<GLUniform> uniform) {
+unsigned int ShaderUniformModel::addUniform(
+        std::shared_ptr<GLUniform> uniform) {
     const std::string& name = uniform->getName();
     if (uniformIDs.contains(name)) {
         unsigned int ID = uniformIDs.at(name);

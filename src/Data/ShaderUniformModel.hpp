@@ -27,7 +27,9 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
      *  @param name         Uniform name in shader
      *  @returns            UID for string-less lookup */
     template<GLUniformType T>
-    unsigned int addUniform(T value, const std::string& name) {
+    unsigned int addUniform(
+            T value,
+            const std::string& name) {
         return addUniform(std::make_shared<GLUniformScalar<T>>(value, name));
     }
 
@@ -37,7 +39,9 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
      *  @param name         Uniform name in shader
      *  @returns            UID for string-less lookup */
     template<GLUniformType T>
-    unsigned int addUniform(T* value, const std::string& name) {
+    unsigned int addUniform(
+            T* value,
+            const std::string& name) {
         return addUniform(std::make_shared<GLUniformPointer<T>>(value, name));
     }
 
@@ -47,7 +51,9 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
      *  @param name         Uniform name in shader
      *  @returns            UID for string-less lookup */
     template<GLUniformType T>
-    unsigned int addUniform(std::vector<T> value, const std::string& name) {
+    unsigned int addUniform(
+            std::vector<T> value,
+            const std::string& name) {
         return addUniform(std::make_shared<GLUniformVector<T>>(value, name));
     }
 
@@ -55,7 +61,9 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
      *  @param value        Pointer to IGLTexture object
      *  @param name         Uniform name in shader
      *  @returns            UID for string-less lookup */
-    unsigned int addUniform(std::shared_ptr<IGLTexture> value, const std::string& name) {
+    unsigned int addUniform(
+            std::shared_ptr<IGLTexture> value,
+            const std::string& name) {
         return addUniform(std::make_shared<GLUniformTexture>(value, name));
     }
 
@@ -118,7 +126,8 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
      *  @param value        Pointer to IGLTexture object
      *  @param uniformID    ID of uniform to set
      *  @returns            Whether uniform with ID was found */
-    bool setUniformValue(std::shared_ptr<IGLTexture> value, unsigned int uniformID) {
+    bool setUniformValue(
+            std::shared_ptr<IGLTexture> value, unsigned int uniformID) {
         if (uniforms.contains(uniformID)) {
             std::shared_ptr<GLUniform> base = uniforms.at(uniformID);
             uniforms.at(uniformID) =
@@ -165,13 +174,17 @@ class ShaderUniformModel : public IBuildable<ShaderUniformModel> {
 
         /** @brief Adds vector uniform to model */
         template<GLUniformType T>
-        Builder& withUniform(std::vector<T> value, const std::string& name) {
+        Builder& withUniform(
+                std::vector<T> value,
+                const std::string& name) {
             this->impl->addUniform(value, name);
             return (*this);
         }
 
         /** @brief Adds texture uniform to model */
-        Builder& withUniform(std::shared_ptr<IGLTexture> value, const std::string& name) {
+        Builder& withUniform(
+                std::shared_ptr<IGLTexture> value,
+                const std::string& name) {
             this->impl->addUniform(value, name);
             return (*this);
         }

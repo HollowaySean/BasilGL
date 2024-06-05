@@ -32,7 +32,9 @@ class GLUniformSource {
 
 /** @brief Variant of underlying OpenGL uniform data types */
 using GLUniformSourceGeneric = std::variant<
-    GLUniformSource<int>, GLUniformSource<unsigned int>, GLUniformSource<float>>;
+    GLUniformSource<int>,
+    GLUniformSource<unsigned int>,
+    GLUniformSource<float>>;
 
 /** @brief Concept restricting to underlying OpenGL uniform data types */
 template<class T>
@@ -59,7 +61,9 @@ class GLUniform {
 
     /** @returns Void pointer to underlying data source */
     void* getData() {
-        return std::visit([](auto s){ return reinterpret_cast<void*>(s.data()); }, this->source);
+        return std::visit([](auto s) {
+                return reinterpret_cast<void*>(s.data());
+            }, this->source);
     }
 
  protected:
@@ -203,8 +207,8 @@ class GLUniformVector : public GLUniform {
             unsigned int length = 0,
             unsigned int width = 1,
             unsigned int count = 0)
-            : sourceVector(vector),
-              GLUniform(GLUniformSource<T>(nullptr), name, length, width, count) {
+        : sourceVector(vector),
+          GLUniform(GLUniformSource<T>(nullptr), name, length, width, count) {
         if (this->length == 0) {
             this->length = sourceVector.size();
         }
@@ -216,8 +220,8 @@ class GLUniformVector : public GLUniform {
      *  @param vector   Vector of uniform values
      *  @param base     Original GLUniform object */
     GLUniformVector(
-        std::vector<T> vector,
-        const GLUniform& base)
+            std::vector<T> vector,
+            const GLUniform& base)
         : GLUniformVector(vector,
             base.getName(), base.getLength(), base.getWidth()) {}
 
@@ -249,8 +253,8 @@ class GLUniformVector<bool> : public GLUniform {
             unsigned int length = 0,
             unsigned int width = 1,
             unsigned int count = 0)
-            : sourceVector(std::vector<int>(vector.begin(), vector.end())),
-              GLUniform(GLUniformSource<int>(nullptr), name, length, width, count) {
+        : sourceVector(std::vector<int>(vector.begin(), vector.end())),
+          GLUniform(GLUniformSource<int>(nullptr), name, length, width, count) {
         if (this->length == 0) {
             this->length = sourceVector.size();
         }

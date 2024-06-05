@@ -103,7 +103,8 @@ void verifyUniforms(GLProgramUniformManager manager, int testCase) {
             fmt::runtime(testData.uniformName), length, "", "");
     }
 
-    auto vector = std::make_shared<GLUniformVector<T>>(testData.data, name, length, width, 1);
+    auto vector = std::make_shared<GLUniformVector<T>>(
+        testData.data, name, length, width, 1);
     manager.setUniform(vector);
 
     GLint location =
@@ -158,8 +159,10 @@ TEST_CASE("OpenGL_GLProgramUniformManager_applyCachedUniforms") {
     auto& manager = program->uniformManager;
     std::string name = "myInt1";
 
-    std::shared_ptr<GLUniform> uniform1 = std::make_shared<GLUniformScalar<int>>(1, name);
-    std::shared_ptr<GLUniform> uniform2 = std::make_shared<GLUniformScalar<int>>(2, name);
+    std::shared_ptr<GLUniform> uniform1 =
+        std::make_shared<GLUniformScalar<int>>(1, name);
+    std::shared_ptr<GLUniform> uniform2 =
+        std::make_shared<GLUniformScalar<int>>(2, name);
 
     SECTION("Updates uniforms using most recent cached version") {
         manager.setUniform(uniform1);

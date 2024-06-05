@@ -49,21 +49,29 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
         REQUIRE(result.has_value());
 
         auto model = result.value();
-        CHECK(*(reinterpret_cast<float*>(model.getUniform("test1").value()->getData()))
+        CHECK(*(reinterpret_cast<float*>(
+            model.getUniform("test1").value()->getData()))
             == 0.8f);
-        CHECK((reinterpret_cast<float*>(model.getUniform("test2").value()->getData()))[0]
+        CHECK((reinterpret_cast<float*>(
+            model.getUniform("test2").value()->getData()))[0]
             == 0.0f);
-        CHECK((reinterpret_cast<float*>(model.getUniform("test2").value()->getData()))[1]
+        CHECK((reinterpret_cast<float*>(
+            model.getUniform("test2").value()->getData()))[1]
             == 456.789f);
-        CHECK(*(reinterpret_cast<bool*>(model.getUniform("test3").value()->getData()))
+        CHECK(*(reinterpret_cast<bool*>(
+            model.getUniform("test3").value()->getData()))
             == true);
-        CHECK((reinterpret_cast<int*>(model.getUniform("test4").value()->getData()))[0]
+        CHECK((reinterpret_cast<int*>(
+            model.getUniform("test4").value()->getData()))[0]
             == false);
-        CHECK((reinterpret_cast<int*>(model.getUniform("test4").value()->getData()))[1]
+        CHECK((reinterpret_cast<int*>(
+            model.getUniform("test4").value()->getData()))[1]
             == true);
-        CHECK(*(reinterpret_cast<unsigned int*>(model.getUniform("test5").value()->getData()))
+        CHECK(*(reinterpret_cast<unsigned int*>(
+            model.getUniform("test5").value()->getData()))
             == 9);
-        CHECK(*(reinterpret_cast<unsigned int*>(model.getUniform("test6").value()->getData()))
+        CHECK(*(reinterpret_cast<unsigned int*>(
+            model.getUniform("test6").value()->getData()))
             == 10);
 
         CHECK_FALSE(model.getUniform("test7").has_value());
