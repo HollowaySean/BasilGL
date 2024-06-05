@@ -69,12 +69,6 @@ class GLShaderProgram : public IDataSubscriber,
         uniformManager.setUniform(uniform);
     }
 
-    /** @brief Set scalar uniform value in shader. */
-    template<class T>
-    void setScalarUniform(T value, const std::string& name) {
-        setUniform(GLUniformScalar<T>(value, name));
-    }
-
     /** @brief Updates shaders and textures from ShaderUniformModel object.
      *  Overridden method from IDataSubscriber base class. */
     void receiveData(const DataMessage& message) override;
@@ -107,14 +101,6 @@ class GLShaderProgram : public IDataSubscriber,
 
         /** @brief Add no-op vertex shader. */
         Builder& withDefaultVertexShader();
-
-        /** @brief Set scalar uniform value. */
-        template<class T>
-        Builder& withScalarUniform(T value,
-                const std::string& name) {
-            this->impl->setScalarUniform(value, name);
-            return (*this);
-        }
 
         /** @brief Set uniform value. */
         template<class T>

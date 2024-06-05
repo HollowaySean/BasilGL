@@ -5,7 +5,6 @@
 #include "PubSub/PubSubTestUtils.hpp"
 #include "Window/WindowTestUtils.hpp"
 
-using basil::GLUniformDirectVector;
 using basil::ShadertoyUniformPublisher;
 using basil::TestSubscriber;
 using basil::UserInputWatcher;
@@ -39,13 +38,15 @@ TEST_CASE("Widget_ShadertoyUniformPublisher_onLoop") {
         auto iMouse = model.getUniform(
             ShadertoyUniformPublisher::MOUSE_UNIFORM_NAME);
 
-        CHECK(iMouse.has_value());
-        CHECK(iMouse.value().value == GLUniformDirectVector(std::vector<float>({
-            UserInputWatcher::TEST_MOUSE_X_POSITION,
-            UserInputWatcher::TEST_MOUSE_Y_POSITION,
-            UserInputWatcher::TEST_MOUSE_X_POSITION,
-            UserInputWatcher::TEST_MOUSE_Y_POSITION
-        })));
+        REQUIRE(iMouse.has_value());
+        CHECK((reinterpret_cast<float*>(iMouse.value()->getData()))[0]
+            == UserInputWatcher::TEST_MOUSE_X_POSITION);
+        CHECK((reinterpret_cast<float*>(iMouse.value()->getData()))[1]
+            == UserInputWatcher::TEST_MOUSE_Y_POSITION);
+        CHECK((reinterpret_cast<float*>(iMouse.value()->getData()))[2]
+            == UserInputWatcher::TEST_MOUSE_X_POSITION);
+        CHECK((reinterpret_cast<float*>(iMouse.value()->getData()))[3]
+            == UserInputWatcher::TEST_MOUSE_Y_POSITION);
     }
 
     SECTION("Publishes data") {
@@ -67,12 +68,12 @@ TEST_CASE("Widget_ShadertoyUniformPublisher_setFocusPane") {
         auto uniformOpt = widget.uniformModel.getUniform("iResolution");
         REQUIRE(uniformOpt.has_value());
 
-        GLUniformDirectVector iResolution = uniformOpt.value().value;
-        CHECK(iResolution == GLUniformDirectVector(std::vector<float>({
-            static_cast<float>(testViewArea.width),
-            static_cast<float>(testViewArea.height),
-            BASIL_PIXEL_ASPECT_RATIO
-        })));
+        CHECK((reinterpret_cast<float*>(uniformOpt.value()->getData()))[0]
+            == testViewArea.width);
+        CHECK((reinterpret_cast<float*>(uniformOpt.value()->getData()))[1]
+            == testViewArea.height);
+        CHECK((reinterpret_cast<float*>(uniformOpt.value()->getData()))[2]
+            == BASIL_PIXEL_ASPECT_RATIO);
     }
 }
 
