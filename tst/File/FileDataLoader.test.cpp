@@ -57,9 +57,9 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
             == 456.789f);
         CHECK(*(reinterpret_cast<bool*>(model.getUniform("test3").value()->getData()))
             == true);
-        CHECK((reinterpret_cast<unsigned int*>(model.getUniform("test4").value()->getData()))[0]
+        CHECK((reinterpret_cast<int*>(model.getUniform("test4").value()->getData()))[0]
             == false);
-        CHECK((reinterpret_cast<unsigned int*>(model.getUniform("test4").value()->getData()))[1]
+        CHECK((reinterpret_cast<int*>(model.getUniform("test4").value()->getData()))[1]
             == true);
         CHECK(*(reinterpret_cast<unsigned int*>(model.getUniform("test5").value()->getData()))
             == 9);

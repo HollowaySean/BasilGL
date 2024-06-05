@@ -7,6 +7,7 @@
 
 #include "GLTexture.hpp"
 
+// TODO(sholloway): Documentation
 namespace basil {
 
 using GLUniformVariant = std::variant<int, unsigned int, float, bool>;
@@ -93,8 +94,8 @@ class GLUniformPointer<bool> : public GLUniform {
         unsigned int length,
         unsigned int width,
         unsigned int count)
-        : GLUniform(GLUniformSource<unsigned int>(
-            reinterpret_cast<unsigned int*>(pointer)),
+        : GLUniform(GLUniformSource<int>(
+            reinterpret_cast<int*>(pointer)),
             name, length, width, count) {}
 
     GLUniformPointer(bool* pointer, const GLUniform& base)
@@ -123,16 +124,16 @@ template<>
 class GLUniformScalar<bool> : public GLUniform {
  public:
     GLUniformScalar(bool uniformValue, const std::string& uniformName)
-        : value(static_cast<unsigned int>(uniformValue)),
-          GLUniform(GLUniformSource<unsigned int>(nullptr), uniformName) {
-        this->source = GLUniformSource<unsigned int>(&(this->value));
+        : value(static_cast<int>(uniformValue)),
+          GLUniform(GLUniformSource<int>(nullptr), uniformName) {
+        this->source = GLUniformSource<int>(&(this->value));
     }
 
     GLUniformScalar(bool uniformValue, const GLUniform& base)
         : GLUniformScalar(uniformValue, base.getName()) {}
 
  private:
-    unsigned int value;
+    int value;
 };
 
 template<GLUniformType T>
@@ -141,12 +142,13 @@ class GLUniformVector : public GLUniform {
     GLUniformVector(
             std::vector<T> vector,
             const std::string& name,
-            unsigned int length = -1,
-            unsigned int width = 1)
+            unsigned int length = 0,
+            unsigned int width = 1,
+            unsigned int count = 0)
             : sourceVector(vector),
               GLUniform(GLUniformSource<T>(nullptr),
-                name, length, width, 0) {
-        if (this->length == -1) {
+                name, length, width, count) {
+        if (this->length == 0) {
             this->length = sourceVector.size();
         }
 
@@ -160,6 +162,7 @@ class GLUniformVector : public GLUniform {
             base.getName(), base.getLength(), base.getWidth()) {}
 
     unsigned int getCount() const override {
+        if (count != 0) return count;
         return sourceVector.size() / (length * width);
     }
 
@@ -173,16 +176,17 @@ class GLUniformVector<bool> : public GLUniform {
     GLUniformVector(
             std::vector<bool> vector,
             const std::string& name,
-            unsigned int length = -1,
-            unsigned int width = 1)
-            : sourceVector(std::vector<unsigned int>(vector.begin(), vector.end())),
-              GLUniform(GLUniformSource<unsigned int>(nullptr),
-                name, length, width, 0) {
-        if (this->length == -1) {
+            unsigned int length = 0,
+            unsigned int width = 1,
+            unsigned int count = 0)
+            : sourceVector(std::vector<int>(vector.begin(), vector.end())),
+              GLUniform(GLUniformSource<int>(nullptr),
+                name, length, width, count) {
+        if (this->length == 0) {
             this->length = sourceVector.size();
         }
 
-        this->source = GLUniformSource<unsigned int>(this->sourceVector.data());
+        this->source = GLUniformSource<int>(this->sourceVector.data());
     }
 
     GLUniformVector(
@@ -192,11 +196,12 @@ class GLUniformVector<bool> : public GLUniform {
             base.getName(), base.getLength(), base.getWidth()) {}
 
     unsigned int getCount() const override {
+        if (count != 0) return count;
         return sourceVector.size() / (length * width);
     }
 
  private:
-    std::vector<unsigned int> sourceVector;
+    std::vector<int> sourceVector;
 };
 
 class GLUniformTexture : public GLUniformScalar<int> {

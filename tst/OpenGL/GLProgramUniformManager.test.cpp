@@ -13,6 +13,8 @@ using basil::GLProgramUniformManager;
 using basil::GLShaderProgram;
 using basil::GLTexture2D;
 using basil::GLUniform;
+using basil::GLUniformScalar;
+using basil::GLUniformVector;
 
 template<class T>
 struct UniformTestData {
@@ -87,7 +89,8 @@ void getUniform(int programID, int location, unsigned int* result) {
 
 template<class T>
 void verifyUniforms(GLProgramUniformManager manager, int testCase) {
-    auto [width, length] = caseMap.at(testCase);
+    auto testCaseParams = caseMap.at(testCase);
+    auto [width, length] = testCaseParams;
     int stride = width * length;
 
     auto testData = UniformTestData<T>();
@@ -100,7 +103,8 @@ void verifyUniforms(GLProgramUniformManager manager, int testCase) {
             fmt::runtime(testData.uniformName), length, "", "");
     }
 
-    manager.setUniform(GLUniform(testData.data, name, 1, length, width));
+    auto vector = std::make_shared<GLUniformVector<T>>(testData.data, name, length, width, 1);
+    manager.setUniform(vector);
 
     GLint location =
         glGetUniformLocation(manager.programID, name.c_str());
@@ -133,6 +137,19 @@ TEST_CASE("OpenGL_GLProgramUniformManager_setUniform") { BASIL_LOCK_TEST
     }
 }
 
+TEST_CASE("OpenGL_GLProgramUniformManager_getUniformLocation") { BASIL_LOCK_TEST
+    auto program = GLShaderProgram::Builder()
+        .withFragmentShaderFromFile(fragmentPath)
+        .withDefaultVertexShader()
+        .build();
+    auto& manager = program->uniformManager;
+
+    SECTION("Returns -1 if uniform not present in shader") {
+        int location = manager.getUniformLocation("myFloap1");
+        CHECK(location == -1);
+    }
+}
+
 TEST_CASE("OpenGL_GLProgramUniformManager_applyCachedUniforms") {
     auto program = GLShaderProgram::Builder()
         .withFragmentShaderFromFile(fragmentPath)
@@ -141,8 +158,8 @@ TEST_CASE("OpenGL_GLProgramUniformManager_applyCachedUniforms") {
     auto& manager = program->uniformManager;
     std::string name = "myInt1";
 
-    auto uniform1 = GLUniform(1, name);
-    auto uniform2 = GLUniform(2, name);
+    std::shared_ptr<GLUniform> uniform1 = std::make_shared<GLUniformScalar<int>>(1, name);
+    std::shared_ptr<GLUniform> uniform2 = std::make_shared<GLUniformScalar<int>>(2, name);
 
     SECTION("Updates uniforms using most recent cached version") {
         manager.setUniform(uniform1);
@@ -156,33 +173,5 @@ TEST_CASE("OpenGL_GLProgramUniformManager_applyCachedUniforms") {
         glGetUniformiv(manager.programID, location, result);
 
         CHECK(result[0] == 2);
-    }
-}
-
-TEST_CASE("OpenGL_GLProgramUniformManager_setTextureSource") {
-    auto program = GLShaderProgram::Builder()
-        .withFragmentShaderFromFile(fragmentPath)
-        .withDefaultVertexShader()
-        .build();
-    auto& manager = program->uniformManager;
-    std::string name = "testTex";
-
-    auto texture1 = std::make_shared<GLTexture2D>();
-    auto uniform1 = GLUniform(texture1, name);
-
-    auto texture2 = std::make_shared<GLTexture2D>();
-    auto uniform2 = GLUniform(texture2, name);
-
-
-    SECTION("Sets or updates textures") {
-        manager.setTextureSource(texture1, uniform1);
-
-        CHECK(manager.textureMap.size() == 1);
-        CHECK(manager.textureMap.at(name) == texture1);
-
-        manager.setTextureSource(texture2, uniform2);
-
-        CHECK(manager.textureMap.size() == 1);
-        CHECK(manager.textureMap.at(name) == texture2);
     }
 }

@@ -102,7 +102,7 @@ void GLProgramUniformManager::setUniformVectorOrMatrix<int>(
         unsigned int count, int location) {
     unsigned int signature = 4*(width - 1) + length;
     int* data = source.data();
-    switch (length) {
+    switch (signature) {
         case 1:
             glProgramUniform1iv(
                 programID, location, count, data);
@@ -125,11 +125,11 @@ void GLProgramUniformManager::setUniformVectorOrMatrix<int>(
 template<>
 void GLProgramUniformManager::setUniformVectorOrMatrix<unsigned int>(
         GLUniformSource<unsigned int> source,
-        unsigned int length, unsigned int width,
+        unsigned int width, unsigned int length,
         unsigned int count, int location) {
     unsigned int signature = 4*(width - 1) + length;
     unsigned int* data = source.data();
-    switch (length) {
+    switch (signature) {
         case 1:
             glProgramUniform1uiv(
                 programID, location, count, data);
