@@ -12,7 +12,7 @@ uniform vec3 position;
 
 uniform samplerCube skybox;
 
-uniform uint MAX_BOUNCES = 8;
+uniform uint MAX_BOUNCES = 30;
 uniform float INF = 3.4028233466e38;
 
 layout(location = 0) out vec4 FragColor;
