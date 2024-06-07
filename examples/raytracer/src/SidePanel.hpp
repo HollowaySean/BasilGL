@@ -5,8 +5,7 @@
 #include <Basil/Packages/Builder.hpp>
 #include <Basil/Packages/ImGui.hpp>
 
-using basil::IBuildable;
-using basil::ImGuiPane;
+namespace basil::raytracer {
 
 class SidePanel : public ImGuiPane,
                   public IBuildable<SidePanel> {
@@ -21,3 +20,5 @@ class SidePanel : public ImGuiPane,
             "TODO(sholloway): Write this text");
     }
 };
+
+}  // namespace basil::raytracer

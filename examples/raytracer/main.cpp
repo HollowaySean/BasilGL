@@ -1,8 +1,10 @@
 #include <Basil/App.hpp>
 
-#include "CubemapLoader.hpp"
-#include "CameraController.hpp"
-#include "SidePanel.hpp"
+#include "src/CubemapLoader.hpp"
+#include "src/CameraController.hpp"
+#include "src/SidePanel.hpp"
+
+namespace rt = basil::raytracer;
 
 /**
  * @brief BasilGL example project TODO(sholloway): This
@@ -18,7 +20,6 @@ int main(int argc, char** argv) {
     // TODO(sholloway): More advanced rendering
     // TODO(sholloway): Cubemap loading from JSON
     // TODO(sholloway): Vector loading from JSON
-    // TODO(sholloway): Move files to src folder
     // TODO(sholloway): Clean up src files
     // TODO(sholloway): Stats and controls
     // TODO(sholloway): Screenshot tool
@@ -28,24 +29,24 @@ int main(int argc, char** argv) {
             .withFrameCap(60)
             .build())
         .withWidget(basil::WindowView::Builder()
-            .withDimensions(1200, 1000)
+            .withDimensions(1000, 800)
             .withTitle("BasilGL Ray Tracing Demo")
             .withTopPane(basil::SplitPane::Builder()
-                .withFixedPane(basil::SplitPane::FixedPane::FIRST)
-                .withPaneAspectRatio(1.0)
+                .withFixedPane(basil::SplitPane::FixedPane::SECOND)
+                .withPaneExtentInPixels(200)
                 .withFirstPane(basil::HotReloadShaderPane::Builder()
                     .fromFilePath(shaderPath)
                     .build())
-                .withSecondPane(SidePanel::Builder().build())
+                .withSecondPane(rt::SidePanel::Builder().build())
                 .build())
             .build())
         .withWidget(basil::MetricsReporter::Builder()
             .withRegularity(300)
             .withLogLevel(basil::LogLevel::INFO)
             .build())
-        .withWidget(CameraController::Builder()
+        .withWidget(rt::CameraController::Builder()
             .build())
-        .withWidget(std::make_shared<CubemapLoader>(skyboxPath, "skybox"))
+        .withWidget(std::make_shared<rt::CubemapLoader>(skyboxPath, "skybox"))
         .build();
 
     basilApp->run();

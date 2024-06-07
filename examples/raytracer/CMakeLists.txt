@@ -17,7 +17,12 @@ endif()
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/glm")
 
 ## Create executable
-add_executable(${EXEC_TARGET_NAME} "${CMAKE_CURRENT_LIST_DIR}/main.cpp")
+file(GLOB_RECURSE SOURCE_LIST CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
+
+add_executable(${EXEC_TARGET_NAME}
+    "${CMAKE_CURRENT_LIST_DIR}/main.cpp"
+    ${SOURCE_LIST})
 
 ## Link with library
 target_link_libraries(

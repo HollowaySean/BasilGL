@@ -11,6 +11,13 @@ using basil::GLTextureCubemap;
 using basil::IBasilWidget;
 using basil::ShaderUniformModel;
 
+// TODO(sholloway): Toggle mouse look
+// TODO(sholloway): Better way about aspect ratio
+// TODO(sholloway): More cleanup
+// TODO(sholloway): Remove callback on destructor
+
+namespace basil::raytracer {
+
 class CubemapLoader : public IBasilWidget {
  public:
     CubemapLoader(std::filesystem::path path, const std::string& name) :
@@ -42,3 +49,5 @@ class CubemapLoader : public IBasilWidget {
 
     ShaderUniformModel uniformModel;
 };
+
+}  // namespace basil::raytracer
