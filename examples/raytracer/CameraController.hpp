@@ -37,20 +37,29 @@ class CameraController : public IBasilWidget,
             cameraUp);
         inverseView = glm::inverse(view);
 
-        glm::mat4 project = glm::perspectiveLH(glm::radians(60.0f), 1.0f, 0.1f, 1000.0f);
+        glm::mat4 project = glm::perspectiveLH(
+            glm::radians(60.0f), 1.0f, 0.1f, 1000.0f);
         inverseProjection = glm::inverse(project);
 
         uniformModel.addUniform(
-            std::make_shared<GLUniformPointer<float>>(glm::value_ptr(inverseView), "inverseView", 4, 4, 1));
+            std::make_shared<GLUniformPointer<float>>(
+                glm::value_ptr(inverseView),
+                    "inverseView", 4, 4, 1));
 
         uniformModel.addUniform(
-            std::make_shared<GLUniformPointer<float>>(glm::value_ptr(inverseProjection), "inverseProjection", 4, 4, 1));
+            std::make_shared<GLUniformPointer<float>>(
+                glm::value_ptr(inverseProjection),
+                    "inverseProjection", 4, 4, 1));
 
         uniformModel.addUniform(
-            std::make_shared<GLUniformPointer<float>>(glm::value_ptr(position), "position", 3, 1, 1));
+            std::make_shared<GLUniformPointer<float>>(
+                glm::value_ptr(position),
+                    "position", 3, 1, 1));
 
         publishData(DataMessage(uniformModel));
     }
+
+    void onLoop() override {}
 
  private:
     glm::vec3 position = glm::vec3(0, 1, 0);

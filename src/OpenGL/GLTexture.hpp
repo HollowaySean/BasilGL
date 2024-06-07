@@ -5,6 +5,7 @@
 #include <GL/glew.h>
 
 #include <filesystem>
+#include <map>
 #include <memory>
 #include <unordered_map>
 
@@ -68,9 +69,10 @@ class IGLTexture {
 
     static inline const std::unordered_map<GLenum, std::string_view>
         NAME_LOOKUP = {
-            {GL_TEXTURE_1D, "1D"},
-            {GL_TEXTURE_2D, "2D"},
-            {GL_TEXTURE_3D, "3D"}
+            {GL_TEXTURE_1D,       "1D"},
+            {GL_TEXTURE_2D,       "2D"},
+            {GL_TEXTURE_3D,       "3D"},
+            {GL_TEXTURE_CUBE_MAP, "Cubemap"}
         };
 };
 
@@ -133,5 +135,71 @@ class GLTexture : public IGLTexture,
 using GLTexture1D = GLTexture<1>;
 using GLTexture2D = GLTexture<2>;
 using GLTexture3D = GLTexture<3>;
+
+/** @brief Implementation of IGLTexture for cubemaps. */
+class GLTextureCubemap : public IGLTexture,
+                         public IBuildable<GLTextureCubemap>,
+                         private IBasilContextConsumer {
+ public:
+    /** @brief Initialize OpenGL objects for cubemap. */
+    GLTextureCubemap();
+
+    /** @brief Delete OpenGL objects for cubemap. */
+    ~GLTextureCubemap();
+
+    /** @brief Flushes data from source to texture. */
+    void update() override;
+
+    /** @brief Set 2D ITextureSource for cubemap face.
+     *  @param source   Pointer to 2D ITextureSource
+     *  @param face     GLenum for cube face,
+     *                  i.e. GL_TEXTURE_CUBE_MAP_POSITIVE_X */
+    void setSource(
+            std::shared_ptr<ITextureSource<2>> setSource,
+            GLenum face) {
+        if (sources.contains(face)) {
+            sources.at(face) = setSource;
+        }
+
+        updateGLTexImage(face, setSource);
+    }
+
+    /** @brief Builder pattern for GLTextureCubemap */
+    class Builder : public IBuilder<GLTextureCubemap> {
+     public:
+        /** @brief Builds cubemap face from existing ITextureSource.
+         *  @param source   Pointer to 2D ITextureSource
+         *  @param face     GLenum for cube face,
+         *                  i.e. GL_TEXTURE_CUBE_MAP_POSITIVE_X */
+        Builder& withSource(std::shared_ptr<ITextureSource<2>> source,
+            GLenum face);
+
+        /** @brief Builds cubemap face from image file.
+         *  @param filePath Path to image file
+         *  @param face     GLenum for cube face,
+         *                  i.e. GL_TEXTURE_CUBE_MAP_POSITIVE_X */
+        Builder& fromFile(std::filesystem::path filePath,
+            GLenum face);
+
+        /** @brief Sets texture parameters. */
+        Builder& withParameter(GLenum parameterName, GLenum value);
+    };
+
+ private:
+    void updateGLTexImage() override {}
+    void updateGLTexImage(
+        GLenum face,
+        std::shared_ptr<ITextureSource<2>> source);
+
+    std::map<GLenum, std::shared_ptr<ITextureSource<2>>> sources
+        = std::map<GLenum, std::shared_ptr<ITextureSource<2>>>({
+            { GL_TEXTURE_CUBE_MAP_POSITIVE_X, nullptr },
+            { GL_TEXTURE_CUBE_MAP_POSITIVE_Y, nullptr },
+            { GL_TEXTURE_CUBE_MAP_POSITIVE_Z, nullptr },
+            { GL_TEXTURE_CUBE_MAP_NEGATIVE_X, nullptr },
+            { GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, nullptr },
+            { GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, nullptr }
+        });
+};
 
 }   // namespace basil

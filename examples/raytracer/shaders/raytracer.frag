@@ -10,6 +10,9 @@ uniform mat4 inverseView;
 uniform mat4 inverseProjection;
 uniform vec3 position;
 
+uniform samplerCube skybox;
+
+uniform uint MAX_BOUNCES = 8;
 uniform float INF = 3.4028233466e38;
 
 layout(location = 0) out vec4 FragColor;
@@ -17,7 +20,17 @@ layout(location = 0) out vec4 FragColor;
 struct Ray {
     vec3 origin;
     vec3 direction;
+    vec3 energy;
 };
+
+Ray createRay(vec3 origin, vec3 direction) {
+    Ray ray;
+    ray.origin = origin;
+    ray.direction = direction;
+    ray.energy = vec3(1.0f);
+
+    return ray;
+}
 
 struct RayHit {
     vec3 position;
@@ -39,7 +52,7 @@ Ray createCameraRay(vec2 uv) {
     direction = (inverseView * vec4(direction, 0.0f)).xyz;
     direction = normalize(direction);
 
-    Ray ray = { position, direction };
+    Ray ray = createRay(position, direction);
     return ray;
 }
 
@@ -77,18 +90,32 @@ RayHit trace(Ray ray) {
 
 vec3 shade(inout Ray ray, RayHit hit) {
     if (hit.distance < INF) {
-        return hit.normal * 0.5f + 0.5f;
+        vec3 specular = vec3(0.6f);
+
+        ray.origin = hit.position + hit.normal * 0.001f;
+        ray.direction = reflect(ray.direction, hit.normal);
+        ray.energy *= specular;
+
+        return vec3(0.0f);
     } else {
-        return vec3(0.1f);
+        ray.energy = vec3(0.0f);
+        return texture(skybox, ray.direction).rgb;
     }
 }
 
 void main()
 {
     vec2 uv = 2*TexCoord - 1.0f;
-    Ray cameraRay = createCameraRay(uv);
-    RayHit hit = trace(cameraRay);
-    vec3 result = shade(cameraRay, hit);
+    Ray ray = createCameraRay(uv);
+    vec3 result = vec3(0.0f);
+
+    for (uint i = 0; i < MAX_BOUNCES; i++) {
+        RayHit hit = trace(ray);
+        vec3 energy = ray.energy;
+        result += shade(ray, hit);
+
+        if (all(equal(ray.energy, vec3(0.0f)))) break;
+    }
 
     FragColor = vec4(result, 1.0);
 }

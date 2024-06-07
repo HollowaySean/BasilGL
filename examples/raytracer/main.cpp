@@ -1,7 +1,7 @@
 #include <Basil/App.hpp>
 
+#include "CubemapLoader.hpp"
 #include "CameraController.hpp"
-
 #include "SidePanel.hpp"
 
 /**
@@ -10,6 +10,9 @@
 int main(int argc, char** argv) {
     auto currentPath = std::filesystem::path(__FILE__).parent_path();
     auto shaderPath = currentPath / "shaders/raytracer.frag";
+    auto skyboxPath = currentPath / "assets/skybox";
+
+    basil::Logger::get().setLevel(basil::LogLevel::DEBUG);
 
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()
@@ -28,6 +31,7 @@ int main(int argc, char** argv) {
             .build())
         .withWidget(CameraController::Builder()
             .build())
+        .withWidget(std::make_shared<CubemapLoader>(skyboxPath, "skybox"))
         .build();
 
     basilApp->run();

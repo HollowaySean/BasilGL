@@ -21,6 +21,8 @@ enum class LogLevel {
     DEBUG, INFO, WARN, ERROR
 };
 
+// TODO(sholloway): Make static instead of Singleton
+
 /**
  * @brief Global logger using Singleton pattern.
 */

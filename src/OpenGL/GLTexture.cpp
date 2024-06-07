@@ -28,6 +28,11 @@ GLTexture<3>::GLTexture() {
     initializeTexture();
 }
 
+GLTextureCubemap::GLTextureCubemap() {
+    textureType = GL_TEXTURE_CUBE_MAP;
+    initializeTexture();
+}
+
 void IGLTexture::setTextureParameter(GLenum parameterName, GLenum value) {
     glTexParameteri(textureType, parameterName, value);
 }
@@ -47,6 +52,7 @@ void IGLTexture::initializeTexture() {
     // Set default texture parameters
     setTextureParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
     setTextureParameter(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    setTextureParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
     setTextureParameter(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     setTextureParameter(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
@@ -62,6 +68,23 @@ void GLTexture<N>::update() {
 
     glActiveTexture(textureEnum);
     updateGLTexImage();
+    glBindTexture(textureType, textureId);
+}
+
+void GLTextureCubemap::update() {
+    glActiveTexture(textureEnum);
+
+    for (auto face : sources) {
+        if (!face.second) {
+            logger.log(
+                fmt::format(LOG_SOURCE_MISSING, textureId),
+                LogLevel::WARN);
+            continue;
+        }
+
+        updateGLTexImage(face.first, face.second);
+    }
+
     glBindTexture(textureType, textureId);
 }
 
@@ -104,8 +127,30 @@ void GLTexture<3>::updateGLTexImage() {
                  source->data());
 }
 
+void GLTextureCubemap::updateGLTexImage(GLenum face,
+        std::shared_ptr<ITextureSource<2>> source) {
+    glTexImage2D(face,
+                 0,
+                 source->format.internalFormat,
+                 source->getWidth(),
+                 source->getHeight(),
+                 0,
+                 source->format.format,
+                 source->format.type,
+                 source->data());
+}
+
 template<int N>
 GLTexture<N>::~GLTexture() {
+    GLuint textureArray[] = { textureId };
+    glDeleteTextures(1, textureArray);
+
+    logger.log(
+        fmt::format(LOG_TEXTURE_DELETED, textureId),
+        LogLevel::DEBUG);
+}
+
+GLTextureCubemap::~GLTextureCubemap() {
     GLuint textureArray[] = { textureId };
     glDeleteTextures(1, textureArray);
 
@@ -133,6 +178,26 @@ GLTexture<N>::Builder&
 GLTexture<N>::Builder::withParameter(GLenum parameterName, GLenum value) {
     this->impl->setTextureParameter(parameterName, value);
     return (*this);
+}
+
+GLTextureCubemap::Builder&
+GLTextureCubemap::Builder::withParameter(GLenum parameterName, GLenum value) {
+    this->impl->setTextureParameter(parameterName, value);
+    return (*this);
+}
+
+GLTextureCubemap::Builder&
+GLTextureCubemap::Builder::withSource(std::shared_ptr<ITextureSource<2>> source,
+            GLenum face) {
+    this->impl->setSource(source, face);
+    return (*this);
+}
+
+GLTextureCubemap::Builder&
+GLTextureCubemap::Builder::fromFile(std::filesystem::path filePath,
+            GLenum face) {
+    auto source = std::make_shared<FileTextureSource>(filePath, false);
+    return withSource(source, face);
 }
 
 }  // namespace basil

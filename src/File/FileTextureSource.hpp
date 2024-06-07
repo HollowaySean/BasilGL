@@ -19,7 +19,8 @@ class FileTextureSource : public ITextureSource2D,
     FileTextureSource() = default;
 
     /** @brief Initializes from path to image file. */
-    explicit FileTextureSource(std::filesystem::path filePath);
+    FileTextureSource(std::filesystem::path filePath,
+        bool flipImageVertically = true);
 
     /** @returns Pointer to const char* byte values, as const void*. */
     const void* data() override;
