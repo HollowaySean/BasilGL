@@ -156,13 +156,11 @@ class GLTextureCubemap : public IGLTexture,
      *                  i.e. GL_TEXTURE_CUBE_MAP_POSITIVE_X */
     void setSource(
             std::shared_ptr<ITextureSource<2>> setSource,
-            GLenum face) {
-        if (sources.contains(face)) {
-            sources.at(face) = setSource;
-        }
+            GLenum face);
 
-        updateGLTexImage(face, setSource);
-    }
+    /** @returns Map from GLenums to ITextureSource pointers. */
+    std::map<GLenum, std::shared_ptr<ITextureSource<2>>>
+    getSources() { return sources; }
 
     /** @brief Builder pattern for GLTextureCubemap */
     class Builder : public IBuilder<GLTextureCubemap> {
@@ -186,7 +184,7 @@ class GLTextureCubemap : public IGLTexture,
     };
 
  private:
-    void updateGLTexImage() override {}
+    void updateGLTexImage() override {}  // GCOVR_EXCL_LINE
     void updateGLTexImage(
         GLenum face,
         std::shared_ptr<ITextureSource<2>> source);

@@ -37,6 +37,16 @@ void IGLTexture::setTextureParameter(GLenum parameterName, GLenum value) {
     glTexParameteri(textureType, parameterName, value);
 }
 
+void GLTextureCubemap::setSource(
+        std::shared_ptr<ITextureSource<2>> setSource,
+        GLenum face) {
+    if (sources.contains(face)) {
+        sources.at(face) = setSource;
+    }
+
+    updateGLTexImage(face, setSource);
+}
+
 void IGLTexture::initializeTexture() {
     glGenTextures(1, &textureId);
     glActiveTexture(textureEnum);

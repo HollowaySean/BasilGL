@@ -8,6 +8,7 @@ using basil::BasilContextLock;
 using basil::GLTexture1D;
 using basil::GLTexture2D;
 using basil::GLTexture3D;
+using basil::GLTextureCubemap;
 using basil::IGLTexture;
 using basil::ITextureSource1D;
 using basil::Logger;
@@ -117,7 +118,7 @@ TEST_CASE("OpenGL_GLTexture_update") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLTexture_Builder") {
+TEST_CASE("OpenGL_GLTexture_Builder") { BASIL_LOCK_TEST
     SECTION("Builds from file path") {
         auto path = std::filesystem::path(TEST_DIR)
             / "OpenGL/assets/test-img.jpg";
@@ -144,11 +145,79 @@ TEST_CASE("OpenGL_GLTexture_Builder") {
 
         auto texture = GLTexture2D::Builder()
             .fromSpan(std::span(source))
+            .withParameter(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
+            .build();
+
+        GLint result;
+        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, &result);
+        CHECK(result == GL_CLAMP_TO_EDGE);
+    }
+}
+
+TEST_CASE("OpenGL_GLTextureCubemap_GLTextureCubemap") { BASIL_LOCK_TEST
+    SECTION("Initializes cubemap texture") {
+        GLTextureCubemap texture = GLTextureCubemap();
+
+        CHECK(texture.getID() > 0);
+        CHECK(texture.getEnum() >= GL_TEXTURE0);
+        CHECK(texture.textureType == GL_TEXTURE_CUBE_MAP);
+    }
+}
+
+TEST_CASE("OpenGL_GLTextureCubemap_update") { BASIL_LOCK_TEST
+    SECTION("Logs error if missing texture source") {
+        GLTextureCubemap texture = GLTextureCubemap();
+        texture.update();
+
+        Logger& logger = Logger::get();
+        CHECK(logger.getLastLevel() == LogLevel::WARN);
+    }
+
+    SECTION("Creates OpenGL Cubemap texture object") {
+        std::vector<int> data = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        std::shared_ptr<SpanTextureSource<int, 2, 1>> source
+            = std::make_shared<SpanTextureSource<int, 2, 1>>(data);
+
+        GLTextureCubemap texture = GLTextureCubemap();
+        source->setWidth(8);
+        texture.setSource(source, GL_TEXTURE_CUBE_MAP_POSITIVE_X);
+        texture.update();
+
+        int result[8];
+        glActiveTexture(texture.getEnum());
+        glBindTexture(GL_TEXTURE_2D, texture.getID());
+        glGetTexImage(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, source->format.format,
+            source->format.type, result);
+
+        for (int i = 0; i < 8; i++) {
+            CHECK(result[i] == data.at(i));
+        }
+    }
+}
+
+TEST_CASE("OpenGL_GLTextureCubemap_Builder") {
+    SECTION("Builds from file path") {
+        auto path = std::filesystem::path(TEST_DIR)
+            / "OpenGL/assets/test-img.jpg";
+
+        auto texture = GLTextureCubemap::Builder()
+            .fromFile(path, GL_TEXTURE_CUBE_MAP_POSITIVE_X)
+            .build();
+        auto source = texture->getSources().at(
+            GL_TEXTURE_CUBE_MAP_POSITIVE_X);
+
+        CHECK(source->data() != nullptr);
+    }
+
+    SECTION("Sets texture parameters") {
+        auto source = std::vector<int>(16, 5);
+
+        auto texture = GLTextureCubemap::Builder()
             .withParameter(GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE)
             .build();
 
         GLint result;
-        glGetTexParameteriv(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, &result);
+        glGetTexParameteriv(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, &result);
         CHECK(result == GL_CLAMP_TO_EDGE);
     }
 }
