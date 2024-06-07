@@ -14,13 +14,12 @@ int main(int argc, char** argv) {
 
     basil::Logger::get().setLevel(basil::LogLevel::DEBUG);
 
-    // TODO(sholloway): Keyboard camera movement
-    // TODO(sholloway): Mouse camera rotation
     // TODO(sholloway): Parameterized spheres
     // TODO(sholloway): More advanced rendering
     // TODO(sholloway): Cubemap loading from JSON
     // TODO(sholloway): Vector loading from JSON
     // TODO(sholloway): Move files to src folder
+    // TODO(sholloway): Clean up src files
     // TODO(sholloway): Stats and controls
     // TODO(sholloway): Screenshot tool
 

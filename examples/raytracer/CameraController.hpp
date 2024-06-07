@@ -3,7 +3,10 @@
 #include <memory>
 #include <vector>
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include <glm/ext.hpp>
 
 #include <Basil/App.hpp>
@@ -28,7 +31,7 @@ class CameraController : public IBasilWidget,
         }) {}
 
     void onStart() override {
-        lastFrameTime = basil::FrameClock::now();
+        lastFrameTime = FrameClock::now();
 
         invViewID = uniformModel.addUniform(
             std::make_shared<GLUniformPointer<float>>(
@@ -47,6 +50,8 @@ class CameraController : public IBasilWidget,
 
         userInputWatcher.onStart();
 
+        lastMousePosition = inputModel.getMousePosition();
+
         publishData(DataMessage(uniformModel));
     }
 
@@ -55,6 +60,7 @@ class CameraController : public IBasilWidget,
         userInputWatcher.onLoop();
 
         updatePosition(deltaTime);
+        updateRotation(deltaTime);
         updateProjectionUniforms();
 
         publishData(DataMessage(uniformModel));
@@ -66,8 +72,9 @@ class CameraController : public IBasilWidget,
         auto elapsedTime = currentTime - lastFrameTime;
         lastFrameTime = currentTime;
 
-        float elapsedTimeMS = std::chrono::duration_cast<std::chrono::milliseconds>(elapsedTime).count();
-        float elapsedTimeSeconds = elapsedTimeMS / 1'000;
+        float elapsedTimeNS = std::chrono::duration_cast<
+            std::chrono::nanoseconds>(elapsedTime).count();
+        float elapsedTimeSeconds = elapsedTimeNS / 1'000'000'000;
 
         return elapsedTimeSeconds;
     }
@@ -89,6 +96,13 @@ class CameraController : public IBasilWidget,
             moveDirection += glm::normalize(
                 glm::cross(worldUp, direction));
         }
+        if (inputModel.getIsKeyPressed(GLFW_KEY_E)) {
+            moveDirection += worldUp;
+        }
+        if (inputModel.getIsKeyPressed(GLFW_KEY_Q)) {
+            moveDirection -= worldUp;
+        }
+
         if (glm::length(moveDirection) > 0) {
             moveDirection = glm::normalize(moveDirection);
         }
@@ -96,10 +110,28 @@ class CameraController : public IBasilWidget,
         position += moveDirection * moveSpeed * deltaTime;
     }
 
+    void updateRotation(float deltaTime) {
+        UserInputModel::MousePosition currentMouse
+            = inputModel.getMousePosition();
+
+        double deltaX = currentMouse.xPosition - lastMousePosition.xPosition;
+        double deltaY = currentMouse.yPosition - lastMousePosition.yPosition;
+        lastMousePosition = currentMouse;
+
+        direction = glm::rotate(
+            direction,
+            static_cast<float>(glm::radians(deltaX * mouseSpeed * deltaTime)),
+            worldUp);
+        direction = glm::rotate(
+            direction,
+            static_cast<float>(glm::radians(deltaY * mouseSpeed * deltaTime)),
+            cameraRight);
+    }
+
     void updateProjectionUniforms() {
-        glm::vec3 cameraRight = glm::normalize(
+        cameraRight = glm::normalize(
             glm::cross(worldUp, direction));
-        glm::vec3 cameraUp =
+        cameraUp =
             glm::cross(direction, cameraRight);
 
         glm::mat4 view = glm::lookAtLH(
@@ -125,16 +157,20 @@ class CameraController : public IBasilWidget,
 
     float fov = 60.0f;
     float moveSpeed = 10.0f;
-    float mouseSpeed = 1.0f;
+    float mouseSpeed = 10.0f;
+
+    UserInputModel::MousePosition lastMousePosition;
 
     FrameClock::time_point lastFrameTime;
 
     const glm::vec3 worldUp = glm::vec3(0, 1, 0);
+    glm::vec3 cameraUp      = glm::vec3(0, 1, 0);
+    glm::vec3 cameraRight   = glm::vec3(1, 0, 0);
 
-    glm::vec3 position = glm::vec3(0, 1, 0);
-    glm::vec3 direction = glm::vec3(0, 0, 1);
+    glm::vec3 position      = glm::vec3(0, 1, 0);
+    glm::vec3 direction     = glm::vec3(0, 0, 1);
 
-    glm::mat4 inverseView = glm::mat4(0);
+    glm::mat4 inverseView       = glm::mat4(0);
     glm::mat4 inverseProjection = glm::mat4(0);
 
     ShaderUniformModel uniformModel;
