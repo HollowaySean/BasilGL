@@ -40,7 +40,7 @@ void CameraController::onStart() {
     auto window = BasilContext::getGLFWWindow();
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
-    aspectRatio = static_cast<float>(width - sidebarWidth) / height;
+    onResize(width, height);
 
     publishData(DataMessage(uniformModel));
 }
@@ -69,38 +69,42 @@ float CameraController::getDeltaTime() {
 }
 
 void CameraController::onResize(int width, int height) {
-    aspectRatio = static_cast<float>(width - sidebarWidth) / height;
+    if (focusPane) {
+        width = focusPane->viewArea.width;
+        height = focusPane->viewArea.height;
+    }
+
+    float aspectRatio = static_cast<float>(width) / height;
+    camera.setAspectRatio(aspectRatio);
 }
 
 void CameraController::updatePosition(float deltaTime) {
-    glm::vec3 moveDirection = glm::vec3(0.0f);
+    glm::vec3 moveDirection = glm::vec3(0);
 
     if (inputModel.getIsKeyPressed(GLFW_KEY_W)) {
-        moveDirection += direction;
+        moveDirection += glm::vec3(0, 0, 1);
     }
     if (inputModel.getIsKeyPressed(GLFW_KEY_S)) {
-        moveDirection -= direction;
+        moveDirection -= glm::vec3(0, 0, 1);
     }
     if (inputModel.getIsKeyPressed(GLFW_KEY_A)) {
-        moveDirection -= glm::normalize(
-            glm::cross(worldUp, direction));
+        moveDirection -= glm::vec3(1, 0, 0);
     }
     if (inputModel.getIsKeyPressed(GLFW_KEY_D)) {
-        moveDirection += glm::normalize(
-            glm::cross(worldUp, direction));
+        moveDirection += glm::vec3(1, 0, 0);
     }
     if (inputModel.getIsKeyPressed(GLFW_KEY_E)) {
-        moveDirection += worldUp;
+        moveDirection += glm::vec3(0, 1, 0);
     }
     if (inputModel.getIsKeyPressed(GLFW_KEY_Q)) {
-        moveDirection -= worldUp;
+        moveDirection -= glm::vec3(0, 1, 0);
     }
 
     if (glm::length(moveDirection) > 0) {
         moveDirection = glm::normalize(moveDirection);
     }
 
-    position += moveDirection * moveSpeed * deltaTime;
+    camera.moveRelative(moveDirection * moveSpeed * deltaTime);
 }
 
 void CameraController::updateRotation(float deltaTime) {
@@ -111,36 +115,20 @@ void CameraController::updateRotation(float deltaTime) {
     double deltaY = currentMouse.yPosition - lastMousePosition.yPosition;
     lastMousePosition = currentMouse;
 
-    direction = glm::rotate(
-        direction,
-        static_cast<float>(glm::radians(deltaX * mouseSpeed * deltaTime)),
-        worldUp);
-    direction = glm::rotate(
-        direction,
-        static_cast<float>(glm::radians(deltaY * mouseSpeed * deltaTime)),
-        cameraRight);
+    camera.pan(deltaX * mouseSpeed * deltaTime);
+    camera.tilt(deltaY * mouseSpeed * deltaTime);
 }
 
 void CameraController::updateProjectionUniforms() {
-    cameraRight = glm::normalize(
-        glm::cross(worldUp, direction));
-    cameraUp =
-        glm::cross(direction, cameraRight);
-
-    glm::mat4 view = glm::lookAtLH(
-        position,
-        position + direction,
-        cameraUp);
-    inverseView = glm::inverse(view);
-
-    glm::mat4 project = glm::perspectiveLH(
-        glm::radians(fov), aspectRatio, 0.1f, 1000.0f);
-    inverseProjection = glm::inverse(project);
-
+    inverseView = camera.getInverseViewMatrix();
     uniformModel.setUniformValue(
         glm::value_ptr(inverseView), invViewID);
+
+    inverseProjection = camera.getInverseProjectionMatrix();
     uniformModel.setUniformValue(
         glm::value_ptr(inverseProjection), invProjID);
+
+    position = camera.getPosition();
     uniformModel.setUniformValue(
         glm::value_ptr(position), positionID);
 }

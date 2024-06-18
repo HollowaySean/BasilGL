@@ -26,6 +26,11 @@ class Camera {
     explicit Camera(CameraProps cameraProps = CameraProps())
     : cameraProps(cameraProps) {}
 
+    void setAspectRatio(float aspectRatio);
+
+    glm::vec3 getPosition();
+    glm::vec3 getDirection();
+
     glm::mat4 getViewMatrix();
     glm::mat4 getInverseViewMatrix();
 
@@ -38,7 +43,14 @@ class Camera {
         glm::vec3 newCameraUp,
         glm::vec3 newCameraForward);
 
-    void move(glm::vec3 offset);  // NOLINT
+    void moveAbsolute(glm::vec3 offset);
+
+    void moveRelative(glm::vec3 offset);
+
+    void moveRelative(
+        float rightOffset,
+        float upOffset,
+        float forwardOffset);
 
     void pan(float turnAngle);
 

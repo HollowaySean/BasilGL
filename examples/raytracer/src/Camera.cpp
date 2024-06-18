@@ -2,6 +2,18 @@
 
 namespace basil::raytracer {
 
+void Camera::setAspectRatio(float aspectRatio) {
+    cameraProps.aspectRatio = aspectRatio;
+}
+
+glm::vec3 Camera::getPosition() {
+    return position;
+}
+
+glm::vec3 Camera::getDirection() {
+    return cameraForward;
+}
+
 glm::mat4 Camera::getViewMatrix() {
     switch (cameraProps.chirality) {
         case Chirality::RIGHT_HANDED:
@@ -56,9 +68,24 @@ void Camera::setOrientation(
     cameraForward = newCameraForward;
 }
 
-void Camera::move(glm::vec3 offset) {  // NOLINT
+void Camera::moveAbsolute(glm::vec3 offset) {
     setPosition(position + offset);
 }
+
+void Camera::moveRelative(glm::vec3 offset) {
+    moveRelative(offset.x, offset.y, offset.z);
+}
+
+void Camera::moveRelative(
+        float rightOffset, float upOffset, float forwardOffset) {
+    glm::vec3 offset = glm::vec3(0);
+    offset += forwardOffset * cameraForward;
+    offset += upOffset * cameraProps.worldUp;
+    offset += rightOffset * glm::cross(cameraUp, cameraForward);
+
+    moveAbsolute(offset);
+}
+
 
 void Camera::pan(float turnAngle) {
     cameraForward = glm::rotate(

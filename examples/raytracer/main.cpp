@@ -24,6 +24,7 @@ int main(int argc, char** argv) {
     // TODO(sholloway): Stats and controls
     // TODO(sholloway): Screenshot tool
 
+    std::shared_ptr<basil::IPane> focusPane;
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()
             .withFrameCap(60)
@@ -34,7 +35,7 @@ int main(int argc, char** argv) {
             .withTopPane(basil::SplitPane::Builder()
                 .withFixedPane(basil::SplitPane::FixedPane::SECOND)
                 .withPaneExtentInPixels(200)
-                .withFirstPane(basil::HotReloadShaderPane::Builder()
+                .withFirstPane(focusPane = basil::HotReloadShaderPane::Builder()
                     .fromFilePath(shaderPath)
                     .build())
                 .withSecondPane(rt::SidePanel::Builder().build())
@@ -45,6 +46,7 @@ int main(int argc, char** argv) {
             .withLogLevel(basil::LogLevel::INFO)
             .build())
         .withWidget(rt::CameraController::Builder()
+            .withFocusPane(focusPane)
             .build())
         .withWidget(std::make_shared<rt::CubemapLoader>(skyboxPath, "skybox"))
         .build();

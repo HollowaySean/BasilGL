@@ -3,11 +3,7 @@
 #include <memory>
 #include <vector>
 
-#define GLM_ENABLE_EXPERIMENTAL
-
 #include <glm/glm.hpp>
-#include <glm/gtx/rotate_vector.hpp>
-#include <glm/ext.hpp>
 
 #include <Basil/App.hpp>
 
@@ -24,7 +20,22 @@ class CameraController : public IBasilWidget,
 
     void onLoop() override;
 
+    void setFocusPane(std::shared_ptr<IPane> focusPane) {
+        this->focusPane = focusPane;
+    }
+
+    class Builder : public IBuilder<CameraController> {
+     public:
+        Builder& withFocusPane(std::shared_ptr<IPane> focusPane) {
+            this->impl->setFocusPane(focusPane);
+            return (*this);
+        }
+    };
+
  private:
+    Camera camera = Camera();
+    std::shared_ptr<IPane> focusPane = nullptr;
+
     float getDeltaTime();
     void onResize(int width, int height);
 
@@ -35,12 +46,6 @@ class CameraController : public IBasilWidget,
     UserInputWatcher userInputWatcher;
     UserInputModel& inputModel = userInputWatcher.getModel();
 
-    float fov = 60.0f;
-    float aspectRatio = 1.0f;
-
-    // Do this better
-    int sidebarWidth = 200;
-
     float moveSpeed = 10.0f;
     float mouseSpeed = 10.0f;
 
@@ -48,17 +53,11 @@ class CameraController : public IBasilWidget,
 
     FrameClock::time_point lastFrameTime;
 
-    const glm::vec3 worldUp = glm::vec3(0, 1, 0);
-    glm::vec3 cameraUp      = glm::vec3(0, 1, 0);
-    glm::vec3 cameraRight   = glm::vec3(1, 0, 0);
-
-    glm::vec3 position      = glm::vec3(0, 1, 0);
-    glm::vec3 direction     = glm::vec3(0, 0, 1);
-
-    glm::mat4 inverseView       = glm::mat4(0);
-    glm::mat4 inverseProjection = glm::mat4(0);
-
     ShaderUniformModel uniformModel;
+
+    glm::vec3 position = glm::vec3();
+    glm::mat4 inverseView = glm::mat4();
+    glm::mat4 inverseProjection = glm::mat4();
 
     unsigned int invViewID  = -1;
     unsigned int invProjID  = -1;
