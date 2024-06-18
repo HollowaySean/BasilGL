@@ -6,6 +6,8 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/ext.hpp>
 
+// TODO(sholloway): Clamp camera tilt
+
 namespace basil::raytracer {
 
 enum class Chirality {
@@ -27,6 +29,7 @@ class Camera {
     : cameraProps(cameraProps) {}
 
     void setAspectRatio(float aspectRatio);
+    void setFieldOfView(float fieldOfView);
 
     glm::vec3 getPosition();
     glm::vec3 getDirection();

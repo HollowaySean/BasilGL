@@ -42,6 +42,13 @@ void CameraController::onStart() {
     glfwGetFramebufferSize(window, &width, &height);
     onResize(width, height);
 
+    // Set initial camera position
+    camera.setPosition(glm::vec3(0, 1, -1));
+    camera.setOrientation(
+        glm::vec3(0, 1, 0),
+        glm::vec3(0, 0, 1));
+    camera.tilt(-30.0f);
+
     publishData(DataMessage(uniformModel));
 }
 

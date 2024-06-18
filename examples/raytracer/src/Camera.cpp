@@ -6,6 +6,10 @@ void Camera::setAspectRatio(float aspectRatio) {
     cameraProps.aspectRatio = aspectRatio;
 }
 
+void Camera::setFieldOfView(float fieldOfView) {
+    cameraProps.fieldOfView = fieldOfView;
+}
+
 glm::vec3 Camera::getPosition() {
     return position;
 }

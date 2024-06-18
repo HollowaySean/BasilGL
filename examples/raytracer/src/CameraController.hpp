@@ -9,6 +9,10 @@
 
 #include "Camera.hpp"
 
+// TODO(sholloway): Find source of latency
+// TODO(sholloway): Fix initial orientation issue
+// TODO(sholloway): Better mouse controls
+
 namespace basil::raytracer {
 
 class CameraController : public IBasilWidget,
