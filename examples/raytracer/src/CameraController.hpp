@@ -11,6 +11,8 @@
 
 #include <Basil/App.hpp>
 
+#include "Camera.hpp"
+
 namespace basil::raytracer {
 
 class CameraController : public IBasilWidget,
