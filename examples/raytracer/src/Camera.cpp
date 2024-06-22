@@ -99,6 +99,10 @@ void Camera::pan(float turnAngle) {
 }
 
 void Camera::tilt(float turnAngle) {
+    if (cameraProps.chirality == Chirality::LEFT_HANDED) {
+        turnAngle *= -1;
+    }
+
     cameraForward = glm::rotate(
         cameraForward,
         glm::radians(turnAngle),

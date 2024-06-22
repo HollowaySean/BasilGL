@@ -23,6 +23,7 @@ int main(int argc, char** argv) {
     // TODO(sholloway): Clean up src files
     // TODO(sholloway): Stats and controls
     // TODO(sholloway): Screenshot tool
+    // TODO(sholloway): Delegate IProcesses for Widgets
 
     std::shared_ptr<basil::IPane> focusPane;
     auto basilApp = basil::BasilApp::Builder()

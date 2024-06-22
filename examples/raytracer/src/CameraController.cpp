@@ -120,6 +120,7 @@ void CameraController::updateRotation(float deltaTime) {
 
     double deltaX = currentMouse.xPosition - lastMousePosition.xPosition;
     double deltaY = currentMouse.yPosition - lastMousePosition.yPosition;
+    deltaY *= -1;  // Reverse value so positive is up
     lastMousePosition = currentMouse;
 
     camera.pan(deltaX * mouseSpeed * deltaTime);

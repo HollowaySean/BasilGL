@@ -9,7 +9,6 @@
 
 #include "Camera.hpp"
 
-// TODO(sholloway): Find source of latency
 // TODO(sholloway): Fix initial orientation issue
 // TODO(sholloway): Better mouse controls
 
