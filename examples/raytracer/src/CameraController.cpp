@@ -28,10 +28,8 @@ void CameraController::onStart() {
                 "position", 3, 1, 1));
 
     userInputWatcher.onStart();
-
     lastMousePosition = inputModel.getMousePosition();
 
-    // Should probably remove this on destructor
     using std::placeholders::_1, std::placeholders::_2;
     callbackID = BasilContext::setGLFWFramebufferSizeCallback(
         std::bind(&CameraController::onResize, this, _1, _2));
@@ -47,7 +45,7 @@ void CameraController::onStart() {
     camera.setOrientation(
         glm::vec3(0, 1, 0),
         glm::vec3(0, 0, 1));
-    camera.tilt(-30.0f);
+    updateProjectionUniforms();
 
     publishData(DataMessage(uniformModel));
 }
@@ -56,11 +54,19 @@ void CameraController::onLoop() {
     float deltaTime = getDeltaTime();
     userInputWatcher.onLoop();
 
-    updatePosition(deltaTime);
-    updateRotation(deltaTime);
-    updateProjectionUniforms();
+    checkControlLock();
+
+    if (controlsActive) {
+        updatePosition(deltaTime);
+        updateRotation(deltaTime);
+        updateProjectionUniforms();
+    }
 
     publishData(DataMessage(uniformModel));
+}
+
+void CameraController::onStop() {
+    BasilContext::removeGLFWFramebufferSizeCallback(callbackID);
 }
 
 float CameraController::getDeltaTime() {
@@ -83,6 +89,29 @@ void CameraController::onResize(int width, int height) {
 
     float aspectRatio = static_cast<float>(width) / height;
     camera.setAspectRatio(aspectRatio);
+}
+
+void CameraController::checkControlLock() {
+    if (controlsActive
+            && inputModel.getIsKeyPressed(GLFW_KEY_ESCAPE)) {
+        controlsActive = false;
+
+        glfwSetInputMode(
+            BasilContext::getGLFWWindow(),
+            GLFW_CURSOR,
+            GLFW_CURSOR_NORMAL);
+
+    } else if (!controlsActive
+            && inputModel.getIsMouseInWindow()
+            && inputModel.getIsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+        controlsActive = true;
+        mousePositionCurrent = false;
+
+        glfwSetInputMode(
+            BasilContext::getGLFWWindow(),
+            GLFW_CURSOR,
+            GLFW_CURSOR_DISABLED);
+    }
 }
 
 void CameraController::updatePosition(float deltaTime) {
@@ -117,6 +146,11 @@ void CameraController::updatePosition(float deltaTime) {
 void CameraController::updateRotation(float deltaTime) {
     UserInputModel::MousePosition currentMouse
         = inputModel.getMousePosition();
+
+    if (!mousePositionCurrent) {
+        lastMousePosition = currentMouse;
+        mousePositionCurrent = true;
+    }
 
     double deltaX = currentMouse.xPosition - lastMousePosition.xPosition;
     double deltaY = currentMouse.yPosition - lastMousePosition.yPosition;

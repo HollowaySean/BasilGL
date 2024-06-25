@@ -9,9 +9,6 @@
 
 #include "Camera.hpp"
 
-// TODO(sholloway): Fix initial orientation issue
-// TODO(sholloway): Better mouse controls
-
 namespace basil::raytracer {
 
 class CameraController : public IBasilWidget,
@@ -22,6 +19,8 @@ class CameraController : public IBasilWidget,
     void onStart() override;
 
     void onLoop() override;
+
+    void onStop() override;
 
     void setFocusPane(std::shared_ptr<IPane> focusPane) {
         this->focusPane = focusPane;
@@ -41,6 +40,10 @@ class CameraController : public IBasilWidget,
 
     float getDeltaTime();
     void onResize(int width, int height);
+
+    void checkControlLock();
+    bool mousePositionCurrent = false;
+    bool controlsActive = false;
 
     void updatePosition(float deltaTime);
     void updateRotation(float deltaTime);
