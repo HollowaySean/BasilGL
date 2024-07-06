@@ -10,6 +10,9 @@ uniform mat4 inverseView;
 uniform mat4 inverseProjection;
 uniform vec3 position;
 
+uniform float specularValue;
+uniform vec3 planeColor;
+
 uniform samplerCube skybox;
 
 uniform uint MAX_BOUNCES = 30;
@@ -90,7 +93,7 @@ RayHit trace(Ray ray) {
 
 vec3 shade(inout Ray ray, RayHit hit) {
     if (hit.distance < INF) {
-        vec3 specular = vec3(0.6f);
+        vec3 specular = vec3(specularValue);
 
         ray.origin = hit.position + hit.normal * 0.001f;
         ray.direction = reflect(ray.direction, hit.normal);
@@ -110,6 +113,7 @@ void main()
     vec3 result = vec3(0.0f);
 
     for (uint i = 0; i < MAX_BOUNCES; i++) {
+
         RayHit hit = trace(ray);
         vec3 energy = ray.energy;
         result += shade(ray, hit);

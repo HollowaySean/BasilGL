@@ -17,9 +17,6 @@ int main(int argc, char** argv) {
 
     // TODO(sholloway): Parameterized spheres
     // TODO(sholloway): More advanced rendering
-    // TODO(sholloway): Cubemap loading from JSON
-    // TODO(sholloway): Vector loading from JSON
-    // TODO(sholloway): Clean up src files
     // TODO(sholloway): Stats and controls
     // TODO(sholloway): Screenshot tool
     // TODO(sholloway): More info text

@@ -1,4 +1,14 @@
 {
+    "uniforms" : [
+        {
+            "name" : "planeColor",
+            "value" : [ 1.0, 0.5, 0.1 ]
+        },
+        {
+            "name" : "specularValue",
+            "value" : 0.1
+        }
+    ],
     "cubemaps" : [
         {
             "name" : "skybox",

@@ -67,8 +67,6 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
         return std::nullopt;
     }
 
-    auto model = std::make_shared<ShaderUniformModel>();
-
     if (data.empty()) {
         logger.log(
             fmt::format(LOG_JSON_EMPTY, filePath.c_str()),
@@ -77,27 +75,30 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
         return std::nullopt;
     }
 
+    auto model = std::make_shared<ShaderUniformModel>();
+
     // Check if uniform definition exists
     if (data.contains("uniforms")) {
         // Read data into model
-        logger.log("Reading shader uniforms from JSON file.", LogLevel::DEBUG);
+        logger.log(
+            fmt::format(LOG_READING_FIELD, "shader uniforms"),
+            LogLevel::DEBUG);
         auto uniformData = data.at("uniforms");
 
-        model = addUniforms<float>(model, uniformData);
-        model = addUniforms<int>(model, uniformData);
-        model = addUniforms<unsigned int>(model, uniformData);
-        model = addUniforms<bool>(model, uniformData);
+        model = addUniforms(model, uniformData);
 
     } else {
         logger.log(
-            fmt::format(LOG_UNIFORMS_MISSING, filePath.c_str()),
+            fmt::format(LOG_FIELD_MISSING, "uniforms", filePath.c_str()),
             LogLevel::DEBUG);
     }
 
     // Check if texture definition exists
     if (data.contains("textures")) {
         // Read data into model
-        logger.log("Reading texture paths from JSON file.", LogLevel::DEBUG);
+        logger.log(
+            fmt::format(LOG_READING_FIELD, "texture paths"),
+            LogLevel::DEBUG);
         auto textureData = data.at("textures");
 
         auto basePath = filePath.parent_path();
@@ -105,14 +106,16 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
 
     } else {
         logger.log(
-            fmt::format(LOG_TEXTURES_MISSING, filePath.c_str()),
+            fmt::format(LOG_FIELD_MISSING, "textures", filePath.c_str()),
             LogLevel::DEBUG);
     }
 
     // Check if texture definition exists
     if (data.contains("cubemaps")) {
         // Read data into model
-        logger.log("Reading cubemap paths from JSON file.", LogLevel::DEBUG);
+        logger.log(
+            fmt::format(LOG_READING_FIELD, "cubemap paths"),
+            LogLevel::DEBUG);
         auto cubemapData = data.at("cubemaps");
 
         auto basePath = filePath.parent_path();
@@ -120,11 +123,50 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
 
     } else {
         logger.log(
-            fmt::format(LOG_CUBEMAP_MISSING, filePath.c_str()),
+            fmt::format(LOG_FIELD_MISSING, "cubemaps", filePath.c_str()),
             LogLevel::DEBUG);
     }
 
     return std::optional(std::move(*model));
+}
+
+std::shared_ptr<ShaderUniformModel>
+FileDataLoader::addUniforms(
+        std::shared_ptr<ShaderUniformModel> model,
+        json json) {
+    for (auto& [index, info] : json.items()) {
+        // Verify required fields
+        if (!verifySubfield(
+                info, index, "Uniform", "name")) {
+            continue;
+        }
+        std::string name = info.at("name");
+
+        if (!verifySubfield(
+                info, index, "Uniform", "value")) {
+            continue;
+        }
+        auto value = info.at("value");
+
+        std::string type;
+        if (info.contains("type")) {
+            type = info.at("type");
+        } else {
+            type = "";
+        }
+
+        if (type == TypeMap<bool>::key) {
+            model = addUniform<bool>(model, value, name);
+        } else if (type == TypeMap<unsigned int>::key) {
+            model = addUniform<unsigned int>(model, value, name);
+        } else if (type == TypeMap<int>::key) {
+            model = addUniform<int>(model, value, name);
+        } else {
+            model = addUniform<float>(model, value, name);
+        }
+    }
+
+    return model;
 }
 
 std::shared_ptr<ShaderUniformModel>
@@ -134,21 +176,15 @@ FileDataLoader::addTextures(
         std::filesystem::path basePath) {
     for (auto& [index, texInfo] : json.items()) {
         // Verify required fields
-        if (!texInfo.contains("name")) {
-            logger.log(
-                fmt::format(LOG_FIELD_MISSING,
-                    "Texture", index.c_str(), "name"),
-                LogLevel::WARN);
-            return model;
+        if (!verifySubfield(
+                texInfo, index, "Texture", "name")) {
+            continue;
         }
         std::string name = texInfo.at("name");
 
-        if (!texInfo.contains("path")) {
-            logger.log(
-                fmt::format(LOG_FIELD_MISSING,
-                    "Texture", index.c_str(), "path"),
-                LogLevel::WARN);
-            return model;
+        if (!verifySubfield(
+                texInfo, index, "Texture", "path")) {
+            continue;
         }
         std::filesystem::path path = texInfo.at("path");
 
@@ -177,21 +213,15 @@ FileDataLoader::addCubemaps(
         std::filesystem::path basePath) {
     for (auto& [index, cubeInfo] : json.items()) {
         // Verify required fields
-        if (!cubeInfo.contains("name")) {
-            logger.log(
-                fmt::format(LOG_FIELD_MISSING,
-                    "Cubemap", index.c_str(), "name"),
-                LogLevel::WARN);
-            return model;
+        if (!verifySubfield(
+                cubeInfo, index, "Cubemap", "name")) {
+            continue;
         }
         std::string name = cubeInfo.at("name");
 
-        if (!cubeInfo.contains("paths")) {
-            logger.log(
-                fmt::format(LOG_FIELD_MISSING,
-                    "Cubemap", index.c_str(), "paths"),
-                LogLevel::WARN);
-            return model;
+        if (!verifySubfield(
+                cubeInfo, index, "Cubemap", "paths")) {
+            continue;
         }
         auto paths = cubeInfo.at("paths");
 
@@ -237,6 +267,20 @@ FileDataLoader::addCubemaps(
     }
 
     return model;
+}
+
+bool FileDataLoader::verifySubfield(json json,
+        const std::string& index,
+        const std::string& baseField,
+        const std::string& subField) {
+    if (!json.contains(subField)) {
+        logger.log(
+            fmt::format(LOG_SUBFIELD_MISSING,
+                baseField, index, subField),
+            LogLevel::WARN);
+        return false;
+    }
+    return true;
 }
 
 }  // namespace basil
