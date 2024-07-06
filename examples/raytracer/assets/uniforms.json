@@ -1,0 +1,16 @@
+{
+    "cubemaps" : [
+        {
+            "name" : "skybox",
+            "paths": {
+                "base":   "skybox",
+                "front":  "front.jpg",
+                "back":   "back.jpg",
+                "left":   "left.jpg",
+                "right":  "right.jpg",
+                "top":    "top.jpg",
+                "bottom": "bottom.jpg"
+            }
+        }
+    ]
+}

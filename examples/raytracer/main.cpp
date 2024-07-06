@@ -1,6 +1,5 @@
 #include <Basil/App.hpp>
 
-#include "src/CubemapLoader.hpp"
 #include "src/CameraController.hpp"
 #include "src/SidePanel.hpp"
 
@@ -12,7 +11,7 @@ namespace rt = basil::raytracer;
 int main(int argc, char** argv) {
     auto currentPath = std::filesystem::path(__FILE__).parent_path();
     auto shaderPath = currentPath / "shaders/raytracer.frag";
-    auto skyboxPath = currentPath / "assets/skybox";
+    auto jsonPath = currentPath / "assets/uniforms.json";
 
     basil::Logger::get().setLevel(basil::LogLevel::DEBUG);
 
@@ -23,7 +22,8 @@ int main(int argc, char** argv) {
     // TODO(sholloway): Clean up src files
     // TODO(sholloway): Stats and controls
     // TODO(sholloway): Screenshot tool
-    // TODO(sholloway): Delegate IProcesses for Widgets
+    // TODO(sholloway): More info text
+    // TODO(sholloway): Delegate IProcesses for Widgets?
 
     std::shared_ptr<basil::IPane> focusPane;
     auto basilApp = basil::BasilApp::Builder()
@@ -46,10 +46,12 @@ int main(int argc, char** argv) {
             .withRegularity(300)
             .withLogLevel(basil::LogLevel::INFO)
             .build())
+        .withWidget(basil::UniformJSONFileWatcher::Builder()
+            .withFilePath(jsonPath)
+            .build())
         .withWidget(rt::CameraController::Builder()
             .withFocusPane(focusPane)
             .build())
-        .withWidget(std::make_shared<rt::CubemapLoader>(skyboxPath, "skybox"))
         .build();
 
     basilApp->run();

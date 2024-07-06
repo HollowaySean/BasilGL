@@ -4,6 +4,7 @@
 
 #include <fmt/format.h>
 
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -135,10 +136,26 @@ class FileDataLoader {
     }
 
     static std::shared_ptr<ShaderUniformModel>
-    addTexture(
+    addTextures(
         std::shared_ptr<ShaderUniformModel> model,
         json json,
         std::filesystem::path basePath);
+
+    static std::shared_ptr<ShaderUniformModel>
+    addCubemaps(
+        std::shared_ptr<ShaderUniformModel> model,
+        json json,
+        std::filesystem::path basePath);
+
+    static inline const std::map<std::string, GLenum>
+        CUBE_FACE_TO_ENUM_MAP = {
+            { "right",  GL_TEXTURE_CUBE_MAP_POSITIVE_X },
+            { "left",   GL_TEXTURE_CUBE_MAP_NEGATIVE_X },
+            { "top",    GL_TEXTURE_CUBE_MAP_POSITIVE_Y },
+            { "bottom", GL_TEXTURE_CUBE_MAP_NEGATIVE_Y },
+            { "front",  GL_TEXTURE_CUBE_MAP_POSITIVE_Z },
+            { "back",   GL_TEXTURE_CUBE_MAP_NEGATIVE_Z }
+        };
 
     LOGGER_FORMAT LOG_FILE_MISSING =
         "File not found at path: {0}";
@@ -164,9 +181,19 @@ class FileDataLoader {
         "Could not coerce value \"{2}\" from key \"{1}\" "
         "at position {3} to type {0}";
     LOGGER_FORMAT LOG_TEXTURE_ADDED =
-        "Adding texture with name {0} from file {1}";
+        "Adding texture with name \"{0}\" from file {1}";
     LOGGER_FORMAT LOG_TEXTURES_MISSING =
         "No field with key \"textures\" found in file {0}";
+
+    LOGGER_FORMAT LOG_CUBEMAP_CREATED =
+        "Creating cubemap with name {0}";
+    LOGGER_FORMAT LOG_CUBEMAP_FACE_ADDED =
+        "Adding face \"{0}\" to cubemap from file {1}";
+    LOGGER_FORMAT LOG_CUBEMAP_MISSING =
+        "No field with key \"cubemaps\" found in file {0}";
+
+    LOGGER_FORMAT LOG_FIELD_MISSING =
+        "{0} at position {1} is missing required field \"{2}\"";
 };
 
 }   // namespace basil
