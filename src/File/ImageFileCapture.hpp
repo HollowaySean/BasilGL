@@ -64,8 +64,6 @@ class ImageFileCapture : private IBasilContextConsumer {
     unsigned int jpegQuality = 80;
     unsigned int pngCompression = 8;
 
-    unsigned int callbackID;
-
     LOGGER_FORMAT LOG_BUFFER_CREATED =
         "Pixel Buffer (ID{:02}) - Pixel buffer created.";
     LOGGER_FORMAT LOG_BUFFER_DELETED =

@@ -12,15 +12,19 @@ int main(int argc, char** argv) {
     auto currentPath = std::filesystem::path(__FILE__).parent_path();
     auto shaderPath = currentPath / "shaders/raytracer.frag";
     auto jsonPath = currentPath / "assets/uniforms.json";
+    auto screenshotPath = currentPath / "output";
+
+    if (!std::filesystem::is_directory(screenshotPath)) {
+        std::filesystem::create_directory(screenshotPath);
+    }
 
     basil::Logger::get().setLevel(basil::LogLevel::DEBUG);
 
     // TODO(sholloway): Parameterized spheres
     // TODO(sholloway): More advanced rendering
     // TODO(sholloway): Stats and controls
-    // TODO(sholloway): Screenshot tool
     // TODO(sholloway): More info text
-    // TODO(sholloway): Delegate IProcesses for Widgets?
+    // TODO(sholloway): Redraw pane on resize if out of focus
 
     std::shared_ptr<basil::IPane> focusPane;
     auto basilApp = basil::BasilApp::Builder()
@@ -45,6 +49,12 @@ int main(int argc, char** argv) {
             .build())
         .withWidget(basil::UniformJSONFileWatcher::Builder()
             .withFilePath(jsonPath)
+            .build())
+        .withWidget(basil::ScreenshotTool::Builder()
+            .withFocusPane(focusPane)
+            .withSaveDirectory(screenshotPath)
+            .withSaveFileName("screenshot.png")
+            .withTriggerKey(GLFW_KEY_F)
             .build())
         .withWidget(rt::CameraController::Builder()
             .withFocusPane(focusPane)
