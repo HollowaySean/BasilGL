@@ -24,7 +24,6 @@ int main(int argc, char** argv) {
     // TODO(sholloway): More advanced rendering
     // TODO(sholloway): Stats and controls
     // TODO(sholloway): More info text
-    // TODO(sholloway): Redraw pane on resize if out of focus
 
     std::shared_ptr<basil::IPane> focusPane;
     auto basilApp = basil::BasilApp::Builder()

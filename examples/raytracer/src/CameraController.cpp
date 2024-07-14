@@ -87,6 +87,10 @@ void CameraController::onResize(int width, int height) {
 
     float aspectRatio = static_cast<float>(width) / height;
     camera.setAspectRatio(aspectRatio);
+
+    // Update projection to prevent skewing
+    updateProjectionUniforms();
+    publishData(DataMessage(uniformModel));
 }
 
 void CameraController::checkControlLock() {
