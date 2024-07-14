@@ -22,6 +22,7 @@ enum class LogLevel {
 };
 
 // TODO(sholloway): Make static instead of Singleton
+// TODO(sholloway): Use preprocessor macros to avoid compiling in production builds
 
 /**
  * @brief Global logger using Singleton pattern.

@@ -6,8 +6,6 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/ext.hpp>
 
-// TODO(sholloway): Clamp camera tilt
-
 namespace basil::raytracer {
 
 enum class Chirality {
