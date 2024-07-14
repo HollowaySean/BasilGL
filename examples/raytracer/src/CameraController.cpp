@@ -35,10 +35,8 @@ void CameraController::onStart() {
         std::bind(&CameraController::onResize, this, _1, _2));
 
     // Set initial aspect ratio
-    auto window = BasilContext::getGLFWWindow();
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    onResize(width, height);
+    auto windowArea = BasilContext::getWindowArea();
+    onResize(windowArea.width, windowArea.height);
 
     // Set initial camera position
     camera.setPosition(glm::vec3(0, 1, -1));

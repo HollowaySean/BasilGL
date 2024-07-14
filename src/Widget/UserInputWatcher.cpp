@@ -88,8 +88,9 @@ void UserInputWatcher::checkIsMouseInWindow() {
 
 void UserInputWatcher::checkWindowSize() {
     #ifndef TEST_BUILD
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
+    auto windowArea = BasilContext::getWindowArea();
+    int width = windowArea.width;
+    int height = windowArea.height;
     #else
     int width = TEST_WINDOW_WIDTH;
     int height = TEST_WINDOW_HEIGHT;

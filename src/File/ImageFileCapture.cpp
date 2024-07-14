@@ -47,9 +47,8 @@ bool ImageFileCapture::capture(
     auto area = captureArea.value_or(
         ViewArea { width, height, 0, 0 });
 
-    GLFWwindow* window = BasilContext::getGLFWWindow();
-    glfwGetFramebufferSize(window, &width, &height);
-    updateBufferSize(width, height);
+    auto windowArea = BasilContext::getWindowArea();
+    updateBufferSize(windowArea.width, windowArea.height);
 
     auto pixelDataPointer = copyFrameToBuffer(area);
 
@@ -72,10 +71,8 @@ std::future<bool> ImageFileCapture::captureAsync(
     auto area = captureArea.value_or(
         ViewArea { width, height, 0, 0 });
 
-    // TODO(sholloway): GetWindowArea function for BasilContext
-    GLFWwindow* window = BasilContext::getGLFWWindow();
-    glfwGetFramebufferSize(window, &width, &height);
-    updateBufferSize(width, height);
+    auto windowArea = BasilContext::getWindowArea();
+    updateBufferSize(windowArea.width, windowArea.height);
 
     auto pixelDataPointer = copyFrameToBuffer(area);
 
