@@ -1,7 +1,5 @@
 #include <fmt/format.h>
 
-#include "File/FileTextureSource.hpp"
-
 #include "GLTexture.hpp"
 
 namespace basil {
@@ -206,8 +204,45 @@ GLTextureCubemap::Builder::withSource(std::shared_ptr<ITextureSource<2>> source,
 GLTextureCubemap::Builder&
 GLTextureCubemap::Builder::fromFile(std::filesystem::path filePath,
             GLenum face) {
-    auto source = std::make_shared<FileTextureSource>(filePath, false);
-    return withSource(source, face);
+    sourceFutures.emplace(
+        std::async(std::launch::async,
+            [filePath, face](){
+                return std::make_pair(
+                    std::make_shared<FileTextureSource>(filePath, false),
+                    face);
+            }));
+
+    return (*this);
+}
+
+std::shared_ptr<GLTextureCubemap>
+GLTextureCubemap::Builder::build() {
+    while (sourceFutures.size() > 0) {
+        auto& future = sourceFutures.top();
+        auto status = future.wait_for(FILE_LOAD_TIMEOUT);
+
+        switch (status) {
+            case std::future_status::ready:
+            {
+                FacePair result = future.get();
+                this->withSource(result.first, result.second);
+
+                sourceFutures.pop();
+                break;
+            }
+            case std::future_status::timeout:
+            default:
+                Logger& logger = Logger::get();
+                logger.log(
+                    fmt::format(LOG_LOAD_TIMEOUT, impl->getID()),
+                    LogLevel::ERROR);
+
+                sourceFutures.pop();
+                break;
+        }
+    }
+
+    return std::move(impl);
 }
 
 }  // namespace basil

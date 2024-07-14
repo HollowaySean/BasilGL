@@ -5,13 +5,20 @@
 #include <GL/glew.h>
 
 #include <filesystem>
+#include <future>
 #include <map>
 #include <memory>
 #include <unordered_map>
+#include <stack>
+#include <utility>
 
 #include <Basil/Packages/Builder.hpp>
 #include <Basil/Packages/Context.hpp>
 #include <Basil/Packages/Logging.hpp>
+
+#include "Chrono/FrameClock.hpp"
+
+#include "File/FileTextureSource.hpp"
 
 #include "OpenGL/ITextureSource.hpp"
 #include "OpenGL/SpanTextureSource.hpp"
@@ -181,6 +188,21 @@ class GLTextureCubemap : public IGLTexture,
 
         /** @brief Sets texture parameters. */
         Builder& withParameter(GLenum parameterName, GLenum value);
+
+        /** @brief Builds object, after waiting for file loading
+         *  to complete for all faces of the cubemap. */
+        std::shared_ptr<GLTextureCubemap> build() override;
+
+     private:
+        static inline const FrameClock::duration FILE_LOAD_TIMEOUT
+            = std::chrono::seconds(1);
+
+        using FacePair = std::pair<std::shared_ptr<FileTextureSource>, GLenum>;
+        using FaceFuture = std::future<FacePair>;
+        std::stack<FaceFuture> sourceFutures;
+
+        LOGGER_FORMAT LOG_LOAD_TIMEOUT =
+            "Texture (ID{:02}) - Timed out loading cubemap face from file.";
     };
 
  private:
