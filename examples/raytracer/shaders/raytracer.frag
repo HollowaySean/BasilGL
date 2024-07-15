@@ -72,7 +72,9 @@ void intersectGroundPlane(Ray ray, inout RayHit bestHit) {
     }
 }
 
-void intersectSphere(Ray ray, inout RayHit bestHit, vec4 sphere) {
+void intersectSphere(Ray ray, inout RayHit bestHit, int sphereIndex) {
+    vec4 sphere = vec4(spherePositions[sphereIndex], sphereSizes[sphereIndex]);
+
     vec3 d = ray.origin - sphere.xyz;
     float p1 = -dot(ray.direction, d);
     float p2sqr = p1 * p1 - dot(d, d) + sphere.w * sphere.w;
@@ -91,7 +93,7 @@ RayHit trace(Ray ray) {
     RayHit bestHit = createRayHit();
     intersectGroundPlane(ray, bestHit);
     for (int i = 0; i < numSpheres; i++) {
-        intersectSphere(ray, bestHit, vec4(spherePositions[i], sphereSizes[i]));
+        intersectSphere(ray, bestHit, i);
     }
 
     return bestHit;

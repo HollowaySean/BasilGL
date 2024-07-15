@@ -26,7 +26,15 @@ class CameraController : public IBasilWidget,
         this->focusPane = focusPane;
     }
 
-    // TODO(sholloway): Set position/tilt methods
+    void setPosition(glm::vec3 setPosition);
+
+    void setPosition(float x, float y, float z) {
+        setPosition(glm::vec3(x, y, z));
+    }
+
+    void setTilt(float setTiltAngle);
+
+    void setMaximumTiltAngle(float setMaxTiltAngle);
 
     class Builder : public IBuilder<CameraController> {
      public:
@@ -36,12 +44,22 @@ class CameraController : public IBasilWidget,
         }
 
         Builder& withPosition(float x, float y, float z) {
-            return withPosition(glm::vec3(x, y, z));
+            this->impl->setPosition(x, y, z);
+            return (*this);
         }
 
         Builder& withPosition(glm::vec3 setPosition) {
-            this->impl->camera.setPosition(setPosition);
-            this->impl->position = setPosition;
+            this->impl->setPosition(setPosition);
+            return (*this);
+        }
+
+        Builder& withTiltAngle(float tiltAngle) {
+            this->impl->setTilt(tiltAngle);
+            return (*this);
+        }
+
+        Builder& withMaximumTilt(float maxTiltAngle) {
+            this->impl->setMaximumTiltAngle(maxTiltAngle);
             return (*this);
         }
     };
@@ -72,6 +90,9 @@ class CameraController : public IBasilWidget,
     FrameClock::time_point lastFrameTime;
 
     ShaderUniformModel uniformModel;
+
+    float tiltAngle = 0.0f;
+    float maxTiltAngle = 80.0f;
 
     glm::vec3 position = glm::vec3();
     glm::mat4 inverseView = glm::mat4();

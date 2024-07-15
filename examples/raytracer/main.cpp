@@ -35,15 +35,19 @@ int main(int argc, char** argv) {
         .withWidget(basil::WindowView::Builder()
             .withDimensions(1000, 800)
             .withTitle("BasilGL Ray Tracing Demo")
-            .withTopPane(basil::SplitPane::Builder()
-                .withFixedPane(basil::SplitPane::FixedPane::SECOND)
-                .withPaneExtentInPixels(1)
-                .withFirstPane(focusPane = basil::HotReloadShaderPane::Builder()
-                    .fromFilePath(shaderPath)
-                    .build())
-                .withSecondPane(rt::SidePanel::Builder().build())
+            .withTopPane(focusPane = basil::HotReloadShaderPane::Builder()
+                .fromFilePath(shaderPath)
                 .build())
             .build())
+            // .withTopPane(basil::SplitPane::Builder()
+            //     .withFixedPane(basil::SplitPane::FixedPane::SECOND)
+            //     .withPaneExtentInPixels(200)
+            //     .withFirstPane(focusPane = basil::HotReloadShaderPane::Builder()
+            //         .fromFilePath(shaderPath)
+            //         .build())
+            //     .withSecondPane(rt::SidePanel::Builder().build())
+            //     .build())
+            // .build())
         .withWidget(basil::MetricsReporter::Builder()
             .withRegularity(300)
             .withLogLevel(basil::LogLevel::INFO)
@@ -59,11 +63,13 @@ int main(int argc, char** argv) {
             .build())
         .withWidget(rt::CameraController::Builder()
             .withFocusPane(focusPane)
-            .withPosition(0.0f, 5.0f, -100.0f)
+            .withPosition(0.0f, 5.0f, -10.0f)
+            .withTiltAngle(-30.0f)
+            .withMaximumTilt(80.0f)
             .build())
         .build();
 
-    const int SPHERE_GRID_SIZE = 4;
+    const int SPHERE_GRID_SIZE = 5;
     const int NUM_SPHERES = SPHERE_GRID_SIZE * SPHERE_GRID_SIZE;
     std::vector<float> spherePositions
         = std::vector<float>();
@@ -75,7 +81,7 @@ int main(int argc, char** argv) {
     std::uniform_real_distribution<float> randomSize(0.2f, 1.0f);
     for (int x = 0; x < SPHERE_GRID_SIZE; x++) {
         for (int z = 0; z < SPHERE_GRID_SIZE; z++) {
-            float xPos = 2*x - (SPHERE_GRID_SIZE / 2) - 0.5f + randomOffset(generator);
+            float xPos = 2*x - SPHERE_GRID_SIZE + 1 + randomOffset(generator);
             float yPos = 1.0f + randomOffset(generator);
             float zPos = 2*z + randomOffset(generator);
 

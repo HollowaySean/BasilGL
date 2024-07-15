@@ -4,6 +4,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/perpendicular.hpp>
 #include <glm/ext.hpp>
 
 namespace basil::raytracer {
@@ -43,6 +44,8 @@ class Camera {
     void setOrientation(
         glm::vec3 newCameraUp,
         glm::vec3 newCameraForward);
+
+    void setTiltAngle(float tiltAngle);
 
     void moveAbsolute(glm::vec3 offset);
 

@@ -72,6 +72,15 @@ void Camera::setOrientation(
     cameraForward = newCameraForward;
 }
 
+void Camera::setTiltAngle(float tiltAngle) {
+    glm::vec3 untiltedForward = glm::perp(
+        cameraForward, cameraProps.worldUp);
+    untiltedForward = glm::normalize(untiltedForward);
+
+    setOrientation(cameraProps.worldUp, untiltedForward);
+    tilt(tiltAngle);
+}
+
 void Camera::moveAbsolute(glm::vec3 offset) {
     setPosition(position + offset);
 }
@@ -89,7 +98,6 @@ void Camera::moveRelative(
 
     moveAbsolute(offset);
 }
-
 
 void Camera::pan(float turnAngle) {
     cameraForward = glm::rotate(

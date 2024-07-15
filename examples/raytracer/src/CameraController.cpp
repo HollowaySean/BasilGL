@@ -38,13 +38,9 @@ void CameraController::onStart() {
     auto windowArea = BasilContext::getWindowArea();
     onResize(windowArea.width, windowArea.height);
 
-    // Set initial camera position
-    // TODO(sholloway): Correct this
-    camera.setPosition(glm::vec3(0, 1, -1));
-    camera.setOrientation(
-        glm::vec3(0, 1, 0),
-        glm::vec3(0, 0, 1));
-    updateProjectionUniforms();
+    // Set initial  position
+    setPosition(position);
+    setTilt(tiltAngle);
 
     publishData(DataMessage(uniformModel));
 }
@@ -66,6 +62,32 @@ void CameraController::onLoop() {
 
 void CameraController::onStop() {
     BasilContext::removeGLFWFramebufferSizeCallback(callbackID);
+}
+
+void CameraController::setPosition(glm::vec3 setPosition) {
+    camera.setPosition(setPosition);
+    updateProjectionUniforms();
+}
+
+void CameraController::setTilt(float setTiltAngle) {
+    if (setTiltAngle > maxTiltAngle) {
+        setTiltAngle = maxTiltAngle;
+    } else if (setTiltAngle < -maxTiltAngle) {
+        setTiltAngle = -maxTiltAngle;
+    }
+
+    this->tiltAngle = setTiltAngle;
+    camera.setTiltAngle(tiltAngle);
+    updateProjectionUniforms();
+}
+
+void CameraController::setMaximumTiltAngle(float setMaxTiltAngle) {
+    this->maxTiltAngle = setMaxTiltAngle;
+    if (tiltAngle > maxTiltAngle) {
+        setTilt(maxTiltAngle);
+    } else if (tiltAngle < -maxTiltAngle) {
+        setTilt(-maxTiltAngle);
+    }
 }
 
 float CameraController::getDeltaTime() {
@@ -160,8 +182,18 @@ void CameraController::updateRotation(float deltaTime) {
     deltaY *= -1;  // Reverse value so positive is up
     lastMousePosition = currentMouse;
 
-    camera.pan(deltaX * mouseSpeed * deltaTime);
-    camera.tilt(deltaY * mouseSpeed * deltaTime);
+    float deltaPan = deltaX * mouseSpeed * deltaTime;
+    camera.pan(deltaPan);
+
+    float deltaTilt = deltaY * mouseSpeed * deltaTime;
+    // Clamp tilt angle to maxTiltAngle
+    if (deltaTilt > 0 && tiltAngle + deltaTilt > maxTiltAngle) {
+        deltaTilt = maxTiltAngle - tiltAngle;
+    } else if (deltaTilt < 0 && tiltAngle + deltaTilt < -maxTiltAngle) {
+        deltaTilt = -maxTiltAngle - tiltAngle;
+    }
+    tiltAngle += deltaTilt;
+    camera.tilt(deltaTilt);
 }
 
 void CameraController::updateProjectionUniforms() {
