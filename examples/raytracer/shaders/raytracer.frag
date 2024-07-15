@@ -12,14 +12,14 @@ uniform vec3 cameraPosition;
 
 uniform vec3 spherePositions[64];
 uniform float sphereSizes[64];
-uniform uint numSpheres;
+uniform int numSpheres;
 
 uniform float specularValue;
 uniform vec3 planeColor;
 
 uniform samplerCube skybox;
 
-uniform uint MAX_BOUNCES = 30;
+uniform uint MAX_BOUNCES = 10;
 uniform float INF = 3.4028233466e38;
 
 layout(location = 0) out vec4 FragColor;

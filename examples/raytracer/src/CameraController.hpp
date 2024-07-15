@@ -26,10 +26,22 @@ class CameraController : public IBasilWidget,
         this->focusPane = focusPane;
     }
 
+    // TODO(sholloway): Set position/tilt methods
+
     class Builder : public IBuilder<CameraController> {
      public:
         Builder& withFocusPane(std::shared_ptr<IPane> focusPane) {
             this->impl->setFocusPane(focusPane);
+            return (*this);
+        }
+
+        Builder& withPosition(float x, float y, float z) {
+            return withPosition(glm::vec3(x, y, z));
+        }
+
+        Builder& withPosition(glm::vec3 setPosition) {
+            this->impl->camera.setPosition(setPosition);
+            this->impl->position = setPosition;
             return (*this);
         }
     };

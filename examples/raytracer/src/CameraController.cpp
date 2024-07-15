@@ -39,6 +39,7 @@ void CameraController::onStart() {
     onResize(windowArea.width, windowArea.height);
 
     // Set initial camera position
+    // TODO(sholloway): Correct this
     camera.setPosition(glm::vec3(0, 1, -1));
     camera.setOrientation(
         glm::vec3(0, 1, 0),

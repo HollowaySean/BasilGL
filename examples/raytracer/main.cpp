@@ -1,16 +1,11 @@
+#include <random>
+
 #include <Basil/App.hpp>
 
 #include "src/CameraController.hpp"
 #include "src/SidePanel.hpp"
 
 namespace rt = basil::raytracer;
-
-struct Sphere {         // Alignment    // Offset
-    float position[3];  // 16           // 0
-    float size;         // 4            // 16
-
-    static inline unsigned int ALIGNMENT = 20;
-};
 
 /**
  * @brief BasilGL example project TODO(sholloway): This
@@ -64,30 +59,43 @@ int main(int argc, char** argv) {
             .build())
         .withWidget(rt::CameraController::Builder()
             .withFocusPane(focusPane)
+            .withPosition(0.0f, 5.0f, -100.0f)
             .build())
         .build();
 
-    const unsigned int NUM_SPHERES = 10;
+    const int SPHERE_GRID_SIZE = 4;
+    const int NUM_SPHERES = SPHERE_GRID_SIZE * SPHERE_GRID_SIZE;
     std::vector<float> spherePositions
         = std::vector<float>();
     std::vector<float> sphereSizes
         = std::vector<float>();
 
-    for (int i = 0; i < NUM_SPHERES; i++) {
-        spherePositions.push_back(2*i - NUM_SPHERES + 1);
-        spherePositions.push_back(1.0f);
-        spherePositions.push_back(10.0f);
-        sphereSizes.push_back(static_cast<float>(i + 1) / NUM_SPHERES);
+    std::default_random_engine generator;
+    std::uniform_real_distribution<float> randomOffset(-0.5f, 0.5f);
+    std::uniform_real_distribution<float> randomSize(0.2f, 1.0f);
+    for (int x = 0; x < SPHERE_GRID_SIZE; x++) {
+        for (int z = 0; z < SPHERE_GRID_SIZE; z++) {
+            float xPos = 2*x - (SPHERE_GRID_SIZE / 2) - 0.5f + randomOffset(generator);
+            float yPos = 1.0f + randomOffset(generator);
+            float zPos = 2*z + randomOffset(generator);
+
+            spherePositions.push_back(xPos);
+            spherePositions.push_back(yPos);
+            spherePositions.push_back(zPos);
+            sphereSizes.push_back(randomSize(generator));
+        }
     }
+
     auto positionUniform = std::make_shared<basil::GLUniformVector<float>>(
         spherePositions, "spherePositions", 3, 1, NUM_SPHERES);
     auto sizeUniform = std::make_shared<basil::GLUniformVector<float>>(
         sphereSizes, "sphereSizes", 1, 1, NUM_SPHERES);
 
-    auto sphereUniforms = basil::ShaderUniformModel();
-    sphereUniforms.addUniform(positionUniform);
-    sphereUniforms.addUniform(sizeUniform);
-    sphereUniforms.addUniform(NUM_SPHERES, "numSpheres");
+    auto sphereUniforms = basil::ShaderUniformModel::Builder()
+        .withUniform(positionUniform)
+        .withUniform(sizeUniform)
+        .withUniform(NUM_SPHERES, "numSpheres")
+        .build();
 
     basilApp->sendMessage(basil::DataMessage(sphereUniforms));
 
