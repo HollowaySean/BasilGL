@@ -10,16 +10,21 @@ uniform mat4 inverseView;
 uniform mat4 inverseProjection;
 uniform vec3 cameraPosition;
 
+uniform vec3 lightDirection;
+uniform float lightIntensity;
+
 uniform vec3 spherePositions[64];
 uniform float sphereSizes[64];
+uniform vec3 sphereAlbedo[64];
+uniform vec3 sphereSpecular[64];
 uniform int numSpheres;
 
-uniform float specularValue;
 uniform vec3 planeColor;
+uniform vec3 planeSpecular;
 
 uniform samplerCube skybox;
 
-uniform uint MAX_BOUNCES = 10;
+uniform uint MAX_BOUNCES = 8;
 uniform float INF = 3.4028233466e38;
 
 layout(location = 0) out vec4 FragColor;
@@ -43,6 +48,8 @@ struct RayHit {
     vec3 position;
     float distance;
     vec3 normal;
+    vec3 albedo;
+    vec3 specular;
 };
 
 RayHit createRayHit() {
@@ -69,6 +76,8 @@ void intersectGroundPlane(Ray ray, inout RayHit bestHit) {
         bestHit.distance = t;
         bestHit.position = ray.origin + t * ray.direction;
         bestHit.normal = vec3(0.0f, 1.0f, 0.0f);
+        bestHit.albedo = planeColor;
+        bestHit.specular = planeSpecular;
     }
 }
 
@@ -86,6 +95,8 @@ void intersectSphere(Ray ray, inout RayHit bestHit, int sphereIndex) {
         bestHit.distance = t;
         bestHit.position = ray.origin + t * ray.direction;
         bestHit.normal = normalize(bestHit.position - sphere.xyz);
+        bestHit.albedo = sphereAlbedo[sphereIndex];
+        bestHit.specular = sphereSpecular[sphereIndex];
     }
 }
 
@@ -101,13 +112,20 @@ RayHit trace(Ray ray) {
 
 vec3 shade(inout Ray ray, RayHit hit) {
     if (hit.distance < INF) {
-        vec3 specular = vec3(specularValue);
-
         ray.origin = hit.position + hit.normal * 0.001f;
         ray.direction = reflect(ray.direction, hit.normal);
-        ray.energy *= specular;
+        ray.energy *= hit.specular;
 
-        return vec3(0.0f);
+        bool shadow = false;
+        Ray shadowRay = createRay(hit.position + hit.normal * 0.001f,
+            -1 * normalize(lightDirection));
+        RayHit shadowHit = trace(shadowRay);
+        if (shadowHit.distance != INF) {
+            return vec3(0.0f);
+        }
+
+        return clamp(dot(hit.normal, lightDirection) * -1, 0.0f, 1.0f)
+            * lightIntensity * hit.albedo;
     } else {
         ray.energy = vec3(0.0f);
         return texture(skybox, ray.direction).rgb;
@@ -124,7 +142,7 @@ void main()
 
         RayHit hit = trace(ray);
         vec3 energy = ray.energy;
-        result += shade(ray, hit);
+        result += energy * shade(ray, hit);
 
         if (all(equal(ray.energy, vec3(0.0f)))) break;
     }

@@ -71,14 +71,16 @@ int main(int argc, char** argv) {
 
     const int SPHERE_GRID_SIZE = 5;
     const int NUM_SPHERES = SPHERE_GRID_SIZE * SPHERE_GRID_SIZE;
-    std::vector<float> spherePositions
-        = std::vector<float>();
-    std::vector<float> sphereSizes
-        = std::vector<float>();
+    std::vector<float> spherePositions = std::vector<float>();
+    std::vector<float> sphereSizes = std::vector<float>();
+    std::vector<float> sphereAlbedo = std::vector<float>();
+    std::vector<float> sphereSpecular = std::vector<float>();
 
     std::default_random_engine generator;
     std::uniform_real_distribution<float> randomOffset(-0.5f, 0.5f);
     std::uniform_real_distribution<float> randomSize(0.2f, 1.0f);
+    std::uniform_real_distribution<float> randomColor(0.0f, 1.0f);
+    std::uniform_real_distribution<float> randomSpecular(0.0f, 0.4f);
     for (int x = 0; x < SPHERE_GRID_SIZE; x++) {
         for (int z = 0; z < SPHERE_GRID_SIZE; z++) {
             float xPos = 2*x - SPHERE_GRID_SIZE + 1 + randomOffset(generator);
@@ -89,6 +91,12 @@ int main(int argc, char** argv) {
             spherePositions.push_back(yPos);
             spherePositions.push_back(zPos);
             sphereSizes.push_back(randomSize(generator));
+            sphereAlbedo.push_back(randomColor(generator));
+            sphereAlbedo.push_back(randomColor(generator));
+            sphereAlbedo.push_back(randomColor(generator));
+            sphereSpecular.push_back(randomSpecular(generator));
+            sphereSpecular.push_back(randomSpecular(generator));
+            sphereSpecular.push_back(randomSpecular(generator));
         }
     }
 
@@ -96,10 +104,16 @@ int main(int argc, char** argv) {
         spherePositions, "spherePositions", 3, 1, NUM_SPHERES);
     auto sizeUniform = std::make_shared<basil::GLUniformVector<float>>(
         sphereSizes, "sphereSizes", 1, 1, NUM_SPHERES);
+    auto albedoUniform = std::make_shared<basil::GLUniformVector<float>>(
+        sphereAlbedo, "sphereAlbedo", 3, 1, NUM_SPHERES);
+    auto specularUniform = std::make_shared<basil::GLUniformVector<float>>(
+        sphereSpecular, "sphereSpecular", 3, 1, NUM_SPHERES);
 
     auto sphereUniforms = basil::ShaderUniformModel::Builder()
         .withUniform(positionUniform)
         .withUniform(sizeUniform)
+        .withUniform(albedoUniform)
+        .withUniform(specularUniform)
         .withUniform(NUM_SPHERES, "numSpheres")
         .build();
 
