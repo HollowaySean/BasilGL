@@ -37,6 +37,8 @@ class BasilApp : public IBuildable<BasilApp> {
 
     void addWidget(std::shared_ptr<IBasilWidget> widget);
 
+    void sendMessage(DataMessage message);
+
     /** @brief Builder pattern for BasilApp. */
     class Builder : public IBuilder<BasilApp> {
      public:
@@ -59,13 +61,11 @@ class BasilApp : public IBuildable<BasilApp> {
 
     friend class Builder;
     void autoWire();
-    void autoWireWindowProcess();
     void autoWireWidget(std::shared_ptr<IBasilWidget> widget);
     void autoWireWidgetProcess(std::shared_ptr<IBasilWidget> widget);
     void autoWireWidgetPublisher(std::shared_ptr<IBasilWidget> widget);
 
     std::vector<std::shared_ptr<IBasilWidget>> widgets;
-
 
     std::shared_ptr<IDataPassThrough> publisher
         = std::make_shared<IDataPassThrough>();

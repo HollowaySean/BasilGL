@@ -5,6 +5,13 @@
 
 namespace rt = basil::raytracer;
 
+struct Sphere {         // Alignment    // Offset
+    float position[3];  // 16           // 0
+    float size;         // 4            // 16
+
+    static inline unsigned int ALIGNMENT = 20;
+};
+
 /**
  * @brief BasilGL example project TODO(sholloway): This
  */
@@ -12,8 +19,8 @@ int main(int argc, char** argv) {
     auto currentPath = std::filesystem::path(__FILE__).parent_path();
     auto shaderPath = currentPath / "shaders/raytracer.frag";
     auto jsonPath = currentPath / "assets/uniforms.json";
-    auto screenshotPath = currentPath / "output";
 
+    auto screenshotPath = currentPath / "output";
     if (!std::filesystem::is_directory(screenshotPath)) {
         std::filesystem::create_directory(screenshotPath);
     }
@@ -35,7 +42,7 @@ int main(int argc, char** argv) {
             .withTitle("BasilGL Ray Tracing Demo")
             .withTopPane(basil::SplitPane::Builder()
                 .withFixedPane(basil::SplitPane::FixedPane::SECOND)
-                .withPaneExtentInPixels(200)
+                .withPaneExtentInPixels(1)
                 .withFirstPane(focusPane = basil::HotReloadShaderPane::Builder()
                     .fromFilePath(shaderPath)
                     .build())
@@ -59,6 +66,30 @@ int main(int argc, char** argv) {
             .withFocusPane(focusPane)
             .build())
         .build();
+
+    const unsigned int NUM_SPHERES = 10;
+    std::vector<float> spherePositions
+        = std::vector<float>();
+    std::vector<float> sphereSizes
+        = std::vector<float>();
+
+    for (int i = 0; i < NUM_SPHERES; i++) {
+        spherePositions.push_back(2*i - NUM_SPHERES + 1);
+        spherePositions.push_back(1.0f);
+        spherePositions.push_back(10.0f);
+        sphereSizes.push_back(static_cast<float>(i + 1) / NUM_SPHERES);
+    }
+    auto positionUniform = std::make_shared<basil::GLUniformVector<float>>(
+        spherePositions, "spherePositions", 3, 1, NUM_SPHERES);
+    auto sizeUniform = std::make_shared<basil::GLUniformVector<float>>(
+        sphereSizes, "sphereSizes", 1, 1, NUM_SPHERES);
+
+    auto sphereUniforms = basil::ShaderUniformModel();
+    sphereUniforms.addUniform(positionUniform);
+    sphereUniforms.addUniform(sizeUniform);
+    sphereUniforms.addUniform(NUM_SPHERES, "numSpheres");
+
+    basilApp->sendMessage(basil::DataMessage(sphereUniforms));
 
     basilApp->run();
 

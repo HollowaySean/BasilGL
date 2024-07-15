@@ -35,6 +35,10 @@ void BasilApp::addWidget(std::shared_ptr<IBasilWidget> widget) {
     widgets.emplace_back(widget);
 }
 
+void BasilApp::sendMessage(DataMessage message) {
+    publisher->publishData(message);
+}
+
 void BasilApp::logControllerMissing() {
     logger.log("ProcessController not found for BasilApp.",
         LogLevel::WARN);

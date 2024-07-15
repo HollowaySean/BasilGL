@@ -25,7 +25,7 @@ void CameraController::onStart() {
     positionID = uniformModel.addUniform(
         std::make_shared<GLUniformPointer<float>>(
             glm::value_ptr(position),
-                "position", 3, 1, 1));
+                "cameraPosition", 3, 1, 1));
 
     userInputWatcher.onStart();
     lastMousePosition = inputModel.getMousePosition();

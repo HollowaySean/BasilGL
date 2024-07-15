@@ -8,7 +8,11 @@ in vec2 TexCoord;
 
 uniform mat4 inverseView;
 uniform mat4 inverseProjection;
-uniform vec3 position;
+uniform vec3 cameraPosition;
+
+uniform vec3 spherePositions[64];
+uniform float sphereSizes[64];
+uniform uint numSpheres;
 
 uniform float specularValue;
 uniform vec3 planeColor;
@@ -55,7 +59,7 @@ Ray createCameraRay(vec2 uv) {
     direction = (inverseView * vec4(direction, 0.0f)).xyz;
     direction = normalize(direction);
 
-    Ray ray = createRay(position, direction);
+    Ray ray = createRay(cameraPosition, direction);
     return ray;
 }
 
@@ -86,7 +90,9 @@ void intersectSphere(Ray ray, inout RayHit bestHit, vec4 sphere) {
 RayHit trace(Ray ray) {
     RayHit bestHit = createRayHit();
     intersectGroundPlane(ray, bestHit);
-    intersectSphere(ray, bestHit, vec4(0.0f, 1.0f, 10.0f, 1.0f));
+    for (int i = 0; i < numSpheres; i++) {
+        intersectSphere(ray, bestHit, vec4(spherePositions[i], sphereSizes[i]));
+    }
 
     return bestHit;
 }

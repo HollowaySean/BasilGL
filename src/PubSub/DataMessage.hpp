@@ -1,6 +1,7 @@
 #pragma once
 
 #include <any>
+#include <memory>
 #include <optional>
 
 namespace basil {
@@ -16,9 +17,16 @@ class DataMessage {
      *           or nullopt if not castable. */
     template<class T>
     std::optional<T> getData() const {
+        // Try casting to base class
         try {
             T result = std::any_cast<T>(data);
             return std::optional(result);
+        } catch (std::bad_any_cast) {}
+
+        // Try casting to pointer
+        try {
+            std::shared_ptr<T> result = std::any_cast<std::shared_ptr<T>>(data);
+            return std::optional(*result);
         } catch (std::bad_any_cast) {
             return std::nullopt;
         }
