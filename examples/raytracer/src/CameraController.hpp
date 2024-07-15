@@ -98,9 +98,10 @@ class CameraController : public IBasilWidget,
     glm::mat4 inverseView = glm::mat4();
     glm::mat4 inverseProjection = glm::mat4();
 
-    unsigned int invViewID  = -1;
-    unsigned int invProjID  = -1;
-    unsigned int positionID = -1;
+    unsigned int invViewID    = -1;
+    unsigned int invProjID    = -1;
+    unsigned int positionID   = -1;
+    unsigned int resolutionID = -1;
 
     unsigned int callbackID = -1;
 };

@@ -22,8 +22,8 @@ int main(int argc, char** argv) {
 
     basil::Logger::get().setLevel(basil::LogLevel::DEBUG);
 
-    // TODO(sholloway): Parameterized spheres
-    // TODO(sholloway): More advanced rendering
+    // TODO(sholloway): Move sphere logic into separate file
+    // TODO(sholloway): Preview vs render settings
     // TODO(sholloway): Stats and controls
     // TODO(sholloway): More info text
 
@@ -35,19 +35,15 @@ int main(int argc, char** argv) {
         .withWidget(basil::WindowView::Builder()
             .withDimensions(1000, 800)
             .withTitle("BasilGL Ray Tracing Demo")
-            .withTopPane(focusPane = basil::HotReloadShaderPane::Builder()
-                .fromFilePath(shaderPath)
+            .withTopPane(basil::SplitPane::Builder()
+                .withFixedPane(basil::SplitPane::FixedPane::SECOND)
+                .withPaneExtentInPixels(200)
+                .withFirstPane(focusPane = basil::HotReloadShaderPane::Builder()
+                    .fromFilePath(shaderPath)
+                    .build())
+                .withSecondPane(rt::SidePanel::Builder().build())
                 .build())
             .build())
-            // .withTopPane(basil::SplitPane::Builder()
-            //     .withFixedPane(basil::SplitPane::FixedPane::SECOND)
-            //     .withPaneExtentInPixels(200)
-            //     .withFirstPane(focusPane = basil::HotReloadShaderPane::Builder()
-            //         .fromFilePath(shaderPath)
-            //         .build())
-            //     .withSecondPane(rt::SidePanel::Builder().build())
-            //     .build())
-            // .build())
         .withWidget(basil::MetricsReporter::Builder()
             .withRegularity(300)
             .withLogLevel(basil::LogLevel::INFO)
@@ -69,7 +65,7 @@ int main(int argc, char** argv) {
             .build())
         .build();
 
-    const int SPHERE_GRID_SIZE = 5;
+    const int SPHERE_GRID_SIZE = 8;
     const int NUM_SPHERES = SPHERE_GRID_SIZE * SPHERE_GRID_SIZE;
     std::vector<float> spherePositions = std::vector<float>();
     std::vector<float> sphereSizes = std::vector<float>();

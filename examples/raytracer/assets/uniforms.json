@@ -14,7 +14,22 @@
         },
         {
             "name" : "lightIntensity",
-            "value" : 1.0
+            "value" : 1.2
+        },
+        {
+            "name" : "MSAA_FACTOR",
+            "value" : 1,
+            "type" : "unsigned int"
+        },
+        {
+            "name" : "MAX_BOUNCES",
+            "value" : 2,
+            "type" : "unsigned int"
+        },
+        {
+            "name" : "SPHERE_LIMIT",
+            "value" : 64,
+            "type" : "unsigned int"
         }
     ],
     "cubemaps" : [

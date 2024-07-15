@@ -6,6 +6,8 @@
 
 in vec2 TexCoord;
 
+uniform ivec2 resolution;
+
 uniform mat4 inverseView;
 uniform mat4 inverseProjection;
 uniform vec3 cameraPosition;
@@ -24,7 +26,10 @@ uniform vec3 planeSpecular;
 
 uniform samplerCube skybox;
 
-uniform uint MAX_BOUNCES = 8;
+uniform uint MSAA_FACTOR;
+uniform uint MAX_BOUNCES;
+uniform uint SPHERE_LIMIT;
+
 uniform float INF = 3.4028233466e38;
 
 layout(location = 0) out vec4 FragColor;
@@ -103,7 +108,8 @@ void intersectSphere(Ray ray, inout RayHit bestHit, int sphereIndex) {
 RayHit trace(Ray ray) {
     RayHit bestHit = createRayHit();
     intersectGroundPlane(ray, bestHit);
-    for (int i = 0; i < numSpheres; i++) {
+
+    for (int i = 0; i < min(numSpheres, SPHERE_LIMIT); i++) {
         intersectSphere(ray, bestHit, i);
     }
 
@@ -135,17 +141,31 @@ vec3 shade(inout Ray ray, RayHit hit) {
 void main()
 {
     vec2 uv = 2*TexCoord - 1.0f;
-    Ray ray = createCameraRay(uv);
-    vec3 result = vec3(0.0f);
+    vec2 offsetSize = 2.0f / resolution;
 
-    for (uint i = 0; i < MAX_BOUNCES; i++) {
+    vec3 averagedSum = vec3(0.0f);
+    for (int x_iter = 0; x_iter < MSAA_FACTOR; x_iter++) {
+        for (int y_iter = 0; y_iter < MSAA_FACTOR; y_iter++) {
+            vec2 pixelOffset = vec2(x_iter, y_iter);
+            pixelOffset -= (MSAA_FACTOR - 1) / 2.0f;
+            pixelOffset /= MSAA_FACTOR;
 
-        RayHit hit = trace(ray);
-        vec3 energy = ray.energy;
-        result += energy * shade(ray, hit);
+            vec2 offset = pixelOffset * offsetSize;
+            Ray ray = createCameraRay(uv + offset);
 
-        if (all(equal(ray.energy, vec3(0.0f)))) break;
+            vec3 result = vec3(0.0f);
+            for (uint i = 0; i < MAX_BOUNCES; i++) {
+
+                RayHit hit = trace(ray);
+                vec3 energy = ray.energy;
+                result += energy * shade(ray, hit);
+
+                if (all(equal(ray.energy, vec3(0.0f)))) break;
+            }
+
+            averagedSum += result / (MSAA_FACTOR * MSAA_FACTOR);
+        }
     }
 
-    FragColor = vec4(result, 1.0);
+    FragColor = vec4(averagedSum, 1.0);
 }

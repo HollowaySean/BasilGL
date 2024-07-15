@@ -27,6 +27,10 @@ void CameraController::onStart() {
             glm::value_ptr(position),
                 "cameraPosition", 3, 1, 1));
 
+    resolutionID = uniformModel.addUniform(
+        std::vector<int>({ 0, 0 }),
+        "resolution");
+
     userInputWatcher.onStart();
     lastMousePosition = inputModel.getMousePosition();
 
@@ -107,6 +111,11 @@ void CameraController::onResize(int width, int height) {
         width = focusPane->viewArea.width;
         height = focusPane->viewArea.height;
     }
+
+    // Update resolution uniform
+    uniformModel.setUniformValue(
+        std::vector<int>({ width, height }),
+        resolutionID);
 
     float aspectRatio = static_cast<float>(width) / height;
     camera.setAspectRatio(aspectRatio);
