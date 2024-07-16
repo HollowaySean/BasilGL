@@ -19,7 +19,7 @@ uniform vec3 spherePositions[64];
 uniform float sphereSizes[64];
 uniform vec3 sphereAlbedo[64];
 uniform vec3 sphereSpecular[64];
-uniform int numSpheres;
+uniform int sphereCount;
 
 uniform vec3 planeColor;
 uniform vec3 planeSpecular;
@@ -109,7 +109,7 @@ RayHit trace(Ray ray) {
     RayHit bestHit = createRayHit();
     intersectGroundPlane(ray, bestHit);
 
-    for (int i = 0; i < min(numSpheres, SPHERE_LIMIT); i++) {
+    for (int i = 0; i < min(sphereCount, SPHERE_LIMIT); i++) {
         intersectSphere(ray, bestHit, i);
     }
 

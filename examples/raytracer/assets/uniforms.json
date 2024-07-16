@@ -6,7 +6,7 @@
         },
         {
             "name" : "planeSpecular",
-            "value" : [ 0.3, 0.3, 0.3 ]
+            "value" : [ 0.8, 0.9, 0.9 ]
         },
         {
             "name" : "lightDirection",
@@ -18,12 +18,12 @@
         },
         {
             "name" : "MSAA_FACTOR",
-            "value" : 1,
+            "value" : 2,
             "type" : "unsigned int"
         },
         {
             "name" : "MAX_BOUNCES",
-            "value" : 2,
+            "value" : 4,
             "type" : "unsigned int"
         },
         {
