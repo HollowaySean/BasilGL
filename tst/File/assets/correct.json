@@ -1,20 +1,43 @@
 {
-    "uniforms" : {
-        "float" : {
-            "test1": 0.8,
-            "test2": [0, 456.789, "badValue"]
+    "uniforms" : [
+        {
+            "name" : "test1",
+            "value" : 0.8
         },
-        "bool" : {
-            "test3": true,
-            "test4": [false, true]
+        {
+            "name" : "test2",
+            "value" : [0, 456.789, "badValue"]
         },
-        "unsigned int" : {
-            "test5": 9,
-            "test6":[10],
-            "test7": -1
+        {
+            "name" : "test3",
+            "value" : true,
+            "type" : "bool"
+        },
+        {
+            "name": "test4",
+            "value": [false, true],
+            "type": "bool"
+        },
+        {
+            "name" : "test5",
+            "value" : 9,
+            "type": "unsigned int"
+        },
+        {
+            "name" : "test6",
+            "value" : [10],
+            "type": "unsigned int"
+        },
+        {
+            "name": "test7",
+            "value": -1,
+            "type": "unsigned int"
         }
-    },
-    "textures" : {
-        "testTexture": "test-img.jpg"
-    }
+    ],
+    "textures" : [
+        {
+            "name" : "testTexture",
+            "path" : "test-img.jpg"
+        }
+    ]
 }

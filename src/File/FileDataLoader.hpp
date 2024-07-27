@@ -17,6 +17,7 @@ using json = nlohmann::json;
 
 #include "Data/ShaderUniformModel.hpp"
 
+// TODO(sholloway): Concise version of JSON uniforms?
 
 namespace basil {
 

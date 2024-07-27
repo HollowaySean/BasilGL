@@ -28,7 +28,7 @@
         },
         {
             "name" : "SPHERE_LIMIT",
-            "value" : 64,
+            "value" : 16,
             "type" : "unsigned int"
         }
     ],
