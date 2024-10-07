@@ -5,6 +5,8 @@
 		"ms-vscode.cpptools-themes",
 		"twxs.cmake",
 		"ms-vscode.cmake-tools",
-		"elagil.pre-commit-helper"
+		"elagil.pre-commit-helper",
+		"jkiviluoto.tws",
+		"gruntfuggly.todo-tree"
 	]
 }
