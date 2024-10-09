@@ -193,8 +193,11 @@ class GLTextureCubemap : public IGLTexture,
          *  to complete for all faces of the cubemap. */
         std::shared_ptr<GLTextureCubemap> build() override;
 
+    #ifndef TEST_BUILD
+
      private:
-        static inline const FrameClock::duration FILE_LOAD_TIMEOUT
+    #endif
+        static inline FrameClock::duration FILE_LOAD_TIMEOUT
             = std::chrono::seconds(1);
 
         using FacePair = std::pair<std::shared_ptr<FileTextureSource>, GLenum>;

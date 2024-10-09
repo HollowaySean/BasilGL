@@ -1,8 +1,7 @@
 #include <catch.hpp>
 
 #include "OpenGL/GLTexture.hpp"
-
-#include "GLTestUtils.hpp"
+#include "OpenGL/GLTestUtils.hpp"
 
 using basil::BasilContextLock;
 using basil::GLTexture1D;
@@ -196,10 +195,10 @@ TEST_CASE("OpenGL_GLTextureCubemap_update") { BASIL_LOCK_TEST
 }
 
 TEST_CASE("OpenGL_GLTextureCubemap_Builder") {
-    SECTION("Builds from file path") {
-        auto path = std::filesystem::path(TEST_DIR)
-            / "OpenGL/assets/test-img.jpg";
+    auto path = std::filesystem::path(TEST_DIR)
+        / "OpenGL/assets/test-img.jpg";
 
+    SECTION("Builds from file path") {
         auto texture = GLTextureCubemap::Builder()
             .fromFile(path, GL_TEXTURE_CUBE_MAP_POSITIVE_X)
             .build();
@@ -219,5 +218,14 @@ TEST_CASE("OpenGL_GLTextureCubemap_Builder") {
         GLint result;
         glGetTexParameteriv(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, &result);
         CHECK(result == GL_CLAMP_TO_EDGE);
+    }
+
+    SECTION("Logs error if load times out") {
+        GLTextureCubemap::Builder::FILE_LOAD_TIMEOUT = basil::FrameClock::duration::zero();
+
+        auto builder = GLTextureCubemap::Builder()
+            .fromFile(path, GL_TEXTURE_CUBE_MAP_POSITIVE_X)
+            .build();
+        CHECK(Logger::get().getLastLevel() == LogLevel::ERROR);
     }
 }

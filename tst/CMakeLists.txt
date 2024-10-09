@@ -25,6 +25,8 @@ target_link_libraries(${TEST_TARGET_NAME} PRIVATE
     ${BASIL_DEPENDENCY_LIBRARIES}
     ${BASIL_TEST_DEPENDENCY_LIBRARIES})
 
+
+# TODO(sholloway): Pull CMake files?
 catch_discover_tests(${TEST_TARGET_NAME})
 
 ## Preprocessor directives
