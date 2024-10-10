@@ -18,12 +18,10 @@ TEST_CASE("File_ImageFileCapture_ImageFileCapture") { BASIL_LOCK_TEST
 
 TEST_CASE("File_ImageFileCapture_copyFrameToBuffer") { BASIL_LOCK_TEST
     auto capture = ImageFileCapture();
-
-    // TODO(sholloway): Fix failing test
-    return;
+    capture.updateBufferSize(1, 1);
 
     SECTION("Returns pointer to PBO memory access") {
-        auto result = capture.copyFrameToBuffer({ 1, 1, 0, 0 });
+        auto result = capture.copyFrameToBuffer({1, 1, 0, 0});
         CHECK(result != nullptr);
     }
 }
@@ -91,15 +89,14 @@ TEST_CASE("File_ImageFileCapture_capture") { BASIL_LOCK_TEST
     }
 
     SECTION("Returns false on unsuccessful copy") {
-        return;  // TODO(sholloway): FIX
+        auto path = FileTestUtils::setUpTempDir("capture-failure.png");
+        capture.updateBufferSize(0, 0);
 
-        // auto path = FileTestUtils::setUpTempDir("capture-failure.png");
+        BasilContext::terminate();
+        bool result = capture.capture(path, area);
 
-        // BasilContext::terminate();
-        // bool result = capture.capture(path, area);
-
-        // CHECK_FALSE(result);
-        // CHECK_FALSE(std::filesystem::exists(path));
+        CHECK_FALSE(result);
+        CHECK_FALSE(std::filesystem::exists(path));
     }
 }
 
@@ -119,16 +116,16 @@ TEST_CASE("File_ImageFileCapture_captureAsync") { BASIL_LOCK_TEST
     }
 
     SECTION("Returns false on unsuccessful copy") {
-        return;  // TODO(sholloway): FIX
-        // auto path = FileTestUtils::setUpTempDir("capture-async-failure.png");
+        auto path = FileTestUtils::setUpTempDir("capture-async-failure.png");
+        capture.updateBufferSize(0, 0);
 
-        // BasilContext::terminate();
-        // std::future<bool> future = capture.captureAsync(path, area);
+        BasilContext::terminate();
+        std::future<bool> future = capture.captureAsync(path, area);
 
-        // future.wait();
-        // bool result = future.get();
+        future.wait();
+        bool result = future.get();
 
-        // CHECK_FALSE(result);
-        // CHECK_FALSE(std::filesystem::exists(path));
+        CHECK_FALSE(result);
+        CHECK_FALSE(std::filesystem::exists(path));
     }
 }

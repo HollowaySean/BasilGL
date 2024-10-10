@@ -19,25 +19,66 @@
             "type": "bool"
         },
         {
-            "name" : "test5",
+            "name": "test5",
+            "value": 17,
+            "type": "int"
+        },
+        {
+            "name" : "test6",
             "value" : 9,
             "type": "unsigned int"
         },
         {
-            "name" : "test6",
+            "name" : "test7",
             "value" : [10],
             "type": "unsigned int"
         },
         {
-            "name": "test7",
+            "name": "test8",
             "value": -1,
             "type": "unsigned int"
+        },
+        {
+            "name": "test9"
+        },
+        {
+            "name" : "testArray1",
+            "value": [[1, 2], [3, 4]],
+            "type": "int"
         }
     ],
     "textures" : [
         {
             "name" : "testTexture",
             "path" : "test-img.jpg"
+        },
+        {
+            "name" : "missingPathTexture"
+        },
+        {
+            "path" : "missing-name"
+        }
+    ],
+    "cubemaps" : [
+        {
+            "name" : "testCubemap",
+            "paths": {
+                "front": "test-img.jpg"
+            }
+        },
+        {
+            "name" : "testCubemapWithBase",
+            "paths": {
+                "base": "../assets",
+                "front": "test-img.jpg",
+                "ignoredField": "test-img.jpg"
+            }
+        },
+        {
+            "name" : "missingPathsCubemap"
+        },
+        {
+            "paths": "missing"
         }
     ]
 }

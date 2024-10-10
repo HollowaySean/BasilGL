@@ -93,7 +93,9 @@ class FileDataLoader {
         }
 
         return vector;
-    }
+
+       // Issue with coverage on close bracket line.
+    }  // LCOV_EXCL_LINE
 
     template<GLUniformType T>
     static std::shared_ptr<ShaderUniformModel>
