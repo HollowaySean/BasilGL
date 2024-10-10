@@ -33,20 +33,46 @@ class FileDataLoader {
      *  <br><br> Example:
      *  <pre>
      *  {
-     *      "uniforms" : {
-     *          "float" : {
-     *              "uniformName1": 1.5,
-     *              "uniformName2": [3.14, -0.5]
+     *      "uniforms" : [
+     *          {
+     *              "name" : "myScalar",
+     *              "value" : 15,
+     *              "type" : "unsigned int"
      *          },
-     *          "bool" : {
-     *              "uniformName3": true,
-     *              "uniformName4": false
+     *          {
+     *              "name" : "myVector",
+     *              "value" : [0.9, 0.8, 0.7],
+     *              "type" : "float"
+     *          },
+     *          {
+     *              "name" : "myArray",
+     *              "value" : [[1, 2], [3, 4]]
+     *          },
+     *      ],
+     *      "textures" : [
+     *          {
+     *              "name" : "myTexture1",
+     *              "path" : "relative-path.jpg"
+     *          },
+     *          {
+     *              "name" : "myTexture2",
+     *              "path" : "/absolute/path/image.jpg"
+     *          },
+     *      ],
+     *      "cubemaps" : [
+     *          {
+     *              "name" : "myCubemap",
+     *              "paths" : {
+     *                  "base"  : "assets/images/",
+     *                  "front" : "front.jpg",
+     *                  "back"  : "back.jpg",
+     *                  "left"  : "left.jpg",
+     *                  "right" : "right.jpg",
+     *                  "top"   : "top.jpg",
+     *                  "bottom": "bottom.jpg",
+     *              }
      *          }
-     *      },
-     *      "textures" : {
-     *          "textureName1": "file-name.jpg",
-     *          "textureName2": "/absolute/path/file-name.jpg"
-     *      }
+     *      ]
      *  }
      *  </pre>
      *  @param filePath Path to .json file

@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "IBasilWidget.hpp"
+#include "Widget/IBasilWidget.hpp"
 
 #include <Basil/Packages/Builder.hpp>
 #include <Basil/Packages/Logging.hpp>
@@ -35,8 +35,10 @@ class BasilApp : public IBuildable<BasilApp> {
         this->processController = controller;
     }
 
+    /** @brief Registers widget with app. */
     void addWidget(std::shared_ptr<IBasilWidget> widget);
 
+    /** @brief Sends message to app's PubSub publisher. */
     void sendMessage(DataMessage message);
 
     /** @brief Builder pattern for BasilApp. */
