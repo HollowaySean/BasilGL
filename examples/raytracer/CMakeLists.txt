@@ -16,6 +16,36 @@ endif()
 ## Add GLM to CMake
 add_subdirectory("${CMAKE_CURRENT_LIST_DIR}/glm")
 
+## Fetch skybox files
+set(ASSETS_DIR "${CMAKE_CURRENT_LIST_DIR}/assets")
+set(SKYBOX_DIR "${ASSETS_DIR}/skybox")
+
+if (NOT EXISTS ${SKYBOX_DIR})
+    file(MAKE_DIRECTORY ${SKYBOX_DIR})
+
+    message("Fetching skybox files...")
+    set(SKYBOX_ZIP "${ASSETS_DIR}/skybox.zip")
+    file(DOWNLOAD
+        "https://learnopengl.com/img/textures/skybox.zip"
+        ${SKYBOX_ZIP}
+        STATUS FETCH_SKYBOX_STATUS)
+
+    list(GET FETCH_SKYBOX_STATUS 0 FETCH_SKYBOX_STATUS_CODE)
+    if (${FETCH_SKYBOX_STATUS_CODE} EQUAL 0)
+        message("Successfully downloaded skybox files.")
+
+        file(ARCHIVE_EXTRACT
+            INPUT ${SKYBOX_ZIP}
+            DESTINATION ${ASSETS_DIR})
+        file(REMOVE ${SKYBOX_ZIP})
+
+    else()
+        message(WARNING "Unable to download skybox files.")
+    endif()
+
+endif()
+
+
 ## Create executable
 file(GLOB_RECURSE SOURCE_LIST CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_LIST_DIR}/src/*.cpp")
