@@ -1,4 +1,4 @@
-#include "File/ImageFileCapture.hpp"
+#include "ImageFileCapture.hpp"
 
 #include <fmt/format.h>
 

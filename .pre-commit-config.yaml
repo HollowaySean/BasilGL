@@ -15,10 +15,14 @@ repos:
       "--suppress=*:*.hpp",
       "--suppress=unmatchedSuppression",
       "--suppress=missingIncludeSystem",
+      "--suppress=missingInclude",
+      "--suppress=checkersReport",
       "--suppress=unusedFunction"]
   - id: cpplint
-    args: ["--exclude=extern",
-    "--filter=-build/c++11,-readability/check"]
+    args: [
+      "--exclude=extern",
+      "--filter=-build/c++11,-readability/check,-build/include_subdir"
+    ]
 - repo: https://gitlab.com/bmares/check-json5
   rev: v1.0.0
   hooks:

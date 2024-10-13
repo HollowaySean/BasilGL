@@ -82,14 +82,16 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
         CHECK_FALSE(model.getUniform("test9").has_value());
 
         REQUIRE(model.getUniform("testArray1").has_value());
-        std::shared_ptr<GLUniform> testArray = model.getUniform("testArray1").value();
+        std::shared_ptr<GLUniform> testArray =
+            model.getUniform("testArray1").value();
 
         CHECK(testArray->getLength() == 2);
         CHECK(testArray->getWidth() == 2);
 
         std::vector<int> expected = { 1, 2, 3, 4 };
         for (int i = 0; i < expected.size(); i++) {
-            CHECK(expected.at(i) == reinterpret_cast<int*>(testArray->getData())[i]);
+            CHECK(expected.at(i) ==
+                reinterpret_cast<int*>(testArray->getData())[i]);
         }
 
         CHECK(model.getUniform("testTexture").has_value());

@@ -16,7 +16,8 @@ TEST_CASE("PubSub_DataMessage_getData") {
     }
 
     SECTION("Returns shared pointer if castable to pointer type") {
-        std::shared_ptr<std::string> ptrData = std::make_shared<std::string>(data);
+        std::shared_ptr<std::string> ptrData =
+            std::make_shared<std::string>(data);
         message = DataMessage(ptrData);
         auto result = message.getData<std::string>();
 

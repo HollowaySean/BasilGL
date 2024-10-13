@@ -68,7 +68,7 @@ class WindowView :  public IBasilWidget,
     ViewArea getTopPaneProps();
 
     /** @brief Update window size & title. */
-    void setWindowProps(WindowProps newWindowProps);
+    void setWindowProps(const WindowProps& newWindowProps);
 
     /** @brief Update window size. */
     void setWindowSize(int width, int height);

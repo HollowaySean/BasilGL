@@ -25,7 +25,7 @@ TEST_CASE("Window_WindowView_WindowView") { BASIL_LOCK_TEST
     SECTION("Initializes GLFW context") {
         BasilContext::terminate();
 
-        GLFWwindow* glfwContext = glfwGetCurrentContext();
+        const GLFWwindow* glfwContext = glfwGetCurrentContext();
         CHECK(glfwContext == nullptr);
 
         WindowProps windowProps = WindowProps {
@@ -156,7 +156,7 @@ TEST_CASE("Window_WindowView_onLoop") {
 
         CHECK(window.currentState == ProcessState::REQUEST_STOP);
 
-        GLFWwindow* glfwContext = glfwGetCurrentContext();
+        const GLFWwindow* glfwContext = glfwGetCurrentContext();
         CHECK(glfwContext == nullptr);
     }
 }

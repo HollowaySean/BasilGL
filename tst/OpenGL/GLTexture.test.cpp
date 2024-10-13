@@ -221,7 +221,8 @@ TEST_CASE("OpenGL_GLTextureCubemap_Builder") {
     }
 
     SECTION("Logs error if load times out") {
-        GLTextureCubemap::Builder::FILE_LOAD_TIMEOUT = basil::FrameClock::duration::zero();
+        GLTextureCubemap::Builder::FILE_LOAD_TIMEOUT =
+            basil::FrameClock::duration::zero();
 
         auto builder = GLTextureCubemap::Builder()
             .fromFile(path, GL_TEXTURE_CUBE_MAP_POSITIVE_X)

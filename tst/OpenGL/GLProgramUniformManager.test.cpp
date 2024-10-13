@@ -18,8 +18,6 @@ using basil::GLUniformVector;
 
 template<class T>
 struct UniformTestData {
-    std::vector<T> data;
-    std::string uniformName;
 };
 
 template<>

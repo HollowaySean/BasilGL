@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "Widget/IBasilWidget.hpp"
+#include "IBasilWidget.hpp"
 
 #include <Basil/Packages/Builder.hpp>
 #include <Basil/Packages/Logging.hpp>

@@ -79,7 +79,7 @@ void WindowView::setWindowTitle(const std::string& title) {
     glfwSetWindowTitle(glfwWindow, title.c_str());
 }
 
-void WindowView::setWindowProps(WindowProps newWindowProps) {
+void WindowView::setWindowProps(const WindowProps& newWindowProps) {
     setWindowSize(newWindowProps.width, newWindowProps.height);
     setWindowTitle(newWindowProps.title);
 }
