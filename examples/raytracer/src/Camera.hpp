@@ -24,14 +24,16 @@ struct CameraProps {
     float farClipDistance = 1000.0f;
 };
 
-/** @brief Class which controls camera motion and generates projection matrices. */
+/** @brief Class which controls camera motion and
+ *  generates projection matrices. */
 class Camera {
  public:
     /** @brief Initialize with given CameraProps struct. */
     explicit Camera(CameraProps cameraProps = CameraProps())
     : cameraProps(cameraProps) {}
 
-    /** @param aspectRatio Camera aspect ratio, defined as width divided by height. */
+    /** @param aspectRatio Camera aspect ratio, defined as
+     *  width divided by height. */
     void setAspectRatio(float aspectRatio);
 
     /** @param fieldOfView Field of view, in degrees. */
@@ -85,10 +87,12 @@ class Camera {
         float upOffset,
         float forwardOffset);
 
-    /** @param turnAngle Azimuthal angle to horizontally pivot camera, in degrees. */
+    /** @param turnAngle Azimuthal angle to horizontally
+     *  pivot camera, in degrees. */
     void pan(float turnAngle);
 
-    /** @param turnAngle Elevation angle to vertically pivot camera, in degrees. */
+    /** @param turnAngle Elevation angle to vertically
+     *  pivot camera, in degrees. */
     void tilt(float turnAngle);
 
  private:
