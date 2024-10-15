@@ -25,7 +25,10 @@ int main(int argc, char** argv) {
 
     // TODO(sholloway): Preview vs render settings?
     // TODO(sholloway): Stats and controls
+    // - Sphere generation button
+    //
     // TODO(sholloway): More info text
+    // - Controls
     // TODO(sholloway): Copious documentation
 
     std::shared_ptr<basil::IPane> focusPane;

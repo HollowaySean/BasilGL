@@ -18,18 +18,23 @@
         },
         {
             "name" : "MSAA_FACTOR",
-            "value" : 2,
+            "value" : 1,
             "type" : "unsigned int"
         },
         {
             "name" : "MAX_BOUNCES",
-            "value" : 4,
+            "value" : 1,
             "type" : "unsigned int"
         },
         {
             "name" : "SPHERE_LIMIT",
-            "value" : 16,
+            "value" : 64,
             "type" : "unsigned int"
+        },
+        {
+            "name" : "RENDER_SHADOWS",
+            "value" : false,
+            "type" : "bool"
         }
     ],
     "cubemaps" : [

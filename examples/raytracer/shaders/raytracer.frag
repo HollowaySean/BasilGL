@@ -30,6 +30,8 @@ uniform uint MSAA_FACTOR;
 uniform uint MAX_BOUNCES;
 uniform uint SPHERE_LIMIT;
 
+uniform bool RENDER_SHADOWS;
+
 uniform float INF = 3.4028233466e38;
 
 layout(location = 0) out vec4 FragColor;
@@ -122,12 +124,14 @@ vec3 shade(inout Ray ray, RayHit hit) {
         ray.direction = reflect(ray.direction, hit.normal);
         ray.energy *= hit.specular;
 
-        bool shadow = false;
-        Ray shadowRay = createRay(hit.position + hit.normal * 0.001f,
-            -1 * normalize(lightDirection));
-        RayHit shadowHit = trace(shadowRay);
-        if (shadowHit.distance != INF) {
-            return vec3(0.0f);
+        if (RENDER_SHADOWS) {
+            bool shadow = false;
+            Ray shadowRay = createRay(hit.position + hit.normal * 0.001f,
+                -1 * normalize(lightDirection));
+            RayHit shadowHit = trace(shadowRay);
+            if (shadowHit.distance != INF) {
+                return vec3(0.0f);
+            }
         }
 
         return clamp(dot(hit.normal, lightDirection) * -1, 0.0f, 1.0f)
