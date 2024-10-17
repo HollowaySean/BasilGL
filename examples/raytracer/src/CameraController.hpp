@@ -11,53 +11,80 @@
 
 namespace basil::raytracer {
 
+/** @brief Widget to read user input and update Camera object. */
 class CameraController : public IBasilWidget,
                          public IBuildable<CameraController> {
  public:
+    /** @brief Initialize widget. */
     CameraController();
 
+    /** @brief Set up uniforms and register callbacks. */
     void onStart() override;
 
+    /** @brief Read user inputs and adjust camera position. */
     void onLoop() override;
 
+    /** @brief De-register callbacks. */
     void onStop() override;
 
+    /** @param focusPane Pointer to pane containing camera. */
     void setFocusPane(std::shared_ptr<IPane> focusPane) {
         this->focusPane = focusPane;
     }
 
+    /** @param setPosition New position for camera. */
     void setPosition(glm::vec3 setPosition);
 
+    /**
+     * @param x X-Value of new position.
+     * @param y Y-Value of new position.
+     * @param z Z-Value of new position.
+     */
     void setPosition(float x, float y, float z) {
         setPosition(glm::vec3(x, y, z));
     }
 
+    /** @param setTiltAngle Tilt angle, in degrees above horizon. */
     void setTilt(float setTiltAngle);
 
+    /** @param setMaxTiltAngle Maximum tilt angle, in degrees above horizon. */
     void setMaximumTiltAngle(float setMaxTiltAngle);
 
+    /** @brief Builder pattern for CameraController. */
     class Builder : public IBuilder<CameraController> {
      public:
+        /** @param focusPane Pointer to pane containing camera. */
         Builder& withFocusPane(std::shared_ptr<IPane> focusPane) {
             this->impl->setFocusPane(focusPane);
             return (*this);
         }
 
+        /**
+         * @param x X-Value of new position.
+         * @param y Y-Value of new position.
+         * @param z Z-Value of new position.
+         */
         Builder& withPosition(float x, float y, float z) {
             this->impl->setPosition(x, y, z);
             return (*this);
         }
 
+        /** @param setPosition New position for camera. */
         Builder& withPosition(glm::vec3 setPosition) {
             this->impl->setPosition(setPosition);
             return (*this);
         }
 
+        /** @param setTiltAngle Tilt angle, in degrees above horizon. */
         Builder& withTiltAngle(float tiltAngle) {
             this->impl->setTilt(tiltAngle);
             return (*this);
         }
 
+        /**
+         * @param setMaxTiltAngle Maximum tilt angle,
+         * in degrees above horizon.
+         */
         Builder& withMaximumTilt(float maxTiltAngle) {
             this->impl->setMaximumTiltAngle(maxTiltAngle);
             return (*this);
