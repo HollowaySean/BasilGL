@@ -16,6 +16,7 @@
 #include <Basil/Packages/Logging.hpp>
 
 #include "Definitions.hpp"
+#include "Window/IPane.hpp"
 
 namespace basil {
 
@@ -42,6 +43,9 @@ class BasilContext {
 
     /** @return Pointer to GLFW window. */
     static GLFWwindow* getGLFWWindow();
+
+    /** @return ViewArea struct containing window size. */
+    static ViewArea getWindowArea();
 
     /** @brief Shorthand type for framebuffer callback */
     using BasilFrameBufferSizeFunc = std::function<void(int, int)>;

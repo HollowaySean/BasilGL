@@ -29,5 +29,3 @@ inline std::filesystem::path invalidPath =
     std::filesystem::path(TEST_DIR) / "OpenGL/assets/missing-file.txt";
 
 inline const char* validShaderCode = "#version 330 core\nvoid main() {}\0";
-
-

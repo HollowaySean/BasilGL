@@ -1,15 +1,19 @@
 #include <catch.hpp>
 
 #include "App/BasilApp.hpp"
-#include "AppTestUtils.hpp"
+#include "App/AppTestUtils.hpp"
+
+#include "PubSub/PubSubTestUtils.hpp"
 
 using basil::BasilApp;
+using basil::DataMessage;
 using basil::IBasilWidget;
 using basil::Logger;
 using basil::LogLevel;
 using basil::ProcessController;
 using basil::ProcessControllerState;
 using basil::TestWidget;
+using basil::TestSubscriber;
 using basil::WidgetPubSubPrefs;
 
 TEST_CASE("App_BasilApp_run") {
@@ -81,6 +85,19 @@ TEST_CASE("App_BasilApp_kill") {
         CHECK(logger.getLastOutput()
             == "ProcessController not found for BasilApp.");
         CHECK(logger.getLastLevel() == LogLevel::WARN);
+    }
+}
+
+TEST_CASE("App_BasilApp_sendMessage") {
+    auto listener = std::make_shared<TestSubscriber>();
+    auto app = BasilApp();
+    app.publisher->subscribe(listener);
+
+    SECTION("Passes message to publisher") {
+        auto message = DataMessage(std::string("message"));
+        app.sendMessage(message);
+
+        CHECK(listener->hasReceivedData);
     }
 }
 

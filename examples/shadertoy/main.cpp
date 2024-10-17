@@ -21,6 +21,9 @@ int main(int argc, char** argv) {
         std::filesystem::create_directories(screenshotPath);
     }
 
+    basil::Logger& logger = basil::Logger::get();
+    logger.setLevel(basil::LogLevel::DEBUG);
+
     std::shared_ptr<basil::IPane> shaderPane;
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()

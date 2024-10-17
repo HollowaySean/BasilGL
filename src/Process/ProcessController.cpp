@@ -17,7 +17,9 @@ ProcessController::addProcessWithOrdinal(std::shared_ptr<IProcess> process,
 
     schedule.addProcess(processInstance);
     return processInstance;
-}
+
+  /// Issue with coverage on this closing brace
+}  // LCOV_EXCL_LINE
 
 std::shared_ptr<ProcessInstance>
 ProcessController::addProcess(std::shared_ptr<IProcess> process,

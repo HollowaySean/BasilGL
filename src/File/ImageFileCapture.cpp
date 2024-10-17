@@ -17,14 +17,6 @@ ImageFileCapture::ImageFileCapture() {
     logger.log(
         fmt::format(LOG_BUFFER_CREATED, pixelBufferID),
         LogLevel::DEBUG);
-
-    GLFWwindow* window = BasilContext::getGLFWWindow();
-    glfwGetFramebufferSize(window, &width, &height);
-    updateBufferSize(width, height);
-
-    using std::placeholders::_1, std::placeholders::_2;
-    callbackID = BasilContext::setGLFWFramebufferSizeCallback(
-        std::bind(&ImageFileCapture::updateBufferSize, this, _1, _2));
 }
 
 ImageFileCapture::~ImageFileCapture() {
@@ -32,8 +24,6 @@ ImageFileCapture::~ImageFileCapture() {
     logger.log(
         fmt::format(LOG_BUFFER_DELETED, pixelBufferID),
         LogLevel::DEBUG);
-
-    BasilContext::removeGLFWFramebufferSizeCallback(callbackID);
 }
 
 void ImageFileCapture::updateBufferSize(int newWidth, int newHeight) {
@@ -57,6 +47,9 @@ bool ImageFileCapture::capture(
     auto area = captureArea.value_or(
         ViewArea { width, height, 0, 0 });
 
+    auto windowArea = BasilContext::getWindowArea();
+    updateBufferSize(windowArea.width, windowArea.height);
+
     auto pixelDataPointer = copyFrameToBuffer(area);
 
     if (!pixelDataPointer) {
@@ -78,6 +71,9 @@ std::future<bool> ImageFileCapture::captureAsync(
     auto area = captureArea.value_or(
         ViewArea { width, height, 0, 0 });
 
+    auto windowArea = BasilContext::getWindowArea();
+    updateBufferSize(windowArea.width, windowArea.height);
+
     auto pixelDataPointer = copyFrameToBuffer(area);
 
     if (!pixelDataPointer) {
@@ -98,7 +94,7 @@ std::future<bool> ImageFileCapture::captureAsync(
 }
 
 GLubyte* ImageFileCapture::copyFrameToBuffer(ViewArea area) {
-    glReadBuffer(GL_FRONT);
+    glReadBuffer(GL_BACK);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, pixelBufferID);
     glReadPixels(
         area.xOffset, area.yOffset, area.width, area.height,

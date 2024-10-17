@@ -8,7 +8,8 @@
 
 namespace basil {
 
-FileTextureSource::FileTextureSource(std::filesystem::path filePath) {
+FileTextureSource::FileTextureSource(std::filesystem::path filePath,
+        bool shouldFlipVertically) {
     if (!std::filesystem::exists(filePath)) {
         logger.log("File not found at path: "
             + filePath.string(), LogLevel::ERROR);
@@ -16,7 +17,7 @@ FileTextureSource::FileTextureSource(std::filesystem::path filePath) {
     }
 
     // Flips vertically to match GLFW coordinate system
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(shouldFlipVertically);
 
     int width, height, channels;
     imageData = stbi_load(filePath.c_str(), &width, &height, &channels, 4);

@@ -37,6 +37,9 @@ build
 # Scratch folder
 examples/scratch
 
+# Large skybox textures for example
+examples/raytracer/assets/skybox
+
 # Visual Studio Code settings
 .vscode/*
 !.vscode/extensions.json

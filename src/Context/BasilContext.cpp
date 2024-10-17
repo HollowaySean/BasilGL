@@ -113,6 +113,13 @@ GLFWwindow* BasilContext::getGLFWWindow() {
     return instance.glfwWindow;
 }
 
+ViewArea BasilContext::getWindowArea() {
+    int width, height;
+    glfwGetFramebufferSize(getGLFWWindow(), &width, &height);
+
+    return { width, height, 0, 0 };
+}
+
 void BasilContext::setGLFWCallbacks() {
     GLFWwindow* window = getGLFWWindow();
 

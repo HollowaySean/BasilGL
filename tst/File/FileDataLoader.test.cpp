@@ -1,12 +1,10 @@
 #include <catch.hpp>
 
 #include "File/FileDataLoader.hpp"
-
 using basil::FileDataLoader;
+using basil::GLUniform;
 using basil::Logger;
 using basil::LogLevel;
-
-using GLU = basil::GLUniformType;
 
 TEST_CASE("File_FileDataLoader_modelFromJSON") {
     Logger& logger = Logger::get();
@@ -42,7 +40,6 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
         auto result = FileDataLoader::modelFromJSON(filePath);
         CHECK(result.has_value());
         CHECK(result.value().getUniforms().size() == 0);
-        CHECK(result.value().getTextures().size() == 0);
         CHECK(logger.getLastLevel() == LogLevel::DEBUG);
     }
 
@@ -53,23 +50,56 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
         REQUIRE(result.has_value());
 
         auto model = result.value();
-        CHECK(model.getUniform("test1").value().value
-            == GLU(0.8f));
-        CHECK(model.getUniform("test2").value().value
-            == GLU(std::vector<float>({ 0.0f, 456.789f })));
-        CHECK(model.getUniform("test3").value().value
-            == GLU(true));
-        CHECK(model.getUniform("test4").value().value
-            == GLU(std::vector<bool>({ false, true })));
-        CHECK(model.getUniform("test5").value().value
-            == GLU((unsigned int)(9)));
-        CHECK(model.getUniform("test6").value().value
-            == GLU(std::vector<uint>({ 10 })));
+        CHECK(*(reinterpret_cast<float*>(
+            model.getUniform("test1").value()->getData()))
+            == 0.8f);
+        CHECK((reinterpret_cast<float*>(
+            model.getUniform("test2").value()->getData()))[0]
+            == 0.0f);
+        CHECK((reinterpret_cast<float*>(
+            model.getUniform("test2").value()->getData()))[1]
+            == 456.789f);
+        CHECK(*(reinterpret_cast<bool*>(
+            model.getUniform("test3").value()->getData()))
+            == true);
+        CHECK((reinterpret_cast<int*>(
+            model.getUniform("test4").value()->getData()))[0]
+            == false);
+        CHECK((reinterpret_cast<int*>(
+            model.getUniform("test4").value()->getData()))[1]
+            == true);
+        CHECK(*(reinterpret_cast<int*>(
+            model.getUniform("test5").value()->getData()))
+            == 17);
+        CHECK(*(reinterpret_cast<unsigned int*>(
+            model.getUniform("test6").value()->getData()))
+            == 9);
+        CHECK(*(reinterpret_cast<unsigned int*>(
+            model.getUniform("test7").value()->getData()))
+            == 10);
 
-        CHECK_FALSE(model.getUniform("test7").has_value());
+        CHECK_FALSE(model.getUniform("test8").has_value());
+        CHECK_FALSE(model.getUniform("test9").has_value());
 
-        CHECK(model.getTexture("testTexture").value().texture);
-        CHECK(model.getTexture("testTexture").has_value());
+        REQUIRE(model.getUniform("testArray1").has_value());
+        std::shared_ptr<GLUniform> testArray =
+            model.getUniform("testArray1").value();
+
+        CHECK(testArray->getLength() == 2);
+        CHECK(testArray->getWidth() == 2);
+
+        std::vector<int> expected = { 1, 2, 3, 4 };
+        for (int i = 0; i < expected.size(); i++) {
+            CHECK(expected.at(i) ==
+                reinterpret_cast<int*>(testArray->getData())[i]);
+        }
+
+        CHECK(model.getUniform("testTexture").has_value());
+
+        CHECK(model.getUniform("testCubemap").has_value());
+        CHECK(model.getUniform("testCubemapWithBase").has_value());
+
+        CHECK_FALSE(model.getUniform("missingPathsCubemap").has_value());
     }
 }
 
