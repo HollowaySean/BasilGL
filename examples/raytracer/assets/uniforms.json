@@ -23,17 +23,17 @@
         },
         {
             "name" : "MAX_BOUNCES",
-            "value" : 1,
+            "value" : 3,
             "type" : "unsigned int"
         },
         {
             "name" : "SPHERE_LIMIT",
-            "value" : 64,
+            "value" : 16,
             "type" : "unsigned int"
         },
         {
             "name" : "RENDER_SHADOWS",
-            "value" : false,
+            "value" : true,
             "type" : "bool"
         }
     ],

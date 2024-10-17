@@ -9,7 +9,20 @@
 namespace rt = basil::raytracer;
 
 /**
- * @brief BasilGL example project TODO(sholloway): This
+ * @brief BasilGL example project demonstrating a simple ray tracer
+ * built with BasilApp & BasilWidget classes.
+ *
+ * Current features:
+ * - Hot reloading for shader & uniform files
+ * - Mouse and keyboard input handling
+ * - Screen capture to file
+ * - Metrics reporting to console
+ * - ImGui information panel
+ *
+ * Features to be implemented:
+ * - Setting uniforms from ImGui panel
+ * - Metrics reporting to ImGui
+ * - Demo vs. render settings
  */
 int main(int argc, char** argv) {
     auto currentPath = std::filesystem::path(__FILE__).parent_path();
@@ -23,25 +36,17 @@ int main(int argc, char** argv) {
 
     basil::Logger::get().setLevel(basil::LogLevel::DEBUG);
 
-    // TODO(sholloway): Preview vs render settings?
-    // TODO(sholloway): Stats and controls
-    // - Sphere generation button
-    //
-    // TODO(sholloway): More info text
-    // - Controls
-    // TODO(sholloway): Copious documentation
-
     std::shared_ptr<basil::IPane> focusPane;
     auto basilApp = basil::BasilApp::Builder()
         .withController(basil::ProcessController::Builder()
             .withFrameCap(60)
             .build())
         .withWidget(basil::WindowView::Builder()
-            .withDimensions(1000, 800)
+            .withDimensions(1100, 800)
             .withTitle("BasilGL Ray Tracing Demo")
             .withTopPane(basil::SplitPane::Builder()
                 .withFixedPane(basil::SplitPane::FixedPane::SECOND)
-                .withPaneExtentInPixels(200)
+                .withPaneExtentInPixels(300)
                 .withFirstPane(focusPane = basil::HotReloadShaderPane::Builder()
                     .fromFilePath(shaderPath)
                     .build())
@@ -68,7 +73,7 @@ int main(int argc, char** argv) {
             .withMaximumTilt(80.0f)
             .build())
         .withWidget(rt::SphereGenerator::Builder()
-            .withGridSize(8)
+            .withGridSize(4)
             .build())
         .build();
 
