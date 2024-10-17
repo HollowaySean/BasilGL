@@ -21,8 +21,8 @@ int main(int argc, char** argv) {
         std::filesystem::create_directories(screenshotPath);
     }
 
-    // TODO(sholloway): Add some effect that uses the mouse
-    basil::Logger::get().setLevel(basil::LogLevel::DEBUG);
+    basil::Logger& logger = basil::Logger::get();
+    logger.setLevel(basil::LogLevel::DEBUG);
 
     std::shared_ptr<basil::IPane> shaderPane;
     auto basilApp = basil::BasilApp::Builder()

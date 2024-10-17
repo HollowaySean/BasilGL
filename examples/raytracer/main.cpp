@@ -34,7 +34,8 @@ int main(int argc, char** argv) {
         std::filesystem::create_directory(screenshotPath);
     }
 
-    basil::Logger::get().setLevel(basil::LogLevel::DEBUG);
+    basil::Logger& logger = basil::Logger::get();
+    logger.setLevel(basil::LogLevel::DEBUG);
 
     std::shared_ptr<basil::IPane> focusPane;
     auto basilApp = basil::BasilApp::Builder()
