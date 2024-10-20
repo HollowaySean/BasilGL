@@ -36,15 +36,11 @@ set(SRC_DIR     "${CMAKE_SOURCE_DIR}/src"     )
 set(TST_DIR     "${CMAKE_SOURCE_DIR}/tst"     )
 set(EXTERN_DIR  "${CMAKE_SOURCE_DIR}/extern"  )
 set(EXAMPLE_DIR "${CMAKE_SOURCE_DIR}/examples")
+set(DOCS_DIR    "${CMAKE_SOURCE_DIR}/docs"    )
 
 ## Add subdirectories
 add_subdirectory(${EXTERN_DIR})
 add_subdirectory(${SRC_DIR})
 add_subdirectory(${EXAMPLE_DIR})
 add_subdirectory(${TST_DIR})
-
-## Doxygen setup
-# Only build documentation in Release build
-if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
-    add_subdirectory("${CMAKE_SOURCE_DIR}/docs")
-endif()
+add_subdirectory(${DOCS_DIR})

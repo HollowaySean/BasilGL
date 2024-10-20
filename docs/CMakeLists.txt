@@ -15,6 +15,12 @@ if (DOXYGEN_FOUND)
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM)
 
+    # Exclude from default build if not Release build type
+    if (NOT CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
+        set_target_properties(${PROJECT_DOC_NAME} PROPERTIES
+            EXCLUDE_FROM_ALL TRUE)
+    endif()
+
 else (DOXYGEN_FOUND)
     message("Doxygen needs to be installed to generate the doxygen documentation")
 endif (DOXYGEN_FOUND)
