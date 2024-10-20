@@ -6,6 +6,42 @@ C++ library for simplified setup & management of OpenGL shader-based texture ren
 
 Hello! Welcome to the repository of my newest project, the Basil graphics library. I'm excited to provide more information about it, but this README is currently under construction as I approach the first official release of this project. Check back soon for more information, or feel free to reach out to me.
 
+## Installation
+
+First, clone the repository to your local filesystem:
+
+```
+git clone https://github.com/HollowaySean/BasilGL.git
+```
+
+### Linux
+
+Building project on Linux requires installation of OpenGL and its dependencies. To install dependencies on Debian-based distributions with APT:
+
+```
+sudo apt install libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libopenal-dev libgl1-mesa-dev
+```
+
+To build the library, along with tests and examples:
+
+```
+mkdir build && cd ./build
+cmake ..
+cmake --build .
+```
+
+Note: To only build the library, append ` --target Basil_lib` to the final command.
+
+#### Other Build Targets
+
+| Target | Name | Dependencies | Builds by Default? |
+| - | - | - | - |
+| Library | `Basil_lib` | None | Yes |
+| Unit Tests | `Basil_test` | None | Yes |
+| Examples | `Basil_example_[name]` | None | Yes |
+| Documentation | `Basil_docs` | Doxygen | Release - Yes, Debug - No |
+| Coverage | `Basil_coverage` | gcovr | No |
+
 ### Project Goals
 
 The following core tenets comprise Basil's design philosophy.
