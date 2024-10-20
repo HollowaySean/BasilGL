@@ -49,17 +49,25 @@ endif()
 ## Code coverage
 if(CMAKE_COMPILER_IS_GNUCXX)
 
-    include(CodeCoverage)
-    append_coverage_compiler_flags_to_target(${TEST_TARGET_NAME})
+    find_program(GCOVR_PATH gcovr)
+    if (GCOVR_PATH)
 
-    message("Setting up coverage for ${TEST_TARGET_NAME}")
-    set(PROJECT_COVERAGE_NAME Basil_coverage)
-    setup_target_for_coverage_gcovr_html(
-        NAME ${PROJECT_COVERAGE_NAME}
-        EXECUTABLE ${TEST_TARGET_NAME}
-        EXCLUDE "tst/*" "extern/*" "include/*" "examples/*"
-        PROPERTIES EXCLUDE_FROM_ALL TRUE
-    )
-else()
+        include(CodeCoverage)
+        append_coverage_compiler_flags_to_target(${TEST_TARGET_NAME})
+
+        message("Setting up coverage for ${TEST_TARGET_NAME}")
+        set(PROJECT_COVERAGE_NAME Basil_coverage)
+        setup_target_for_coverage_gcovr_html(
+            NAME ${PROJECT_COVERAGE_NAME}
+            EXECUTABLE ${TEST_TARGET_NAME}
+            EXCLUDE "tst/*" "extern/*" "include/*" "examples/*"
+            PROPERTIES EXCLUDE_FROM_ALL TRUE
+        )
+
+    else(GCOVR_PATH)
+        message("Gcovr must be installed to run code coverage. Skipping.")
+    endif(GCOVR_PATH)
+
+else(CMAKE_COMPILER_IS_GNUCXX)
     message("GNUCXX compiler required to run code coverage. Skipping.")
 endif(CMAKE_COMPILER_IS_GNUCXX)
