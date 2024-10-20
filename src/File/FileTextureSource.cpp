@@ -20,7 +20,7 @@ FileTextureSource::FileTextureSource(std::filesystem::path filePath,
     stbi_set_flip_vertically_on_load(shouldFlipVertically);
 
     int width, height, channels;
-    imageData = stbi_load(filePath.c_str(), &width, &height, &channels, 4);
+    imageData = stbi_load(filePath.string().c_str(), &width, &height, &channels, 4);
 
     setWidth(width);
     setHeight(height);

@@ -36,6 +36,8 @@ bool FileDataLoader::TypeMap<bool>::isCorrectType(json json) {
 
 std::optional<ShaderUniformModel>
 FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
+    const char* pathChar = filePath.string().c_str();
+
     // Parse JSON from file
     json data;
     std::ifstream dataFile;
@@ -49,7 +51,7 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
             LogLevel::DEBUG);
     } catch(std::ifstream::failure& error) {
         logger.log(
-            fmt::format(LOG_READ_FAILURE, filePath.c_str()),
+            fmt::format(LOG_READ_FAILURE, pathChar),
             LogLevel::ERROR);
         logger.log(
             strerror(errno),
@@ -58,7 +60,7 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
         return std::nullopt;
     } catch(json::parse_error& error) {
         logger.log(
-            fmt::format(LOG_PARSE_FAILURE, filePath.c_str(), error.byte),
+            fmt::format(LOG_PARSE_FAILURE, pathChar, error.byte),
             LogLevel::ERROR);
         logger.log(
             error.what(),
@@ -69,7 +71,7 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
 
     if (data.empty()) {
         logger.log(
-            fmt::format(LOG_JSON_EMPTY, filePath.c_str()),
+            fmt::format(LOG_JSON_EMPTY, pathChar),
             LogLevel::WARN);
 
         return std::nullopt;
@@ -89,7 +91,7 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
 
     } else {
         logger.log(
-            fmt::format(LOG_FIELD_MISSING, "uniforms", filePath.c_str()),
+            fmt::format(LOG_FIELD_MISSING, "uniforms", pathChar),
             LogLevel::DEBUG);
     }
 
@@ -106,7 +108,7 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
 
     } else {
         logger.log(
-            fmt::format(LOG_FIELD_MISSING, "textures", filePath.c_str()),
+            fmt::format(LOG_FIELD_MISSING, "textures", pathChar),
             LogLevel::DEBUG);
     }
 
@@ -123,7 +125,7 @@ FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
 
     } else {
         logger.log(
-            fmt::format(LOG_FIELD_MISSING, "cubemaps", filePath.c_str()),
+            fmt::format(LOG_FIELD_MISSING, "cubemaps", pathChar),
             LogLevel::DEBUG);
     }
 
@@ -257,7 +259,7 @@ FileDataLoader::addCubemaps(
 
             logger.log(
                 fmt::format(LOG_CUBEMAP_FACE_ADDED,
-                    key.c_str(), facePath.c_str()),
+                    key.c_str(), facePath.string().c_str()),
                 LogLevel::DEBUG);
             cubemapBuilder.fromFile(facePath, cubeFaceEnum);
         }

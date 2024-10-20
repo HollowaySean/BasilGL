@@ -1,5 +1,9 @@
 #include "UserInputWatcher.hpp"
 
+#ifdef _WIN32
+using uint = unsigned int;
+#endif  // _WIN32
+
 namespace basil {
 
 UserInputWatcher::UserInputWatcher() : IBasilWidget({

@@ -2,6 +2,11 @@
 
 #include <GL/glew.h>
 
+#ifdef _WIN32
+using u_int = unsigned int;
+using u_char = unsigned char;
+#endif  // _WIN32
+
 namespace basil {
 
 /**

@@ -10,7 +10,7 @@ TEST_CASE("Data_UserInputModel_setKeyState") {
     auto model = UserInputModel();
 
     SECTION("Saves key state data to model") {
-        uint keyCode = GLFW_KEY_DELETE;
+        unsigned int keyCode = GLFW_KEY_DELETE;
         int state = GLFW_PRESS;
         int mods = GLFW_MOD_CONTROL | GLFW_MOD_ALT;
 
@@ -26,7 +26,7 @@ TEST_CASE("Data_UserInputModel_setMouseButtonState") {
     auto model = UserInputModel();
 
     SECTION("Saves button state data to model") {
-        uint buttonCode = GLFW_MOUSE_BUTTON_LEFT;
+        unsigned int buttonCode = GLFW_MOUSE_BUTTON_LEFT;
         int state = GLFW_PRESS;
         int mods = GLFW_MOD_CONTROL | GLFW_MOD_ALT;
 

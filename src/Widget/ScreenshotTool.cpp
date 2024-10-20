@@ -23,7 +23,7 @@ void ScreenshotTool::onStart() {
     if (savePath == "") {
         savePath = std::filesystem::temp_directory_path();
         logger.log(
-            fmt::format("No save path provided, using {}", savePath.c_str()),
+            fmt::format("No save path provided, using {}", savePath.string().c_str()),
             LogLevel::INFO);
     }
 
@@ -58,7 +58,7 @@ void ScreenshotTool::readyState() {
         paneArea = std::optional(focusPane->viewArea);
     }
 
-    auto runtimeName = fmt::runtime(saveName.c_str());
+    auto runtimeName = fmt::runtime(saveName.string().c_str());
     auto timeStamp = std::chrono::round<std::chrono::seconds>(
         std::chrono::system_clock::now());
     std::filesystem::path formattedName = fmt::format(runtimeName,
