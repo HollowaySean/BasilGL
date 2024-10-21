@@ -230,8 +230,8 @@ FileDataLoader::addCubemaps(
         // Get base path if it is defined
         std::filesystem::path cubeBasePath;
         if (paths.contains("base")) {
-            cubeBasePath = std::filesystem::path(
-                paths.at("base"));
+            std::string basePathString = paths.at("base");
+            cubeBasePath = std::filesystem::path(basePathString);
         }
         if (cubeBasePath.is_relative()) {
             cubeBasePath = basePath / cubeBasePath;

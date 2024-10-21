@@ -33,7 +33,7 @@ void BasilContext::initializeGLFWContext() {
     // Initialize log errors, and update flag
     GLenum errorCode = glfwInit();
     logGLFWError(errorCode);
-    hasInitialized &= errorCode;
+    hasInitialized &= static_cast<bool>(errorCode);
 
     // Create non-visible window and attach context
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, GLFW_MAJOR_VERSION);
