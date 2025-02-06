@@ -15,7 +15,7 @@ SplitPane::SplitPane(ViewArea viewArea,
     secondPaneExtent = 0;
 }
 
-void const SplitPane::draw() {
+void SplitPane::draw() {
     if (firstPane) {
         firstPane->draw();
     }

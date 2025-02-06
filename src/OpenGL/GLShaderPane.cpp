@@ -65,7 +65,7 @@ void GLShaderPane::createElementBuffer() {
         sizeof(indices), indices, GL_STATIC_DRAW);
 }
 
-void const GLShaderPane::draw() {
+void GLShaderPane::draw() {
     // Set current viewport
     glViewport(
         viewArea.xOffset,

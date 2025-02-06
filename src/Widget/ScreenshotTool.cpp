@@ -90,7 +90,7 @@ void ScreenshotTool::requestCapture() {
 }
 
 void ScreenshotTool::onKeyPress(
-        int keyCode, int scancode, int action, int mods) {
+        int keyCode, int /* scancode */, int action, int /* mods */) {
     if (keyCode == triggerKey && action == GLFW_PRESS) {
         requestCapture();
     }

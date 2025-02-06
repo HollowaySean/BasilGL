@@ -15,7 +15,7 @@ class ImGuiExamplePane : public ImGuiPane,
         windowTitle = "Info";
     }
 
-    const void drawImGuiContent() override {
+    void drawImGuiContent() override {
         ImGui::SeparatorText("BasilGL Panes Demo");
         ImGui::TextWrapped(
             "This example demonstrates the use of Basil's "

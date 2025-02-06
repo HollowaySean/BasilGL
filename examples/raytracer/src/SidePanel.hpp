@@ -17,7 +17,7 @@ class SidePanel : public ImGuiPane,
     }
 
     /** @brief Run ImGui processes. */
-    const void drawImGuiContent() override {
+    void drawImGuiContent() override {
         ImGui::SeparatorText("Info");
         ImGui::TextWrapped(
             "This example demonstrates a simple raytracer project built "

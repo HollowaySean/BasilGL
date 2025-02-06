@@ -4,7 +4,7 @@
 
 namespace basil {
 
-const void ImGuiPane::draw() {
+void ImGuiPane::draw() {
     startFrame();
     drawImGuiContent();
     endFrame();
@@ -32,7 +32,7 @@ void ImGuiPane::endFrame() {
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-const void ImGuiPane::drawImGuiContent() {
+void ImGuiPane::drawImGuiContent() {
     ImGui::Text("Sample ImGui content.");
 }
 

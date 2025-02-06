@@ -11,7 +11,7 @@ using basil::ImGuiPane;
 TEST_CASE("ImGui_ImGuiPane_draw") { BASIL_LOCK_TEST
     class TestImGuiPane : public ImGuiPane {
      public:
-        const void drawImGuiContent() override {
+        void drawImGuiContent() override {
             this->ImGuiPane::drawImGuiContent();
 
             ImVec2 size = ImGui::GetWindowSize();

@@ -24,7 +24,7 @@ class IPane : public IDataPassThrough {
     IPane(): viewArea(ViewArea()) {}
 
     /** @brief Render contents of pane. */
-    virtual void const draw() = 0;
+    virtual void draw() = 0;
 
     /** @brief Update ViewArea. */
     virtual void setPaneProps(ViewArea viewArea) {

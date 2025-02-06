@@ -29,8 +29,7 @@ TEST_CASE("Data_ShaderUniformModel_addUniform") {
         std::vector<unsigned int>({ 2, 4 }), "myUint");
 
     // Overwrite case
-    unsigned int floatIDOverwrite = dataModel.addUniform(
-        2.5f, "myFloat");
+    dataModel.addUniform(2.5f, "myFloat");
 
     SECTION("Saves uniforms to container by name") {
         CHECK(dataModel.getUniforms().size() == 4);

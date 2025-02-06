@@ -15,7 +15,7 @@ class ShadertoyImGuiPane : public ImGuiPane,
         windowTitle = "Info";
     }
 
-    const void drawImGuiContent() override {
+    void drawImGuiContent() override {
         ImGui::SeparatorText("BasilGL Shadertoy Demo");
         ImGui::TextWrapped(
             "This example demonstrates the use of Basil's "

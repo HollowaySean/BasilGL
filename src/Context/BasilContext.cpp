@@ -130,28 +130,28 @@ void BasilContext::setGLFWCallbacks() {
 }
 
 void BasilContext::onFrameBufferResize(
-        GLFWwindow* window, int width, int height) {
+        GLFWwindow* /* window */, int width, int height) {
     for (const auto& callback : framebufferCallbacks) {
         callback.second(width, height);
     }
 }
 
 void BasilContext::onMouseButton(
-        GLFWwindow* window, int button, int action, int mods) {
+        GLFWwindow* /* window */, int button, int action, int mods) {
     for (const auto& callback : mouseButtonCallbacks) {
         callback.second(button, action, mods);
     }
 }
 
 void BasilContext::onKeyAction(
-        GLFWwindow* window, int key, int scancode, int action, int mods) {
+        GLFWwindow* /* window */, int key, int scancode, int action, int mods) {
     for (const auto& callback : keyCallbacks) {
         callback.second(key, scancode, action, mods);
     }
 }
 
 void BasilContext::onCursorEnter(
-        GLFWwindow* window, int entered) {
+        GLFWwindow* /* window */, int entered) {
     for (const auto& callback : cursorEnterCallbacks) {
         callback.second(entered);
     }

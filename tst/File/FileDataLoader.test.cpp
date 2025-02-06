@@ -89,7 +89,7 @@ TEST_CASE("File_FileDataLoader_modelFromJSON") {
         CHECK(testArray->getWidth() == 2);
 
         std::vector<int> expected = { 1, 2, 3, 4 };
-        for (int i = 0; i < expected.size(); i++) {
+        for (std::size_t i = 0; i < expected.size(); i++) {
             CHECK(expected.at(i) ==
                 reinterpret_cast<int*>(testArray->getData())[i]);
         }

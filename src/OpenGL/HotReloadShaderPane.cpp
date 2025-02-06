@@ -11,8 +11,8 @@ HotReloadShaderPane::HotReloadShaderPane() {
     this->IDataPublisher::subscribe(currentShaderProgram);
 }
 
-HotReloadShaderPane::HotReloadShaderPane(ViewArea viewArea,
-        std::filesystem::path shaderFilePath) : HotReloadShaderPane() {
+HotReloadShaderPane::HotReloadShaderPane(std::filesystem::path shaderFilePath) 
+        : HotReloadShaderPane() {
     setFilePath(shaderFilePath);
 }
 
@@ -21,7 +21,7 @@ void HotReloadShaderPane::setFilePath(std::filesystem::path shaderFilePath) {
     updateShader();
 }
 
-void const HotReloadShaderPane::draw() {
+void HotReloadShaderPane::draw() {
     updateShader();
     this->GLShaderPane::draw();
 }

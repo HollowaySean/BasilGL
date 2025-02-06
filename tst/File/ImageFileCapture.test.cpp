@@ -12,7 +12,7 @@ using basil::ImageFileCapture;
 TEST_CASE("File_ImageFileCapture_ImageFileCapture") { BASIL_LOCK_TEST
     SECTION("Initializes pixel buffer.") {
         auto capture = ImageFileCapture();
-        CHECK(capture.pixelBufferID != -1);
+        CHECK(capture.pixelBufferID != (unsigned int)-1);
     }
 }
 

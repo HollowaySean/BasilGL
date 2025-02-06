@@ -15,7 +15,7 @@ TEST_CASE("Widget_StopAfterTime_onStart") {
         widget.onStart();
 
         CHECK(widget.stopTime < FrameClock::time_point::max());
-        CHECK(widget.stopFrame < -1);
+        CHECK(widget.stopFrame < (unsigned int)-1);
     }
 }
 

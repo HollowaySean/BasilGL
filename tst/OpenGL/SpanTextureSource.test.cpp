@@ -15,7 +15,7 @@ TEST_CASE("OpenGL_SpanTextureSource_SpanTextureSource") {
     source.setSource(data);
 
     SECTION("Points to contained span") {
-        for (int i = 0; i < data.size(); i++) {
+        for (std::size_t i = 0; i < data.size(); i++) {
             auto expected = data.data()[i];
             auto actual = (reinterpret_cast<const float*>(source.data()))[i];
 

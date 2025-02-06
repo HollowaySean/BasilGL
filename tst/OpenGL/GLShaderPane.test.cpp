@@ -96,9 +96,9 @@ TEST_CASE("OpenGL_GLShaderPane_setShaderProgram") {
         CHECK_FALSE(pane.vertexBufferID == 0);
         CHECK_FALSE(pane.elementBufferID == 0);
 
-        int VAO = pane.vertexAttributeID;
-        int VBO = pane.vertexBufferID;
-        int EBO = pane.elementBufferID;
+        unsigned int VAO = pane.vertexAttributeID;
+        unsigned int VBO = pane.vertexBufferID;
+        unsigned int EBO = pane.elementBufferID;
 
         pane.setShaderProgram(anotherProgram);
         CHECK(pane.currentShaderProgram == anotherProgram);
@@ -158,14 +158,14 @@ TEST_CASE("OpenGL_GLShaderPane_draw") { BASIL_LOCK_TEST
         GLint ID;
         glGetIntegerv(GL_CURRENT_PROGRAM, &ID);
 
-        CHECK(pane.currentShaderProgram->getID() == ID);
+        CHECK(pane.currentShaderProgram->getID() == (unsigned int)ID);
     }
 
     SECTION("Binds the vertex array") {
         GLint ID;
         glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &ID);
 
-        CHECK(pane.vertexAttributeID == ID);
+        CHECK(pane.vertexAttributeID == (unsigned int)ID);
     }
 }
 

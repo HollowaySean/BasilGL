@@ -72,7 +72,7 @@ TEST_CASE("OpenGL_GLShaderProgram_use") { BASIL_LOCK_TEST
         GLint currentID;
         glGetIntegerv(GL_CURRENT_PROGRAM, &currentID);
 
-        CHECK(currentID == shaderProgram.getID());
+        CHECK((unsigned int)currentID == shaderProgram.getID());
     }
 }
 
@@ -116,7 +116,7 @@ TEST_CASE("OpenGL_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
     SECTION("Re-compiles when shader is replaced, if not null") {
         GLShaderProgram shaderProgram =
             GLShaderProgram(vertexShader, fragmentShader);
-        GLint initialID = shaderProgram.getID();
+        GLuint initialID = shaderProgram.getID();
         CHECK(initialID != 0);
         CHECK(shaderProgram.hasLinkedSuccessfully());
 

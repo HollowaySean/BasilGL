@@ -112,7 +112,6 @@ bool ImageFileCapture::saveBufferToFile(
     GLsizei channels = 3;
     GLsizei stride = channels * area.width;
     stride += (stride % 4) ? (4 - stride % 4) : 0;
-    GLsizei bufferSize = stride * area.height;
 
     // Write to file
     stbi_flip_vertically_on_write(true);

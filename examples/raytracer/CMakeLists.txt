@@ -67,3 +67,10 @@ target_include_directories(
 target_compile_definitions(
     ${EXEC_TARGET_NAME} PRIVATE
     BUILD_DIR="${PROJECT_BINARY_DIR}")
+
+## Set warning level
+if(MSVC)
+    target_compile_options(${EXEC_TARGET_NAME} PRIVATE /W4 /WX)
+else()
+    target_compile_options(${EXEC_TARGET_NAME} PRIVATE -Wall -Wextra -Werror -Wno-missing-field-initializers)
+endif()

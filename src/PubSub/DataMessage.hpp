@@ -21,13 +21,13 @@ class DataMessage {
         try {
             T result = std::any_cast<T>(data);
             return std::optional(result);
-        } catch (std::bad_any_cast) {}
+        } catch (std::bad_any_cast const&) {}
 
         // Try casting to pointer
         try {
             std::shared_ptr<T> result = std::any_cast<std::shared_ptr<T>>(data);
             return std::optional(*result);
-        } catch (std::bad_any_cast) {
+        } catch (std::bad_any_cast const&) {
             return std::nullopt;
         }
     }

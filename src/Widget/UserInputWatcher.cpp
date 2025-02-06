@@ -132,7 +132,7 @@ void UserInputWatcher::onMouseButtonChange(
 }
 
 void UserInputWatcher::onKeyChange(
-        int button, int scancode, int action, int mods) {
+        int button, int /* scancode */, int action, int mods) {
     model.setKeyState(button, action, mods);
 }
 

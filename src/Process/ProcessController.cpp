@@ -181,6 +181,7 @@ void ProcessController::interpretProcessState(
                 return;
             }
             // Falls through to request stop if privilege is not met
+            [[fallthrough]];
 
         case ProcessState::REQUEST_STOP:
             if (privilege >= ProcessPrivilege::LOW) {
@@ -190,6 +191,9 @@ void ProcessController::interpretProcessState(
 
         case ProcessState::REMOVE_PROCESS:
             schedule.removeProcess(process);
+            return;
+
+        default:
             return;
     }
 }
