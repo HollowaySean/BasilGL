@@ -36,7 +36,8 @@ bool FileDataLoader::TypeMap<bool>::isCorrectType(json json) {
 
 std::optional<ShaderUniformModel>
 FileDataLoader::modelFromJSON(std::filesystem::path filePath) {
-    const char* pathChar = filePath.string().c_str();
+    const std::string pathString = filePath.string();
+    const char* pathChar = pathString.c_str();
 
     // Parse JSON from file
     json data;
@@ -257,9 +258,10 @@ FileDataLoader::addCubemaps(
                 facePath = cubeBasePath / facePath;
             }
 
+            const std::string pathString = facePath.string();
             logger.log(
                 fmt::format(LOG_CUBEMAP_FACE_ADDED,
-                    key.c_str(), facePath.string().c_str()),
+                    key.c_str(), pathString.c_str()),
                 LogLevel::DEBUG);
             cubemapBuilder.fromFile(facePath, cubeFaceEnum);
         }

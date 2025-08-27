@@ -35,7 +35,7 @@ class FileTextureSource : public ITextureSource2D,
 
  private:
 #endif
-    const unsigned char* imageData;
+    const unsigned char* imageData = nullptr;
 
     Logger& logger = Logger::get();
 };

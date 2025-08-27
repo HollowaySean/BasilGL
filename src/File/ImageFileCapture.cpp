@@ -116,8 +116,9 @@ bool ImageFileCapture::saveBufferToFile(
     // Write to file
     stbi_flip_vertically_on_write(true);
     const std::string extension = savePath.extension().string();
+    const std::string pathString = savePath.string();
+    const char* pathChar = pathString.c_str();
 
-    const char* pathChar = savePath.string().c_str();
     int result;
     if (extension == ".jpg") {
         result = stbi_write_jpg(pathChar, area.width, area.height,
