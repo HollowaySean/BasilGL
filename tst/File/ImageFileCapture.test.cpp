@@ -92,7 +92,8 @@ TEST_CASE("File_ImageFileCapture_capture") { BASIL_LOCK_TEST
         auto path = FileTestUtils::setUpTempDir("capture-failure.png");
         capture.updateBufferSize(0, 0);
 
-        BasilContext::terminate();
+        // Terminate GLFW context to force error
+        glfwTerminate();
         bool result = capture.capture(path, area);
 
         CHECK_FALSE(result);
@@ -119,7 +120,8 @@ TEST_CASE("File_ImageFileCapture_captureAsync") { BASIL_LOCK_TEST
         auto path = FileTestUtils::setUpTempDir("capture-async-failure.png");
         capture.updateBufferSize(0, 0);
 
-        BasilContext::terminate();
+        // Terminate GLFW context to force error
+        glfwTerminate();
         std::future<bool> future = capture.captureAsync(path, area);
 
         future.wait();
