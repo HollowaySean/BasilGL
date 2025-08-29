@@ -14,8 +14,8 @@ using basil::GLFragmentShader;
 class TestShader : public GLShader {
  public:
     TestShader() = default;
-    void setShader(std::filesystem::path path) override {}
-    void setShader(const std::string& shaderCode) override {}
+    void setShader(std::filesystem::path /* path */) override {}
+    void setShader(const std::string& /* shaderCode */) override {}
 };
 
 TEST_CASE("OpenGL_GLShader_getShaderFromFile") { BASIL_LOCK_TEST

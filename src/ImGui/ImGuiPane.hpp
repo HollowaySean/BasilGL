@@ -16,7 +16,7 @@ class ImGuiPane : public IPane,
                   private IBasilContextConsumer {
  public:
     /** @brief Runs main frame functions for ImGui. */
-    virtual const void draw();
+    virtual void draw();
 
  protected:
     /** @brief Sets up frame for ImGui with GLFW backend. */
@@ -27,7 +27,7 @@ class ImGuiPane : public IPane,
 
     /** @brief Function that runs between startFrame and
      *  endFrame. Override to set custom GUI. */
-    virtual const void drawImGuiContent();
+    virtual void drawImGuiContent();
 
     /** @brief Default title for ImGui tab. */
     std::string windowTitle = "ImGuiPane";

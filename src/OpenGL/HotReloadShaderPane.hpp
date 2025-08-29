@@ -16,14 +16,13 @@ class HotReloadShaderPane : public GLShaderPane,
                             public IBuildable<HotReloadShaderPane> {
  public:
     /** @brief Initialize from file path. */
-    HotReloadShaderPane(
-        ViewArea viewArea, std::filesystem::path shaderFilePath);
+    HotReloadShaderPane(std::filesystem::path shaderFilePath);
 
     /** @brief Set path of shader file. */
     void setFilePath(std::filesystem::path shaderFilePath);
 
     /** @brief Check for file update and draw to screen. */
-    void const draw() override;
+    void draw() override;
 
     /** @brief Builder pattern for HotReloadShaderPane. */
     class Builder : public IBuilder<HotReloadShaderPane> {

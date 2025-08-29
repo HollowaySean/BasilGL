@@ -151,8 +151,8 @@ class GLUniformScalar : public GLUniform {
      *  @param uniformValue Value of OpenGL uniform
      *  @param uniformName  Uniform name in shader code */
     GLUniformScalar(T uniformValue, const std::string& uniformName)
-            : value(uniformValue),
-            GLUniform(GLUniformSource<T>(nullptr), uniformName) {
+            : GLUniform(GLUniformSource<T>(nullptr), uniformName),
+            value(uniformValue) {
         this->source = GLUniformSource<T>(&(this->value));
     }
 
@@ -174,8 +174,8 @@ class GLUniformScalar<bool> : public GLUniform {
      *  @param uniformValue Value of OpenGL uniform
      *  @param uniformName  Uniform name in shader code */
     GLUniformScalar(bool uniformValue, const std::string& uniformName)
-        : value(static_cast<int>(uniformValue)),
-          GLUniform(GLUniformSource<int>(nullptr), uniformName) {
+        : GLUniform(GLUniformSource<int>(nullptr), uniformName),
+          value(static_cast<int>(uniformValue)) {
         this->source = GLUniformSource<int>(&(this->value));
     }
 
@@ -207,8 +207,8 @@ class GLUniformVector : public GLUniform {
             unsigned int length = 0,
             unsigned int width = 1,
             unsigned int count = 0)
-        : sourceVector(vector),
-          GLUniform(GLUniformSource<T>(nullptr), name, length, width, count) {
+        : GLUniform(GLUniformSource<T>(nullptr), name, length, width, count),
+          sourceVector(vector) {
         if (this->length == 0) {
             this->length = sourceVector.size();
         }
@@ -253,8 +253,8 @@ class GLUniformVector<bool> : public GLUniform {
             unsigned int length = 0,
             unsigned int width = 1,
             unsigned int count = 0)
-        : sourceVector(std::vector<int>(vector.begin(), vector.end())),
-          GLUniform(GLUniformSource<int>(nullptr), name, length, width, count) {
+        : GLUniform(GLUniformSource<int>(nullptr), name, length, width, count),
+          sourceVector(std::vector<int>(vector.begin(), vector.end())) {
         if (this->length == 0) {
             this->length = sourceVector.size();
         }
@@ -290,9 +290,9 @@ class GLUniformTexture : public GLUniformScalar<int> {
     GLUniformTexture(
         std::shared_ptr<IGLTexture> texture,
         const std::string& name)
-        : sourceTexture(texture),
-          GLUniformScalar<int>(
-            texture->getUniformLocation(), name) {}
+        : GLUniformScalar<int>(
+            texture->getUniformLocation(), name),
+          sourceTexture(texture) {}
 
     /** @brief Reassigns value in GLUniformTexture
      *  @param texture  Pointer to IGLTexture wrapper object

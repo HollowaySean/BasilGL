@@ -10,7 +10,7 @@ namespace basil {
 class IDataSubscriber {
  public:
     /** @brief Virtual method to receive DataMessage object */
-    virtual void receiveData(const DataMessage& message) {}
+    virtual void receiveData(const DataMessage& /* message */) {}
 };
 
 }   // namespace basil

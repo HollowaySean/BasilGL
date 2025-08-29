@@ -2,6 +2,10 @@
 
 #include <array>
 
+#ifdef _WIN32
+using uint = unsigned int;
+#endif  // _WIN32
+
 namespace basil {
 
 /** @brief Container for mouse and keyboard input state */

@@ -22,8 +22,9 @@ ScreenshotTool::~ScreenshotTool() {
 void ScreenshotTool::onStart() {
     if (savePath == "") {
         savePath = std::filesystem::temp_directory_path();
+        const std::string pathString = savePath.string();
         logger.log(
-            fmt::format("No save path provided, using {}", savePath.c_str()),
+            fmt::format("No save path provided, using {}", pathString.c_str()),
             LogLevel::INFO);
     }
 
@@ -58,7 +59,8 @@ void ScreenshotTool::readyState() {
         paneArea = std::optional(focusPane->viewArea);
     }
 
-    auto runtimeName = fmt::runtime(saveName.c_str());
+    const std::string saveNameString = saveName.string();
+    auto runtimeName = fmt::runtime(saveNameString.c_str());
     auto timeStamp = std::chrono::round<std::chrono::seconds>(
         std::chrono::system_clock::now());
     std::filesystem::path formattedName = fmt::format(runtimeName,
@@ -90,7 +92,7 @@ void ScreenshotTool::requestCapture() {
 }
 
 void ScreenshotTool::onKeyPress(
-        int keyCode, int scancode, int action, int mods) {
+        int keyCode, int /* scancode */, int action, int /* mods */) {
     if (keyCode == triggerKey && action == GLFW_PRESS) {
         requestCapture();
     }

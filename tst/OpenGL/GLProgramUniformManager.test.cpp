@@ -130,7 +130,7 @@ TEST_CASE("OpenGL_GLProgramUniformManager_setUniform") { BASIL_LOCK_TEST
             verifyUniforms<bool         >(manager, length);
         }
 
-        for (int testCase = 5; testCase <= caseMap.size(); testCase++) {
+        for (std::size_t testCase = 5; testCase <= caseMap.size(); testCase++) {
             verifyUniforms<float>(manager, testCase);
         }
     }

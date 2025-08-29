@@ -46,6 +46,13 @@ else()
         BASIL_INCLUDE_IMGUI=0)
 endif()
 
+## Set warning level
+if(MSVC)
+    target_compile_options(${TEST_TARGET_NAME} PRIVATE /W4 /WX)
+else()
+    target_compile_options(${TEST_TARGET_NAME} PRIVATE -Wall -Wextra -Werror -Wno-missing-field-initializers)
+endif()
+
 ## Code coverage
 if(CMAKE_COMPILER_IS_GNUCXX)
 

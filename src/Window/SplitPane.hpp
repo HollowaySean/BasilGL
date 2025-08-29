@@ -39,7 +39,7 @@ class SplitPane :   public IPane,
             = SplitPane::Orientation::HORIZONTAL);
 
     /** @brief Calls draw on contained panes. */
-    void const draw() override;
+    void draw() override;
 
     /** @brief Resizes child panes upon resize. */
     void onResize(int newWidth, int newHeight) override;

@@ -24,7 +24,7 @@ namespace rt = basil::raytracer;
  * - Metrics reporting to ImGui
  * - Demo vs. render settings
  */
-int main(int argc, char** argv) {
+int main() {
     auto currentPath = std::filesystem::path(__FILE__).parent_path();
     auto shaderPath = currentPath / "shaders/raytracer.frag";
     auto jsonPath = currentPath / "assets/uniforms.json";

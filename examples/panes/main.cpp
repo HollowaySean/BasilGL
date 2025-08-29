@@ -27,7 +27,7 @@ using basil::WindowView;
  * also complicated) nesting of builders. See more information in sidebar
  * upon building and running the executable.
  */
-int main(int argc, char** argv) {
+int main() {
     auto basilApp = BasilApp::Builder()
         .withController(ProcessController::Builder()
             .withFrameCap(60)

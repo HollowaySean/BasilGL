@@ -167,9 +167,23 @@ GLTextureCubemap::~GLTextureCubemap() {
         LogLevel::DEBUG);
 }
 
-template<int N>
-GLTexture<N>::Builder&
-GLTexture<N>::Builder::withSource(std::shared_ptr<ITextureSource<N>> source) {
+template<>
+GLTexture<1>::Builder&
+GLTexture<1>::Builder::withSource(std::shared_ptr<ITextureSource<1>> source) {
+    this->impl->setSource(source);
+    return (*this);
+}
+
+template<>
+GLTexture<2>::Builder&
+GLTexture<2>::Builder::withSource(std::shared_ptr<ITextureSource<2>> source) {
+    this->impl->setSource(source);
+    return (*this);
+}
+
+template<>
+GLTexture<3>::Builder&
+GLTexture<3>::Builder::withSource(std::shared_ptr<ITextureSource<3>> source) {
     this->impl->setSource(source);
     return (*this);
 }
@@ -181,9 +195,23 @@ GLTexture<2>::Builder::fromFile(std::filesystem::path filePath) {
     return withSource(source);
 }
 
-template<int N>
-GLTexture<N>::Builder&
-GLTexture<N>::Builder::withParameter(GLenum parameterName, GLenum value) {
+template<>
+GLTexture<1>::Builder&
+GLTexture<1>::Builder::withParameter(GLenum parameterName, GLenum value) {
+    this->impl->setTextureParameter(parameterName, value);
+    return (*this);
+}
+
+template<>
+GLTexture<2>::Builder&
+GLTexture<2>::Builder::withParameter(GLenum parameterName, GLenum value) {
+    this->impl->setTextureParameter(parameterName, value);
+    return (*this);
+}
+
+template<>
+GLTexture<3>::Builder&
+GLTexture<3>::Builder::withParameter(GLenum parameterName, GLenum value) {
     this->impl->setTextureParameter(parameterName, value);
     return (*this);
 }

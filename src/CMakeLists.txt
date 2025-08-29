@@ -55,3 +55,10 @@ target_include_directories(${LIB_TARGET_NAME}
         ${SRC_DIR}
     PRIVATE
         ${BASIL_DEPENDENCY_INCLUDE_DIRS})
+
+## Set warning level
+if(MSVC)
+    target_compile_options(${LIB_TARGET_NAME} PRIVATE /W4 /WX)
+else()
+    target_compile_options(${LIB_TARGET_NAME} PRIVATE -Wall -Wextra -Werror -Wno-missing-field-initializers)
+endif()

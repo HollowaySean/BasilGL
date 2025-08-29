@@ -112,24 +112,25 @@ bool ImageFileCapture::saveBufferToFile(
     GLsizei channels = 3;
     GLsizei stride = channels * area.width;
     stride += (stride % 4) ? (4 - stride % 4) : 0;
-    GLsizei bufferSize = stride * area.height;
 
     // Write to file
     stbi_flip_vertically_on_write(true);
-    const std::string extension = savePath.extension();
+    const std::string extension = savePath.extension().string();
+    const std::string pathString = savePath.string();
+    const char* pathChar = pathString.c_str();
 
     int result;
     if (extension == ".jpg") {
-        result = stbi_write_jpg(savePath.c_str(), area.width, area.height,
+        result = stbi_write_jpg(pathChar, area.width, area.height,
             channels, dataPointer, jpegQuality);
 
     } else if (extension == ".bmp") {
-        result = stbi_write_bmp(savePath.c_str(), area.width, area.height,
+        result = stbi_write_bmp(pathChar, area.width, area.height,
             channels, dataPointer);
 
     } else if (extension == ".png") {
         stbi_write_png_compression_level = pngCompression;
-        result = stbi_write_png(savePath.c_str(), area.width, area.height,
+        result = stbi_write_png(pathChar, area.width, area.height,
             channels, dataPointer, stride);
 
     } else if (extension.empty()) {
@@ -138,7 +139,7 @@ bool ImageFileCapture::saveBufferToFile(
             LogLevel::INFO);
 
         stbi_write_png_compression_level = pngCompression;
-        result = stbi_write_png(savePath.c_str(), area.width, area.height,
+        result = stbi_write_png(pathChar, area.width, area.height,
             channels, dataPointer, stride);
 
     } else {
@@ -150,7 +151,7 @@ bool ImageFileCapture::saveBufferToFile(
 
     if (result != 0) {
         logger.log(
-            fmt::format(LOG_CAPTURE_SUCCESS, savePath.c_str()),
+            fmt::format(LOG_CAPTURE_SUCCESS, pathChar),
             LogLevel::INFO);
     } else {
         logger.log(

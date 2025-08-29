@@ -106,7 +106,6 @@ void GLShaderProgram::receiveData(const DataMessage& message) {
     auto uniforms = model.getUniforms();
 
     for (auto pair : uniforms) {
-        auto uniformID = pair.first;
         auto uniform = pair.second;
 
         uniformManager.setUniform(uniform);

@@ -44,7 +44,7 @@ class GLShaderPane :  public IPane,
     void setShaderProgram(std::shared_ptr<GLShaderProgram> shaderProgram);
 
     /** @brief Draws to screen using shader and texture(s). */
-    void const draw() override;
+    void draw() override;
 
     class Builder : public IBuilder<GLShaderPane> {
      public:

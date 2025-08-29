@@ -65,6 +65,7 @@ TEST_CASE("Window_WindowView_getTopPaneProps") {
 
 TEST_CASE("Window_WindowView_setWindowProps") { BASIL_LOCK_TEST
     SECTION("Sets windowProps to new values") {
+        // TODO(sholloway): Fix OS-dependent minimum window sizing
         WindowView window = WindowView();
         WindowProps newProps = WindowProps {
             .title = "test",
