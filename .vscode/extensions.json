@@ -6,7 +6,6 @@
 		"ms-vscode.cmake-tools",
 		"elagil.pre-commit-helper",
 		"jkiviluoto.tws",
-		"gruntfuggly.todo-tree",
-		"matepek.vscode-catch2-test-adapter"
+		"gruntfuggly.todo-tree"
 	]
 }
