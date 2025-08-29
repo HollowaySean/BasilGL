@@ -46,3 +46,6 @@ examples/raytracer/assets/skybox
 !.vscode/c_cpp_properties.json
 !.vscode/launch.json
 /.vs
+
+# CLion settings
+.idea
