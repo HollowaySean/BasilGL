@@ -1,0 +1,11 @@
+name: Dry run build and test
+run-name: "${{ github.actor }} has submitted pull request #${{ github.event.number }}"
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths-ignore: ['**.cpp', '**.hpp', '**CMakeLists.txt', '.github/workflows/pull-request-opened.yml']
+jobs:
+  Build-and-Test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: 'echo "No build required" '
