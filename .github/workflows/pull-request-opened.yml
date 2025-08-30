@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize]
     paths: ['**.cpp', '**.hpp', '**CMakeLists.txt', '.github/workflows/pull-request-opened.yml']
 jobs:
-  Build-and-Test_Ubuntu:
+  Build-and-Test:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
