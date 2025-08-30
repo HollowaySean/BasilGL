@@ -1,5 +1,5 @@
 name: Pull request merge hooks
-run-name: TODO
+run-name: Merged pull request ${{ github.event.number }}
 on: 
   pull_request:
     types: 
@@ -14,4 +14,5 @@ jobs:
       - name: Reset 'dev' branch to 'main'
         uses: nicksnell/action-reset-repo@master
         with:
+          base_branch: main
           reset_branch: dev
