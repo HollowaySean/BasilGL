@@ -1,5 +1,5 @@
 name: Pull request merge hooks
-run-name: TODO
+run-name: Merged pull request ${{ github.event.number }}
 on: 
   pull_request:
     types: 
@@ -8,7 +8,7 @@ on:
       - 'main'
 jobs:
   Reset-Dev-Branch:
-    if: startsWith(github.head_ref, 'dev')
+    if: github.head_ref == 'dev' && github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     steps:
       - name: Reset 'dev' branch to 'main'
