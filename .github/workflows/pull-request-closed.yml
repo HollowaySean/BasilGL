@@ -1,0 +1,17 @@
+name: Pull request merge hooks
+run-name: TODO
+on: 
+  pull_request:
+    types: 
+      - closed
+    branches:
+      - 'main'
+jobs:
+  Reset-Dev-Branch:
+    if: startsWith(github.head_ref, 'dev')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reset 'dev' branch to 'main'
+        uses: nicksnell/action-reset-repo@master
+        with:
+          reset_branch: dev
