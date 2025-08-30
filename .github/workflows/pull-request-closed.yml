@@ -1,5 +1,5 @@
 name: Pull request merge hooks
-run-name: Merged pull request \#${{ github.event.number }}
+run-name: Merged pull request #${{ github.event.number }}
 on: 
   pull_request:
     types: 
