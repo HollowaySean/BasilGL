@@ -16,7 +16,7 @@ class HotReloadShaderPane : public GLShaderPane,
                             public IBuildable<HotReloadShaderPane> {
  public:
     /** @brief Initialize from file path. */
-    HotReloadShaderPane(std::filesystem::path shaderFilePath);
+    explicit HotReloadShaderPane(std::filesystem::path shaderFilePath);
 
     /** @brief Set path of shader file. */
     void setFilePath(std::filesystem::path shaderFilePath);
