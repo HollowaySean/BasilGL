@@ -14,4 +14,5 @@ jobs:
       - name: Reset 'dev' branch to 'main'
         uses: nicksnell/action-reset-repo@master
         with:
+          base_branch: main
           reset_branch: dev
