@@ -16,7 +16,7 @@ ScreenshotTool::ScreenshotTool() : IBasilWidget({
 }), fileCapture(ImageFileCapture()) {}
 
 ScreenshotTool::~ScreenshotTool() {
-    BasilContext::removeGLFWKeyCallback(callbackID);
+    basilContext.removeGLFWKeyCallback(callbackID);
 }
 
 void ScreenshotTool::onStart() {
@@ -30,7 +30,7 @@ void ScreenshotTool::onStart() {
 
     using std::placeholders::_1, std::placeholders::_2,
           std::placeholders::_3, std::placeholders::_4;
-    callbackID = BasilContext::setGLFWKeyCallback(
+    callbackID = basilContext.setGLFWKeyCallback(
         std::bind(&ScreenshotTool::onKeyPress, this, _1, _2, _3, _4));
 }
 
@@ -50,7 +50,7 @@ void ScreenshotTool::onLoop() {
 }
 
 void ScreenshotTool::onStop() {
-    BasilContext::removeGLFWKeyCallback(callbackID);
+    basilContext.removeGLFWKeyCallback(callbackID);
 }
 
 void ScreenshotTool::readyState() {

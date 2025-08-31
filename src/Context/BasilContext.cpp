@@ -4,14 +4,27 @@
 
 namespace basil {
 
-void BasilContext::initialize() {
-    BasilContext& instance = get();
+BasilContext& BasilContext::get(
+    std::optional<std::thread::id> contextThreadID
+) {
+    std::thread::id threadID
+        = contextThreadID.value_or(std::this_thread::get_id());
 
-    if (instance.isInitialized()) return;
+    if (contexts.count(threadID)) {
+        return contexts.at(threadID);
+    } else {
+        contexts.emplace(threadID, BasilContext());
+    }
+
+    return contexts.at(threadID);
+}
+
+void BasilContext::initialize() {
+    if (isInitialized()) return;
 
     hasInitialized = true;
-    instance.initializeGLFWContext();
-    instance.initializeGLEWContext();
+    initializeGLFWContext();
+    initializeGLEWContext();
 
     #if BASIL_INCLUDE_IMGUI
     initializeImGuiContext();
@@ -49,6 +62,10 @@ void BasilContext::initializeGLFWContext() {
     hasInitialized &= glfwWindow != nullptr;
     logGLFWWindowError(glfwWindow);
 
+    if (!hasInitialized) {
+        terminate();
+    }
+
     // Set callback functions
     setGLFWCallbacks();
 }
@@ -85,7 +102,6 @@ void BasilContext::logGLFWWindowError(const GLFWwindow* window) {
         logger.log("GLFW window created successfully.", LogLevel::INFO);
     } else {
         logger.log("GLFW failed to create window.", LogLevel::ERROR);
-        BasilContext::terminate();
     }
 }
 
@@ -109,8 +125,7 @@ GLFWwindow* BasilContext::getGLFWWindow() {
         initialize();
     }
 
-    const BasilContext& instance = get();
-    return instance.glfwWindow;
+    return glfwWindow;
 }
 
 ViewArea BasilContext::getWindowArea() {
@@ -123,6 +138,8 @@ ViewArea BasilContext::getWindowArea() {
 void BasilContext::setGLFWCallbacks() {
     GLFWwindow* window = getGLFWWindow();
 
+    glfwSetWindowUserPointer(window, this);
+
     glfwSetFramebufferSizeCallback(window, BasilContext::onFrameBufferResize);
     glfwSetMouseButtonCallback(window, BasilContext::onMouseButton);
     glfwSetKeyCallback(window, BasilContext::onKeyAction);
@@ -130,29 +147,33 @@ void BasilContext::setGLFWCallbacks() {
 }
 
 void BasilContext::onFrameBufferResize(
-        GLFWwindow* /* window */, int width, int height) {
-    for (const auto& callback : framebufferCallbacks) {
+        GLFWwindow* window, int width, int height) {
+    BasilContext* currentContext = static_cast<BasilContext*>(glfwGetWindowUserPointer(window));
+    for (const auto& callback : currentContext->framebufferCallbacks) {
         callback.second(width, height);
     }
 }
 
 void BasilContext::onMouseButton(
-        GLFWwindow* /* window */, int button, int action, int mods) {
-    for (const auto& callback : mouseButtonCallbacks) {
+        GLFWwindow* window, int button, int action, int mods) {
+    BasilContext* currentContext = static_cast<BasilContext*>(glfwGetWindowUserPointer(window));
+    for (const auto& callback : currentContext->mouseButtonCallbacks) {
         callback.second(button, action, mods);
     }
 }
 
 void BasilContext::onKeyAction(
-        GLFWwindow* /* window */, int key, int scancode, int action, int mods) {
-    for (const auto& callback : keyCallbacks) {
+        GLFWwindow* window, int key, int scancode, int action, int mods) {
+    BasilContext* currentContext = static_cast<BasilContext*>(glfwGetWindowUserPointer(window));
+    for (const auto& callback : currentContext->keyCallbacks) {
         callback.second(key, scancode, action, mods);
     }
 }
 
 void BasilContext::onCursorEnter(
-        GLFWwindow* /* window */, int entered) {
-    for (const auto& callback : cursorEnterCallbacks) {
+        GLFWwindow* window, int entered) {
+    BasilContext* currentContext = static_cast<BasilContext*>(glfwGetWindowUserPointer(window));
+    for (const auto& callback : currentContext->cursorEnterCallbacks) {
         callback.second(entered);
     }
 }

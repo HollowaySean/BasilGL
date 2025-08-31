@@ -57,23 +57,25 @@ TEST_CASE("Widget_UserInputWatcher_onStop") {
 
     SECTION("De-registers callbacks") {
         widget.onStart();
-        CHECK(BasilContext::mouseButtonCallbacks
+
+        BasilContext& context = BasilContext::get();
+        CHECK(context.mouseButtonCallbacks
             .contains(widget.mouseCallbackID));
-        CHECK(BasilContext::keyCallbacks
+        CHECK(context.keyCallbacks
             .contains(widget.keyCallbackID));
-        CHECK(BasilContext::cursorEnterCallbacks
+        CHECK(context.cursorEnterCallbacks
             .contains(widget.cursorCallbackID));
-        CHECK(BasilContext::framebufferCallbacks
+        CHECK(context.framebufferCallbacks
             .contains(widget.resizeCallbackID));
 
         widget.onStop();
-        CHECK_FALSE(BasilContext::mouseButtonCallbacks
+        CHECK_FALSE(context.mouseButtonCallbacks
             .contains(widget.mouseCallbackID));
-        CHECK_FALSE(BasilContext::keyCallbacks
+        CHECK_FALSE(context.keyCallbacks
             .contains(widget.keyCallbackID));
-        CHECK_FALSE(BasilContext::cursorEnterCallbacks
+        CHECK_FALSE(context.cursorEnterCallbacks
             .contains(widget.cursorCallbackID));
-        CHECK_FALSE(BasilContext::framebufferCallbacks
+        CHECK_FALSE(context.framebufferCallbacks
             .contains(widget.resizeCallbackID));
     }
 }

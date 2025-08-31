@@ -47,7 +47,7 @@ bool ImageFileCapture::capture(
     auto area = captureArea.value_or(
         ViewArea { width, height, 0, 0 });
 
-    auto windowArea = BasilContext::getWindowArea();
+    auto windowArea = basilContext.getWindowArea();
     updateBufferSize(windowArea.width, windowArea.height);
 
     auto pixelDataPointer = copyFrameToBuffer(area);
@@ -71,7 +71,7 @@ std::future<bool> ImageFileCapture::captureAsync(
     auto area = captureArea.value_or(
         ViewArea { width, height, 0, 0 });
 
-    auto windowArea = BasilContext::getWindowArea();
+    auto windowArea = basilContext.getWindowArea();
     updateBufferSize(windowArea.width, windowArea.height);
 
     auto pixelDataPointer = copyFrameToBuffer(area);

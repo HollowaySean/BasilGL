@@ -35,11 +35,11 @@ void CameraController::onStart() {
     lastMousePosition = inputModel.getMousePosition();
 
     using std::placeholders::_1, std::placeholders::_2;
-    callbackID = BasilContext::setGLFWFramebufferSizeCallback(
+    callbackID = basilContext.setGLFWFramebufferSizeCallback(
         std::bind(&CameraController::onResize, this, _1, _2));
 
     // Set initial aspect ratio
-    auto windowArea = BasilContext::getWindowArea();
+    auto windowArea = basilContext.getWindowArea();
     onResize(windowArea.width, windowArea.height);
 
     // Set initial  position
@@ -65,7 +65,7 @@ void CameraController::onLoop() {
 }
 
 void CameraController::onStop() {
-    BasilContext::removeGLFWFramebufferSizeCallback(callbackID);
+    basilContext.removeGLFWFramebufferSizeCallback(callbackID);
 }
 
 void CameraController::setPosition(glm::vec3 setPosition) {
@@ -131,7 +131,7 @@ void CameraController::checkControlLock() {
         controlsActive = false;
 
         glfwSetInputMode(
-            BasilContext::getGLFWWindow(),
+            basilContext.getGLFWWindow(),
             GLFW_CURSOR,
             GLFW_CURSOR_NORMAL);
 
@@ -142,7 +142,7 @@ void CameraController::checkControlLock() {
         mousePositionCurrent = false;
 
         glfwSetInputMode(
-            BasilContext::getGLFWWindow(),
+            basilContext.getGLFWWindow(),
             GLFW_CURSOR,
             GLFW_CURSOR_DISABLED);
     }

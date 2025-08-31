@@ -11,7 +11,7 @@ WindowView::WindowView(std::optional<WindowProps> windowProps) : IBasilWidget({
     this->windowProps = windowProps.value_or(WindowProps());
 
     // Create window
-    glfwWindow = BasilContext::getGLFWWindow();
+    glfwWindow = basilContext.getGLFWWindow();
 
     // Set window properties
     setWindowSize(this->windowProps.width, this->windowProps.height);
@@ -123,11 +123,11 @@ void WindowView::setCallbacks() {
     BasilContext::BasilFrameBufferSizeFunc func =
         std::bind(&WindowView::onResize, this, _1, _2);
     resizeCallbackID =
-        BasilContext::setGLFWFramebufferSizeCallback(func);
+        basilContext.setGLFWFramebufferSizeCallback(func);
 }
 
 void WindowView::removeCallbacks() {
-    BasilContext::removeGLFWFramebufferSizeCallback(resizeCallbackID);
+    basilContext.removeGLFWFramebufferSizeCallback(resizeCallbackID);
 }
 
 WindowView::Builder&

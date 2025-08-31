@@ -72,5 +72,5 @@ target_compile_definitions(
 if(MSVC)
     target_compile_options(${EXEC_TARGET_NAME} PRIVATE /W4 /WX)
 else()
-    target_compile_options(${EXEC_TARGET_NAME} PRIVATE -Wall -Wextra -Werror -Wno-missing-field-initializers)
+    target_compile_options(${EXEC_TARGET_NAME} PRIVATE -Wall -Wextra -Werror -Wno-missing-field-initializers -fdiagnostics-color=never)
 endif()

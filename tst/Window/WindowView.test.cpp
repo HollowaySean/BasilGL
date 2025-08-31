@@ -7,7 +7,6 @@
 #include "Window/WindowTestUtils.hpp"
 
 using basil::BasilContext;
-using basil::BasilContextLock;
 using basil::DataMessage;
 using basil::Logger;
 using basil::LogLevel;
@@ -23,7 +22,7 @@ using s_pt = std::shared_ptr<T>;
 
 TEST_CASE("Window_WindowView_WindowView") { BASIL_LOCK_TEST
     SECTION("Initializes GLFW context") {
-        BasilContext::terminate();
+        BasilContext::get().terminate();
 
         const GLFWwindow* glfwContext = glfwGetCurrentContext();
         CHECK(glfwContext == nullptr);

@@ -13,7 +13,8 @@ namespace basil::raytracer {
 
 /** @brief Widget to read user input and update Camera object. */
 class CameraController : public IBasilWidget,
-                         public IBuildable<CameraController> {
+                         public IBuildable<CameraController>,
+                         public IBasilContextConsumer {
  public:
     /** @brief Initialize widget. */
     CameraController();

@@ -12,7 +12,7 @@ UserInputWatcher::UserInputWatcher() : IBasilWidget({
         ProcessPrivilege::LOW,
         WidgetPubSubPrefs::PUBLISH_ONLY
     }) {
-        window = BasilContext::getGLFWWindow();
+        window = basilContext.getGLFWWindow();
 }
 
 UserInputWatcher::~UserInputWatcher() {
@@ -92,7 +92,7 @@ void UserInputWatcher::checkIsMouseInWindow() {
 
 void UserInputWatcher::checkWindowSize() {
     #ifndef TEST_BUILD
-    auto windowArea = BasilContext::getWindowArea();
+    auto windowArea = basilContext.getWindowArea();
     int width = windowArea.width;
     int height = windowArea.height;
     #else
@@ -109,21 +109,21 @@ void UserInputWatcher::setCallbacks() {
     using std::placeholders::_3;
     using std::placeholders::_4;
 
-    mouseCallbackID = BasilContext::setGLFWMouseButtonCallback(
+    mouseCallbackID = basilContext.setGLFWMouseButtonCallback(
         std::bind(&UserInputWatcher::onMouseButtonChange, this, _1, _2, _3));
-    keyCallbackID = BasilContext::setGLFWKeyCallback(
+    keyCallbackID = basilContext.setGLFWKeyCallback(
         std::bind(&UserInputWatcher::onKeyChange, this, _1, _2, _3, _4));
-    cursorCallbackID = BasilContext::setGLFWCursorEnterCallback(
+    cursorCallbackID = basilContext.setGLFWCursorEnterCallback(
         std::bind(&UserInputWatcher::onCursorEnter, this, _1));
-    resizeCallbackID = BasilContext::setGLFWFramebufferSizeCallback(
+    resizeCallbackID = basilContext.setGLFWFramebufferSizeCallback(
         std::bind(&UserInputWatcher::onResize, this, _1, _2));
 }
 
 void UserInputWatcher::removeCallbacks() {
-    BasilContext::removeGLFWMouseButtonCallback(mouseCallbackID);
-    BasilContext::removeGLFWKeyCallback(keyCallbackID);
-    BasilContext::removeGLFWCursorEnterCallback(cursorCallbackID);
-    BasilContext::removeGLFWFramebufferSizeCallback(resizeCallbackID);
+    basilContext.removeGLFWMouseButtonCallback(mouseCallbackID);
+    basilContext.removeGLFWKeyCallback(keyCallbackID);
+    basilContext.removeGLFWCursorEnterCallback(cursorCallbackID);
+    basilContext.removeGLFWFramebufferSizeCallback(resizeCallbackID);
 }
 
 void UserInputWatcher::onMouseButtonChange(

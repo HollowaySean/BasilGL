@@ -12,7 +12,8 @@ namespace basil {
 
 /** @brief Basil widget to asynchronously take screenshots on key press. */
 class ScreenshotTool : public IBasilWidget,
-                       public IBuildable<ScreenshotTool> {
+                       public IBuildable<ScreenshotTool>,
+                       protected IBasilContextConsumer {
  public:
     /** @brief Initialize ScreenshotTool. */
     ScreenshotTool();

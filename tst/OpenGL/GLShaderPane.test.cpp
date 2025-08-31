@@ -4,7 +4,6 @@
 
 #include "GLTestUtils.hpp"
 
-using basil::BasilContextLock;
 using basil::GLVertexShader;
 using basil::GLFragmentShader;
 using basil::GLShaderProgram;

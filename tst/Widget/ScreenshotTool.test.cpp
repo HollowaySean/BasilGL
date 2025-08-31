@@ -19,7 +19,7 @@ TEST_CASE("Widget_ScreenshotTool_onStart") { BASIL_LOCK_TEST
     }
 
     SECTION("Sets key press callback") {
-        CHECK(BasilContext::keyCallbacks.contains(widget.callbackID));
+        CHECK(BasilContext::get().keyCallbacks.contains(widget.callbackID));
     }
 }
 
@@ -58,9 +58,9 @@ TEST_CASE("Widget_ScreenshotTool_onStop") { BASIL_LOCK_TEST
     widget.onStart();
 
     SECTION("Deregisters callbacks") {
-        CHECK(BasilContext::keyCallbacks.contains(widget.callbackID));
+        CHECK(BasilContext::get().keyCallbacks.contains(widget.callbackID));
         widget.onStop();
-        CHECK_FALSE(BasilContext::keyCallbacks.contains(widget.callbackID));
+        CHECK_FALSE(BasilContext::get().keyCallbacks.contains(widget.callbackID));
     }
 }
 

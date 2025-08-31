@@ -3,7 +3,6 @@
 #include "OpenGL/GLTexture.hpp"
 #include "OpenGL/GLTestUtils.hpp"
 
-using basil::BasilContextLock;
 using basil::GLTexture1D;
 using basil::GLTexture2D;
 using basil::GLTexture3D;

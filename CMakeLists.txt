@@ -44,3 +44,5 @@ add_subdirectory(${SRC_DIR})
 add_subdirectory(${EXAMPLE_DIR})
 add_subdirectory(${TST_DIR})
 add_subdirectory(${DOCS_DIR})
+
+## TODO(sholloway): Global target compile options

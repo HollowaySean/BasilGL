@@ -5,14 +5,12 @@
 
 #include <catch.hpp>
 
-#include "Context/BasilContextLock.hpp"
 #include "Window/IPane.hpp"
 
-using basil::BasilContextLock;
 using basil::ViewArea;
 
 // Preprocessor definition to lock test
-#define BASIL_LOCK_TEST auto lock = BasilContextLock();
+#define BASIL_LOCK_TEST
 
 // Commonly used definitions
 inline std::filesystem::path vertexPath =

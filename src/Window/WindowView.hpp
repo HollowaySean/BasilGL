@@ -110,7 +110,6 @@ class WindowView :  public IBasilWidget,
 
     std::shared_ptr<IPane> topPane;
 
-    BasilContext& context = BasilContext::get();
     Logger& logger = Logger::get();
 };
 

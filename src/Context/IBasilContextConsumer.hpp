@@ -7,9 +7,11 @@ namespace basil {
 /** @brief Requires derived classes to initialize context. */
 class IBasilContextConsumer {
  protected:
-    IBasilContextConsumer() {
-        BasilContext::initialize();
+    IBasilContextConsumer() : basilContext(BasilContext::get()) {
+        basilContext.initialize();
     }
+
+    BasilContext& basilContext;
 };
 
 }   // namespace basil
