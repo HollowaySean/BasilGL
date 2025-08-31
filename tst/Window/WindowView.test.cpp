@@ -131,8 +131,6 @@ TEST_CASE("Window_WindowView_onLoop") {
     }
 
     SECTION("Closes window if requested by GLFW") {
-
-
         WindowView window = WindowView();
 
         glfwSetWindowShouldClose(window.glfwWindow, GLFW_TRUE);

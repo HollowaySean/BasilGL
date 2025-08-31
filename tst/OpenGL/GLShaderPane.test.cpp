@@ -59,7 +59,6 @@ TEST_CASE("OpenGL_GLShaderPane_setShaderProgram") {
     }
 
     SECTION("Sets up OpenGL objects if new shader program provided") {
-
         std::shared_ptr<GLShaderProgram> program =
             GLShaderProgram::Builder()
                 .withFragmentShaderFromFile(fragmentPath)
