@@ -45,7 +45,7 @@ concept GLUniformSourceType =
 class GLUniform {
  public:
     /** @returns Name of uniform in shader code */
-    std::string getName() const { return name;   }
+    const std::string& getName() const { return name;   }
 
     /** @returns Length of vector data, or first dimension of matrix data */
     virtual unsigned int getLength() const { return length; }

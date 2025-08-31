@@ -160,7 +160,8 @@ void GLProgramUniformManager::setUniformAt(
 }
 
 void GLProgramUniformManager::cacheUniform(std::shared_ptr<GLUniform> uniform) {
-    std::string name = uniform->getName();
+    // TODO(sholloway): Use hash instead of string
+    const std::string& name = uniform->getName();
     if (uniformCache.contains(name)) {
         uniformCache.at(name) = uniform;
     } else {

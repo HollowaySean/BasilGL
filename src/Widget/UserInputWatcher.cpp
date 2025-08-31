@@ -27,6 +27,7 @@ void UserInputWatcher::onStart() {
 void UserInputWatcher::onLoop() {
     checkMousePosition();
 
+    // TODO(sholloway): Only publish on data change
     this->IDataPublisher::publishData(DataMessage(model));
 }
 
@@ -77,6 +78,7 @@ void UserInputWatcher::checkMousePosition() {
     yPosition = TEST_MOUSE_Y_POSITION;
     #endif
 
+    // TODO(sholloway): Only set uniforms if values have changed
     model.setMousePosition(xPosition, yPosition);
 }
 
