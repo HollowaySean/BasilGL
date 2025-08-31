@@ -53,15 +53,24 @@ class SplitPane :   public IPane,
     /** @param fixedPane Sets which pane remains invariant. */
     void setFixedPane(SplitPane::FixedPane fixedPane);
 
-    /** @param extent Size of fixed pane, in pixels. */
+    /**
+     * @param extent    Size of fixed pane, in pixels.
+     * @param paneToSet Optional - pane to set size of.
+     */
     void setPaneSizeInPixels(int extent,
         std::optional<SplitPane::FixedPane> paneToSet = std::nullopt);
 
-    /** @param extent Size of fixed pane, as a percentage. */
+    /**
+     * @param extent Size of fixed pane, as a percentage.
+     * @param paneToSet Optional - pane to set size of.
+     */
     void setPaneSizeAsPercentage(float extent,
         std::optional<SplitPane::FixedPane> paneToSet = std::nullopt);
 
-    /** @param aspectRatio Aspect ratio of fixed pane, as ratio. */
+    /**
+     * @param aspectRatio Aspect ratio of fixed pane, as ratio.
+     * @param paneToSet Optional - pane to set size of.
+     */
     void setPaneAspectRatio(float aspectRatio,
         std::optional<SplitPane::FixedPane> paneToSet = std::nullopt);
 

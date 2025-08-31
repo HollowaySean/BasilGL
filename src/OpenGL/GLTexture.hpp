@@ -158,9 +158,9 @@ class GLTextureCubemap : public IGLTexture,
     void update() override;
 
     /** @brief Set 2D ITextureSource for cubemap face.
-     *  @param source   Pointer to 2D ITextureSource
-     *  @param face     GLenum for cube face,
-     *                  i.e. GL_TEXTURE_CUBE_MAP_POSITIVE_X */
+     *  @param setSource    Pointer to 2D ITextureSource
+     *  @param face         GLenum for cube face,
+     *                      i.e. GL_TEXTURE_CUBE_MAP_POSITIVE_X */
     void setSource(
             std::shared_ptr<ITextureSource<2>> setSource,
             GLenum face);

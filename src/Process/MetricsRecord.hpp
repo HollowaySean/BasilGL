@@ -19,10 +19,10 @@ struct MetricsRecord {
     unsigned int frameID;
 
     /** @brief Time from start of frame to end of frame. */
-    FrameClock::duration frameTime;
+    FrameClock::duration frameTime = FrameClock::duration::zero();
 
     /** @brief Time from start of frame to end of processes. */
-    FrameClock::duration workTime;
+    FrameClock::duration workTime = FrameClock::duration::zero();
 
     /** @brief Map of process times and their durations*/
     std::map<std::shared_ptr<ProcessInstance>,
