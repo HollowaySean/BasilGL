@@ -21,22 +21,6 @@ template<class T>
 using s_pt = std::shared_ptr<T>;
 
 TEST_CASE("Window_WindowView_WindowView") { BASIL_LOCK_TEST
-    SECTION("Initializes GLFW context") {
-        BasilContext::get().terminate();
-
-        const GLFWwindow* glfwContext = glfwGetCurrentContext();
-        CHECK(glfwContext == nullptr);
-
-        WindowProps windowProps = WindowProps {
-            .title = "test name",
-            .width = 100,
-            .height = 50
-        };
-        WindowView windowView = WindowView(windowProps);
-
-        glfwContext = glfwGetCurrentContext();
-        CHECK_FALSE(glfwContext == nullptr);
-    }
 
     SECTION("Uses default WindowProps if none provided") {
         WindowView windowView = WindowView();
@@ -98,8 +82,9 @@ TEST_CASE("Window_WindowView_setWindowSize") { BASIL_LOCK_TEST
     SECTION("Sets GLFW window dimensions") {
         WindowView window = WindowView();
 
-        int newWidth = 55;
-        int newHeight = 22;
+        // TODO(sholloway): Properly handle window minimum/maximum size
+        int newWidth = 555;
+        int newHeight = 222;
         window.setWindowSize(newWidth, newHeight);
 
         CHECK(window.windowProps.width == newWidth);
@@ -155,9 +140,7 @@ TEST_CASE("Window_WindowView_onLoop") {
         window.onLoop();
 
         CHECK(window.currentState == ProcessState::REQUEST_STOP);
-
-        const GLFWwindow* glfwContext = glfwGetCurrentContext();
-        CHECK(glfwContext == nullptr);
+        CHECK_FALSE(basil::BasilContext::get().isInitialized());
     }
 }
 

@@ -38,8 +38,9 @@ void BasilContext::terminate() {
     terminateImGuiContext();
     #endif
 
-    glfwTerminate();
+    glfwDestroyWindow(glfwWindow);
     hasInitialized = false;
+    glfwWindow = nullptr;
 }
 
 void BasilContext::initializeGLFWContext() {
@@ -129,51 +130,55 @@ GLFWwindow* BasilContext::getGLFWWindow() {
 }
 
 ViewArea BasilContext::getWindowArea() {
+    if (glfwWindow == nullptr) {
+        return { 0, 0, 0, 0 };
+    }
+
     int width, height;
-    glfwGetFramebufferSize(getGLFWWindow(), &width, &height);
+    glfwGetFramebufferSize(glfwWindow, &width, &height);
 
     return { width, height, 0, 0 };
 }
 
 void BasilContext::setGLFWCallbacks() {
-    GLFWwindow* window = getGLFWWindow();
+    if (glfwWindow == nullptr) {
+        return;
+    }
 
-    glfwSetWindowUserPointer(window, this);
-
-    glfwSetFramebufferSizeCallback(window, BasilContext::onFrameBufferResize);
-    glfwSetMouseButtonCallback(window, BasilContext::onMouseButton);
-    glfwSetKeyCallback(window, BasilContext::onKeyAction);
-    glfwSetCursorEnterCallback(window, BasilContext::onCursorEnter);
+    glfwSetFramebufferSizeCallback(glfwWindow, BasilContext::onFrameBufferResize);
+    glfwSetMouseButtonCallback(glfwWindow, BasilContext::onMouseButton);
+    glfwSetKeyCallback(glfwWindow, BasilContext::onKeyAction);
+    glfwSetCursorEnterCallback(glfwWindow, BasilContext::onCursorEnter);
 }
 
 void BasilContext::onFrameBufferResize(
-        GLFWwindow* window, int width, int height) {
-    BasilContext* currentContext = static_cast<BasilContext*>(glfwGetWindowUserPointer(window));
-    for (const auto& callback : currentContext->framebufferCallbacks) {
+        GLFWwindow* /* window */, int width, int height) {
+    BasilContext& currentContext = get();
+    for (const auto& callback : currentContext.framebufferCallbacks) {
         callback.second(width, height);
     }
 }
 
 void BasilContext::onMouseButton(
-        GLFWwindow* window, int button, int action, int mods) {
-    BasilContext* currentContext = static_cast<BasilContext*>(glfwGetWindowUserPointer(window));
-    for (const auto& callback : currentContext->mouseButtonCallbacks) {
+        GLFWwindow* /* window */, int button, int action, int mods) {
+    BasilContext& currentContext = get();
+    for (const auto& callback : currentContext.mouseButtonCallbacks) {
         callback.second(button, action, mods);
     }
 }
 
 void BasilContext::onKeyAction(
-        GLFWwindow* window, int key, int scancode, int action, int mods) {
-    BasilContext* currentContext = static_cast<BasilContext*>(glfwGetWindowUserPointer(window));
-    for (const auto& callback : currentContext->keyCallbacks) {
+        GLFWwindow* /* window */, int key, int scancode, int action, int mods) {
+    BasilContext& currentContext = get();
+    for (const auto& callback : currentContext.keyCallbacks) {
         callback.second(key, scancode, action, mods);
     }
 }
 
 void BasilContext::onCursorEnter(
-        GLFWwindow* window, int entered) {
-    BasilContext* currentContext = static_cast<BasilContext*>(glfwGetWindowUserPointer(window));
-    for (const auto& callback : currentContext->cursorEnterCallbacks) {
+        GLFWwindow* /* window */, int entered) {
+    BasilContext& currentContext = get();
+    for (const auto& callback : currentContext.cursorEnterCallbacks) {
         callback.second(entered);
     }
 }
@@ -252,8 +257,7 @@ void BasilContext::initializeImGuiContext() {
         io.LogFilename = NULL;
 
         // Attach to GLFW context
-        GLFWwindow* window = getGLFWWindow();
-        ImGui_ImplGlfw_InitForOpenGL(window, true);
+        ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
         ImGui_ImplOpenGL3_Init();
 }
 

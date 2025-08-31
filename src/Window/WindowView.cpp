@@ -18,7 +18,6 @@ WindowView::WindowView(std::optional<WindowProps> windowProps) : IBasilWidget({
     setWindowTitle(this->windowProps.title);
 
     // Set window user pointer
-    glfwSetWindowUserPointer(glfwWindow, this);
     setCallbacks();
 }
 
@@ -74,9 +73,8 @@ void WindowView::setWindowSize(int width, int height) {
 }
 
 void WindowView::setWindowTitle(const std::string& title) {
-    this->windowProps.title = title;
-
     glfwSetWindowTitle(glfwWindow, title.c_str());
+    this->windowProps.title = title;
 }
 
 void WindowView::setWindowProps(const WindowProps& newWindowProps) {
@@ -113,7 +111,7 @@ void WindowView::closeWindow() {
     setCurrentState(ProcessState::REQUEST_STOP);
     removeCallbacks();
 
-    glfwDestroyWindow(glfwWindow);
+    basilContext.terminate();
 }
 
 void WindowView::setCallbacks() {
