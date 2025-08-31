@@ -20,7 +20,7 @@ using basil::WindowView;
 template<class T>
 using s_pt = std::shared_ptr<T>;
 
-TEST_CASE("Window_WindowView_WindowView") { BASIL_LOCK_TEST
+TEST_CASE("Window_WindowView_WindowView") {
     SECTION("Uses default WindowProps if none provided") {
         WindowView windowView = WindowView();
         WindowProps windowProps = windowView.windowProps;
@@ -45,7 +45,7 @@ TEST_CASE("Window_WindowView_getTopPaneProps") {
     }
 }
 
-TEST_CASE("Window_WindowView_setWindowProps") { BASIL_LOCK_TEST
+TEST_CASE("Window_WindowView_setWindowProps") {
     SECTION("Sets windowProps to new values") {
         // TODO(sholloway): Fix OS-dependent minimum window sizing
         WindowView window = WindowView();
@@ -63,7 +63,7 @@ TEST_CASE("Window_WindowView_setWindowProps") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_WindowView_setWindowTitle") { BASIL_LOCK_TEST
+TEST_CASE("Window_WindowView_setWindowTitle") {
     SECTION("Sets GLFW window title") {
         WindowView window = WindowView();
 
@@ -77,7 +77,7 @@ TEST_CASE("Window_WindowView_setWindowTitle") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_WindowView_setWindowSize") { BASIL_LOCK_TEST
+TEST_CASE("Window_WindowView_setWindowSize") {
     SECTION("Sets GLFW window dimensions") {
         WindowView window = WindowView();
 
@@ -131,7 +131,7 @@ TEST_CASE("Window_WindowView_onLoop") {
     }
 
     SECTION("Closes window if requested by GLFW") {
-        BASIL_LOCK_TEST
+
 
         WindowView window = WindowView();
 
@@ -143,7 +143,7 @@ TEST_CASE("Window_WindowView_onLoop") {
     }
 }
 
-TEST_CASE("Window_WindowView_onStart") { BASIL_LOCK_TEST
+TEST_CASE("Window_WindowView_onStart") {
     SECTION("Makes window visible") {
         WindowView window = WindowView();
 
@@ -156,7 +156,7 @@ TEST_CASE("Window_WindowView_onStart") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Window_WindowView_receiveData") { BASIL_LOCK_TEST
+TEST_CASE("Window_WindowView_receiveData") {
     SECTION("Passes data on to subscriber") {
         WindowView window = WindowView();
         auto message = DataMessage(15);
@@ -211,7 +211,7 @@ TEST_CASE("Window_WindowView_onResize") {
     }
 }
 
-TEST_CASE("Window_WindowView_Builder") { BASIL_LOCK_TEST
+TEST_CASE("Window_WindowView_Builder") {
     SECTION("Builds WindowView object") {
         std::string title = "testTitle";
         int width = 54;

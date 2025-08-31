@@ -8,7 +8,7 @@
 
 using basil::ImGuiPane;
 
-TEST_CASE("ImGui_ImGuiPane_draw") { BASIL_LOCK_TEST
+TEST_CASE("ImGui_ImGuiPane_draw") {
     class TestImGuiPane : public ImGuiPane {
      public:
         void drawImGuiContent() override {

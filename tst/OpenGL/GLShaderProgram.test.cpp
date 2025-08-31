@@ -17,7 +17,7 @@ using basil::GLUniform;
 using basil::GLUniformScalar;
 using basil::ShaderUniformModel;
 
-TEST_CASE("OpenGL_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_GLShaderProgram") {
     Logger& logger = Logger::get();
 
     SECTION("Does not compile for default contruction") {
@@ -57,7 +57,7 @@ TEST_CASE("OpenGL_GLShaderProgram_GLShaderProgram") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLShaderProgram_use") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_use") {
     auto vertexShader =
         std::make_shared<GLVertexShader>(vertexPath);
     auto fragmentShader =
@@ -88,7 +88,7 @@ TEST_CASE("OpenGL_GLShaderProgram_setUniform") {
     }
 }
 
-TEST_CASE("OpenGL_GLShaderProgram_updateShaders") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_updateShaders") {
     auto vertexShader =
         std::make_shared<GLVertexShader>(vertexPath);
     auto secondVertexShader =
@@ -152,7 +152,7 @@ TEST_CASE("OpenGL_GLShaderProgram_receiveData") {
     }
 }
 
-TEST_CASE("OpenGL_GLShaderProgram_Builder") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderProgram_Builder") {
     SECTION("Builds shaders from objects") {
         auto vertexShader =
             std::make_shared<GLVertexShader>(vertexPath);

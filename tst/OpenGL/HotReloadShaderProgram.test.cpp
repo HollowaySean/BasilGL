@@ -8,7 +8,7 @@
 using basil::HotReloadShaderPane;
 using basil::ViewArea;
 
-TEST_CASE("OpenGL_HotReloadShaderPane_HotReloadShaderPane") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_HotReloadShaderPane_HotReloadShaderPane") {
     SECTION("Loads shader from file if compilable") {
         auto pane = HotReloadShaderPane(fragmentPath);
 
@@ -31,7 +31,7 @@ TEST_CASE("OpenGL_HotReloadShaderPane_HotReloadShaderPane") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_HotReloadShaderPane_draw") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_HotReloadShaderPane_draw") {
     auto pane = HotReloadShaderPane(invalidPath);
 
     SECTION("Updates the shader if modified") {
@@ -47,7 +47,7 @@ TEST_CASE("OpenGL_HotReloadShaderPane_draw") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_HotReloadShaderPane_Builder") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_HotReloadShaderPane_Builder") {
     SECTION("Builds from file path") {
         auto pane = HotReloadShaderPane::Builder()
             .fromFilePath(fragmentPath)

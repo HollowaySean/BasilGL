@@ -15,7 +15,7 @@ template<class T>
 using s_p = std::shared_ptr<T>;
 
 TEST_CASE("OpenGL_GLShaderPane_GLShaderPane") {
-    SECTION("Creates pane from shader program") { BASIL_LOCK_TEST
+    SECTION("Creates pane from shader program") {
         s_p<GLVertexShader> vertexShader =
             std::make_shared<GLVertexShader>(vertexPath);
         s_p<GLFragmentShader> fragmentShader =
@@ -59,7 +59,7 @@ TEST_CASE("OpenGL_GLShaderPane_setShaderProgram") {
     }
 
     SECTION("Sets up OpenGL objects if new shader program provided") {
-            BASIL_LOCK_TEST
+
         std::shared_ptr<GLShaderProgram> program =
             GLShaderProgram::Builder()
                 .withFragmentShaderFromFile(fragmentPath)
@@ -75,7 +75,7 @@ TEST_CASE("OpenGL_GLShaderPane_setShaderProgram") {
         CHECK_FALSE(pane.elementBufferID == 0);
     }
 
-    SECTION("Replaces previous program if one exists") { BASIL_LOCK_TEST
+    SECTION("Replaces previous program if one exists") {
         std::shared_ptr<GLShaderProgram> program =
             GLShaderProgram::Builder()
                 .withFragmentShaderFromFile(fragmentPath)
@@ -107,7 +107,7 @@ TEST_CASE("OpenGL_GLShaderPane_setShaderProgram") {
         CHECK(pane.elementBufferID == EBO);
     }
 
-    SECTION("Subscribes/unsubscribes data subscribers") { BASIL_LOCK_TEST
+    SECTION("Subscribes/unsubscribes data subscribers") {
         auto pane = GLShaderPane();
         auto program =
             GLShaderProgram::Builder()
@@ -125,7 +125,7 @@ TEST_CASE("OpenGL_GLShaderPane_setShaderProgram") {
     }
 }
 
-TEST_CASE("OpenGL_GLShaderPane_draw") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderPane_draw") {
     s_p<GLVertexShader> vertexShader =
         std::make_shared<GLVertexShader>(vertexPath);
     s_p<GLFragmentShader> fragmentShader =
@@ -168,7 +168,7 @@ TEST_CASE("OpenGL_GLShaderPane_draw") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLShaderPane_Builder") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShaderPane_Builder") {
     SECTION("Builds from fragment shader") {
         auto fragmentShader =
             std::make_shared<GLFragmentShader>(fragmentPath);

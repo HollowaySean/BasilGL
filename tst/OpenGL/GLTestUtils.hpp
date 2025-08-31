@@ -9,9 +9,6 @@
 
 using basil::ViewArea;
 
-// Preprocessor definition to lock test
-#define BASIL_LOCK_TEST
-
 // Commonly used definitions
 inline std::filesystem::path vertexPath =
     std::filesystem::path(TEST_DIR) / "OpenGL/assets/test.vert";

@@ -17,7 +17,7 @@ class TestShader : public GLShader {
     void setShader(const std::string& /* shaderCode */) override {}
 };
 
-TEST_CASE("OpenGL_GLShader_getShaderFromFile") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShader_getShaderFromFile") {
     TestShader shader = TestShader();
 
     SECTION("Reads valid file successfully") {
@@ -42,7 +42,7 @@ TEST_CASE("OpenGL_GLShader_getShaderFromFile") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLShader_compileShader") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLShader_compileShader") {
     TestShader shader = TestShader();
 
     SECTION("Compiles valid shader code successfully") {
@@ -62,7 +62,7 @@ TEST_CASE("OpenGL_GLShader_compileShader") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLVertexShader_GLVertexShader") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLVertexShader_GLVertexShader") {
     SECTION("Compiles vertex shader successfully") {
         GLVertexShader shader = GLVertexShader(vertexPath);
 
@@ -71,7 +71,7 @@ TEST_CASE("OpenGL_GLVertexShader_GLVertexShader") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLVertexShader_noOpShader") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLVertexShader_noOpShader") {
     std::string successMessage =
         "Shader compiled successfully.";
 
@@ -83,7 +83,7 @@ TEST_CASE("OpenGL_GLVertexShader_noOpShader") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLVertexShader_setShader") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLVertexShader_setShader") {
     GLVertexShader shader = GLVertexShader();
 
     SECTION("Compiles vertex shader from path") {
@@ -103,7 +103,7 @@ TEST_CASE("OpenGL_GLVertexShader_setShader") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLFragmentShader_setShader") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLFragmentShader_setShader") {
     GLFragmentShader shader = GLFragmentShader();
 
     SECTION("Compiles fragment shader from path") {
@@ -123,7 +123,7 @@ TEST_CASE("OpenGL_GLFragmentShader_setShader") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLFragmentShader_GLFragmentShader") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLFragmentShader_GLFragmentShader") {
     SECTION("Compiles fragment shader successfully") {
         GLFragmentShader shader = GLFragmentShader(fragmentPath);
 
@@ -147,7 +147,7 @@ TEST_CASE("OpenGL_GLFragmentShader_GLFragmentShader") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLFragmentShader_debugShader") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLFragmentShader_debugShader") {
     SECTION("Compiles vertex shader successfully") {
         auto shader = GLFragmentShader::debugShader();
 

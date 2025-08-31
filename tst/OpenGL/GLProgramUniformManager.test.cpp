@@ -115,7 +115,7 @@ void verifyUniforms(GLProgramUniformManager manager, int testCase) {
     }
 }
 
-TEST_CASE("OpenGL_GLProgramUniformManager_setUniform") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLProgramUniformManager_setUniform") {
     auto program = GLShaderProgram::Builder()
         .withFragmentShaderFromFile(fragmentPath)
         .withDefaultVertexShader()
@@ -136,7 +136,7 @@ TEST_CASE("OpenGL_GLProgramUniformManager_setUniform") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLProgramUniformManager_getUniformLocation") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLProgramUniformManager_getUniformLocation") {
     auto program = GLShaderProgram::Builder()
         .withFragmentShaderFromFile(fragmentPath)
         .withDefaultVertexShader()

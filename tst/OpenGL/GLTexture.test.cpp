@@ -13,7 +13,7 @@ using basil::Logger;
 using basil::LogLevel;
 using basil::SpanTextureSource;
 
-TEST_CASE("OpenGL_GLTexture_GLTexture") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLTexture_GLTexture") {
     SECTION("Initializes 1D texture") {
         GLTexture1D texture = GLTexture1D();
 
@@ -39,7 +39,7 @@ TEST_CASE("OpenGL_GLTexture_GLTexture") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLTexture_update") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLTexture_update") {
     SECTION("Logs error if missing texture source") {
         GLTexture2D texture = GLTexture2D();
         texture.update();
@@ -116,7 +116,7 @@ TEST_CASE("OpenGL_GLTexture_update") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLTexture_Builder") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLTexture_Builder") {
     SECTION("Builds from file path") {
         auto path = std::filesystem::path(TEST_DIR)
             / "OpenGL/assets/test-img.jpg";
@@ -152,7 +152,7 @@ TEST_CASE("OpenGL_GLTexture_Builder") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLTextureCubemap_GLTextureCubemap") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLTextureCubemap_GLTextureCubemap") {
     SECTION("Initializes cubemap texture") {
         GLTextureCubemap texture = GLTextureCubemap();
 
@@ -162,7 +162,7 @@ TEST_CASE("OpenGL_GLTextureCubemap_GLTextureCubemap") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("OpenGL_GLTextureCubemap_update") { BASIL_LOCK_TEST
+TEST_CASE("OpenGL_GLTextureCubemap_update") {
     SECTION("Logs error if missing texture source") {
         GLTextureCubemap texture = GLTextureCubemap();
         texture.update();

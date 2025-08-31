@@ -9,14 +9,14 @@ using basil::BasilContext;
 using basil::ViewArea;
 using basil::ImageFileCapture;
 
-TEST_CASE("File_ImageFileCapture_ImageFileCapture") { BASIL_LOCK_TEST
+TEST_CASE("File_ImageFileCapture_ImageFileCapture") {
     SECTION("Initializes pixel buffer.") {
         auto capture = ImageFileCapture();
         CHECK(capture.pixelBufferID != (unsigned int)-1);
     }
 }
 
-TEST_CASE("File_ImageFileCapture_copyFrameToBuffer") { BASIL_LOCK_TEST
+TEST_CASE("File_ImageFileCapture_copyFrameToBuffer") {
     auto capture = ImageFileCapture();
     capture.updateBufferSize(1, 1);
 
@@ -75,7 +75,7 @@ TEST_CASE("File_ImageFileCapture_saveBufferToFile") {
     }
 }
 
-TEST_CASE("File_ImageFileCapture_capture") { BASIL_LOCK_TEST
+TEST_CASE("File_ImageFileCapture_capture") {
     ViewArea area = { 1, 1, 0, 0 };
     auto capture = ImageFileCapture();
 
@@ -103,7 +103,7 @@ TEST_CASE("File_ImageFileCapture_capture") { BASIL_LOCK_TEST
     // }
 }
 
-TEST_CASE("File_ImageFileCapture_captureAsync") { BASIL_LOCK_TEST
+TEST_CASE("File_ImageFileCapture_captureAsync") {
     ViewArea area = { 1, 1, 0, 0 };
     auto capture = ImageFileCapture();
 

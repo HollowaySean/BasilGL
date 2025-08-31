@@ -69,7 +69,7 @@ TEST_CASE("Data_ShaderUniformModel_addUniform") {
             == 4);
     }
 
-    SECTION("Saves uniform containing texture location") { BASIL_LOCK_TEST
+    SECTION("Saves uniform containing texture location") {
         auto texture = std::make_shared<GLTexture2D>();
 
         unsigned int texID = dataModel.addUniform(texture, "myTex");
@@ -143,7 +143,7 @@ TEST_CASE("Data_ShaderUniformModel_setUniformValue") {
             == 7);
     }
 
-    SECTION("Set to texture") { BASIL_LOCK_TEST
+    SECTION("Set to texture") {
         auto texture = std::make_shared<GLTexture2D>();
         CHECK(dataModel.setUniformValue(texture, ID));
         CHECK_FALSE(dataModel.setUniformValue(texture, -1));

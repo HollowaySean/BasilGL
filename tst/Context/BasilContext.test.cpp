@@ -7,7 +7,7 @@ using basil::BasilContext;
 using basil::Logger;
 using basil::LogLevel;
 
-TEST_CASE("Context_BasilContext_setGLFW[...]Callback") { BASIL_LOCK_TEST
+TEST_CASE("Context_BasilContext_setGLFW[...]Callback") {
     bool hasBeenCalled = false;
     auto callback =
         [&](int...){ hasBeenCalled = true; };
@@ -69,7 +69,7 @@ TEST_CASE("Context_BasilContext_setGLFW[...]Callback") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Context_BasilContext_logGLFWError") { BASIL_LOCK_TEST
+TEST_CASE("Context_BasilContext_logGLFWError") {
     Logger& logger = Logger::get();
 
     SECTION("Logs info on success") {
@@ -88,7 +88,7 @@ TEST_CASE("Context_BasilContext_logGLFWError") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Context_BasilContext_logGLFWWindowError") { BASIL_LOCK_TEST
+TEST_CASE("Context_BasilContext_logGLFWWindowError") {
     Logger& logger = Logger::get();
     BasilContext& context = BasilContext::get();
 
@@ -113,7 +113,7 @@ TEST_CASE("Context_BasilContext_logGLFWWindowError") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Context_BasilContext_logGLEWError") { BASIL_LOCK_TEST
+TEST_CASE("Context_BasilContext_logGLEWError") {
     Logger& logger = Logger::get();
 
     SECTION("Logs info on success") {

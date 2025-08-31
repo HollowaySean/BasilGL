@@ -10,7 +10,7 @@ using basil::BasilContext;
 using basil::IPane;
 using basil::ScreenshotTool;
 
-TEST_CASE("Widget_ScreenshotTool_onStart") { BASIL_LOCK_TEST
+TEST_CASE("Widget_ScreenshotTool_onStart") {
     auto widget = ScreenshotTool();
     widget.onStart();
 
@@ -23,7 +23,7 @@ TEST_CASE("Widget_ScreenshotTool_onStart") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Widget_ScreenshotTool_onLoop") { BASIL_LOCK_TEST
+TEST_CASE("Widget_ScreenshotTool_onLoop") {
     auto widget = ScreenshotTool();
 
     SECTION("Does nothing if in idle state") {
@@ -53,7 +53,7 @@ TEST_CASE("Widget_ScreenshotTool_onLoop") { BASIL_LOCK_TEST
     }
 }
 
-TEST_CASE("Widget_ScreenshotTool_onStop") { BASIL_LOCK_TEST
+TEST_CASE("Widget_ScreenshotTool_onStop") {
     auto widget = ScreenshotTool();
     widget.onStart();
 
