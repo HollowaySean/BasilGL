@@ -21,7 +21,6 @@ template<class T>
 using s_pt = std::shared_ptr<T>;
 
 TEST_CASE("Window_WindowView_WindowView") { BASIL_LOCK_TEST
-
     SECTION("Uses default WindowProps if none provided") {
         WindowView windowView = WindowView();
         WindowProps windowProps = windowView.windowProps;

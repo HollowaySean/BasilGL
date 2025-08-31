@@ -29,8 +29,7 @@ class BasilContext {
  public:
     /** @return Context object for a given thread. */
     static BasilContext& get(
-        std::optional<std::thread::id> contextThreadID = std::nullopt
-    );
+        std::optional<std::thread::id> contextThreadID = std::nullopt);
 
     /** @brief  Creates context, if not defined. */
     void initialize();

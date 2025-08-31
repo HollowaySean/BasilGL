@@ -145,15 +145,19 @@ void BasilContext::setGLFWCallbacks() {
         return;
     }
 
-    glfwSetFramebufferSizeCallback(glfwWindow, BasilContext::onFrameBufferResize);
-    glfwSetMouseButtonCallback(glfwWindow, BasilContext::onMouseButton);
-    glfwSetKeyCallback(glfwWindow, BasilContext::onKeyAction);
-    glfwSetCursorEnterCallback(glfwWindow, BasilContext::onCursorEnter);
+    glfwSetFramebufferSizeCallback(glfwWindow,
+        BasilContext::onFrameBufferResize);
+    glfwSetMouseButtonCallback(glfwWindow,
+        BasilContext::onMouseButton);
+    glfwSetKeyCallback(glfwWindow,
+        BasilContext::onKeyAction);
+    glfwSetCursorEnterCallback(glfwWindow,
+        BasilContext::onCursorEnter);
 }
 
 void BasilContext::onFrameBufferResize(
         GLFWwindow* /* window */, int width, int height) {
-    BasilContext& currentContext = get();
+    const BasilContext& currentContext = get();
     for (const auto& callback : currentContext.framebufferCallbacks) {
         callback.second(width, height);
     }
@@ -161,7 +165,7 @@ void BasilContext::onFrameBufferResize(
 
 void BasilContext::onMouseButton(
         GLFWwindow* /* window */, int button, int action, int mods) {
-    BasilContext& currentContext = get();
+    const BasilContext& currentContext = get();
     for (const auto& callback : currentContext.mouseButtonCallbacks) {
         callback.second(button, action, mods);
     }
@@ -169,7 +173,7 @@ void BasilContext::onMouseButton(
 
 void BasilContext::onKeyAction(
         GLFWwindow* /* window */, int key, int scancode, int action, int mods) {
-    BasilContext& currentContext = get();
+    const BasilContext& currentContext = get();
     for (const auto& callback : currentContext.keyCallbacks) {
         callback.second(key, scancode, action, mods);
     }
@@ -177,7 +181,7 @@ void BasilContext::onKeyAction(
 
 void BasilContext::onCursorEnter(
         GLFWwindow* /* window */, int entered) {
-    BasilContext& currentContext = get();
+    const BasilContext& currentContext = get();
     for (const auto& callback : currentContext.cursorEnterCallbacks) {
         callback.second(entered);
     }

@@ -58,9 +58,11 @@ TEST_CASE("Widget_ScreenshotTool_onStop") { BASIL_LOCK_TEST
     widget.onStart();
 
     SECTION("Deregisters callbacks") {
-        CHECK(BasilContext::get().keyCallbacks.contains(widget.callbackID));
+        CHECK(BasilContext::get()
+            .keyCallbacks.contains(widget.callbackID));
         widget.onStop();
-        CHECK_FALSE(BasilContext::get().keyCallbacks.contains(widget.callbackID));
+        CHECK_FALSE(BasilContext::get()
+            .keyCallbacks.contains(widget.callbackID));
     }
 }
 
